@@ -1,28 +1,195 @@
-pro test,ind=ind,filelabel=filelabel
+pro testawsom
 
 common trace_sampled,rad_v,lat_v,lon_v,s_v,Ne_v,Tm_v,WT_v,Er_v,scoreR_v,midcell_v,Npts_v,str_v,stth_v,stph_v,radstart,enrad_v,enlon_v,enlat_v,npar,DEMc_v,lambda_v,L,Tmin,Tmax
 common B_sampled,B_v,Br_v,Bth_v,Bph_v
 common opclstatus,opcls,loopL,WTc  
 
-common statistic_loops,Nlegs,Nemean,Tmmean,WTmean,Nestddev,Tmstddev,WTstddev,loop_length,betamean,betaapex,Bmean,Br0
+common statistic_loops,Nlegs,Nemean,Tmmean,WTmean,Nestddev,Tmstddev,WTstddev,loop_length,betamean,betaapex,Bmean,Br0,B0
 common statistic_loops2,opclstat,lambda_N,lambda_p,Ne0,p0,Tefit,gradT,r2N,r2P,r2T,indexloop,leg_status,Tm0,Tm0s  
 common statistic_loops3,Eh,sH,r2sH,Phir,Fcb,Ner0,Ner1,Ner2,Ner3,TmR1,NR1,Fcb5
 common statistic_loops4,r2Tcuadr,Acuadr_a, s_r0_a,dTmds,r2Ts,Tmbase,Netech,Ne0_s,lambda_N_s
 common statistic_loops5,r2Er,Phirfit,Tm0_ts,gradT_ts,FTr_ts,Tm0s_ts,dTmds_ts,FTs_ts,eplegT,deltaS,Smaxxx,Sminnn,Tm0s5_ts,dTmds5_ts,FTs5_ts,Erlin_F,Erlin_d,Erlin_o,Erlin_r0,phir_lin
 common starttrace,strad,stlat,stlon,footrad,footlat,footlon,Rp_rad,Rp_lat,Rp_lon,B_base
 
-common stat_filter,Nlegs_c,Nemean_c,Tmmean_c,WTmean_c,Nestddev_c,Tmstddev_c,WTstddev_c,loop_length_c,betamean_c,betaapex_c,Bmean_c,Br0_c
+common stat_filter,Nlegs_c,Nemean_c,Tmmean_c,WTmean_c,Nestddev_c,Tmstddev_c,WTstddev_c,loop_length_c,betamean_c,betaapex_c,Bmean_c,Br0_c,B0_c
 common stat_filter2,opclstat_c,lambda_N_c,lambda_p_c,Ne0_c,p0_c,Tefit_c,gradT_c,r2N_c,r2P_c,r2T_c,indexloop_c,leg_status_c,Tm0_c,Tm0s_c,Tm0_ts_c,gradT_ts_c,FTr_ts_c,Tm0s_ts_c,dTmds_ts_c,FTs_ts_c,Tm0s5_ts_c,dTmds5_ts_c,FTs5_ts_c    
 common stat_filter3,Eh_c,sH_c,r2sH_c,Phir_c,Fcb_c,Ner0_c,Ner1_c,Ner2_c,Ner3_c,TmR1_c,NR1_c,Erlin_F_c,Erlin_d_c,Erlin_o_c,Erlin_r0_c,phir_lin_c
 common stat_filter4,r2Tcuadr_c,Acuadr_a_c, s_r0_a_c,dTmds_c,r2Ts_c,Netech_c,Ne0_s_c,lambda_N_s_c
 common stat_filter5,strad_c,stlat_c,stlon_c,footrad_c,footlat_c,footlon_c,Rp_rad_c,Rp_lat_c,Rp_lon_c
 common stat_filter6,r2Er_c,Phirfit_c,eplegT_c,deltaS_c,Smaxxx_c,Sminnn_c,B_base_c,Fcb5_c
 
-common loops,Phir_loop,rad1_loop,rad2_loop,lat1_loop,lat2_loop,lon1_loop,lon2_loop,L_loop,opclstat_loop,r2Er1_loop,r2Er2_loop,Tmmean_loop,Fcb_loop,dTmds1_loop,dTmds2_loop,r2Tcuadr1_loop,r2Tcuadr2_loop,r2T1_loop,r2T2_loop,Ner01_loop,Ner02_loop,Ner11_loop,Ner12_loop,Ner21_loop,Ner22_loop,Ner31_loop,Ner32_loop,Rp_rad1_loop,Rp_lat1_loop,Rp_lon1_loop,Rp_rad2_loop,Rp_lat2_loop,Rp_lon2_loop,TmR11_loop,TmR12_loop,NR11_loop,NR12_loop,Nemean_loop,Long_cm,Phih_L,Ner0m_loop,lambda_N_loop,r2N1_loop,r2N2_loop,Tm01_ts_loop,gradT1_ts_loop,FTr1_ts_loop,Tm0s1_ts_loop,dTmds1_ts_loop,FTs1_ts_loop,Tm02_ts_loop,gradT2_ts_loop,FTr2_ts_loop,Tm0s2_ts_loop,dTmds2_ts_loop,FTs2_ts_loop,eplegT1_loop,eplegT2_loop,deltaS1_loop,deltaS2_loop,Smaxxx1_loop,Smaxxx2_loop,s_r0_a1_loop,s_r0_a2_loop,Sminnn1_loop,Sminnn2_loop,ISO_loop,B_basem_loop,Netech_loop,Ne0_s_loop,lambda_N_s_loop,Tm0s15_ts_loop,dTmds15_ts_loop,FTs15_ts_loop,Tm0s25_ts_loop,dTmds25_ts_loop,FTs25_ts_loop,Erlin1_F_loop,Erlin1_d_loop,Erlin1_o_loop,Erlin1_r0_loop,phir1_lin_loop,Erlin2_F_loop,Erlin2_d_loop,Erlin2_o_loop,Erlin2_r0_loop,phir2_lin_loop,Fcb5_loop
+common loops,Phir_loop,rad1_loop,rad2_loop,lat1_loop,lat2_loop,lon1_loop,lon2_loop,L_loop,opclstat_loop,r2Er1_loop,r2Er2_loop,Tmmean_loop,Fcb_loop,dTmds1_loop,dTmds2_loop,r2Tcuadr1_loop,r2Tcuadr2_loop,r2T1_loop,r2T2_loop,Ner01_loop,Ner02_loop,Ner11_loop,Ner12_loop,Ner21_loop,Ner22_loop,Ner31_loop,Ner32_loop,Rp_rad1_loop,Rp_lat1_loop,Rp_lon1_loop,Rp_rad2_loop,Rp_lat2_loop,Rp_lon2_loop,TmR11_loop,TmR12_loop,NR11_loop,NR12_loop,Nemean_loop,Long_cm,Phih_L,Ner0m_loop,lambda_N_loop,r2N1_loop,r2N2_loop,Tm01_ts_loop,gradT1_ts_loop,FTr1_ts_loop,Tm0s1_ts_loop,dTmds1_ts_loop,FTs1_ts_loop,Tm02_ts_loop,gradT2_ts_loop,FTr2_ts_loop,Tm0s2_ts_loop,dTmds2_ts_loop,FTs2_ts_loop,eplegT1_loop,eplegT2_loop,deltaS1_loop,deltaS2_loop,Smaxxx1_loop,Smaxxx2_loop,s_r0_a1_loop,s_r0_a2_loop,Sminnn1_loop,Sminnn2_loop,ISO_loop,B_basem_loop,Netech_loop,Ne0_s_loop,lambda_N_s_loop,Tm0s15_ts_loop,dTmds15_ts_loop,FTs15_ts_loop,Tm0s25_ts_loop,dTmds25_ts_loop,FTs25_ts_loop,Erlin1_F_loop,Erlin1_d_loop,Erlin1_o_loop,Erlin1_r0_loop,Erlin2_F_loop,Erlin2_d_loop,Erlin2_o_loop,Erlin2_r0_loop,phir_lin_loop,Fcb5_loop,Phir1_loop,Phir2_loop,Fcb1_loop,Fcb2_loop,Phir1_lin_loop,Phir2_lin_loop,Fcb51_loop,Fcb52_loop,indexloop_loop,Bmean_loop,Tm0s_base_loop,B0_loop
 
-common loops_filter,Phir_loop_c,rad1_loop_c,rad2_loop_c,lat1_loop_c,lat2_loop_c,lon1_loop_c,lon2_loop_c,L_loop_c,opclstat_loop_c,r2Er1_loop_c,r2Er2_loop_c,Tmmean_loop_c,Fcb_loop_c,dTmds1_loop_c,dTmds2_loop_c,r2Tcuadr1_loop_c,r2Tcuadr2_loop_c,r2T1_loop_c,r2T2_loop_c,Ner01_loop_c,Ner02_loop_c,Ner11_loop_c,Ner12_loop_c,Ner21_loop_c,Ner22_loop_c,Ner31_loop_c,Ner32_loop_c,Rp_rad1_loop_c,Rp_lat1_loop_c,Rp_lon1_loop_c,Rp_rad2_loop_c,Rp_lat2_loop_c,Rp_lon2_loop_c,TmR11_loop_c,TmR12_loop_c,NR11_loop_c,NR12_loop_c,Nemean_loop_c,Long_cm_c,Phih_L_c,Ner0m_loop_c,lambda_N_loop_c,r2N1_loop_c,r2N2_loop_c,Tm01_ts_loop_c,gradT1_ts_loop_c,FTr1_ts_loop_c,Tm0s1_ts_loop_c,dTmds1_ts_loop_c,FTs1_ts_loop_c,Tm02_ts_loop_c,gradT2_ts_loop_c,FTr2_ts_loop_c,Tm0s2_ts_loop_c,dTmds2_ts_loop_c,FTs2_ts_loop_c,eplegT1_loop_c,eplegT2_loop_c,deltaS1_loop_c,deltaS2_loop_c,Smaxxx1_loop_c,Smaxxx2_loop_c,Sminnn1_loop_c,Sminnn2_loop_c,ISO_loop_c,B_basem_loop_c,Netech_loop_c,Ne0_s_loop_c,lambda_N_s_loop_c,Tm0s15_ts_loop_c,dTmds15_ts_loop_c,FTs15_ts_loop_c,Tm0s25_ts_loop_c,dTmds25_ts_loop_c,FTs25_ts_loop_c,Erlin1_F_loop_c,Erlin1_d_loop_c,Erlin1_o_loop_c,Erlin1_r0_loop_c,phir1_lin_loop_c,Erlin2_F_loop_c,Erlin2_d_loop_c,Erlin2_o_loop_c,Erlin2_r0_loop_c,phir2_lin_loop_c,Fcb5_loop_c
+common loops_filter,Phir_loop_c,rad1_loop_c,rad2_loop_c,lat1_loop_c,lat2_loop_c,lon1_loop_c,lon2_loop_c,L_loop_c,opclstat_loop_c,r2Er1_loop_c,r2Er2_loop_c,Tmmean_loop_c,Fcb_loop_c,dTmds1_loop_c,dTmds2_loop_c,r2Tcuadr1_loop_c,r2Tcuadr2_loop_c,r2T1_loop_c,r2T2_loop_c,Ner01_loop_c,Ner02_loop_c,Ner11_loop_c,Ner12_loop_c,Ner21_loop_c,Ner22_loop_c,Ner31_loop_c,Ner32_loop_c,Rp_rad1_loop_c,Rp_lat1_loop_c,Rp_lon1_loop_c,Rp_rad2_loop_c,Rp_lat2_loop_c,Rp_lon2_loop_c,TmR11_loop_c,TmR12_loop_c,NR11_loop_c,NR12_loop_c,Nemean_loop_c,Long_cm_c,Phih_L_c,Ner0m_loop_c,lambda_N_loop_c,r2N1_loop_c,r2N2_loop_c,Tm01_ts_loop_c,gradT1_ts_loop_c,FTr1_ts_loop_c,Tm0s1_ts_loop_c,dTmds1_ts_loop_c,FTs1_ts_loop_c,Tm02_ts_loop_c,gradT2_ts_loop_c,FTr2_ts_loop_c,Tm0s2_ts_loop_c,dTmds2_ts_loop_c,FTs2_ts_loop_c,eplegT1_loop_c,eplegT2_loop_c,deltaS1_loop_c,deltaS2_loop_c,Smaxxx1_loop_c,Smaxxx2_loop_c,Sminnn1_loop_c,Sminnn2_loop_c,ISO_loop_c,B_basem_loop_c,Netech_loop_c,Ne0_s_loop_c,lambda_N_s_loop_c,Tm0s15_ts_loop_c,dTmds15_ts_loop_c,FTs15_ts_loop_c,Tm0s25_ts_loop_c,dTmds25_ts_loop_c,FTs25_ts_loop_c,Erlin1_F_loop_c,Erlin1_d_loop_c,Erlin1_o_loop_c,Erlin1_r0_loop_c,Erlin2_F_loop_c,Erlin2_d_loop_c,Erlin2_o_loop_c,Erlin2_r0_loop_c,phir_lin_loop_c,Fcb5_loop_c,Phir1_loop_c,Phir2_loop_c,Fcb1_loop_c,Fcb2_loop_c,Phir1_lin_loop_c,Phir2_lin_loop_c,Fcb51_loop_c,Fcb52_loop_c,indexloop_loop_c,Bmean_loop_c,Tm0s_base_loop_c,B0_loop_c
 
 common label,T_label,Er_label
+
+common select,Fcb_tot,Phir_tot,lat1_tot,lat2_tot,lon1_tot,lon2_tot,opclstat_tot,indexloop_tot,Rp_lat1_tot,Rp_lat2_tot,Rp_lon1_tot,Rp_lon2_tot
+
+suffix    = '-EUVI-2081-fullhollow-awsomfield-awsom'
+
+R2Crit_N = 0.75
+R2Crit_T  = 0.5
+FTscrit   = 0.70
+FTs5crit  = 0.90
+NeCritA   = 1.4
+NeCritQ   = 1.4
+
+ filesT=['traceLDEM_CR2081_reg0.75_safety0.5_fullhollow_awsomfield_decon_radstart-1.035-1.215Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat',$
+          'traceLDEM_CR2081_reg0.75_safety0.5_fulldisk_awsomfield_awsom_radstart-1.035-1.215Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat']
+
+  statloop,filesT(0),rloopmin=1.05,/linear
+
+i_midlat_close  = where(gradT_ts ne -555. AND opclstat ge 1. and r2N gt r2crit_N and footlat gt 30. and FTr_ts gt FTscrit)
+i_lowlat_close  = where(gradT_ts ne -555. AND opclstat ge 1. and r2N gt r2crit_N and footlat lt 30. and FTr_ts gt FTscrit)
+i_open          = where(gradT_ts ne -555. AND opclstat eq 0. and r2N gt r2crit_N and footlat gt 60. and FTr_ts gt FTscrit)
+
+filter,i_midlat_close
+Lambda_mid_demt = lambda_N_c
+   Ne0_mid_demt =      Ne0_c
+   Tm0_mid_demt =  Tm0s_ts_c
+gradTs_mid_demt = dTmds_ts_c
+
+
+filter,i_lowlat_close
+Lambda_low_demt = lambda_N_c
+   Ne0_low_demt =      Ne0_c
+   Tm0_low_demt =  Tm0s_ts_c
+gradTs_low_demt = dTmds_ts_c
+
+filter,i_open
+Lambda_open_demt = lambda_N_c
+   Ne0_open_demt =      Ne0_c
+   Tm0_open_demt =   Tm0_ts_c
+gradTs_open_demt = gradT_ts_c
+
+  statloop,filesT(1),rloopmin=1.05,/linear,/awsom
+
+filter,i_midlat_close
+Lambda_mid_awsom = lambda_N_c
+   Ne0_mid_awsom =      Ne0_c
+   Tm0_mid_awsom =  Tm0s_ts_c
+gradTs_mid_awsom = dTmds_ts_c
+
+filter,i_lowlat_close
+Lambda_low_awsom = lambda_N_c
+   Ne0_low_awsom =      Ne0_c
+   Tm0_low_awsom =  Tm0s_ts_c
+gradTs_low_awsom = dTmds_ts_c
+
+filter,i_open
+Lambda_open_awsom = lambda_N_c
+   Ne0_open_awsom =      Ne0_c
+   Tm0_open_awsom =   Tm0_ts_c
+gradTs_open_awsom = gradT_ts_c
+
+;================ HISTOGRAMAS
+nbins = 80
+
+  x1 = Lambda_mid_demt
+  x2 = Lambda_mid_awsom
+mini = min(Lambda_mid_demt)
+maxi = max(Lambda_mid_demt)
+histoplot2B,x1,x2,min=mini,max=maxi,nbins=nbins,xtit='Lambda',ytit='Frecuency',tit='Lambda_N mid demt vs awsom',filename='Lambda_N_midlat-DEMT-AWSOM',ndig=5
+
+  x1 = Lambda_low_demt
+  x2 = Lambda_low_awsom
+mini = min(Lambda_low_demt)
+maxi = max(Lambda_low_demt)
+histoplot2B,x1,x2,min=mini,max=maxi,nbins=nbins,xtit='Lambda',ytit='Frecuency',tit='Lambda_N low demt vs awsom',filename='Lambda_N_lowlat-DEMT-AWSOM',ndig=5
+
+  x1 = Lambda_open_demt
+  x2 = Lambda_open_awsom
+mini = min(Lambda_open_demt)
+maxi = max(Lambda_open_demt)
+histoplot2B,x1,x2,min=mini,max=maxi,nbins=nbins,xtit='Lambda',ytit='Frecuency',tit='Lambda_N open demt vs awsom',filename='Lambda_N_open-DEMT-AWSOM',ndig=5
+
+  x1 = Ne0_mid_demt/1.e8
+  x2 = Ne0_mid_awsom/1.e8
+mini = min(Ne0_mid_demt/1.e8)
+maxi = max(Ne0_mid_demt/1.e8)
+histoplot2B,x1,x2,min=mini,max=maxi,nbins=nbins,xtit='N0',ytit='Frecuency',tit='N0 mid demt vs awsom',filename='N0_midlat-DEMT-AWSOM',ndig=5
+
+  x1 = Ne0_low_demt/1.e8
+  x2 = Ne0_low_awsom/1.e8
+mini = min(Ne0_low_demt/1.e8)
+maxi = max(Ne0_low_demt/1.e8)
+histoplot2B,x1,x2,min=mini,max=maxi,nbins=nbins,xtit='N0',ytit='Frecuency',tit='N0 low demt vs awsom',filename='N0_lowlat-DEMT-AWSOM',ndig=5
+
+  x1 = Ne0_open_demt/1.e8
+  x2 = Ne0_open_awsom/1.e8
+mini = min(Ne0_open_demt/1.e8)
+maxi = max(Ne0_open_demt/1.e8)
+histoplot2B,x1,x2,min=mini,max=maxi,nbins=nbins,xtit='N0',ytit='Frecuency',tit='N0 open demt vs awsom',filename='N0_open-DEMT-AWSOM',ndig=5
+
+  x1 = Tm0_mid_demt/1.e6 
+  x2 = Tm0_mid_awsom/1.e6
+mini = min(Tm0_mid_demt/1.e6)
+maxi = max(Tm0_mid_demt/1.e6)
+histoplot2B,x1,x2,min=mini,max=maxi,nbins=nbins,xtit='Tm0',ytit='Frecuency',tit='Tm0 open demt vs awsom',filename='Tm0_mid-DEMT-AWSOM',ndig=5
+
+  x1 = Tm0_low_demt/1.e6 
+  x2 = Tm0_low_awsom/1.e6
+mini = min(Tm0_low_demt/1.e6)
+maxi = max(Tm0_low_demt/1.e6)
+histoplot2B,x1,x2,min=mini,max=maxi,nbins=nbins,xtit='Tm0',ytit='Frecuency',tit='Tm0 low demt vs awsom',filename='Tm0_low-DEMT-AWSOM',ndig=5
+
+  x1 = Tm0_open_demt/1.e6
+  x2 = Tm0_open_awsom/1.e6
+mini = min(Tm0_open_demt/1.e6)
+maxi = max(Tm0_open_demt/1.e6)
+histoplot2B,x1,x2,min=mini,max=maxi,nbins=nbins,xtit='Tm0',ytit='Frecuency',tit='Tm0 open demt vs awsom',filename='Tm0_open-DEMT-AWSOM',ndig=5
+
+  x1 = gradTs_mid_demt/1.e6 
+  x2 = gradTs_mid_awsom/1.e6
+mini = min(gradTs_mid_demt/1.e6)
+maxi = max(gradTs_mid_demt/1.e6)
+histoplot2B,x1,x2,min=mini,max=maxi,nbins=nbins,xtit='grad',ytit='Frecuency',tit='grad mid demt vs awsom',filename='grad_mid-DEMT-AWSOM',ndig=5
+
+  x1 = gradTs_low_demt/1.e6 
+  x2 = gradTs_low_awsom/1.e6
+mini = min(gradTs_low_demt/1.e6)
+maxi = max(gradTs_low_demt/1.e6)
+histoplot2B,x1,x2,min=mini,max=maxi,nbins=nbins,xtit='grad',ytit='Frecuency',tit='grad low demt vs awsom',filename='grad_low-DEMT-AWSOM',ndig=5
+
+  x1 = gradTs_open_demt/1.e6 
+  x2 = gradTs_open_awsom/1.e6
+mini = min(gradTs_open_demt/1.e6)
+maxi = max(gradTs_open_demt/1.e6)
+histoplot2B,x1,x2,min=mini,max=maxi,nbins=nbins,xtit='grad',ytit='Frecuency',tit='grad open demt vs awsom',filename='grad_open-DEMT-AWSOM',ndig=5
+
+
+
+return
+end
+
+pro test,ind=ind,filelabel=filelabel
+
+common trace_sampled,rad_v,lat_v,lon_v,s_v,Ne_v,Tm_v,WT_v,Er_v,scoreR_v,midcell_v,Npts_v,str_v,stth_v,stph_v,radstart,enrad_v,enlon_v,enlat_v,npar,DEMc_v,lambda_v,L,Tmin,Tmax
+common B_sampled,B_v,Br_v,Bth_v,Bph_v
+common opclstatus,opcls,loopL,WTc  
+
+common statistic_loops,Nlegs,Nemean,Tmmean,WTmean,Nestddev,Tmstddev,WTstddev,loop_length,betamean,betaapex,Bmean,Br0,B0
+common statistic_loops2,opclstat,lambda_N,lambda_p,Ne0,p0,Tefit,gradT,r2N,r2P,r2T,indexloop,leg_status,Tm0,Tm0s  
+common statistic_loops3,Eh,sH,r2sH,Phir,Fcb,Ner0,Ner1,Ner2,Ner3,TmR1,NR1,Fcb5
+common statistic_loops4,r2Tcuadr,Acuadr_a, s_r0_a,dTmds,r2Ts,Tmbase,Netech,Ne0_s,lambda_N_s
+common statistic_loops5,r2Er,Phirfit,Tm0_ts,gradT_ts,FTr_ts,Tm0s_ts,dTmds_ts,FTs_ts,eplegT,deltaS,Smaxxx,Sminnn,Tm0s5_ts,dTmds5_ts,FTs5_ts,Erlin_F,Erlin_d,Erlin_o,Erlin_r0,phir_lin
+common starttrace,strad,stlat,stlon,footrad,footlat,footlon,Rp_rad,Rp_lat,Rp_lon,B_base
+
+common stat_filter,Nlegs_c,Nemean_c,Tmmean_c,WTmean_c,Nestddev_c,Tmstddev_c,WTstddev_c,loop_length_c,betamean_c,betaapex_c,Bmean_c,Br0_c,B0_c
+common stat_filter2,opclstat_c,lambda_N_c,lambda_p_c,Ne0_c,p0_c,Tefit_c,gradT_c,r2N_c,r2P_c,r2T_c,indexloop_c,leg_status_c,Tm0_c,Tm0s_c,Tm0_ts_c,gradT_ts_c,FTr_ts_c,Tm0s_ts_c,dTmds_ts_c,FTs_ts_c,Tm0s5_ts_c,dTmds5_ts_c,FTs5_ts_c    
+common stat_filter3,Eh_c,sH_c,r2sH_c,Phir_c,Fcb_c,Ner0_c,Ner1_c,Ner2_c,Ner3_c,TmR1_c,NR1_c,Erlin_F_c,Erlin_d_c,Erlin_o_c,Erlin_r0_c,phir_lin_c
+common stat_filter4,r2Tcuadr_c,Acuadr_a_c, s_r0_a_c,dTmds_c,r2Ts_c,Netech_c,Ne0_s_c,lambda_N_s_c
+common stat_filter5,strad_c,stlat_c,stlon_c,footrad_c,footlat_c,footlon_c,Rp_rad_c,Rp_lat_c,Rp_lon_c
+common stat_filter6,r2Er_c,Phirfit_c,eplegT_c,deltaS_c,Smaxxx_c,Sminnn_c,B_base_c,Fcb5_c
+
+common loops,Phir_loop,rad1_loop,rad2_loop,lat1_loop,lat2_loop,lon1_loop,lon2_loop,L_loop,opclstat_loop,r2Er1_loop,r2Er2_loop,Tmmean_loop,Fcb_loop,dTmds1_loop,dTmds2_loop,r2Tcuadr1_loop,r2Tcuadr2_loop,r2T1_loop,r2T2_loop,Ner01_loop,Ner02_loop,Ner11_loop,Ner12_loop,Ner21_loop,Ner22_loop,Ner31_loop,Ner32_loop,Rp_rad1_loop,Rp_lat1_loop,Rp_lon1_loop,Rp_rad2_loop,Rp_lat2_loop,Rp_lon2_loop,TmR11_loop,TmR12_loop,NR11_loop,NR12_loop,Nemean_loop,Long_cm,Phih_L,Ner0m_loop,lambda_N_loop,r2N1_loop,r2N2_loop,Tm01_ts_loop,gradT1_ts_loop,FTr1_ts_loop,Tm0s1_ts_loop,dTmds1_ts_loop,FTs1_ts_loop,Tm02_ts_loop,gradT2_ts_loop,FTr2_ts_loop,Tm0s2_ts_loop,dTmds2_ts_loop,FTs2_ts_loop,eplegT1_loop,eplegT2_loop,deltaS1_loop,deltaS2_loop,Smaxxx1_loop,Smaxxx2_loop,s_r0_a1_loop,s_r0_a2_loop,Sminnn1_loop,Sminnn2_loop,ISO_loop,B_basem_loop,Netech_loop,Ne0_s_loop,lambda_N_s_loop,Tm0s15_ts_loop,dTmds15_ts_loop,FTs15_ts_loop,Tm0s25_ts_loop,dTmds25_ts_loop,FTs25_ts_loop,Erlin1_F_loop,Erlin1_d_loop,Erlin1_o_loop,Erlin1_r0_loop,Erlin2_F_loop,Erlin2_d_loop,Erlin2_o_loop,Erlin2_r0_loop,phir_lin_loop,Fcb5_loop,Phir1_loop,Phir2_loop,Fcb1_loop,Fcb2_loop,Phir1_lin_loop,Phir2_lin_loop,Fcb51_loop,Fcb52_loop,indexloop_loop,Bmean_loop,Tm0s_base_loop,B0_loop
+
+common loops_filter,Phir_loop_c,rad1_loop_c,rad2_loop_c,lat1_loop_c,lat2_loop_c,lon1_loop_c,lon2_loop_c,L_loop_c,opclstat_loop_c,r2Er1_loop_c,r2Er2_loop_c,Tmmean_loop_c,Fcb_loop_c,dTmds1_loop_c,dTmds2_loop_c,r2Tcuadr1_loop_c,r2Tcuadr2_loop_c,r2T1_loop_c,r2T2_loop_c,Ner01_loop_c,Ner02_loop_c,Ner11_loop_c,Ner12_loop_c,Ner21_loop_c,Ner22_loop_c,Ner31_loop_c,Ner32_loop_c,Rp_rad1_loop_c,Rp_lat1_loop_c,Rp_lon1_loop_c,Rp_rad2_loop_c,Rp_lat2_loop_c,Rp_lon2_loop_c,TmR11_loop_c,TmR12_loop_c,NR11_loop_c,NR12_loop_c,Nemean_loop_c,Long_cm_c,Phih_L_c,Ner0m_loop_c,lambda_N_loop_c,r2N1_loop_c,r2N2_loop_c,Tm01_ts_loop_c,gradT1_ts_loop_c,FTr1_ts_loop_c,Tm0s1_ts_loop_c,dTmds1_ts_loop_c,FTs1_ts_loop_c,Tm02_ts_loop_c,gradT2_ts_loop_c,FTr2_ts_loop_c,Tm0s2_ts_loop_c,dTmds2_ts_loop_c,FTs2_ts_loop_c,eplegT1_loop_c,eplegT2_loop_c,deltaS1_loop_c,deltaS2_loop_c,Smaxxx1_loop_c,Smaxxx2_loop_c,Sminnn1_loop_c,Sminnn2_loop_c,ISO_loop_c,B_basem_loop_c,Netech_loop_c,Ne0_s_loop_c,lambda_N_s_loop_c,Tm0s15_ts_loop_c,dTmds15_ts_loop_c,FTs15_ts_loop_c,Tm0s25_ts_loop_c,dTmds25_ts_loop_c,FTs25_ts_loop_c,Erlin1_F_loop_c,Erlin1_d_loop_c,Erlin1_o_loop_c,Erlin1_r0_loop_c,Erlin2_F_loop_c,Erlin2_d_loop_c,Erlin2_o_loop_c,Erlin2_r0_loop_c,phir_lin_loop_c,Fcb5_loop_c,Phir1_loop_c,Phir2_loop_c,Fcb1_loop_c,Fcb2_loop_c,Phir1_lin_loop_c,Phir2_lin_loop_c,Fcb51_loop_c,Fcb52_loop_c,indexloop_loop_c,Bmean_loop_c,Tm0s_base_loop_c,B0_loop_c
+
+common label,T_label,Er_label
+
+common select,Fcb_tot,Phir_tot,lat1_tot,lat2_tot,lon1_tot,lon2_tot,opclstat_tot,indexloop_tot,Rp_lat1_tot,Rp_lat2_tot,Rp_lon1_tot,Rp_lon2_tot
 
 if not keyword_set(ind)       then ind=[0]
 if not keyword_set(filelabel) then filelabel='crap'
@@ -60,18 +227,26 @@ RSTART      = [1.045,1.075,1.115,1.035,1.045,1.075,1.115,1.155,1.250,1.500]
 
 ;=========== archivos sin bug
 
-;filesT=['traceLDEM_CR2081_euviA-NODECON_reg0.75_safety0.5_errorbox_base_DEBUG_radstart-1.035-1.215Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat'] ;2081 EUVIA
+ filesT=['traceLDEM_CR2081_euviA-NODECON_reg0.75_safety0.5_errorbox_base_DEBUG_radstart-1.035-1.215Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat'] ;2081 EUVIA
 ;filesT=['traceLDEM_CR2099_euviA_reg1.0_safety0.5_debug_radstart-1.035-1.215Rs_unifgrid_v2.heating.sampled.v2.CECI.dat']                         ;2099 EUVIA
 ;filesT=['traceLDEM_CRCR2099_AIA3_reg0.75_safety0.5_debug_20-5_radstart-1.035-1.215Rs_unifgrid_v2.heating.sampled.v2.CECI.dat']                  ;2099 AIA 3
 
 ;AIA-4
 
 ;filesT=['traceLDEM_CRCR2099_AIA4-full_reg0.75_safety0.5_radstart-1.035-1.215Rs_unifgrid_v2.heating.sampled.v2.CECI.dat']
- filesT=['traceLDEM_CRCR2099_AIA4-warm_reg0.75_safety0.5_radstart-1.035-1.215Rs_unifgrid_v2.heating.sampled.v2.CECI.dat']
+;filesT=['traceLDEM_CRCR2099_AIA4-warm_reg0.75_safety0.5_radstart-1.035-1.215Rs_unifgrid_v2.heating.sampled.v2.CECI.dat']
 ;filesT=['traceLDEM_CRCR2099_AIA4-hot_reg0.75_safety0.5_radstart-1.035-1.215Rs_unifgrid_v2.heating.sampled.v2.CECI.dat']    
 
 ;HOLLOW
 ;filesT=['traceLDEM_CR2081_euviA-HOLLOW_reg0.75_safety0.5_radstart-1.035-1.215Rs_unifgrid_v2.heating.sampled.v2.CECI.dat']
+
+
+
+;AWSOM
+
+; filesT=['traceLDEM_CR2081_reg0.75_safety0.5_fulldisk_awsomfield_radstart-1.035Rs_unifgrid_v2.heating.sampled.v2.CECI.dat']
+; filesT=['traceLDEM_CR2081_reg0.75_safety0.5_fullhollow_awsomfield_decon_radstart-1.035-1.215Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat']
+ filesT=['traceLDEM_CR2081_reg0.75_safety0.5_fulldisk_awsomfield_awsom_radstart-1.035-1.215Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat']
 
 
 rstart      = 1.035+0.02*findgen(10)
@@ -135,7 +310,7 @@ ejemplo_grafico:
 
 ;record_gif,'./','cambio_ne_rstart_distintos.gif','x'
 
-  statloop,filest(i),rloopmin=1.05,/linear;,/Tfitlow;,/fitcuadr
+  statloop,filest(i),rloopmin=1.05,/linear,/awsom;,/Tfitlow;,/fitcuadr
 
 stop
 
@@ -343,24 +518,26 @@ endfor
 hacerlobien:
 
 radstart= 1.035 + 0.02 *findgen(10)
+;radstart= 1.035 + 0.1 *findgen(2)
 Nrad = n_elements(radstart)
 dlat = 2. + fltarr(Nrad)
 dlon = 2. + fltarr(Nrad)
 
-   fdips_file='fdips_field_150x180x360_synop_Mr_0.polfil.2081.ubdat'
+;  fdips_file='fdips_field_150x180x360_synop_Mr_0.polfil.2081.ubdat'
 ;  fdips_file='fdips_field_150x180x360_synop_Mr_0.polfil.2099.ubdat'
+   fdips_file ='sphere_FDIPS_B.dat'
 
 ;  ldem_file='LDEM.v3_CR2099_l0.75_chianti.ioneq_sun_coronal_1992_feldman_ext.abund_AIA3_FULLCORONA-ALBERT_171_corregido_gauss1_lin_Norm-median_singlStart' ;AIA3
 ;  ldem_file='LDEM.v3_cr2099_l1.0_chianti.ioneq_sun_coronal_1992_feldman_ext.abund_euvi.A_L171_NODECON_gauss1_lin_Norm-median_singlStart'                   ;EUVI
 ;  ldem_file='LDEM.v3_cr2081_l0.75_chianti.ioneq_sun_coronal_1992_feldman_ext.abund_euvi.A_L171_DECON_gauss1_lin_Norm-median_singlStart'                    ;EUVI
-
+   ldem_file='LDEM.v3_cr2081_l0.75_chianti.ioneq_sun_coronal_1992_feldman_ext.abund_euvi.A_L171_DECON_gauss1_lin_Norm-median_singlStart'
 
 ; ldem_file='ldem_cr2099_AIA4_gauss_warm.dat'
 ; ldem_file='ldem_cr2099_AIA4_gauss_hot.dat'
 ; ldem_file='LDEM.v3_CR2099_l0.75_chianti.ioneq_sun_coronal_1992_feldman_ext.abund_AIA4_FULLCORONA-ALBERT_256_corregido_gauss2FW_lin_Norm-median_singlStart'
 
 ;HOLLOW
-  ldem_file='LDEM.v3.error_box.2081.euvi.A.base_HOLLOW_gauss1_lin_Norm-median_singlStart'
+;  ldem_file='LDEM.v3.error_box.2081.euvi.A.base_HOLLOW_gauss1_lin_Norm-median_singlStart'
 
 ;  period = '2099_euviA_reg1.0_safety0.5_debug'
 ;  period ='CR2099_AIA3_reg0.75_safety0.5_debug_20-5'
@@ -370,9 +547,23 @@ dlon = 2. + fltarr(Nrad)
 ; period ='CR2099_AIA4-warm_reg0.75_safety0.5'
 ; period ='CR2099_AIA4-full_reg0.75_safety0.5'
 
-  period = '2081_euviA-HOLLOW_reg0.75_safety0.5'
+; period ='2081_euviA-HOLLOW_reg0.75_safety0.5----testtt'
+   period ='2081_reg0.75_safety0.5_fulldisk_awsomfield'
 
-  trace_LDEM,fdips_file=fdips_file,ldem_file=ldem_file,period=period,safety=.5,stepmax=3000,dlat=dlat,dlon=dlon,radstart=radstart,/unifgrid_v2;,/dgfw
+; trace_LDEM,fdips_file=fdips_file,ldem_file=ldem_file,period=period,safety=.5,stepmax=3000,dlat=dlat,dlon=dlon,radstart=radstart,/unifgrid_v2;,/dgfw
+;  trace_LDEM,fdips_file=fdips_file,ldem_file=ldem_file,period=period,safety=.5,stepmax=3000,/unifgrid_v2,dlat=dlat,dlon=dlon,radstart=radstart,/awsom
+
+
+;PARA TRAZAR AWSOM
+
+fdips_file ='sphere_FDIPS_B.dat'
+;fdips_file ='CR2082_sphere_FDIPS_B.dat'
+awsom_flux = 'CR2082_sphere_DEMT.dat'
+;awsom_file = 'CR2081run5_DEMT_sphere.dat'
+;awsom_file = 'CR2081_sphere_DEMT_En.dat'
+period ='2082_reg0.75_safety0.5_awsomfield_awsom_mapoc1035'                                                      
+
+trace_LDEM,fdips_file=fdips_file,period=period,safety=.5,stepmax=8000,/unifgrid_v2,dlat=dlat,dlon=dlon,radstart=radstart,awsom_flux=awsom_flux,/field_awsom
 
 RETURN
 end
@@ -394,13 +585,19 @@ pro trace_LDEM,fdips_file=fdips_file,$
                mhd=mhd,$
                dgfw=dgfw,$
                expand=expand,$
-               unifgrid_v2=unifgrid_v2
+               unifgrid_v2=unifgrid_v2,$
+               field_awsom=field_awsom,$
+               awsom_file=awsom_file,$
+               awsom_flux=awsom_flux
 
   common comunes,tm,wt,nband,demc,PHI,parametrizacion,Tmin,Tmax,nr,nth,np,rad,lat,lon,lambda,WTc
   common results_tomo,tfbe,sfbe,N_e
   common loss_rate,Er
   common structure ,sph_data
   common structure2,pfss_data 
+
+  common grilla_chip,r_grilla,theta_grilla,phi_grilla,ne_swmf,te_swmf,rho_swmf,er_swmf,ti_swmf
+  common grilla_chip_flux,r_grilla_f,theta_grilla_f,phi_grilla_f,ne_swmf_f,te_swmf_f,rho_swmf_f,er_swmf_f,ti_swmf_f,vaflux_u_swmf_f,vaflux_d_swmf_f
 
 ;+
 ; PURPOSE: 
@@ -425,7 +622,8 @@ pro trace_LDEM,fdips_file=fdips_file,$
 ; /unifgrid = set up a uniform angular grid for the starting points.
 ; /marcgrid = use Marc's tools starting points routine.
 ; /dgfw     = set up if the double normal LDEM parametrization is used.
-;
+; /awsom    = use SWMF magnetic field.
+
 ; OUTPUTS:
 ; A file containing the results, to be afterwards used as INPUT by the routine
 ; "sample_traced_ldem". Modificar
@@ -443,11 +641,16 @@ pro trace_LDEM,fdips_file=fdips_file,$
 ;    - Expansión del trazado geométrico hasta 2.5 Rsun
 ;-
 !EXCEPT=2
+
+if keyword_set(ldem_file)  then file_flag = 0
+if keyword_set(awsom_file) then file_flag = 1
+if keyword_set(awsom_flux) then file_flag = 2
+
   if not keyword_set(fdips_file) then begin
      print,'set the PFSS model to trace the DEMT results'
      return
   endif
-  if not keyword_set(ldem_file ) then begin
+  if not keyword_set(ldem_file ) and not keyword_set(awsom_file) and not keyword_set(awsom_flux) then begin
      print,'set a DEMT file to be traced'
      return
   endif
@@ -479,7 +682,11 @@ if keyword_set(expand) then period=period+'_expand'
 
   print,'-------------------------------------------'
   print,'     Period: ',period
-  print,'  LDEM file: ',ldem_file
+  case file_flag of
+     0: print, '  LDEM file: ',ldem_file
+     1: print,'  AWSOM file: ',awsom_file
+     2: print,'  AWSOM flux: ',awsom_flux
+  endcase
   print,' FDIPS file: ',fdips_file
   print,'Output file: ',output_file
   print,'-------------------------------------------'
@@ -489,13 +696,17 @@ if keyword_set(expand) then period=period+'_expand'
 
 ; Set the FDIPS filename to read:
 ; PFSSM_model='/data1/DATA/PFSSM/'+fdips_file
+
   PFSSM_model= fdips_file
 ; Read the FDIPS model and create a structure to serve as input to Marc's routines:
-  if not keyword_set(mhd)  then create_structure    ,PFSSM_model
-  if     keyword_set(mhd)  then create_structure_MHD,'/data1/DATA/MHD_SWMF/'+fdips_file
+  if not keyword_set(mhd) and not keyword_set(awsom_file) and not keyword_set(awsom_flux) then create_structure, PFSSM_model
+  if     keyword_set(mhd)          then create_structure_MHD,    '/data1/DATA/MHD_SWMF/'+fdips_file
+  if     keyword_set(field_awsom)  then create_structure_MHD_new,'/data1/DATA/MHD_SWMF/'+fdips_file
+
+;stop
 ; change the name of the created structure to a new name:
   pfss_data = sph_data
-
+;stop
 ; Set the uniform grid size, in case /unifgrid is used for the starting points. 
 ; Default size is 90x180.
   if NOT keyword_set(dlat) then dlat = 2   
@@ -510,9 +721,11 @@ if keyword_set(expand) then period=period+'_expand'
   if keyword_set(unifgrid)    then sph_field_str_coord_unifang,pfss_data,dlat,dlon        ,radstart=radstart,bbox=box
   if keyword_set(unifgrid_v2) then sph_field_str_coord_unifang_v2,pfss_data,dlatv=dlat,dlonv=dlon,radstartv=radstart,bbox=box
 
-
+;  stop
 ; And now, do trace the field lines:
   spherical_trace_field,pfss_data,linekind=linekind,linelengths=linelengths,safety=safety,stepmax=stepmax 
+
+;  stop  
 
 ; Change the coding for linekind:
   linekind=linekind-2           ; so that 0=open and 1=closed
@@ -540,12 +753,65 @@ if keyword_set(expand) then period=period+'_expand'
 
 ; Read the tomographics results and set a few parameters concerning
 ; the tomographic grid:
-  if not keyword_set(dgfw) then $
-     read_ldem,ldem_file,/ldem,/gauss1
-  if     keyword_set(dgfw) then $
-     read_ldem,ldem_file,/ldem,/dgfw
+  if not keyword_set(dgfw) and not keyword_set(awsom_file) then read_ldem,ldem_file,/ldem,/gauss1
+  if     keyword_set(dgfw)                                 then read_ldem,ldem_file,/ldem,/dgfw
+  if     keyword_set(awsom_file)                           then read_awsom,awsom_file
+  if     keyword_set(awsom_flux)                           then read_awsom_flux,awsom_flux
+
+  if keyword_set(awsom_file) then begin
+     Nrad=26
+     nr=26
+     Nlat=90
+     nth=90
+     Nlon=180
+     np =180
+     dt = 2.
+     dr = 0.01
+     rad =   1. + dr/2. + dr * findgen(Nrad)
+     lon =   0. + dt/2. + dt * findgen(Nlon)
+     lat = -90. + dt/2. + dt * findgen(Nlat)
+
+     N_e = ne_swmf
+     Tm  = te_swmf
+     Er  = er_swmf
+     DEMc= N_e * 0. - 666.
+     ScoreR=N_e * 0. - 666.
+     Wt = N_e * 0. - 666.
+     lambda= fltarr(26,90,180,3) - 666.
+     WTc = -666.
+     Tmin=500000.
+     Tmax=3.50000e+06
+  endif
+
+  if keyword_set(awsom_flux) then begin
+     Nrad=26
+     nr=26
+     Nlat=90
+     nth=90
+     Nlon=180
+     np =180
+     dt = 2.
+     dr = 0.01
+     rad =   1. + dr/2. + dr * findgen(Nrad)
+     lon =   0. + dt/2. + dt * findgen(Nlon)
+     lat = -90. + dt/2. + dt * findgen(Nlat)
+
+     N_e = ne_swmf_f
+     Tm  = te_swmf_f
+     Er  = er_swmf_f
+     DEMc= N_e * 0. - 666.
+     ScoreR=N_e * 0. - 666.
+     Wt = N_e * 0. - 666.
+     lambda= fltarr(26,90,180,3) - 666.
+     WTc = -666.
+     Tmin=500000.
+     Tmax=3.50000e+06
+     vaflux = vaflux_u_smwf_f - vaflux_d_smwf_f
+  endif
+
   dr_tom = rad(1)-rad(0)        ; grid radial bin size
   Rmax_tom = rad(nr-3)          ; maximum height for which LDEM was computed
+
 
 ;<--
 if keyword_set(expand) then begin
@@ -554,13 +820,16 @@ rad=1.+dr_tom/2+dr_tom*findgen(Nr)
 endif
 ;<--
 
+if not keyword_set(awsom_file) then begin
 ; Compute the scoreR for quality-selection purposes:
   ratio = sfbe/tfbe
  ;scoreR=total(    (1.-ratio)^2 , 4 ) / float(nband)
   scoreR=total( abs(1.-ratio)   , 4 ) / float(nband)
+endif
 
   Nptmax_v = 150                ; ESTO NO ES ROBUSTO,                           
-  if keyword_set(expand) then Nptmax_v = 1500
+  if keyword_set(awsom_file) then Nptmax_v = 7000
+  if keyword_set(expand)     then Nptmax_v = 1500
 
 ;  sin embargo, por la experiencia de haber realizado varios trazados
 ;  creo que va funcionar. 
@@ -572,6 +841,10 @@ endif
       Tm_v = fltarr(Nptmax_v,Nlin)
       WT_v = fltarr(Nptmax_v,Nlin)
       Er_v = fltarr(Nptmax_v,Nlin)
+
+if keyword_set(awsom_flux) then begin
+     vaflux_v = fltarr(Nptmax_v,Nlin)
+  endif
 
       npar = (size(lambda))(4)         
   lambda_v = fltarr(Nptmax_v,Nlin,npar)
@@ -597,7 +870,7 @@ endif
 xxx=0L
   for il = 0L, Nlin-1 do begin
 
-;     il=100  ;<--
+     ;il=100  ;<--
      ;stop    ;<--
 
      print,'tracing the DEMT results along the line '+string(il+1)+'    of '+string(Nlin)
@@ -618,6 +891,10 @@ xxx=0L
          Bph_l = fltarr(Np_l)      -666. ;fltarr(Nptmax,Nlin) -666.
            B_l = fltarr(Np_l)      -666. ;fltarr(Nptmax,Nlin) -666.
          lab_l = fltarr(Np_l)      -666. ;fltarr(Nptmax,Nlin) -666.
+
+if keyword_set(awsom_flux) then begin
+     vaflux_l =  fltarr(Np_l)      -666.
+  endif
         
 ; These next five arrays are futures implementacion
   ;Happix    = fltarr(Np_l) -666.
@@ -678,6 +955,11 @@ xxx=0L
          lambda_l(ir,*) = lambda(irad,ilat,ilon,*)  ;<-- grabo cada componente
          DEMc_l  (ir)   = DEMc  (irad,ilat,ilon)  ;<--
          scoreR_l(ir)   = scoreR (irad,ilat,ilon) 
+
+          if keyword_set(awsom_flux) then begin
+               vaflux_l(ir) = vaflux(irad,ilat,ilon)
+          endif
+
         endif                
           Br_l(ir) = Brc
          Bth_l(ir) = Bthc
@@ -720,6 +1002,11 @@ if rad_l(0) gt 2.4 then stop
             lambda_v(ivox,il,*)=lambda_l(ind,*)
               DEMc_v(ivox,il) =   DEMc_l(ind)  
             scoreR_v(ivox,il) = scoreR_l(ind)
+
+           if keyword_set(awsom_flux) then begin
+                 vaflux_v(ivox,il) = vaflux_l(ind)
+           endif
+
            if npp mod 2 eq 1 then begin  ; does this if npp=odd 
                rad_v(ivox,il) =    rad_l(ind)
                lat_v(ivox,il) =    lat_l(ind)
@@ -781,6 +1068,11 @@ endfor; closes lines loop
     Tm_v  = reform(     Tm_v(0:Npts_max-1,*) ) 
     WT_v  = reform(     WT_v(0:Npts_max-1,*) )
     Er_v  = reform(     Er_v(0:Npts_max-1,*) )
+
+    if keyword_set(awsom_flux) then begin
+         vaflux_v = reform(vaflux_v(0:Npts_max-1,*))
+    endif
+
 lambda_v  = reform( lambda_v(0:Npts_max-1,*,*) )
   DEMc_v  = reform(   DEMc_v(0:Npts_max-1,*) )  
 scoreR_v  = reform( scoreR_v(0:Npts_max-1,*) ) 
@@ -800,8 +1092,14 @@ scoreR_v  = reform( scoreR_v(0:Npts_max-1,*) )
    writeu,1,Ne_v,Tm_v,WT_v,Er_v,scoreR_v
    writeu,1,str_v,stth_v,stph_v
    writeu,1,B_v,Br_v,Bth_v,Bph_v   
+
 ;------AGREGADO--------------
    writeu,1,enrad_v,enlon_v,enlat_v
+
+if keyword_set(awsom_flux) then begin
+   writeu,1,vaflux_v
+endif
+
 ;<---------------
    L=0
    if Tmax gt 3.4e6 and Tmax lt 3.6e6 then L=171
@@ -962,11 +1260,11 @@ return
 end
 
 
-pro statloop,file,rmin=rmin,rmax=rmax,rloopmin=rloopmin,linear=linear,fitcuadr=fitcuadr,Tfitlow=Tfitlow
+pro statloop,file,rmin=rmin,rmax=rmax,rloopmin=rloopmin,linear=linear,fitcuadr=fitcuadr,Tfitlow=Tfitlow,awsom=awsom
 common trace_sampled,rad_v,lat_v,lon_v,s_v,Ne_v,Tm_v,WT_v,Er_v,scoreR_v,midcell_v,Npts_v,str_v,stth_v,stph_v,radstart,enrad_v,enlon_v,enlat_v   
 common B_sampled,B_v,Br_v,Bth_v,Bph_v
 common opclstatus,opcls,loopL,WTc
-common statistic_loops,Nlegs,Nemean,Tmmean,WTmean,Nestddev,Tmstddev,WTstddev,loop_length,betamean,betaapex,Bmean,Br0
+common statistic_loops,Nlegs,Nemean,Tmmean,WTmean,Nestddev,Tmstddev,WTstddev,loop_length,betamean,betaapex,Bmean,Br0,B0
 common statistic_loops2,opclstat,lambda_N,lambda_p,Ne0,p0,Tefit,gradT,r2N,r2P,r2T,indexloop,leg_status,Tm0,Tm0s  
 common statistic_loops3,Eh,sH,r2sH,Phir,Fcb,Ner0,Ner1,Ner2,Ner3,TmR1,NR1,Fcb5
 common statistic_loops4,r2Tcuadr,Acuadr_a, s_r0_a,dTmds,r2Ts,Tmbase,Netech,Ne0_s,lambda_N_s
@@ -1101,7 +1399,8 @@ betaapex = fltarr(Nlegs)-555.
    Bmean = fltarr(Nlegs)-555.
      Br0 = fltarr(Nlegs)-555. ;only applied for open lines 
 
-  B_base = fltarr(Nlegs)-555.                                                                               ;<---
+  B_base = fltarr(Nlegs)-555.     ;<--- en 1.025 Rsun
+      B0 = fltarr(Nlegs)-555.     ;<--- del magnetograma
 
 ; opclstat=0. if loop is open, opclstat=1. if closed large; opclstat=2 if closed small. 
 opclstat  = fltarr(Nlegs)-555.
@@ -1160,7 +1459,10 @@ Rp0_lon = fltarr(Nlegs)-555.
      Ne_l = reform ( Ne_v(0:Npts_v(il)-1,il))
      Tm_l = reform ( Tm_v(0:Npts_v(il)-1,il))
      WT_l = reform ( WT_v(0:Npts_v(il)-1,il))
-     Er_l = reform ( Er_v(0:Npts_v(il)-1,il))
+
+if not keyword_set(awsom) then Er_l = reform (    Er_v(0:Npts_v(il)-1,il))
+if     keyword_set(awsom) then Er_l = reform (-1*(Er_v(0:Npts_v(il)-1,il)))
+
  scoreR_l = reform ( scoreR_v(0:Npts_v(il)-1,il)) 
     rad_l = reform (rad_v(0:Npts_v(il)-1,il))
     lat_l = reform (lat_v(0:Npts_v(il)-1,il))
@@ -1175,6 +1477,8 @@ Rp0_lon = fltarr(Nlegs)-555.
     lat_ini(ileg) = lat_l(0)
     lon_ini(ileg) = lon_l(0)
         Br0(ileg) =  Br_l(0)
+
+         B0(ileg) =   B_l(0)   ;<--------------------
 ;----------------------------------AGREGADO----------------
     rad_fin(ileg) = enrad_v(il)
     lat_fin(ileg) = enlat_v(il) 
@@ -1230,6 +1534,8 @@ Rp0_lon = fltarr(Nlegs)-555.
     if n_elements(p) lt Ndata then goto,skipfitloop_open
 
 ;========VER TERCIOS
+
+if not keyword_set(awsom) then begin 
     rrr1 = 1.07
     rrr2 = 1.12
 ;    if min(rad_l) gt rrr1 OR median(rad_l) lt rrr1 OR median(rad_l) gt rrr2 OR max(rad_l) lt rrr2 then goto,skipfitloop_open
@@ -1239,6 +1545,19 @@ Rp0_lon = fltarr(Nlegs)-555.
     diomes = where(rad_l gt rrr1 and rad_l lt rrr2) ;n_elements(where(rad_l gt rrr1 and rad_l lt rrr2))
 ;   if lefts(0) eq -1 or diomes(0) eq -1 or rights(0) eq -1 then goto,skipfitloop_open 
     if lefts(0) eq -1 or rights(0) eq -1 then goto,skipfitloop_open 
+ endif
+
+if keyword_set(awsom) then begin 
+    rrr1 = 1.10
+    rrr2 = 1.13
+;    if min(rad_l) gt rrr1 OR median(rad_l) lt rrr1 OR median(rad_l) gt rrr2 OR max(rad_l) lt rrr2 then goto,skipfitloop_open
+;if min(rad_l) gt rr1 or max(rad_l) lt rrr3 then
+    lefts  = where(rad_l le rrr1) ;n_elements(where(rad_l le rrr1))
+    rights = where(rad_l ge rrr2) ;n_elements(where(rad_l ge rrr2))
+    diomes = where(rad_l gt rrr1 and rad_l lt rrr2) ;n_elements(where(rad_l gt rrr1 and rad_l lt rrr2))
+;   if lefts(0) eq -1 or diomes(0) eq -1 or rights(0) eq -1 then goto,skipfitloop_open 
+    if lefts(0) eq -1 or rights(0) eq -1 then goto,skipfitloop_open 
+ endif
 
 ;------------- eps por REGIONES
 
@@ -1246,10 +1565,16 @@ if opcls(il) eq 0. then eps  = 5.6*1.e4
 if opcls(il) eq 0. then epsN = 2.6*1.e6
 
    ;Make HS-fit to Ne(r) for each open leg/loop
+
       xfit = rad_l
+if keyword_set(awsom) then xfit = rad_l(where(rad_l ge 1.05))
+
       yfit =  Ne_l
+if keyword_set(awsom) then yfit = Ne_l(where(rad_l ge 1.05))
+
     rminhs = min(rad_l);rmin
     rmaxhs = max(rad_l);rmax 
+
 
 if n_elements(xfit) ne n_elements(yfit) then stop
 
@@ -1265,6 +1590,7 @@ if n_elements(xfit) ne n_elements(yfit) then stop
 
     ;Make HS-fit to p(r) for each open leg/loop    
       yfit = p_l
+if keyword_set(awsom) then yfit = p_l(where(rad_l ge 1.05))
    
         if      keyword_set(linear) then fithslinear,xfit,yfit,rminhs,rmaxhs,epsN,A,corr2 ;acá serìa otro el eps
         if not  keyword_set(linear) then fiths,xfit,yfit,rminhs,rmaxhs,A,corr2
@@ -1275,6 +1601,7 @@ if n_elements(xfit) ne n_elements(yfit) then stop
 
    ;Make LINEAR-fit to T(r) for each open leg/loop
            yfit = Tm_l
+if keyword_set(awsom) then yfit = Tm_l(where(rad_l ge 1.05))
 ;            ep = 0.15
  
 if n_elements(xfit) ne n_elements(yfit) then stop
@@ -1293,10 +1620,14 @@ if n_elements(xfit) ne n_elements(yfit) then stop
 
     ;Make LINEAR-fit to T(s) for each open leg/loop ======================
     
-           xfit = s_l*rsun    
+           xfit = s_l*rsun
+if keyword_set(awsom) then xfit = rsun*s_l(where(rad_l ge 1.05))    
+           yfit = Tm_l
+if keyword_set(awsom) then yfit = Ne_l(where(rad_l ge 1.05))
+
          rminhs = min(s_l*rsun);smin
          rmaxhs = max(s_l*rsun);smax 
-           yfit = Tm_l
+
 ;            ep = 0.15
  
     fit_ts,xfit,yfit,eps,a1,b1,F
@@ -1326,10 +1657,11 @@ if n_elements(s_l) ge 10 then begin
 if n_elements(s_l) lt 10 then nump = 4
      endelse
 
-           xfit = (s_l(0:nump-1))*rsun    
+           xfit = (s_l(0:nump-1))*rsun    ;<--------------------------------------------NO TIENE AWSOM
+           yfit = Tm_l(0:nump-1)
+
          rminhs = min((s_l(0:nump-1))*rsun);smin
          rmaxhs = max((s_l(0:nump-1))*rsun);smax 
-           yfit = Tm_l(0:nump-1)
  
     fit_ts,xfit,yfit,eps,a1,b1,F
 
@@ -1494,8 +1826,16 @@ skiptestloopopen:
   Tm_l2 = reform ( Tm_v(ifirs_2:ilast_2,il))
   WT_l1 = reform ( WT_v(ifirs_1:ilast_1,il))
   WT_l2 = reform ( WT_v(ifirs_2:ilast_2,il))
+
+if not keyword_set(awsom) then begin
   Er_l1 = reform ( Er_v(ifirs_1:ilast_1,il))
   Er_l2 = reform ( Er_v(ifirs_2:ilast_2,il))
+endif
+if     keyword_set(awsom) then begin
+  Er_l1 = reform (-Er_v(ifirs_1:ilast_1,il))
+  Er_l2 = reform (-Er_v(ifirs_2:ilast_2,il))
+endif
+
   scoreR_l1 = reform ( scoreR_v(ifirs_1:ilast_1,il))
   scoreR_l2 = reform ( scoreR_v(ifirs_2:ilast_2,il))
   rad_l1 = reform( rad_v(ifirs_1:ilast_1,il))
@@ -1534,6 +1874,10 @@ skiptestloopopen:
   lon_ini(ileg+1) = lon_l1(0)
   lon_fin(ileg)   = lon_l2(n_elements(lon_l2)-1)
   lon_fin(ileg+1) = lon_l2(n_elements(lon_l2)-1)
+
+       B0(ileg)   =   B_l1(0)
+       B0(ileg+1) =   B_l2(0)
+
   endif
   if switching eq 'yes' then begin
   rad_ini(ileg)     = rad_l1(n_elements(rad_l1)-1)
@@ -1548,6 +1892,10 @@ skiptestloopopen:
   lon_ini(ileg+1) = lon_l1(n_elements(lon_l1)-1)
   lon_fin(ileg)   = lon_l2(0)
   lon_fin(ileg+1) = lon_l2(0)
+
+       B0(ileg)   =   B_l1(n_elements(B_l1)-1)
+       B0(ileg+1) =   B_l2(n_elements(B_l2)-1)
+
   endif
 
 ; These lines store the FOOT-POINT coordinates for each LEG,
@@ -1747,14 +2095,21 @@ r_max2 = max(rad_l2)
 
 
 if r_max1 ge 1.2 then begin  ;igual que las piernas abiertas 
-   rrr1_l1 = 1.07   ;(max(rad_l1)-1.)*0.25 +1.0  
-   rrr2_l1 = 1.12   ;(max(rad_l1)-1.)*0.5 +1.0                                            
+   if not keyword_set(awsom) then begin 
+      rrr1_l1 = 1.07            ;(max(rad_l1)-1.)*0.25 +1.0  
+      rrr2_l1 = 1.12            ;(max(rad_l1)-1.)*0.5 +1.0                                            
+   endif
+   if     keyword_set(awsom) then begin 
+      rrr1 = 1.10
+      rrr2 = 1.13
+   endif
     lefts_l1  = where(rad_l1 le rrr1_l1) ;n_elements(where(rad_l1 le rrr1_l1))
     rights_l1 = where(rad_l1 ge rrr2_l1) ;n_elements(where(rad_l1 ge rrr2_l1))
     diomes_l1 = where(rad_l1 gt rrr1_l1 and rad_l1 lt rrr2_l1) ;n_elements(where(rad_l1 gt rrr1_l1 and rad_l1 le rrr2_l1))
  endif else begin
 
-rrr_min = 1.035
+if not keyword_set(awsom) then rrr_min = 1.035
+if     keyword_set(awsom) then rrr_min = 1.05
     rrr_max = max(rad_l1)
     Drr     = rrr_max - rrr_min
     rr1_l1  = rrr_min + Drr * 1./3.
@@ -1771,14 +2126,21 @@ rrr_min = 1.035
  endelse
 
 if r_max2 ge 1.2 then begin
-    rrr1_l2 = 1.07   ;(max(rad_l2)-1.)*0.25 +1.0 
-    rrr2_l2 = 1.12   ;(max(rad_l2)-1.)*0.5 +1.0  
+   if not keyword_set(awsom) then begin 
+      rrr1_l1 = 1.07          
+      rrr2_l1 = 1.12          
+   endif
+   if     keyword_set(awsom) then begin 
+      rrr1 = 1.10
+      rrr2 = 1.13
+   endif
     lefts_l2  = where(rad_l2 le rrr1_l2) ;n_elements(where(rad_l2 le rrr1_l2))
     rights_l2 = where(rad_l2 ge rrr2_l2) ;n_elements(where(rad_l2 ge rrr2_l2))
     diomes_l2 = where(rad_l2 gt rrr1_l2 and rad_l2 lt rrr2_l2) ;n_elements(where(rad_l2 gt rrr1_l2 and rad_l2 le rrr2_l2))
  endif else begin
 
-    rrr_min = 1.035
+if not keyword_set(awsom) then rrr_min = 1.035
+if     keyword_set(awsom) then rrr_min = 1.05
     rrr_max = max(rad_l2)
     Drr     = rrr_max - rrr_min
     rr1_l2  = rrr_min + Drr * 1./3.
@@ -1866,6 +2228,11 @@ if opcls(il) eq 1 and max(rad_v(*,il)) lt 1.225 then print,il
 ;HS-fit to Ne(r)
   xfit = rad_l1
   yfit =  Ne_l1
+if keyword_set(awsom) then begin
+  xfit = rad_l1(where(rad_l1 ge 1.05))
+  yfit =  Ne_l1(where(rad_l1 ge 1.05))
+endif
+
 if n_elements(xfit) ne n_elements(yfit) then stop
 
     if     keyword_set(linear) then fithslinear,xfit,yfit,rminhs,rmaxhs,epsN1,A,corr2
@@ -1879,6 +2246,7 @@ if n_elements(xfit) ne n_elements(yfit) then stop
 
   ;HS-fit to P(r)
   yfit = p_l1
+if keyword_set(awsom) then yfit = p_l1(where(rad_l1 ge 1.05))
   
     if     keyword_set(linear) then fithslinear,xfit,yfit,rminhs,rmaxhs,epsN1,A,corr2 ;idem antes
     if not keyword_set(linear) then fiths,xfit,yfit,rminhs,rmaxhs,A,corr2
@@ -1889,6 +2257,8 @@ if n_elements(xfit) ne n_elements(yfit) then stop
 
   ;linear-fit to T(r)
   yfit = Tm_l1
+if keyword_set(awsom) then yfit = Tm_l1(where(rad_l1 ge 1.05))
+
 ;    ep = 0.15
 if n_elements(xfit) ne n_elements(yfit) then stop
 
@@ -1910,6 +2280,12 @@ if n_elements(xfit) ne n_elements(yfit) then stop
     rminhs = min(s_l1*rsun);smin
     rmaxhs = max(s_l1*rsun);smax 
       yfit = Tm_l1
+
+if keyword_set(awsom) then begin
+  xfit = rsun*s_l1(where(rad_l1 ge 1.05))
+  yfit =     Tm_l1(where(rad_l1 ge 1.05))
+endif
+
 ;        ep = 0.15
 
     fit_ts,xfit,yfit,eps1,a1,b1,F
@@ -1939,7 +2315,7 @@ if n_elements(s_l1) lt 10 then nump1 = 4
      endelse
 ;stop
            xfit = (s_l1(0:nump1-1))*rsun    
-         rminhs = min((s_l1(0:nump1-1))*rsun);smin
+         rminhs = min((s_l1(0:nump1-1))*rsun);smin     <----------------------------FALTA AWSOM
          rmaxhs = max((s_l1(0:nump1-1))*rsun);smax 
            yfit = Tm_l1(0:nump1-1)
  
@@ -1973,6 +2349,11 @@ if n_elements(s_l1) lt 10 then nump1 = 4
   xfit = rad_l2
   yfit =  Ne_l2
 
+if keyword_set(awsom) then begin
+  xfit = rad_l2(where(rad_l2 ge 1.05))
+  yfit =  Ne_l2(where(rad_l2 ge 1.05))
+endif
+
 if n_elements(xfit) ne n_elements(yfit) then stop
 
     if     keyword_set(linear) then fithslinear,xfit,yfit,rminhs,rmaxhs,epsN2,A,corr2
@@ -1986,6 +2367,8 @@ if n_elements(xfit) ne n_elements(yfit) then stop
 
   ;HS-fit to P(r)
   yfit = p_l2
+if keyword_set(awsom) then yfit = p_l2(where(rad_l2 ge 1.05))
+
     if     keyword_set(linear) then fithslinear,xfit,yfit,rminhs,rmaxhs,epsN2,A,corr2
     if not keyword_set(linear) then fiths,xfit,yfit,rminhs,rmaxhs,A,corr2  
         P0(ileg+1) = a[0] 
@@ -1995,6 +2378,8 @@ if n_elements(xfit) ne n_elements(yfit) then stop
   ;HS-fit to T(r)  
   yfit = Tm_l2
 ;    ep = 0.15
+if keyword_set(awsom) then yfit = Tm_l2(where(rad_l2 ge 1.05))
+
 if n_elements(xfit) ne n_elements(yfit) then stop
 
     fit_ts,xfit,yfit,eps2,a1,b1,F
@@ -2015,6 +2400,12 @@ if n_elements(xfit) ne n_elements(yfit) then stop
     rminhs = min(s_l2*rsun);smin
     rmaxhs = max(s_l2*rsun);smax 
       yfit = Tm_l2
+
+if keyword_set(awsom) then begin
+  xfit = rsun*s_l2(where(rad_l2 ge 1.05))
+  yfit =  Tm_l2(where(rad_l2 ge 1.05))
+endif
+
 ;        ep = 0.15
 
     fit_ts,xfit,yfit,eps2,a1,b1,F
@@ -2042,7 +2433,7 @@ if n_elements(s_l2) lt 10 then nump2 = 4
      endelse
 
            xfit = (s_l2(0:nump2-1))*rsun    
-         rminhs = min((s_l2(0:nump2-1))*rsun);smin
+         rminhs = min((s_l2(0:nump2-1))*rsun);smin       <------------------------FALTA AWSOM
          rmaxhs = max((s_l2(0:nump2-1))*rsun);smax 
            yfit = Tm_l2(0:nump2-1)
  
@@ -2059,8 +2450,8 @@ if n_elements(s_l2) lt 10 then nump2 = 4
  if keyword_set(fitcuadr) then begin
    ;cuadratic-fit to T(s) 
       xfit = s_l2 ;*rsun    
-    rminhs = min(s_l2);*rsun;smin
-    rmaxhs = max(s_l2);*rsun;smax 
+    rminhs = min(s_l2);*rsun;smin               <------------------FALTA AWSOM
+    rmaxhs = max(s_l2);*rsun;smax  
     yfit   = Tm_l2
     fitcuadrTemp,xfit,yfit,rminhs,rmaxhs,A,corr2,T0s2,dTmds(ileg+1)
          Acuadr2 = A
@@ -2129,14 +2520,14 @@ if keyword_set(fitcuadr) then   Fc_l2= -kappa*(Acuadr2[0]*s_l2^2 + Acuadr2[1]*s_
      Fcb(ileg  ) = Fc2_l1 * B_l2_r0/(B_l1_r0+B_l2_r0)
      Fcb(ileg+1) = Fc2_l2 * B_l1_r0/(B_l1_r0+B_l2_r0)
 
-if keyword_set(Tfitlow) then begin
-     Tmbase_l1 = Tm0s5_ts(ileg  ) + dTmds5_ts(ileg  )*rsun*s_l1_r0
-     Tmbase_l2 = Tm0s5_ts(ileg+1) + dTmds5_ts(ileg+1)*rsun*s_l2_r0
-     Fc2_l1 = -kappa*Tmbase_l1^(5./2)*dTmds5_ts(ileg  ) 
-     Fc2_l2 = -kappa*Tmbase_l2^(5./2)*dTmds5_ts(ileg+1)
-     Fcb5(ileg  ) = Fc2_l1 * B_l2_r0/(B_l1_r0+B_l2_r0)
-     Fcb5(ileg+1) = Fc2_l2 * B_l1_r0/(B_l1_r0+B_l2_r0)
-endif
+;if keyword_set(Tfitlow) then begin
+     Tmbase5_l1 = Tm0s5_ts(ileg  ) + dTmds5_ts(ileg  )*rsun*s_l1_r0
+     Tmbase5_l2 = Tm0s5_ts(ileg+1) + dTmds5_ts(ileg+1)*rsun*s_l2_r0
+     Fc25_l1 = -kappa*Tmbase5_l1^(5./2)*dTmds5_ts(ileg  ) 
+     Fc25_l2 = -kappa*Tmbase5_l2^(5./2)*dTmds5_ts(ileg+1)
+     Fcb5(ileg  ) = Fc25_l1 * B_l2_r0/(B_l1_r0+B_l2_r0)
+     Fcb5(ileg+1) = Fc25_l2 * B_l1_r0/(B_l1_r0+B_l2_r0)
+;endif
 
 goto,skip_test_fcb
     if dTmds(ileg) gt 0. AND dTmds(ileg+1) gt 0. then begin
@@ -2296,6 +2687,11 @@ rr_l2 = rad_l2
 xfit = rr_l1
 yfit = Er_l1_base
 
+if keyword_set(awsom) then begin
+  xfit =      rr_l1(where(rad_l1 ge 1.05))
+  yfit = Er_l1_base(where(rad_l1 ge 1.05))
+endif
+
 fitEr,xfit,yfit,A,r2
 Er_l1_r0  = A[0] * exp( A[1]*(r0) )
 Er_l1_max = A[0] * exp( A[1]*(r_l1_max) )
@@ -2309,6 +2705,14 @@ if max(s_l1) lt s_l1_max * rsun then begin
         Er_l1_e = [Er_l1_r0,Er_l1,Er_l1_max]
          B_l1_e = [ B_l1_r0, B_l1, B_l1_max]
     Er_l1_e_fit = A[0] * exp( A[1] * r_l1_e )
+
+if keyword_set(awsom) then begin
+         s_l1_e = [ s_l1_r0  * rsun, s_l1(where(rad_l1 ge 1.05)), s_l1_max * rsun]
+         r_l1_e = [r0,rad_l1(where(rad_l1 ge 1.05)),r_l1_max]
+        Er_l1_e = [Er_l1_r0,Er_l1(where(rad_l1 ge 1.05)),Er_l1_max]
+         B_l1_e = [ B_l1_r0, B_l1(where(rad_l1 ge 1.05)), B_l1_max]
+    Er_l1_e_fit = A[0] * exp( A[1] * r_l1_e )
+ endif
 
 ;    Ne_l1_s_fit = Ne0_s(ileg)*exp(((-1./ lambda_N_s(ileg))/rsun) * ((s_l1_e/r_l1_e)*rsun) ) ;<-----------------------------
 
@@ -2325,6 +2729,15 @@ if max(s_l1) eq s_l1_max * rsun then begin
         Er_l1_e = [Er_l1_r0,Er_l1]
          B_l1_e = [ B_l1_r0, B_l1]
     Er_l1_e_fit = A[0] * exp( A[1] * r_l1_e )
+
+if keyword_set(awsom) then begin
+         s_l1_e = [ s_l1_r0  * rsun, s_l1(where(rad_l1 ge 1.05))]
+         r_l1_e =  [r0,rad_l1(where(rad_l1 ge 1.05))]
+        Er_l1_e = [Er_l1_r0,Er_l1(where(rad_l1 ge 1.05))]
+         B_l1_e = [ B_l1_r0, B_l1(where(rad_l1 ge 1.05))]
+    Er_l1_e_fit = A[0] * exp( A[1] * r_l1_e )
+ endif
+
 
 ;    Ne_l1_s_fit = Ne0_s(ileg)*exp(((-1./ lambda_N_s(ileg))/rsun) * ((s_l1_e/r_l1_e)*rsun) ) ;<-----------------------------
 
@@ -2373,6 +2786,10 @@ fit_ts,xfit,yfit,epsEr,a1,b1,F
 ;----l2
 xfit = rr_l2
 yfit = Er_l2_base
+if keyword_set(awsom) then begin
+  xfit =      rr_l2(where(rad_l2 ge 1.05))
+  yfit = Er_l2_base(where(rad_l2 ge 1.05))
+endif
 
 fitEr,xfit,yfit,A,r2
     Er_l2_r0  = A[0] * exp( A[1]*(r0) )
@@ -2387,6 +2804,17 @@ if max(s_l2) lt s_l2_max * rsun then begin
         Er_l2_e = [Er_l2_max,Er_l2,Er_l2_r0] ;<---
          B_l2_e = [ B_l2_max, B_l2, B_l2_r0] ;<---
     Er_l2_e_fit = A[0] * exp( A[1] * r_l2_e )
+
+    if keyword_set(awsom) then begin
+         s_l2_e = [ s_l2_max * rsun, s_l2(where(rad_l2 ge 1.05)), s_l2_r0  * rsun]     ;<--- lo defino acá
+         r_l2_e = [r_l2_max,rad_l2(where(rad_l2 ge 1.05)),r0]
+        Er_l2_e = [Er_l2_max,Er_l2(where(rad_l2 ge 1.05)),Er_l2_r0] ;<---
+         B_l2_e = [ B_l2_max, B_l2(where(rad_l2 ge 1.05)), B_l2_r0] ;<---
+    Er_l2_e_fit = A[0] * exp( A[1] * r_l2_e )
+    endif
+
+
+
 
 ;    Ne_l2_s_fit = Ne0_s(ileg+1)*exp(((-1./ lambda_N_s(ileg+1))/rsun) * ((s_l2_e/r_l2_e)*rsun) ) ;<-----------------------------
 
@@ -2403,6 +2831,14 @@ if max(s_l2) eq s_l2_max * rsun then begin
         Er_l2_e = [Er_l2,Er_l2_r0] ;<---
          B_l2_e = [ B_l2, B_l2_r0] ;<---
     Er_l2_e_fit = A[0] * exp( A[1] * r_l2_e )
+
+    if keyword_set(awsom) then begin
+         s_l2_e = [ s_l2(where(rad_l2 ge 1.05)), s_l2_r0  * rsun]     ;<--- lo defino acá
+         r_l2_e = [rad_l2(where(rad_l2 ge 1.05)),r0]
+        Er_l2_e = [Er_l2(where(rad_l2 ge 1.05)),Er_l2_r0] ;<---
+         B_l2_e = [ B_l2(where(rad_l2 ge 1.05)), B_l2_r0] ;<---
+    Er_l2_e_fit = A[0] * exp( A[1] * r_l2_e )
+    endif
 
 ;    Ne_l2_s_fit = Ne0_s(ileg+1)*exp(((-1./ lambda_N_s(ileg+1))/rsun) * ((s_l2_e/r_l2_e)*rsun) ) ;<-----------------------------
 
@@ -2593,6 +3029,10 @@ skipmordor:
 
 ; if opcls(il) eq 2 AND footlat(ileg)*footlat(ileg+1) lt 0. AND abs(footlat(ileg)) ge 60. AND abs(footlat(ileg+1)) ge 60. then goto,grafica
 
+;if Tm0s_ts(ileg) lt 0. or Tm0s_ts(ileg+1) lt 0. then goto,grafica
+
+;if opcls(il) gt 1 and abs(footlat(ileg)) gt 30. then goto,grafica
+
 goto,skiptestloopclosed
 ;--------------------COMIENZA--------------------------------------
 grafica:
@@ -2613,7 +3053,7 @@ loadct,12
 loadct,0
 
 fin1:
-
+goto,salt
  wn=0
  window,wn,xs=900,ys=900
  ; ps1,'./newfigs/'+'loop_example.eps',0
@@ -2652,7 +3092,7 @@ plot,[rad_l2],1.e5*[Er_l2],psym=4,title='Er_l2'
 ; 
 
 !p.multi=0
-
+salt:
 goto,no1
 ; diferents plots for leg1
  
@@ -2757,7 +3197,7 @@ goto,chau2
 
 chau2:
 
-goto,nada22
+;goto,nada22
  WN=8
  WINDOW,WN,XS=600,YS=400
 !P.CHARSIZE=1.5
@@ -2770,6 +3210,12 @@ LOADCT,12
  OPLOT, RAD_L2 ,(TM0_TS(ILEG+1)+GRADT_TS(ILEG+1)*RAD_L2)/1.E6,TH=3
  XYOUTS,0.75*[1,1.1],1.-[.6,.6],['R!U2!N =',STRMID(STRING(FTS_TS(ILEG  )),4,5)],COLOR=[110,110],FONT=0,/NORMAL
  XYOUTS,0.75*[1,1.1],1.-[.7,.7],['R!U2!N =',STRMID(STRING(FTS_TS(ILEG+1)),4,5)],COLOR=[206,206],FONT=0,/NORMAL
+
+ oplot,rad_l1,[eplegT(ileg)+(Tm0_ts(ileg)+gradT_ts(ileg)*rad_l1)]/1.e6,th=3,color=10,linestyle=3
+ oplot,rad_l1,[(Tm0_ts(ileg)+gradT_ts(ileg)*rad_l1)-eplegT(ileg)]/1.e6,th=3,color=10,linestyle=3
+ oplot,rad_l2,[eplegT(ileg+1)+(Tm0_ts(ileg+1)+gradT_ts(ileg+1)*rad_l2)]/1.e6,th=3,color=10,linestyle=3
+ oplot,rad_l2,[(Tm0_ts(ileg+1)+gradT_ts(ileg+1)*rad_l2)-eplegT(ileg+1)]/1.e6,th=3,color=10,linestyle=3
+
 
 LOADCT,0
 nada22:
@@ -3369,7 +3815,7 @@ PRO function_cuadr, X, A, F, pder
 END
 
 pro filter,i
-common statistic_loops,Nlegs,Nemean,Tmmean,WTmean,Nestddev,Tmstddev,WTstddev,loop_length,betamean,betaapex,Bmean,Br0
+common statistic_loops,Nlegs,Nemean,Tmmean,WTmean,Nestddev,Tmstddev,WTstddev,loop_length,betamean,betaapex,Bmean,Br0,B0
 common statistic_loops2,opclstat,lambda_N,lambda_p,Ne0,p0,Tefit,gradT,r2N,r2P,r2T,indexloop,leg_status,Tm0,Tm0s  
 common statistic_loops3,Eh,sH,r2sH,Phir,Fcb,Ner0,Ner1,Ner2,Ner3,TmR1,NR1,Fcb5
 common statistic_loops4,r2Tcuadr,Acuadr_a, s_r0_a,dTmds,r2Ts,Tmbase,Netech,Ne0_s,lambda_N_s
@@ -3377,16 +3823,18 @@ common statistic_loops4,r2Tcuadr,Acuadr_a, s_r0_a,dTmds,r2Ts,Tmbase,Netech,Ne0_s
 common statistic_loops5,r2Er,Phirfit,Tm0_ts,gradT_ts,FTr_ts,Tm0s_ts,dTmds_ts,FTs_ts,eplegT,deltaS,Smaxxx,Sminnn,Tm0s5_ts,dTmds5_ts,FTs5_ts,Erlin_F,Erlin_d,Erlin_o,Erlin_r0,phir_lin
 common starttrace,strad,stlat,stlon,footrad,footlat,footlon,Rp_rad,Rp_lat,Rp_lon,B_base
 
-common stat_filter,Nlegs_c,Nemean_c,Tmmean_c,WTmean_c,Nestddev_c,Tmstddev_c,WTstddev_c,loop_length_c,betamean_c,betaapex_c,Bmean_c,Br0_c
+common stat_filter,Nlegs_c,Nemean_c,Tmmean_c,WTmean_c,Nestddev_c,Tmstddev_c,WTstddev_c,loop_length_c,betamean_c,betaapex_c,Bmean_c,Br0_c,B0_c
 common stat_filter2,opclstat_c,lambda_N_c,lambda_p_c,Ne0_c,p0_c,Tefit_c,gradT_c,r2N_c,r2P_c,r2T_c,indexloop_c,leg_status_c,Tm0_c,Tm0s_c,Tm0_ts_c,gradT_ts_c,FTr_ts_c,Tm0s_ts_c,dTmds_ts_c,FTs_ts_c,Tm0s5_ts_c,dTmds5_ts_c,FTs5_ts_c
 common stat_filter3,Eh_c,sH_c,r2sH_c,Phir_c,Fcb_c,Ner0_c,Ner1_c,Ner2_c,Ner3_c,TmR1_c,NR1_c,Erlin_F_c,Erlin_d_c,Erlin_o_c,Erlin_r0_c,phir_lin_c
 common stat_filter4,r2Tcuadr_c,Acuadr_a_c, s_r0_a_c,dTmds_c,r2Ts_c,Netech_c,Ne0_s_c,lambda_N_s_c
 common stat_filter5,strad_c,stlat_c,stlon_c,footrad_c,footlat_c,footlon_c,Rp_rad_c,Rp_lat_c,Rp_lon_c
 common stat_filter6,r2Er_c,Phirfit_c,eplegT_c,deltaS_c,Smaxxx_c,Sminnn_c,B_base_c,Fcb5_c
 
-common loops,Phir_loop,rad1_loop,rad2_loop,lat1_loop,lat2_loop,lon1_loop,lon2_loop,L_loop,opclstat_loop,r2Er1_loop,r2Er2_loop,Tmmean_loop,Fcb_loop,dTmds1_loop,dTmds2_loop,r2Tcuadr1_loop,r2Tcuadr2_loop,r2T1_loop,r2T2_loop,Ner01_loop,Ner02_loop,Ner11_loop,Ner12_loop,Ner21_loop,Ner22_loop,Ner31_loop,Ner32_loop,Rp_rad1_loop,Rp_lat1_loop,Rp_lon1_loop,Rp_rad2_loop,Rp_lat2_loop,Rp_lon2_loop,TmR11_loop,TmR12_loop,NR11_loop,NR12_loop,Nemean_loop,Long_cm,Phih_L,Ner0m_loop,lambda_N_loop,r2N1_loop,r2N2_loop,Tm01_ts_loop,gradT1_ts_loop,FTr1_ts_loop,Tm0s1_ts_loop,dTmds1_ts_loop,FTs1_ts_loop,Tm02_ts_loop,gradT2_ts_loop,FTr2_ts_loop,Tm0s2_ts_loop,dTmds2_ts_loop,FTs2_ts_loop,eplegT1_loop,eplegT2_loop,deltaS1_loop,deltaS2_loop,Smaxxx1_loop,Smaxxx2_loop,s_r0_a1_loop,s_r0_a2_loop,Sminnn1_loop,Sminnn2_loop,ISO_loop,B_basem_loop,Netech_loop,Ne0_s_loop,lambda_N_s_loop,Tm0s15_ts_loop,dTmds15_ts_loop,FTr15_ts_loop,Tm0s25_ts_loop,dTmds25_ts_loop,FTs25_ts_loop,Erlin1_F_loop,Erlin1_d_loop,Erlin1_o_loop,Erlin1_r0_loop,phir1_lin_loop,Erlin2_F_loop,Erlin2_d_loop,Erlin2_o_loop,Erlin2_r0_loop,phir2_lin_loop,Fcb5_loop
+common loops,Phir_loop,rad1_loop,rad2_loop,lat1_loop,lat2_loop,lon1_loop,lon2_loop,L_loop,opclstat_loop,r2Er1_loop,r2Er2_loop,Tmmean_loop,Fcb_loop,dTmds1_loop,dTmds2_loop,r2Tcuadr1_loop,r2Tcuadr2_loop,r2T1_loop,r2T2_loop,Ner01_loop,Ner02_loop,Ner11_loop,Ner12_loop,Ner21_loop,Ner22_loop,Ner31_loop,Ner32_loop,Rp_rad1_loop,Rp_lat1_loop,Rp_lon1_loop,Rp_rad2_loop,Rp_lat2_loop,Rp_lon2_loop,TmR11_loop,TmR12_loop,NR11_loop,NR12_loop,Nemean_loop,Long_cm,Phih_L,Ner0m_loop,lambda_N_loop,r2N1_loop,r2N2_loop,Tm01_ts_loop,gradT1_ts_loop,FTr1_ts_loop,Tm0s1_ts_loop,dTmds1_ts_loop,FTs1_ts_loop,Tm02_ts_loop,gradT2_ts_loop,FTr2_ts_loop,Tm0s2_ts_loop,dTmds2_ts_loop,FTs2_ts_loop,eplegT1_loop,eplegT2_loop,deltaS1_loop,deltaS2_loop,Smaxxx1_loop,Smaxxx2_loop,s_r0_a1_loop,s_r0_a2_loop,Sminnn1_loop,Sminnn2_loop,ISO_loop,B_basem_loop,Netech_loop,Ne0_s_loop,lambda_N_s_loop,Tm0s15_ts_loop,dTmds15_ts_loop,FTr15_ts_loop,Tm0s25_ts_loop,dTmds25_ts_loop,FTs25_ts_loop,Erlin1_F_loop,Erlin1_d_loop,Erlin1_o_loop,Erlin1_r0_loop,Erlin2_F_loop,Erlin2_d_loop,Erlin2_o_loop,Erlin2_r0_loop,phir_lin_loop,Fcb5_loop,Phir1_loop,Phir2_loop,Fcb1_loop,Fcb2_loop,Phir1_lin_loop,Phir2_lin_loop,Fcb51_loop,Fcb52_loop,indexloop_loop,Bmean_loop,Tm0s_base_loop,B0_loop
 
 common label,T_label,Er_label
+
+common select,Fcb_tot,Phir_tot,lat1_tot,lat2_tot,lon1_tot,lon2_tot,opclstat_tot,indexloop_tot,Rp_lat1_tot,Rp_lat2_tot,Rp_lon1_tot,Rp_lon2_tot
 
       Nlegs_c =       Nlegs(i)
      Nemean_c =      Nemean(i)
@@ -3402,6 +3850,7 @@ loop_length_c = loop_length(i)
         Br0_c =         Br0(i)
 
      B_base_c =      B_base(i)
+         B0_c =          B0(i)
 
    opclstat_c =    opclstat(i)
    lambda_N_c =    lambda_N(i)
@@ -3581,23 +4030,25 @@ end
 
 pro pegatina
 
-common statistic_loops,Nlegs,Nemean,Tmmean,WTmean,Nestddev,Tmstddev,WTstddev,loop_length,betamean,betaapex,Bmean,Br0
+common statistic_loops,Nlegs,Nemean,Tmmean,WTmean,Nestddev,Tmstddev,WTstddev,loop_length,betamean,betaapex,Bmean,Br0,B0
 common statistic_loops2,opclstat,lambda_N,lambda_p,Ne0,p0,Tefit,gradT,r2N,r2P,r2T,indexloop,leg_status,Tm0,Tm0s  
 common statistic_loops3,Eh,sH,r2sH,Phir,Fcb,Ner0,Ner1,Ner2,Ner3,TmR1,NR1,Fcb5
 common statistic_loops4,r2Tcuadr,Acuadr_a, s_r0_a,dTmds,r2Ts,Tmbase,Netech,Ne0_s,lambda_N_s
 common statistic_loops5,r2Er,Phirfit,Tm0_ts,gradT_ts,FTr_ts,Tm0s_ts,dTmds_ts,FTs_ts,eplegT,deltaS,Smaxxx,Sminnn,Tm0s5_ts,dTmds5_ts,FTs5_ts,Erlin_F,Erlin_d,Erlin_o,Erlin_r0,phir_lin
 common starttrace,strad,stlat,stlon,footrad,footlat,footlon,Rp_rad,Rp_lat,Rp_lon,B_base
 
-common stat_filter,Nlegs_c,Nemean_c,Tmmean_c,WTmean_c,Nestddev_c,Tmstddev_c,WTstddev_c,loop_length_c,betamean_c,betaapex_c,Bmean_c,Br0_c
+common stat_filter,Nlegs_c,Nemean_c,Tmmean_c,WTmean_c,Nestddev_c,Tmstddev_c,WTstddev_c,loop_length_c,betamean_c,betaapex_c,Bmean_c,Br0_c,B0_c
 common stat_filter2,opclstat_c,lambda_N_c,lambda_p_c,Ne0_c,p0_c,Tefit_c,gradT_c,r2N_c,r2P_c,r2T_c,indexloop_c,leg_status_c,Tm0_c,Tm0s_c,Tm0_ts_c,gradT_ts_c,FTr_ts_c,Tm0s_ts_c,dTmds_ts_c,FTs_ts_c,Tm0s5_ts_c,dTmds5_ts_c,FTs5_ts_c  
 common stat_filter3,Eh_c,sH_c,r2sH_c,Phir_c,Fcb_c,Ner0_c,Ner1_c,Ner2_c,Ner3_c,TmR1_c,NR1_c,Erlin_F_c,Erlin_d_c,Erlin_o_c,Erlin_r0_c,phir_lin_c
 common stat_filter4,r2Tcuadr_c,Acuadr_a_c, s_r0_a_c,dTmds_c,r2Ts_c,Netech_c,Ne0_s_c,lambda_N_s_c
 common stat_filter5,strad_c,stlat_c,stlon_c,footrad_c,footlat_c,footlon_c,Rp_rad_c,Rp_lat_c,Rp_lon_c
 common stat_filter6,r2Er_c,Phirfit_c,eplegT_c,deltaS_c,Smaxxx_c,Sminnn_c,B_base_c,Fcb5_c
 
-common loops,Phir_loop,rad1_loop,rad2_loop,lat1_loop,lat2_loop,lon1_loop,lon2_loop,L_loop,opclstat_loop,r2Er1_loop,r2Er2_loop,Tmmean_loop,Fcb_loop,dTmds1_loop,dTmds2_loop,r2Tcuadr1_loop,r2Tcuadr2_loop,r2T1_loop,r2T2_loop,Ner01_loop,Ner02_loop,Ner11_loop,Ner12_loop,Ner21_loop,Ner22_loop,Ner31_loop,Ner32_loop,Rp_rad1_loop,Rp_lat1_loop,Rp_lon1_loop,Rp_rad2_loop,Rp_lat2_loop,Rp_lon2_loop,TmR11_loop,TmR12_loop,NR11_loop,NR12_loop,Nemean_loop,Long_cm,Phih_L,Ner0m_loop,lambda_N_loop,r2N1_loop,r2N2_loop,Tm01_ts_loop,gradT1_ts_loop,FTr1_ts_loop,Tm0s1_ts_loop,dTmds1_ts_loop,FTs1_ts_loop,Tm02_ts_loop,gradT2_ts_loop,FTr2_ts_loop,Tm0s2_ts_loop,dTmds2_ts_loop,FTs2_ts_loop,eplegT1_loop,eplegT2_loop,deltaS1_loop,deltaS2_loop,Smaxxx1_loop,Smaxxx2_loop,s_r0_a1_loop,s_r0_a2_loop,Sminnn1_loop,Sminnn2_loop,ISO_loop,B_basem_loop,Netech_loop,Ne0_s_loop,lambda_N_s_loop,Tm0s15_ts_loop,dTmds15_ts_loop,FTs15_ts_loop,Tm0s25_ts_loop,dTmds25_ts_loop,FTs25_ts_loop,Erlin1_F_loop,Erlin1_d_loop,Erlin1_o_loop,Erlin1_r0_loop,phir1_lin_loop,Erlin2_F_loop,Erlin2_d_loop,Erlin2_o_loop,Erlin2_r0_loop,phir2_lin_loop,Fcb5_loop
+common loops,Phir_loop,rad1_loop,rad2_loop,lat1_loop,lat2_loop,lon1_loop,lon2_loop,L_loop,opclstat_loop,r2Er1_loop,r2Er2_loop,Tmmean_loop,Fcb_loop,dTmds1_loop,dTmds2_loop,r2Tcuadr1_loop,r2Tcuadr2_loop,r2T1_loop,r2T2_loop,Ner01_loop,Ner02_loop,Ner11_loop,Ner12_loop,Ner21_loop,Ner22_loop,Ner31_loop,Ner32_loop,Rp_rad1_loop,Rp_lat1_loop,Rp_lon1_loop,Rp_rad2_loop,Rp_lat2_loop,Rp_lon2_loop,TmR11_loop,TmR12_loop,NR11_loop,NR12_loop,Nemean_loop,Long_cm,Phih_L,Ner0m_loop,lambda_N_loop,r2N1_loop,r2N2_loop,Tm01_ts_loop,gradT1_ts_loop,FTr1_ts_loop,Tm0s1_ts_loop,dTmds1_ts_loop,FTs1_ts_loop,Tm02_ts_loop,gradT2_ts_loop,FTr2_ts_loop,Tm0s2_ts_loop,dTmds2_ts_loop,FTs2_ts_loop,eplegT1_loop,eplegT2_loop,deltaS1_loop,deltaS2_loop,Smaxxx1_loop,Smaxxx2_loop,s_r0_a1_loop,s_r0_a2_loop,Sminnn1_loop,Sminnn2_loop,ISO_loop,B_basem_loop,Netech_loop,Ne0_s_loop,lambda_N_s_loop,Tm0s15_ts_loop,dTmds15_ts_loop,FTs15_ts_loop,Tm0s25_ts_loop,dTmds25_ts_loop,FTs25_ts_loop,Erlin1_F_loop,Erlin1_d_loop,Erlin1_o_loop,Erlin1_r0_loop,Erlin2_F_loop,Erlin2_d_loop,Erlin2_o_loop,Erlin2_r0_loop,phir_lin_loop,Fcb5_loop,Phir1_loop,Phir2_loop,Fcb1_loop,Fcb2_loop,Phir1_lin_loop,Phir2_lin_loop,Fcb51_loop,Fcb52_loop,indexloop_loop,Bmean_loop,Tm0s_base_loop,B0_loop
 
 common label,T_label,Er_label
+
+common select,Fcb_tot,Phir_tot,lat1_tot,lat2_tot,lon1_tot,lon2_tot,opclstat_tot,indexloop_tot,Rp_lat1_tot,Rp_lat2_tot,Rp_lon1_tot,Rp_lon2_tot
 
   rsun = 6.955e10    ; cm
 
@@ -3627,6 +4078,8 @@ Nloops = Nlegs/2
      lon2_loop = fltarr(Nloops)
         L_loop = fltarr(Nloops)
  opclstat_loop = fltarr(Nloops)
+indexloop_loop = fltarr(Nloops)
+
     r2Er1_loop = fltarr(Nloops)
     r2Er2_loop = fltarr(Nloops)
    Tmmean_loop = fltarr(Nloops)
@@ -3659,6 +4112,8 @@ r2Tcuadr2_loop = fltarr(Nloops)
     Ner32_loop = fltarr(Nloops)
 
   B_basem_loop = fltarr(Nloops)
+    Bmean_loop = fltarr(Nloops)
+       B0_loop = fltarr(Nloops)
 
   Rp_rad1_loop = fltarr(Nloops)
   Rp_rad2_loop = fltarr(Nloops)
@@ -3681,6 +4136,8 @@ gradT2_ts_loop = fltarr(Nloops)
 dTmds2_ts_loop = fltarr(Nloops)
   FTs2_ts_loop = fltarr(Nloops)
 
+Tm0s_base_loop = fltarr(Nloops)
+
 ;==============================
 
  Tm0s15_ts_loop = fltarr(Nloops)
@@ -3696,13 +4153,13 @@ dTmds25_ts_loop = fltarr(Nloops)
   Erlin1_d_loop = fltarr(Nloops)
   Erlin1_o_loop = fltarr(Nloops)
  Erlin1_r0_loop = fltarr(Nloops)
- phir1_lin_loop = fltarr(Nloops)
 
   Erlin2_F_loop = fltarr(Nloops)
   Erlin2_d_loop = fltarr(Nloops)
   Erlin2_o_loop = fltarr(Nloops)
  Erlin2_r0_loop = fltarr(Nloops)
- phir2_lin_loop = fltarr(Nloops)
+
+  phir_lin_loop = fltarr(Nloops)
 
 ;==============================
 
@@ -3725,9 +4182,24 @@ dTmds25_ts_loop = fltarr(Nloops)
 
       ISO_loop = fltarr(Nloops)
 
+;================================
+     Phir1_loop = fltarr(Nloops)
+     Phir2_loop = fltarr(Nloops)
+      Fcb1_loop = fltarr(Nloops)
+      Fcb2_loop = fltarr(Nloops)
+ Phir1_lin_loop = fltarr(Nloops)
+ Phir2_lin_loop = fltarr(Nloops)
+     Fcb51_loop = fltarr(Nloops)
+     Fcb52_loop = fltarr(Nloops)
+;===============================
+
 iloop = 0L
 for ileg=0L,Nlegs-1,2 do begin
      Phir_loop(iloop) =        Phirfit_c(ileg) + Phirfit_c(ileg+1)
+
+    Phir1_loop(iloop) =        Phirfit_c(ileg)       ;<======================== 
+    Phir2_loop(iloop) =        Phirfit_c(ileg+1)     ;<======================== 
+
      rad1_loop(iloop) =        footrad_c(ileg)
      rad2_loop(iloop) =        footrad_c(ileg+1)
      lat1_loop(iloop) =        footlat_c(ileg)
@@ -3735,6 +4207,8 @@ for ileg=0L,Nlegs-1,2 do begin
      lon1_loop(iloop) =        footlon_c(ileg)
      lon2_loop(iloop) =        footlon_c(ileg+1)
  opclstat_loop(iloop) =       opclstat_c(ileg)
+indexloop_loop(iloop) =      indexloop_c(ileg)
+
         L_loop(iloop) =    loop_length_c(ileg)
     r2Er1_loop(iloop) =           r2Er_c(ileg)
     r2Er2_loop(iloop) =           r2Er_c(ileg+1)
@@ -3749,7 +4223,11 @@ for ileg=0L,Nlegs-1,2 do begin
 lambda_N_s_loop(iloop) = mean([lambda_N_s_c(ileg),lambda_N_s_c(ileg+1)])
     Netech_loop(iloop) = mean([    Netech_c(ileg),    Netech_c(ileg+1)])
 
-      Fcb_loop(iloop) =            Fcb_c(ileg) +    Fcb_c(ileg+1)
+      Fcb_loop(iloop) =            [Fcb_c(ileg) +    Fcb_c(ileg+1)]*1.075  ;<---------------------------------Corrección de momentos
+
+     Fcb1_loop(iloop) =            Fcb_c(ileg)*1.075                       ;<---------------------------------
+     Fcb2_loop(iloop) =            Fcb_c(ileg+1)*1.075                     ;<---------------------------------
+
    dTmds1_loop(iloop) =          dTmds_c(ileg)
    dTmds2_loop(iloop) =          dTmds_c(ileg+1)
 r2Tcuadr1_loop(iloop) =       r2Tcuadr_c(ileg)
@@ -3768,6 +4246,8 @@ r2Tcuadr2_loop(iloop) =       r2Tcuadr_c(ileg+1)
     Ner32_loop(iloop) =         Ner3_c(ileg+1)
 
   B_basem_loop(iloop) = mean([B_base_c(ileg),    B_base_c(ileg+1)])
+    Bmean_loop(iloop) = mean([ Bmean_c(ileg),     Bmean_c(ileg+1)])
+       B0_loop(iloop) = mean([    B0_c(ileg),        B0_c(ileg+1)])
 
   Rp_rad1_loop(iloop) =       Rp_rad_c(ileg)
   Rp_rad2_loop(iloop) =       Rp_rad_c(ileg+1)
@@ -3790,6 +4270,8 @@ r2Tcuadr2_loop(iloop) =       r2Tcuadr_c(ileg+1)
        dTmds2_ts_loop(iloop) =  dTmds_ts_c(ileg+1)
          FTs2_ts_loop(iloop) =    FTs_ts_c(ileg+1)
 
+       Tm0s_base_loop(iloop) = mean([Tm0s_ts_c(ileg),Tm0s_ts_c(ileg+1)])
+
 ;======================================================
 
         Tm0s15_ts_loop(iloop) =   Tm0s5_ts_c(ileg) 
@@ -3799,19 +4281,25 @@ r2Tcuadr2_loop(iloop) =       r2Tcuadr_c(ileg+1)
        dTmds25_ts_loop(iloop) =  dTmds5_ts_c(ileg+1)
          FTs25_ts_loop(iloop) =    FTs5_ts_c(ileg+1)
 
-             Fcb5_loop(iloop) = Fcb5_c(ileg) + Fcb5_c(ileg+1)
+             Fcb5_loop(iloop) = [Fcb5_c(ileg) + Fcb5_c(ileg+1)]*1.075  ;<---------------------------------Corrección de momentos
+
+            Fcb51_loop(iloop) = Fcb5_c(ileg)*1.075                    ;<---------------------------------
+            Fcb52_loop(iloop) = Fcb5_c(ileg+1)*1.075                  ;<---------------------------------
 
          Erlin1_F_loop(iloop) = Erlin_F_c(ileg)
          Erlin1_d_loop(iloop) = Erlin_d_c(ileg)
          Erlin1_o_loop(iloop) = Erlin_o_c(ileg)
         Erlin1_r0_loop(iloop) = Erlin_r0_c(ileg)
-        phir1_lin_loop(iloop) = phir_lin_c(ileg)
 
          Erlin2_F_loop(iloop) = Erlin_F_c(ileg+1)
          Erlin2_d_loop(iloop) = Erlin_d_c(ileg+1)
          Erlin2_o_loop(iloop) = Erlin_o_c(ileg+1)
         Erlin2_r0_loop(iloop) = Erlin_r0_c(ileg+1)
-        phir2_lin_loop(iloop) = phir_lin_c(ileg+1)
+
+         phir_lin_loop(iloop) = phir_lin_c(ileg) + phir_lin_c(ileg+1)
+
+        phir1_lin_loop(iloop) = phir_lin_c(ileg)      ;<=======================
+        phir2_lin_loop(iloop) = phir_lin_c(ileg+1)    ;<=======================
 
 ;====================================================
 
@@ -3851,25 +4339,28 @@ end
 
 pro filter_loop,i
 
-common loops,Phir_loop,rad1_loop,rad2_loop,lat1_loop,lat2_loop,lon1_loop,lon2_loop,L_loop,opclstat_loop,r2Er1_loop,r2Er2_loop,Tmmean_loop,Fcb_loop,dTmds1_loop,dTmds2_loop,r2Tcuadr1_loop,r2Tcuadr2_loop,r2T1_loop,r2T2_loop,Ner01_loop,Ner02_loop,Ner11_loop,Ner12_loop,Ner21_loop,Ner22_loop,Ner31_loop,Ner32_loop,Rp_rad1_loop,Rp_lat1_loop,Rp_lon1_loop,Rp_rad2_loop,Rp_lat2_loop,Rp_lon2_loop,TmR11_loop,TmR12_loop,NR11_loop,NR12_loop,Nemean_loop,Long_cm,Phih_L,Ner0m_loop,lambda_N_loop,r2N1_loop,r2N2_loop,Tm01_ts_loop,gradT1_ts_loop,FTr1_ts_loop,Tm0s1_ts_loop,dTmds1_ts_loop,FTs1_ts_loop,Tm02_ts_loop,gradT2_ts_loop,FTr2_ts_loop,Tm0s2_ts_loop,dTmds2_ts_loop,FTs2_ts_loop,eplegT1_loop,eplegT2_loop,deltaS1_loop,deltaS2_loop,Smaxxx1_loop,Smaxxx2_loop,s_r0_a1_loop,s_r0_a2_lopo,Sminnn1_loop,Sminnn2_loop,ISO_loop,B_basem_loop,Netech_loop,Ne0_s_loop,lambda_N_s_loop,Tm0s15_ts_loop,dTmds15_ts_loop,FTs15_ts_loop,Tm0s25_ts_loop,dTmds25_ts_loop,FTs25_ts_loop,Erlin1_F_loop,Erlin1_d_loop,Erlin1_o_loop,Erlin1_r0_loop,phir1_lin_loop,Erlin2_F_loop,Erlin2_d_loop,Erlin2_o_loop,Erlin2_r0_loop,phir2_lin_loop,Fcb5_loop
+common loops,Phir_loop,rad1_loop,rad2_loop,lat1_loop,lat2_loop,lon1_loop,lon2_loop,L_loop,opclstat_loop,r2Er1_loop,r2Er2_loop,Tmmean_loop,Fcb_loop,dTmds1_loop,dTmds2_loop,r2Tcuadr1_loop,r2Tcuadr2_loop,r2T1_loop,r2T2_loop,Ner01_loop,Ner02_loop,Ner11_loop,Ner12_loop,Ner21_loop,Ner22_loop,Ner31_loop,Ner32_loop,Rp_rad1_loop,Rp_lat1_loop,Rp_lon1_loop,Rp_rad2_loop,Rp_lat2_loop,Rp_lon2_loop,TmR11_loop,TmR12_loop,NR11_loop,NR12_loop,Nemean_loop,Long_cm,Phih_L,Ner0m_loop,lambda_N_loop,r2N1_loop,r2N2_loop,Tm01_ts_loop,gradT1_ts_loop,FTr1_ts_loop,Tm0s1_ts_loop,dTmds1_ts_loop,FTs1_ts_loop,Tm02_ts_loop,gradT2_ts_loop,FTr2_ts_loop,Tm0s2_ts_loop,dTmds2_ts_loop,FTs2_ts_loop,eplegT1_loop,eplegT2_loop,deltaS1_loop,deltaS2_loop,Smaxxx1_loop,Smaxxx2_loop,s_r0_a1_loop,s_r0_a2_lopo,Sminnn1_loop,Sminnn2_loop,ISO_loop,B_basem_loop,Netech_loop,Ne0_s_loop,lambda_N_s_loop,Tm0s15_ts_loop,dTmds15_ts_loop,FTs15_ts_loop,Tm0s25_ts_loop,dTmds25_ts_loop,FTs25_ts_loop,Erlin1_F_loop,Erlin1_d_loop,Erlin1_o_loop,Erlin1_r0_loop,Erlin2_F_loop,Erlin2_d_loop,Erlin2_o_loop,Erlin2_r0_loop,phir_lin_loop,Fcb5_loop,Phir1_loop,Phir2_loop,Fcb1_loop,Fcb2_loop,Phir1_lin_loop,Phir2_lin_loop,Fcb51_loop,Fcb52_loop,indexloop_loop,Bmean_loop,Tm0s_base_loop,B0_loop
 
-common loops_filter,Phir_loop_c,rad1_loop_c,rad2_loop_c,lat1_loop_c,lat2_loop_c,lon1_loop_c,lon2_loop_c,L_loop_c,opclstat_loop_c,r2Er1_loop_c,r2Er2_loop_c,Tmmean_loop_c,Fcb_loop_c,dTmds1_loop_c,dTmds2_loop_c,r2Tcuadr1_loop_c,r2Tcuadr2_loop_c,r2T1_loop_c,r2T2_loop_c,Ner01_loop_c,Ner02_loop_c,Ner11_loop_c,Ner12_loop_c,Ner21_loop_c,Ner22_loop_c,Ner31_loop_c,Ner32_loop_c,Rp_rad1_loop_c,Rp_lat1_loop_c,Rp_lon1_loop_c,Rp_rad2_loop_c,Rp_lat2_loop_c,Rp_lon2_loop_c,TmR11_loop_c,TmR12_loop_c,NR11_loop_c,NR12_loop_c,Nemean_loop_c,Long_cm_c,Phih_L_c,Ner0m_loop_c,lambda_N_loop_c,r2N1_loop_c,r2N2_loop_c,Tm01_ts_loop_c,gradT1_ts_loop_c,FTr1_ts_loop_c,Tm0s1_ts_loop_c,dTmds1_ts_loop_c,FTs1_ts_loop_c,Tm02_ts_loop_c,gradT2_ts_loop_c,FTr2_ts_loop_c,Tm0s2_ts_loop_c,dTmds2_ts_loop_c,FTs2_ts_loop_c,eplegT1_loop_c,eplegT2_loop_c,deltaS1_loop_c,deltaS2_loop_c,Smaxxx1_loop_c,Smaxxx2_loop_c,Sminnn1_loop_c,Sminnn2_loop_c,ISO_loop_c,B_basem_loop_c,Netech_loop_c,Ne0_s_loop_c,lambda_N_s_loop_c,Tm0s15_ts_loop_c,dTmds15_ts_loop_c,FTs15_ts_loop_c,Tm0s25_ts_loop_c,dTmds25_ts_loop_c,FTs25_ts_loop_c,Erlin1_F_loop_c,Erlin1_d_loop_c,Erlin1_o_loop_c,Erlin1_r0_loop_c,phir1_lin_loop_c,Erlin2_F_loop_c,Erlin2_d_loop_c,Erlin2_o_loop_c,Erlin2_r0_loop_c,phir2_lin_loop_c,Fcb5_loop_c
+common loops_filter,Phir_loop_c,rad1_loop_c,rad2_loop_c,lat1_loop_c,lat2_loop_c,lon1_loop_c,lon2_loop_c,L_loop_c,opclstat_loop_c,r2Er1_loop_c,r2Er2_loop_c,Tmmean_loop_c,Fcb_loop_c,dTmds1_loop_c,dTmds2_loop_c,r2Tcuadr1_loop_c,r2Tcuadr2_loop_c,r2T1_loop_c,r2T2_loop_c,Ner01_loop_c,Ner02_loop_c,Ner11_loop_c,Ner12_loop_c,Ner21_loop_c,Ner22_loop_c,Ner31_loop_c,Ner32_loop_c,Rp_rad1_loop_c,Rp_lat1_loop_c,Rp_lon1_loop_c,Rp_rad2_loop_c,Rp_lat2_loop_c,Rp_lon2_loop_c,TmR11_loop_c,TmR12_loop_c,NR11_loop_c,NR12_loop_c,Nemean_loop_c,Long_cm_c,Phih_L_c,Ner0m_loop_c,lambda_N_loop_c,r2N1_loop_c,r2N2_loop_c,Tm01_ts_loop_c,gradT1_ts_loop_c,FTr1_ts_loop_c,Tm0s1_ts_loop_c,dTmds1_ts_loop_c,FTs1_ts_loop_c,Tm02_ts_loop_c,gradT2_ts_loop_c,FTr2_ts_loop_c,Tm0s2_ts_loop_c,dTmds2_ts_loop_c,FTs2_ts_loop_c,eplegT1_loop_c,eplegT2_loop_c,deltaS1_loop_c,deltaS2_loop_c,Smaxxx1_loop_c,Smaxxx2_loop_c,Sminnn1_loop_c,Sminnn2_loop_c,ISO_loop_c,B_basem_loop_c,Netech_loop_c,Ne0_s_loop_c,lambda_N_s_loop_c,Tm0s15_ts_loop_c,dTmds15_ts_loop_c,FTs15_ts_loop_c,Tm0s25_ts_loop_c,dTmds25_ts_loop_c,FTs25_ts_loop_c,Erlin1_F_loop_c,Erlin1_d_loop_c,Erlin1_o_loop_c,Erlin1_r0_loop_c,Erlin2_F_loop_c,Erlin2_d_loop_c,Erlin2_o_loop_c,Erlin2_r0_loop_c,phir_lin_loop_c,Fcb5_loop_c,Phir1_loop_c,Phir2_loop_c,Fcb1_loop_c,Fcb2_loop_c,Phir1_lin_loop_c,Phir2_lin_loop_c,Fcb51_loop_c,Fcb52_loop_c,indexloop_loop_c,Bmean_loop_c,Tm0s_base_loop_c,B0_loop_c
 
 common label,T_label,Er_label
 
-     Phir_loop_c =     Phir_loop(i)
-     rad1_loop_c =     rad1_loop(i)
-     rad2_loop_c =     rad2_loop(i)
-     lat1_loop_c =     lat1_loop(i)
-     lat2_loop_c =     lat2_loop(i)
-     lon1_loop_c =     lon1_loop(i)
-     lon2_loop_c =     lon2_loop(i)
-        L_loop_c =        L_loop(i)
- opclstat_loop_c = opclstat_loop(i)
-    r2Er1_loop_c =    r2Er1_loop(i) 
-    r2Er2_loop_c =    r2Er2_loop(i)
-   Tmmean_loop_c =   Tmmean_loop(i)
-   Nemean_loop_c =   Nemean_loop(i)
+common select,Fcb_tot,Phir_tot,lat1_tot,lat2_tot,lon1_tot,lon2_tot,opclstat_tot,indexloop_tot,Rp_lat1_tot,Rp_lat2_tot,Rp_lon1_tot,Rp_lon2_tot
+
+     Phir_loop_c =      Phir_loop(i)
+     rad1_loop_c =      rad1_loop(i)
+     rad2_loop_c =      rad2_loop(i)
+     lat1_loop_c =      lat1_loop(i)
+     lat2_loop_c =      lat2_loop(i)
+     lon1_loop_c =      lon1_loop(i)
+     lon2_loop_c =      lon2_loop(i)
+        L_loop_c =         L_loop(i)
+ opclstat_loop_c =  opclstat_loop(i)
+indexloop_loop_c = indexloop_loop(i)
+    r2Er1_loop_c =     r2Er1_loop(i) 
+    r2Er2_loop_c =     r2Er2_loop(i)
+   Tmmean_loop_c =    Tmmean_loop(i)
+   Nemean_loop_c =    Nemean_loop(i)
 
  lambda_N_loop_c = lambda_N_loop(i)
      r2N1_loop_c =     r2N1_loop(i)
@@ -3898,6 +4389,8 @@ r2Tcuadr2_loop_c =r2Tcuadr2_loop(i)
     Ner32_loop_c =    Ner32_loop(i)
 
   B_basem_loop_c =  B_basem_loop(i)
+    Bmean_loop_c =    Bmean_loop(i)
+       B0_loop_c =       B0_loop(i)
 
    Rp_rad1_loop_c =   Rp_rad1_loop(i)
    Rp_rad2_loop_c =   Rp_rad2_loop(i)
@@ -3919,6 +4412,8 @@ r2Tcuadr2_loop_c =r2Tcuadr2_loop(i)
  dTmds2_ts_loop_c = dTmds2_ts_loop(i)
    FTs2_ts_loop_c =   FTs2_ts_loop(i)
 
+ Tm0s_base_loop_c = Tm0s_base_loop(i)
+ 
 ;========================================
 
   Tm0s15_ts_loop_c =  Tm0s15_ts_loop(i)
@@ -3934,13 +4429,22 @@ r2Tcuadr2_loop_c =r2Tcuadr2_loop(i)
    Erlin1_d_loop_c =  Erlin1_d_loop(i)
    Erlin1_o_loop_c =  Erlin1_o_loop(i)
   Erlin1_r0_loop_c = Erlin1_r0_loop(i)
-  phir1_lin_loop_c = phir1_lin_loop(i)
 
    Erlin2_F_loop_c =  Erlin2_F_loop(i)
    Erlin2_d_loop_c =  Erlin2_d_loop(i)
    Erlin2_o_loop_c =  Erlin2_o_loop(i)
   Erlin2_r0_loop_c = Erlin2_r0_loop(i)
-  phir2_lin_loop_c = phir2_lin_loop(i)
+
+   phir_lin_loop_c = phir_lin_loop(i)
+
+       Phir1_loop_c =     Phir1_loop(i)
+       Phir2_loop_c =     Phir2_loop(i)
+        Fcb1_loop_c =      Fcb1_loop(i)
+        Fcb2_loop_c =      Fcb2_loop(i)
+   Phir1_lin_loop_c = Phir1_lin_loop(i)
+   Phir2_lin_loop_c = Phir2_lin_loop(i)
+       Fcb51_loop_c =     Fcb51_loop(i)
+       Fcb52_loop_c =     Fcb52_loop(i)
 
 ;========================================
 
@@ -4233,25 +4737,27 @@ common trace_sampled,rad_v,lat_v,lon_v,s_v,Ne_v,Tm_v,WT_v,Er_v,scoreR_v,midcell_
 common B_sampled,B_v,Br_v,Bth_v,Bph_v
 common opclstatus,opcls,loopL,WTc  
 
-common statistic_loops,Nlegs,Nemean,Tmmean,WTmean,Nestddev,Tmstddev,WTstddev,loop_length,betamean,betaapex,Bmean,Br0
+common statistic_loops,Nlegs,Nemean,Tmmean,WTmean,Nestddev,Tmstddev,WTstddev,loop_length,betamean,betaapex,Bmean,Br0,B0
 common statistic_loops2,opclstat,lambda_N,lambda_p,Ne0,p0,Tefit,gradT,r2N,r2P,r2T,indexloop,leg_status,Tm0,Tm0s  
 common statistic_loops3,Eh,sH,r2sH,Phir,Fcb,Ner0,Ner1,Ner2,Ner3,TmR1,NR1,Fcb5
 common statistic_loops4,r2Tcuadr,Acuadr_a, s_r0_a,dTmds,r2Ts,Tmbase,Netech,Ne0_s,lambda_N_s
 common statistic_loops5,r2Er,Phirfit,Tm0_ts,gradT_ts,FTr_ts,Tm0s_ts,dTmds_ts,FTs_ts,eplegT,deltaS,Smaxxx,Sminnn,Tm0s5_ts,dTmds5_ts,FTs5_ts,Erlin_F,Erlin_d,Erlin_o,Erlin_r0,phir_lin
 common starttrace,strad,stlat,stlon,footrad,footlat,footlon,Rp_rad,Rp_lat,Rp_lon,B_base
 
-common stat_filter,Nlegs_c,Nemean_c,Tmmean_c,WTmean_c,Nestddev_c,Tmstddev_c,WTstddev_c,loop_length_c,betamean_c,betaapex_c,Bmean_c,Br0_c
+common stat_filter,Nlegs_c,Nemean_c,Tmmean_c,WTmean_c,Nestddev_c,Tmstddev_c,WTstddev_c,loop_length_c,betamean_c,betaapex_c,Bmean_c,Br0_c,B0_c
 common stat_filter2,opclstat_c,lambda_N_c,lambda_p_c,Ne0_c,p0_c,Tefit_c,gradT_c,r2N_c,r2P_c,r2T_c,indexloop_c,leg_status_c,Tm0_c,Tm0s_c,Tm0_ts_c,gradT_ts_c,FTr_ts_c,Tm0s_ts_c,dTmds_ts_c,FTs_ts_c,Tm0s5_ts_c,dTmds5_ts_c,FTs5_ts_c    
 common stat_filter3,Eh_c,sH_c,r2sH_c,Phir_c,Fcb_c,Ner0_c,Ner1_c,Ner2_c,Ner3_c,TmR1_c,NR1_c,Erlin_F_c,Erlin_d_c,Erlin_o_c,Erlin_r0_c,phir_lin_c
 common stat_filter4,r2Tcuadr_c,Acuadr_a_c, s_r0_a_c,dTmds_c,r2Ts_c,Netech_c,Ne0_s_c,lambda_N_s_c
 common stat_filter5,strad_c,stlat_c,stlon_c,footrad_c,footlat_c,footlon_c,Rp_rad_c,Rp_lat_c,Rp_lon_c
 common stat_filter6,r2Er_c,Phirfit_c,eplegT_c,deltaS_c,Smaxxx_c,Sminnn_c,B_base_c,Fcb5_c
 
-common loops,Phir_loop,rad1_loop,rad2_loop,lat1_loop,lat2_loop,lon1_loop,lon2_loop,L_loop,opclstat_loop,r2Er1_loop,r2Er2_loop,Tmmean_loop,Fcb_loop,dTmds1_loop,dTmds2_loop,r2Tcuadr1_loop,r2Tcuadr2_loop,r2T1_loop,r2T2_loop,Ner01_loop,Ner02_loop,Ner11_loop,Ner12_loop,Ner21_loop,Ner22_loop,Ner31_loop,Ner32_loop,Rp_rad1_loop,Rp_lat1_loop,Rp_lon1_loop,Rp_rad2_loop,Rp_lat2_loop,Rp_lon2_loop,TmR11_loop,TmR12_loop,NR11_loop,NR12_loop,Nemean_loop,Long_cm,Phih_L,Ner0m_loop,lambda_N_loop,r2N1_loop,r2N2_loop,Tm01_ts_loop,gradT1_ts_loop,FTr1_ts_loop,Tm0s1_ts_loop,dTmds1_ts_loop,FTs1_ts_loop,Tm02_ts_loop,gradT2_ts_loop,FTr2_ts_loop,Tm0s2_ts_loop,dTmds2_ts_loop,FTs2_ts_loop,eplegT1_loop,eplegT2_loop,deltaS1_loop,deltaS2_loop,Smaxxx1_loop,Smaxxx2_loop,s_r0_a1_loop,s_r0_a2_loop,Sminnn1_loop,Sminnn2_loop,ISO_loop,B_basem_loop,Netech_loop,Ne0_s_loop,lambda_N_s_loop,Tm0s15_ts_loop,dTmds15_ts_loop,FTs15_ts_loop,Tm0s25_ts_loop,dTmds25_ts_loop,FTs25_ts_loop,Erlin1_F_loop,Erlin1_d_loop,Erlin1_o_loop,Erlin1_r0_loop,phir1_lin_loop,Erlin2_F_loop,Erlin2_d_loop,Erlin2_o_loop,Erlin2_r0_loop,phir2_lin_loop,Fcb5_loop
+common loops,Phir_loop,rad1_loop,rad2_loop,lat1_loop,lat2_loop,lon1_loop,lon2_loop,L_loop,opclstat_loop,r2Er1_loop,r2Er2_loop,Tmmean_loop,Fcb_loop,dTmds1_loop,dTmds2_loop,r2Tcuadr1_loop,r2Tcuadr2_loop,r2T1_loop,r2T2_loop,Ner01_loop,Ner02_loop,Ner11_loop,Ner12_loop,Ner21_loop,Ner22_loop,Ner31_loop,Ner32_loop,Rp_rad1_loop,Rp_lat1_loop,Rp_lon1_loop,Rp_rad2_loop,Rp_lat2_loop,Rp_lon2_loop,TmR11_loop,TmR12_loop,NR11_loop,NR12_loop,Nemean_loop,Long_cm,Phih_L,Ner0m_loop,lambda_N_loop,r2N1_loop,r2N2_loop,Tm01_ts_loop,gradT1_ts_loop,FTr1_ts_loop,Tm0s1_ts_loop,dTmds1_ts_loop,FTs1_ts_loop,Tm02_ts_loop,gradT2_ts_loop,FTr2_ts_loop,Tm0s2_ts_loop,dTmds2_ts_loop,FTs2_ts_loop,eplegT1_loop,eplegT2_loop,deltaS1_loop,deltaS2_loop,Smaxxx1_loop,Smaxxx2_loop,s_r0_a1_loop,s_r0_a2_loop,Sminnn1_loop,Sminnn2_loop,ISO_loop,B_basem_loop,Netech_loop,Ne0_s_loop,lambda_N_s_loop,Tm0s15_ts_loop,dTmds15_ts_loop,FTs15_ts_loop,Tm0s25_ts_loop,dTmds25_ts_loop,FTs25_ts_loop,Erlin1_F_loop,Erlin1_d_loop,Erlin1_o_loop,Erlin1_r0_loop,Erlin2_F_loop,Erlin2_d_loop,Erlin2_o_loop,Erlin2_r0_loop,phir_lin_loop,Fcb5_loop,Phir1_loop,Phir2_loop,Fcb1_loop,Fcb2_loop,Phir1_lin_loop,Phir2_lin_loop,Fcb51_loop,Fcb52_loop,indexloop_loop,Bmean_loop,Tm0s_base_loop,B0_loop
 
-common loops_filter,Phir_loop_c,rad1_loop_c,rad2_loop_c,lat1_loop_c,lat2_loop_c,lon1_loop_c,lon2_loop_c,L_loop_c,opclstat_loop_c,r2Er1_loop_c,r2Er2_loop_c,Tmmean_loop_c,Fcb_loop_c,dTmds1_loop_c,dTmds2_loop_c,r2Tcuadr1_loop_c,r2Tcuadr2_loop_c,r2T1_loop_c,r2T2_loop_c,Ner01_loop_c,Ner02_loop_c,Ner11_loop_c,Ner12_loop_c,Ner21_loop_c,Ner22_loop_c,Ner31_loop_c,Ner32_loop_c,Rp_rad1_loop_c,Rp_lat1_loop_c,Rp_lon1_loop_c,Rp_rad2_loop_c,Rp_lat2_loop_c,Rp_lon2_loop_c,TmR11_loop_c,TmR12_loop_c,NR11_loop_c,NR12_loop_c,Nemean_loop_c,Long_cm_c,Phih_L_c,Ner0m_loop_c,lambda_N_loop_c,r2N1_loop_c,r2N2_loop_c,Tm01_ts_loop_c,gradT1_ts_loop_c,FTr1_ts_loop_c,Tm0s1_ts_loop_c,dTmds1_ts_loop_c,FTs1_ts_loop_c,Tm02_ts_loop_c,gradT2_ts_loop_c,FTr2_ts_loop_c,Tm0s2_ts_loop_c,dTmds2_ts_loop_c,FTs2_ts_loop_c,eplegT1_loop_c,eplegT2_loop_c,deltaS1_loop_c,deltaS2_loop_c,Smaxxx1_loop_c,Smaxxx2_loop_c,Sminnn1_loop_c,Sminnn2_loop_c,ISO_loop_c,B_basem_loop_c,Netech_loop_c,Ne0_s_loop_c,lambda_N_s_loop_c,Tm0s15_ts_loop_c,dTmds15_ts_loop_c,FTs15_ts_loop_c,Tm0s25_ts_loop_c,dTmds25_ts_loop_c,FTs25_ts_loop_c,Erlin1_F_loop_c,Erlin1_d_loop_c,Erlin1_o_loop_c,Erlin1_r0_loop_c,phir1_lin_loop_c,Erlin2_F_loop_c,Erlin2_d_loop_c,Erlin2_o_loop_c,Erlin2_r0_loop_c,phir2_lin_loop_c,Fcb5_loop_c
+common loops_filter,Phir_loop_c,rad1_loop_c,rad2_loop_c,lat1_loop_c,lat2_loop_c,lon1_loop_c,lon2_loop_c,L_loop_c,opclstat_loop_c,r2Er1_loop_c,r2Er2_loop_c,Tmmean_loop_c,Fcb_loop_c,dTmds1_loop_c,dTmds2_loop_c,r2Tcuadr1_loop_c,r2Tcuadr2_loop_c,r2T1_loop_c,r2T2_loop_c,Ner01_loop_c,Ner02_loop_c,Ner11_loop_c,Ner12_loop_c,Ner21_loop_c,Ner22_loop_c,Ner31_loop_c,Ner32_loop_c,Rp_rad1_loop_c,Rp_lat1_loop_c,Rp_lon1_loop_c,Rp_rad2_loop_c,Rp_lat2_loop_c,Rp_lon2_loop_c,TmR11_loop_c,TmR12_loop_c,NR11_loop_c,NR12_loop_c,Nemean_loop_c,Long_cm_c,Phih_L_c,Ner0m_loop_c,lambda_N_loop_c,r2N1_loop_c,r2N2_loop_c,Tm01_ts_loop_c,gradT1_ts_loop_c,FTr1_ts_loop_c,Tm0s1_ts_loop_c,dTmds1_ts_loop_c,FTs1_ts_loop_c,Tm02_ts_loop_c,gradT2_ts_loop_c,FTr2_ts_loop_c,Tm0s2_ts_loop_c,dTmds2_ts_loop_c,FTs2_ts_loop_c,eplegT1_loop_c,eplegT2_loop_c,deltaS1_loop_c,deltaS2_loop_c,Smaxxx1_loop_c,Smaxxx2_loop_c,Sminnn1_loop_c,Sminnn2_loop_c,ISO_loop_c,B_basem_loop_c,Netech_loop_c,Ne0_s_loop_c,lambda_N_s_loop_c,Tm0s15_ts_loop_c,dTmds15_ts_loop_c,FTs15_ts_loop_c,Tm0s25_ts_loop_c,dTmds25_ts_loop_c,FTs25_ts_loop_c,Erlin1_F_loop_c,Erlin1_d_loop_c,Erlin1_o_loop_c,Erlin1_r0_loop_c,Erlin2_F_loop_c,Erlin2_d_loop_c,Erlin2_o_loop_c,Erlin2_r0_loop_c,phir_lin_loop_c,Fcb5_loop_c,Phir1_loop_c,Phir2_loop_c,Fcb1_loop_c,Fcb2_loop_c,Phir1_lin_loop_c,Phir2_lin_loop_c,Fcb51_loop_c,Fcb52_loop_c,indexloop_loop_c,Bmean_loop_c,Tm0s_base_loop_c,B0_loop_c
 
 common label,T_label,Er_label
+
+common select,Fcb_tot,Phir_tot,lat1_tot,lat2_tot,lon1_tot,lon2_tot,opclstat_tot,indexloop_tot,Rp_lat1_tot,Rp_lat2_tot,Rp_lon1_tot,Rp_lon2_tot
 
 Longitudes = 0.2*findgen(6)+0.2
 NLongitudes = N_elements(Longitudes)
@@ -4578,8 +5084,8 @@ negro=0
 
 xyouts,.9-[.21,.12,.03],0.8*[1,1,1],['!8m!3','!9s!3','N'],/normal,charsize=2,charthick=2,Font=0
 
-xyouts,.9-[.42,.36,.24,.14,.06],0.7*[1.03,1,1,1,1],['__' ,'T!Dm!N/T!DEBTEL!N',strmid(string(avgr),3,6),strmid(string(stdevr),4,5),strmid(string(Nr),5,8)],/normal,color=[azul,azul,negro,negro,negro],charthick=3,charsize=2,Font=0
-xyouts,.9-[.42,.36,.24,.15,.06],0.6*[1   ,1,1,1,1],['---','N!D0!N/N!DEBTEL!N',strmid(string(avgf),3,6),strmid(string(stdevf),4,6),strmid(string(Nf),5,8)],/normal,color=[rojo,rojo,negro,negro,negro],charthick=3,charsize=2,Font=0
+xyouts,.9-[.42,.36,.24,.14,.06],0.7*[1.03,1,1,1,1],['__' ,'DEMT',strmid(string(avgr),3,6),strmid(string(stdevr),4,5),strmid(string(Nr),5,8)],/normal,color=[azul,azul,negro,negro,negro],charthick=3,charsize=2,Font=0
+xyouts,.9-[.42,.36,.24,.15,.06],0.6*[1   ,1,1,1,1],['---','AWSOM',strmid(string(avgf),3,6),strmid(string(stdevf),4,6),strmid(string(Nf),5,8)],/normal,color=[rojo,rojo,negro,negro,negro],charthick=3,charsize=2,Font=0
 
 ;xyouts,.9-[.42,.36,.24,.14,.06],0.7*[1.03,1,1,1,1],['__' ,'N!DCB!N/N!Dmean!N',strmid(string(avgr),3,6),strmid(string(stdevr),4,5),strmid(string(Nr),5,8)],/normal,color=[azul,azul,negro,negro,negro],charthick=3,charsize=2,Font=0
 ;xyouts,.9-[.42,.36,.24,.15,.06],0.6*[1   ,1,1,1,1],['---',     'L/!9l!3'     ,strmid(string(avgf),3,6),strmid(string(stdevf),4,6),strmid(string(Nf),5,8)],/normal,color=[rojo,rojo,negro,negro,negro],charthick=3,charsize=2,Font=0
@@ -4601,25 +5107,27 @@ common trace_sampled,rad_v,lat_v,lon_v,s_v,Ne_v,Tm_v,WT_v,Er_v,scoreR_v,midcell_
 common B_sampled,B_v,Br_v,Bth_v,Bph_v
 common opclstatus,opcls,loopL,WTc  
 
-common statistic_loops,Nlegs,Nemean,Tmmean,WTmean,Nestddev,Tmstddev,WTstddev,loop_length,betamean,betaapex,Bmean,Br0
+common statistic_loops,Nlegs,Nemean,Tmmean,WTmean,Nestddev,Tmstddev,WTstddev,loop_length,betamean,betaapex,Bmean,Br0,B0
 common statistic_loops2,opclstat,lambda_N,lambda_p,Ne0,p0,Tefit,gradT,r2N,r2P,r2T,indexloop,leg_status,Tm0,Tm0s  
 common statistic_loops3,Eh,sH,r2sH,Phir,Fcb,Ner0,Ner1,Ner2,Ner3,TmR1,NR1,Fcb5
 common statistic_loops4,r2Tcuadr,Acuadr_a, s_r0_a,dTmds,r2Ts,Tmbase,Netech,Ne0_s,lambda_N_s
 common statistic_loops5,r2Er,Phirfit,Tm0_ts,gradT_ts,FTr_ts,Tm0s_ts,dTmds_ts,FTs_ts,eplegT,deltaS,Smaxxx,Sminnn,Tm0s5_ts,dTmds5_ts,FTs5_ts,Erlin_F,Erlin_d,Erlin_o,Erlin_r0,phir_lin
 common starttrace,strad,stlat,stlon,footrad,footlat,footlon,Rp_rad,Rp_lat,Rp_lon,B_base
 
-common stat_filter,Nlegs_c,Nemean_c,Tmmean_c,WTmean_c,Nestddev_c,Tmstddev_c,WTstddev_c,loop_length_c,betamean_c,betaapex_c,Bmean_c,Br0_c
+common stat_filter,Nlegs_c,Nemean_c,Tmmean_c,WTmean_c,Nestddev_c,Tmstddev_c,WTstddev_c,loop_length_c,betamean_c,betaapex_c,Bmean_c,Br0_c,B0_c
 common stat_filter2,opclstat_c,lambda_N_c,lambda_p_c,Ne0_c,p0_c,Tefit_c,gradT_c,r2N_c,r2P_c,r2T_c,indexloop_c,leg_status_c,Tm0_c,Tm0s_c,Tm0_ts_c,gradT_ts_c,FTr_ts_c,Tm0s_ts_c,dTmds_ts_c,FTs_ts_c,Tm0s5_ts_c,dTmds5_ts_c,FTs5_ts_c    
 common stat_filter3,Eh_c,sH_c,r2sH_c,Phir_c,Fcb_c,Ner0_c,Ner1_c,Ner2_c,Ner3_c,TmR1_c,NR1_c,Erlin_F_c,Erlin_d_c,Erlin_o_c,Erlin_r0_c,phir_lin_c
 common stat_filter4,r2Tcuadr_c,Acuadr_a_c, s_r0_a_c,dTmds_c,r2Ts_c,Netech_c,Ne0_s_c,lambda_N_s_c
 common stat_filter5,strad_c,stlat_c,stlon_c,footrad_c,footlat_c,footlon_c,Rp_rad_c,Rp_lat_c,Rp_lon_c
 common stat_filter6,r2Er_c,Phirfit_c,eplegT_c,deltaS_c,Smaxxx_c,Sminnn_c,B_base_c,Fcb5_c
 
-common loops,Phir_loop,rad1_loop,rad2_loop,lat1_loop,lat2_loop,lon1_loop,lon2_loop,L_loop,opclstat_loop,r2Er1_loop,r2Er2_loop,Tmmean_loop,Fcb_loop,dTmds1_loop,dTmds2_loop,r2Tcuadr1_loop,r2Tcuadr2_loop,r2T1_loop,r2T2_loop,Ner01_loop,Ner02_loop,Ner11_loop,Ner12_loop,Ner21_loop,Ner22_loop,Ner31_loop,Ner32_loop,Rp_rad1_loop,Rp_lat1_loop,Rp_lon1_loop,Rp_rad2_loop,Rp_lat2_loop,Rp_lon2_loop,TmR11_loop,TmR12_loop,NR11_loop,NR12_loop,Nemean_loop,Long_cm,Phih_L,Ner0m_loop,lambda_N_loop,r2N1_loop,r2N2_loop,Tm01_ts_loop,gradT1_ts_loop,FTr1_ts_loop,Tm0s1_ts_loop,dTmds1_ts_loop,FTs1_ts_loop,Tm02_ts_loop,gradT2_ts_loop,FTr2_ts_loop,Tm0s2_ts_loop,dTmds2_ts_loop,FTs2_ts_loop,eplegT1_loop,eplegT2_loop,deltaS1_loop,deltaS2_loop,Smaxxx1_loop,Smaxxx2_loop,s_r0_a1_loop,s_r0_a2_loop,Sminnn1_loop,Sminnn2_loop,ISO_loop,B_basem_loop,Netech_loop,Ne0_s_loop,lambda_N_s_loop,Tm0s15_ts_loop,dTmds15_ts_loop,FTs15_ts_loop,Tm0s25_ts_loop,dTmds25_ts_loop,FTs25_ts_loop,Erlin1_F_loop,Erlin1_d_loop,Erlin1_o_loop,Erlin1_r0_loop,phir1_lin_loop,Erlin2_F_loop,Erlin2_d_loop,Erlin2_o_loop,Erlin2_r0_loop,phir2_lin_loop,Fcb5_loop
+common loops,Phir_loop,rad1_loop,rad2_loop,lat1_loop,lat2_loop,lon1_loop,lon2_loop,L_loop,opclstat_loop,r2Er1_loop,r2Er2_loop,Tmmean_loop,Fcb_loop,dTmds1_loop,dTmds2_loop,r2Tcuadr1_loop,r2Tcuadr2_loop,r2T1_loop,r2T2_loop,Ner01_loop,Ner02_loop,Ner11_loop,Ner12_loop,Ner21_loop,Ner22_loop,Ner31_loop,Ner32_loop,Rp_rad1_loop,Rp_lat1_loop,Rp_lon1_loop,Rp_rad2_loop,Rp_lat2_loop,Rp_lon2_loop,TmR11_loop,TmR12_loop,NR11_loop,NR12_loop,Nemean_loop,Long_cm,Phih_L,Ner0m_loop,lambda_N_loop,r2N1_loop,r2N2_loop,Tm01_ts_loop,gradT1_ts_loop,FTr1_ts_loop,Tm0s1_ts_loop,dTmds1_ts_loop,FTs1_ts_loop,Tm02_ts_loop,gradT2_ts_loop,FTr2_ts_loop,Tm0s2_ts_loop,dTmds2_ts_loop,FTs2_ts_loop,eplegT1_loop,eplegT2_loop,deltaS1_loop,deltaS2_loop,Smaxxx1_loop,Smaxxx2_loop,s_r0_a1_loop,s_r0_a2_loop,Sminnn1_loop,Sminnn2_loop,ISO_loop,B_basem_loop,Netech_loop,Ne0_s_loop,lambda_N_s_loop,Tm0s15_ts_loop,dTmds15_ts_loop,FTs15_ts_loop,Tm0s25_ts_loop,dTmds25_ts_loop,FTs25_ts_loop,Erlin1_F_loop,Erlin1_d_loop,Erlin1_o_loop,Erlin1_r0_loop,Erlin2_F_loop,Erlin2_d_loop,Erlin2_o_loop,Erlin2_r0_loop,phir_lin_loop,Fcb5_loop,Phir1_loop,Phir2_loop,Fcb1_loop,Fcb2_loop,Phir1_lin_loop,Phir2_lin_loop,Fcb51_loop,Fcb52_loop,indexloop_loop,Bmean_loop,Tm0s_base_loop,B0_loop
 
-common loops_filter,Phir_loop_c,rad1_loop_c,rad2_loop_c,lat1_loop_c,lat2_loop_c,lon1_loop_c,lon2_loop_c,L_loop_c,opclstat_loop_c,r2Er1_loop_c,r2Er2_loop_c,Tmmean_loop_c,Fcb_loop_c,dTmds1_loop_c,dTmds2_loop_c,r2Tcuadr1_loop_c,r2Tcuadr2_loop_c,r2T1_loop_c,r2T2_loop_c,Ner01_loop_c,Ner02_loop_c,Ner11_loop_c,Ner12_loop_c,Ner21_loop_c,Ner22_loop_c,Ner31_loop_c,Ner32_loop_c,Rp_rad1_loop_c,Rp_lat1_loop_c,Rp_lon1_loop_c,Rp_rad2_loop_c,Rp_lat2_loop_c,Rp_lon2_loop_c,TmR11_loop_c,TmR12_loop_c,NR11_loop_c,NR12_loop_c,Nemean_loop_c,Long_cm_c,Phih_L_c,Ner0m_loop_c,lambda_N_loop_c,r2N1_loop_c,r2N2_loop_c,Tm01_ts_loop_c,gradT1_ts_loop_c,FTr1_ts_loop_c,Tm0s1_ts_loop_c,dTmds1_ts_loop_c,FTs1_ts_loop_c,Tm02_ts_loop_c,gradT2_ts_loop_c,FTr2_ts_loop_c,Tm0s2_ts_loop_c,dTmds2_ts_loop_c,FTs2_ts_loop_c,eplegT1_loop_c,eplegT2_loop_c,deltaS1_loop_c,deltaS2_loop_c,Smaxxx1_loop_c,Smaxxx2_loop_c,Sminnn1_loop_c,Sminnn2_loop_c,ISO_loop_c,B_basem_loop_c,Netech_loop_c,Ne0_s_loop_c,lambda_N_s_loop_c,Tm0s15_ts_loop_c,dTmds15_ts_loop_c,FTs15_ts_loop_c,Tm0s25_ts_loop_c,dTmds25_ts_loop_c,FTs25_ts_loop_c,Erlin1_F_loop_c,Erlin1_d_loop_c,Erlin1_o_loop_c,Erlin1_r0_loop_c,phir1_lin_loop_c,Erlin2_F_loop_c,Erlin2_d_loop_c,Erlin2_o_loop_c,Erlin2_r0_loop_c,phir2_lin_loop_c,Fcb5_loop_c
+common loops_filter,Phir_loop_c,rad1_loop_c,rad2_loop_c,lat1_loop_c,lat2_loop_c,lon1_loop_c,lon2_loop_c,L_loop_c,opclstat_loop_c,r2Er1_loop_c,r2Er2_loop_c,Tmmean_loop_c,Fcb_loop_c,dTmds1_loop_c,dTmds2_loop_c,r2Tcuadr1_loop_c,r2Tcuadr2_loop_c,r2T1_loop_c,r2T2_loop_c,Ner01_loop_c,Ner02_loop_c,Ner11_loop_c,Ner12_loop_c,Ner21_loop_c,Ner22_loop_c,Ner31_loop_c,Ner32_loop_c,Rp_rad1_loop_c,Rp_lat1_loop_c,Rp_lon1_loop_c,Rp_rad2_loop_c,Rp_lat2_loop_c,Rp_lon2_loop_c,TmR11_loop_c,TmR12_loop_c,NR11_loop_c,NR12_loop_c,Nemean_loop_c,Long_cm_c,Phih_L_c,Ner0m_loop_c,lambda_N_loop_c,r2N1_loop_c,r2N2_loop_c,Tm01_ts_loop_c,gradT1_ts_loop_c,FTr1_ts_loop_c,Tm0s1_ts_loop_c,dTmds1_ts_loop_c,FTs1_ts_loop_c,Tm02_ts_loop_c,gradT2_ts_loop_c,FTr2_ts_loop_c,Tm0s2_ts_loop_c,dTmds2_ts_loop_c,FTs2_ts_loop_c,eplegT1_loop_c,eplegT2_loop_c,deltaS1_loop_c,deltaS2_loop_c,Smaxxx1_loop_c,Smaxxx2_loop_c,Sminnn1_loop_c,Sminnn2_loop_c,ISO_loop_c,B_basem_loop_c,Netech_loop_c,Ne0_s_loop_c,lambda_N_s_loop_c,Tm0s15_ts_loop_c,dTmds15_ts_loop_c,FTs15_ts_loop_c,Tm0s25_ts_loop_c,dTmds25_ts_loop_c,FTs25_ts_loop_c,Erlin1_F_loop_c,Erlin1_d_loop_c,Erlin1_o_loop_c,Erlin1_r0_loop_c,Erlin2_F_loop_c,Erlin2_d_loop_c,Erlin2_o_loop_c,Erlin2_r0_loop_c,phir_lin_loop_c,Fcb5_loop_c,Phir1_loop_c,Phir2_loop_c,Fcb1_loop_c,Fcb2_loop_c,Phir1_lin_loop_c,Phir2_lin_loop_c,Fcb51_loop_c,Fcb52_loop_c,indexloop_loop_c,Bmean_loop_c,Tm0s_base_loop_c,B0_loop_c
 
 common label,T_label,Er_label
+
+common select,Fcb_tot,Phir_tot,lat1_tot,lat2_tot,lon1_tot,lon2_tot,opclstat_tot,indexloop_tot,Rp_lat1_tot,Rp_lat2_tot,Rp_lon1_tot,Rp_lon2_tot
 
                                 ; Create some example data to plot.                                                                                                                                                                         
 ;    data = data1 ;Gaussian_Function([3,6], Width=21)
@@ -4716,25 +5224,27 @@ end
 
 pro longphi
 
-common statistic_loops,Nlegs,Nemean,Tmmean,WTmean,Nestddev,Tmstddev,WTstddev,loop_length,betamean,betaapex,Bmean,Br0
+common statistic_loops,Nlegs,Nemean,Tmmean,WTmean,Nestddev,Tmstddev,WTstddev,loop_length,betamean,betaapex,Bmean,Br0,B0
 common statistic_loops2,opclstat,lambda_N,lambda_p,Ne0,p0,Tefit,gradT,r2N,r2P,r2T,indexloop,leg_status,Tm0,Tm0s  
 common statistic_loops3,Eh,sH,r2sH,Phir,Fcb,Ner0,Ner1,Ner2,Ner3,TmR1,NR1,Fcb5
 common statistic_loops4,r2Tcuadr,Acuadr_a, s_r0_a,dTmds,r2Ts,Tmbase,Netech,Ne0_s,lambda_N_s
 common statistic_loops5,r2Er,Phirfit,Tm0_ts,gradT_ts,FTr_ts,Tm0s_ts,dTmds_ts,FTs_ts,eplegT,deltaS,Smaxxx,Sminnn,Tm0s5_ts,dTmds5_ts,FTs5_ts,Erlin_F,Erlin_d,Erlin_o,Erlin_r0,phir_lin
 common starttrace,strad,stlat,stlon,footrad,footlat,footlon,Rp_rad,Rp_lat,Rp_lon,B_base
 
-common stat_filter,Nlegs_c,Nemean_c,Tmmean_c,WTmean_c,Nestddev_c,Tmstddev_c,WTstddev_c,loop_length_c,betamean_c,betaapex_c,Bmean_c,Br0_c
+common stat_filter,Nlegs_c,Nemean_c,Tmmean_c,WTmean_c,Nestddev_c,Tmstddev_c,WTstddev_c,loop_length_c,betamean_c,betaapex_c,Bmean_c,Br0_c,B0_c
 common stat_filter2,opclstat_c,lambda_N_c,lambda_p_c,Ne0_c,p0_c,Tefit_c,gradT_c,r2N_c,r2P_c,r2T_c,indexloop_c,leg_status_c,Tm0_c,Tm0s_c,Tm0_ts_c,gradT_ts_c,FTr_ts_c,Tm0s_ts_c,dTmds_ts_c,FTs_ts_c,Tm0s5_ts_c,dTmds5_ts_c,FTs5_ts_c  
 common stat_filter3,Eh_c,sH_c,r2sH_c,Phir_c,Fcb_c,Ner0_c,Ner1_c,Ner2_c,Ner3_c,TmR1_c,NR1_c,Erlin_F_c,Erlin_d_c,Erlin_o_c,Erlin_r0_c,phir_lin_c
 common stat_filter4,r2Tcuadr_c,Acuadr_a_c, s_r0_a_c,dTmds_c,r2Ts_c,Netech_c,Ne0_s_c,lambda_N_s_c
 common stat_filter5,strad_c,stlat_c,stlon_c,footrad_c,footlat_c,footlon_c,Rp_rad_c,Rp_lat_c,Rp_lon_c
 common stat_filter6,r2Er_c,Phirfit_c,eplegT_c,deltaS_c,Smaxxx_c,Sminnn_c,B_base_c,Fcb5_c
 
-common loops,Phir_loop,rad1_loop,rad2_loop,lat1_loop,lat2_loop,lon1_loop,lon2_loop,L_loop,opclstat_loop,r2Er1_loop,r2Er2_loop,Tmmean_loop,Fcb_loop,dTmds1_loop,dTmds2_loop,r2Tcuadr1_loop,r2Tcuadr2_loop,r2T1_loop,r2T2_loop,Ner01_loop,Ner02_loop,Ner11_loop,Ner12_loop,Ner21_loop,Ner22_loop,Ner31_loop,Ner32_loop,Rp_rad1_loop,Rp_lat1_loop,Rp_lon1_loop,Rp_rad2_loop,Rp_lat2_loop,Rp_lon2_loop,TmR11_loop,TmR12_loop,NR11_loop,NR12_loop,Nemean_loop,Long_cm,Phih_L,Ner0m_loop,lambda_N_loop,r2N1_loop,r2N2_loop,Tm01_ts_loop,gradT1_ts_loop,FTr1_ts_loop,Tm0s1_ts_loop,dTmds1_ts_loop,FTs1_ts_loop,Tm02_ts_loop,gradT2_ts_loop,FTr2_ts_loop,Tm0s2_ts_loop,dTmds2_ts_loop,FTs2_ts_loop,eplegT1_loop,eplegT2_loop,deltaS1_loop,deltaS2_loop,Smaxxx1_loop,Smaxxx2_loop,s_r0_a1_loop,s_r0_a2_loop,Sminnn1_loop,Sminnn2_loop,ISO_loop,B_basem_loop,Netech_loop,Ne0_s_loop,lambda_N_s_loop,Tm0s15_ts_loop,dTmds15_ts_loop,FTs15_ts_loop,Tm0s25_ts_loop,dTmds25_ts_loop,FTs25_ts_loop,Erlin1_F_loop,Erlin1_d_loop,Erlin1_o_loop,Erlin1_r0_loop,phir1_lin_loop,Erlin2_F_loop,Erlin2_d_loop,Erlin2_o_loop,Erlin2_r0_loop,phir2_lin_loop,Fcb5_loop
+common loops,Phir_loop,rad1_loop,rad2_loop,lat1_loop,lat2_loop,lon1_loop,lon2_loop,L_loop,opclstat_loop,r2Er1_loop,r2Er2_loop,Tmmean_loop,Fcb_loop,dTmds1_loop,dTmds2_loop,r2Tcuadr1_loop,r2Tcuadr2_loop,r2T1_loop,r2T2_loop,Ner01_loop,Ner02_loop,Ner11_loop,Ner12_loop,Ner21_loop,Ner22_loop,Ner31_loop,Ner32_loop,Rp_rad1_loop,Rp_lat1_loop,Rp_lon1_loop,Rp_rad2_loop,Rp_lat2_loop,Rp_lon2_loop,TmR11_loop,TmR12_loop,NR11_loop,NR12_loop,Nemean_loop,Long_cm,Phih_L,Ner0m_loop,lambda_N_loop,r2N1_loop,r2N2_loop,Tm01_ts_loop,gradT1_ts_loop,FTr1_ts_loop,Tm0s1_ts_loop,dTmds1_ts_loop,FTs1_ts_loop,Tm02_ts_loop,gradT2_ts_loop,FTr2_ts_loop,Tm0s2_ts_loop,dTmds2_ts_loop,FTs2_ts_loop,eplegT1_loop,eplegT2_loop,deltaS1_loop,deltaS2_loop,Smaxxx1_loop,Smaxxx2_loop,s_r0_a1_loop,s_r0_a2_loop,Sminnn1_loop,Sminnn2_loop,ISO_loop,B_basem_loop,Netech_loop,Ne0_s_loop,lambda_N_s_loop,Tm0s15_ts_loop,dTmds15_ts_loop,FTs15_ts_loop,Tm0s25_ts_loop,dTmds25_ts_loop,FTs25_ts_loop,Erlin1_F_loop,Erlin1_d_loop,Erlin1_o_loop,Erlin1_r0_loop,Erlin2_F_loop,Erlin2_d_loop,Erlin2_o_loop,Erlin2_r0_loop,phir_lin_loop,Fcb5_loop,Phir1_loop,Phir2_loop,Fcb1_loop,Fcb2_loop,Phir1_lin_loop,Phir2_lin_loop,Fcb51_loop,Fcb52_loop,indexloop_loop,Bmean_loop,Tm0s_base_loop,B0_loop
 
-common loops_filter,Phir_loop_c,rad1_loop_c,rad2_loop_c,lat1_loop_c,lat2_loop_c,lon1_loop_c,lon2_loop_c,L_loop_c,opclstat_loop_c,r2Er1_loop_c,r2Er2_loop_c,Tmmean_loop_c,Fcb_loop_c,dTmds1_loop_c,dTmds2_loop_c,r2Tcuadr1_loop_c,r2Tcuadr2_loop_c,r2T1_loop_c,r2T2_loop_c,Ner01_loop_c,Ner02_loop_c,Ner11_loop_c,Ner12_loop_c,Ner21_loop_c,Ner22_loop_c,Ner31_loop_c,Ner32_loop_c,Rp_rad1_loop_c,Rp_lat1_loop_c,Rp_lon1_loop_c,Rp_rad2_loop_c,Rp_lat2_loop_c,Rp_lon2_loop_c,TmR11_loop_c,TmR12_loop_c,NR11_loop_c,NR12_loop_c,Nemean_loop_c,Long_cm_c,Phih_L_c,Ner0m_loop_c,lambda_N_loop_c,r2N1_loop_c,r2N2_loop_c,Tm01_ts_loop_c,gradT1_ts_loop_c,FTr1_ts_loop_c,Tm0s1_ts_loop_c,dTmds1_ts_loop_c,FTs1_ts_loop_c,Tm02_ts_loop_c,gradT2_ts_loop_c,FTr2_ts_loop_c,Tm0s2_ts_loop_c,dTmds2_ts_loop_c,FTs2_ts_loop_c,eplegT1_loop_c,eplegT2_loop_c,deltaS1_loop_c,deltaS2_loop_c,Smaxxx1_loop_c,Smaxxx2_loop_c,Sminnn1_loop_c,Sminnn2_loop_c,ISO_loop_c,B_basem_loop_c,Netech_loop_c,Ne0_s_loop_c,lambda_N_s_loop_c,Tm0s15_ts_loop_c,dTmds15_ts_loop_c,FTs15_ts_loop_c,Tm0s25_ts_loop_c,dTmds25_ts_loop_c,FTs25_ts_loop_c,Erlin1_F_loop_c,Erlin1_d_loop_c,Erlin1_o_loop_c,Erlin1_r0_loop_c,phir1_lin_loop_c,Erlin2_F_loop_c,Erlin2_d_loop_c,Erlin2_o_loop_c,Erlin2_r0_loop_c,phir2_lin_loop_c,Fcb5_loop_c
+common loops_filter,Phir_loop_c,rad1_loop_c,rad2_loop_c,lat1_loop_c,lat2_loop_c,lon1_loop_c,lon2_loop_c,L_loop_c,opclstat_loop_c,r2Er1_loop_c,r2Er2_loop_c,Tmmean_loop_c,Fcb_loop_c,dTmds1_loop_c,dTmds2_loop_c,r2Tcuadr1_loop_c,r2Tcuadr2_loop_c,r2T1_loop_c,r2T2_loop_c,Ner01_loop_c,Ner02_loop_c,Ner11_loop_c,Ner12_loop_c,Ner21_loop_c,Ner22_loop_c,Ner31_loop_c,Ner32_loop_c,Rp_rad1_loop_c,Rp_lat1_loop_c,Rp_lon1_loop_c,Rp_rad2_loop_c,Rp_lat2_loop_c,Rp_lon2_loop_c,TmR11_loop_c,TmR12_loop_c,NR11_loop_c,NR12_loop_c,Nemean_loop_c,Long_cm_c,Phih_L_c,Ner0m_loop_c,lambda_N_loop_c,r2N1_loop_c,r2N2_loop_c,Tm01_ts_loop_c,gradT1_ts_loop_c,FTr1_ts_loop_c,Tm0s1_ts_loop_c,dTmds1_ts_loop_c,FTs1_ts_loop_c,Tm02_ts_loop_c,gradT2_ts_loop_c,FTr2_ts_loop_c,Tm0s2_ts_loop_c,dTmds2_ts_loop_c,FTs2_ts_loop_c,eplegT1_loop_c,eplegT2_loop_c,deltaS1_loop_c,deltaS2_loop_c,Smaxxx1_loop_c,Smaxxx2_loop_c,Sminnn1_loop_c,Sminnn2_loop_c,ISO_loop_c,B_basem_loop_c,Netech_loop_c,Ne0_s_loop_c,lambda_N_s_loop_c,Tm0s15_ts_loop_c,dTmds15_ts_loop_c,FTs15_ts_loop_c,Tm0s25_ts_loop_c,dTmds25_ts_loop_c,FTs25_ts_loop_c,Erlin1_F_loop_c,Erlin1_d_loop_c,Erlin1_o_loop_c,Erlin1_r0_loop_c,Erlin2_F_loop_c,Erlin2_d_loop_c,Erlin2_o_loop_c,Erlin2_r0_loop_c,phir_lin_loop_c,Fcb5_loop_c,Phir1_loop_c,Phir2_loop_c,Fcb1_loop_c,Fcb2_loop_c,Phir1_lin_loop_c,Phir2_lin_loop_c,Fcb51_loop_c,Fcb52_loop_c,indexloop_loop_c,Bmean_loop_c,Tm0s_base_loop_c,B0_loop_c
 
 common label,T_label,Er_label
+
+common select,Fcb_tot,Phir_tot,lat1_tot,lat2_tot,lon1_tot,lon2_tot,opclstat_tot,indexloop_tot,Rp_lat1_tot,Rp_lat2_tot,Rp_lon1_tot,Rp_lon2_tot
 
 R2Crit_Er = 0.8
 R2Crit_Ne = 0.75
@@ -4832,32 +5342,34 @@ end
 
 pro label
 
-common statistic_loops,Nlegs,Nemean,Tmmean,WTmean,Nestddev,Tmstddev,WTstddev,loop_length,betamean,betaapex,Bmean,Br0
+common statistic_loops,Nlegs,Nemean,Tmmean,WTmean,Nestddev,Tmstddev,WTstddev,loop_length,betamean,betaapex,Bmean,Br0,B0
 common statistic_loops2,opclstat,lambda_N,lambda_p,Ne0,p0,Tefit,gradT,r2N,r2P,r2T,indexloop,leg_status,Tm0,Tm0s  
 common statistic_loops3,Eh,sH,r2sH,Phir,Fcb,Ner0,Ner1,Ner2,Ner3,TmR1,NR1,Fcb5
 common statistic_loops4,r2Tcuadr,Acuadr_a, s_r0_a,dTmds,r2Ts,Tmbase,Netech,Ne0_s,lambda_N_s
 common statistic_loops5,r2Er,Phirfit,Tm0_ts,gradT_ts,FTr_ts,Tm0s_ts,dTmds_ts,FTs_ts,eplegT,deltaS,Smaxxx,Sminnn,Tm0s5_ts,dTmds5_ts,FTs5_ts,Erlin_F,Erlin_d,Erlin_o,Erlin_r0,phir_lin
 common starttrace,strad,stlat,stlon,footrad,footlat,footlon,Rp_rad,Rp_lat,Rp_lon,B_base
 
-common stat_filter,Nlegs_c,Nemean_c,Tmmean_c,WTmean_c,Nestddev_c,Tmstddev_c,WTstddev_c,loop_length_c,betamean_c,betaapex_c,Bmean_c,Br0_c
+common stat_filter,Nlegs_c,Nemean_c,Tmmean_c,WTmean_c,Nestddev_c,Tmstddev_c,WTstddev_c,loop_length_c,betamean_c,betaapex_c,Bmean_c,Br0_c,B0_c
 common stat_filter2,opclstat_c,lambda_N_c,lambda_p_c,Ne0_c,p0_c,Tefit_c,gradT_c,r2N_c,r2P_c,r2T_c,indexloop_c,leg_status_c,Tm0_c,Tm0s_c,Tm0_ts_c,gradT_ts_c,FTr_ts_c,Tm0s_ts_c,dTmds_ts_c,FTs_ts_c,Tm0s5_ts_c,dTmds5_ts_c,FTs5_ts_c  
 common stat_filter3,Eh_c,sH_c,r2sH_c,Phir_c,Fcb_c,Ner0_c,Ner1_c,Ner2_c,Ner3_c,TmR1_c,NR1_c,Erlin_F_c,Erlin_d_c,Erlin_o_c,Erlin_r0_c,phir_lin_c
 common stat_filter4,r2Tcuadr_c,Acuadr_a_c, s_r0_a_c,dTmds_c,r2Ts_c,Netech_c,Ne0_s_c,lambda_N_s_c
 common stat_filter5,strad_c,stlat_c,stlon_c,footrad_c,footlat_c,footlon_c,Rp_rad_c,Rp_lat_c,Rp_lon_c
 common stat_filter6,r2Er_c,Phirfit_c,eplegT_c,deltaS_c,Smaxxx_c,Sminnn_c,B_base_c,Fcb5_c
 
-common loops,Phir_loop,rad1_loop,rad2_loop,lat1_loop,lat2_loop,lon1_loop,lon2_loop,L_loop,opclstat_loop,r2Er1_loop,r2Er2_loop,Tmmean_loop,Fcb_loop,dTmds1_loop,dTmds2_loop,r2Tcuadr1_loop,r2Tcuadr2_loop,r2T1_loop,r2T2_loop,Ner01_loop,Ner02_loop,Ner11_loop,Ner12_loop,Ner21_loop,Ner22_loop,Ner31_loop,Ner32_loop,Rp_rad1_loop,Rp_lat1_loop,Rp_lon1_loop,Rp_rad2_loop,Rp_lat2_loop,Rp_lon2_loop,TmR11_loop,TmR12_loop,NR11_loop,NR12_loop,Nemean_loop,Long_cm,Phih_L,Ner0m_loop,lambda_N_loop,r2N1_loop,r2N2_loop,Tm01_ts_loop,gradT1_ts_loop,FTr1_ts_loop,Tm0s1_ts_loop,dTmds1_ts_loop,FTs1_ts_loop,Tm02_ts_loop,gradT2_ts_loop,FTr2_ts_loop,Tm0s2_ts_loop,dTmds2_ts_loop,FTs2_ts_loop,eplegT1_loop,eplegT2_loop,deltaS1_loop,deltaS2_loop,Smaxxx1_loop,Smaxxx2_loop,s_r0_a1_loop,s_r0_a2_loop,Sminnn1_loop,Sminnn2_loop,ISO_loop,B_basem_loop,Netech_loop,Ne0_s_loop,lambda_N_s_loop,Tm0s15_ts_loop,dTmds15_ts_loop,FTs15_ts_loop,Tm0s25_ts_loop,dTmds25_ts_loop,FTs25_ts_loop,Erlin1_F_loop,Erlin1_d_loop,Erlin1_o_loop,Erlin1_r0_loop,phir1_lin_loop,Erlin2_F_loop,Erlin2_d_loop,Erlin2_o_loop,Erlin2_r0_loop,phir2_lin_loop,Fcb5_loop
+common loops,Phir_loop,rad1_loop,rad2_loop,lat1_loop,lat2_loop,lon1_loop,lon2_loop,L_loop,opclstat_loop,r2Er1_loop,r2Er2_loop,Tmmean_loop,Fcb_loop,dTmds1_loop,dTmds2_loop,r2Tcuadr1_loop,r2Tcuadr2_loop,r2T1_loop,r2T2_loop,Ner01_loop,Ner02_loop,Ner11_loop,Ner12_loop,Ner21_loop,Ner22_loop,Ner31_loop,Ner32_loop,Rp_rad1_loop,Rp_lat1_loop,Rp_lon1_loop,Rp_rad2_loop,Rp_lat2_loop,Rp_lon2_loop,TmR11_loop,TmR12_loop,NR11_loop,NR12_loop,Nemean_loop,Long_cm,Phih_L,Ner0m_loop,lambda_N_loop,r2N1_loop,r2N2_loop,Tm01_ts_loop,gradT1_ts_loop,FTr1_ts_loop,Tm0s1_ts_loop,dTmds1_ts_loop,FTs1_ts_loop,Tm02_ts_loop,gradT2_ts_loop,FTr2_ts_loop,Tm0s2_ts_loop,dTmds2_ts_loop,FTs2_ts_loop,eplegT1_loop,eplegT2_loop,deltaS1_loop,deltaS2_loop,Smaxxx1_loop,Smaxxx2_loop,s_r0_a1_loop,s_r0_a2_loop,Sminnn1_loop,Sminnn2_loop,ISO_loop,B_basem_loop,Netech_loop,Ne0_s_loop,lambda_N_s_loop,Tm0s15_ts_loop,dTmds15_ts_loop,FTs15_ts_loop,Tm0s25_ts_loop,dTmds25_ts_loop,FTs25_ts_loop,Erlin1_F_loop,Erlin1_d_loop,Erlin1_o_loop,Erlin1_r0_loop,Erlin2_F_loop,Erlin2_d_loop,Erlin2_o_loop,Erlin2_r0_loop,phir_lin_loop,Fcb5_loop,Phir1_loop,Phir2_loop,Fcb1_loop,Fcb2_loop,Phir1_lin_loop,Phir2_lin_loop,Fcb51_loop,Fcb52_loop,indexloop_loop,Bmean_loop,Tm0s_base_loop,B0_loop
 
-common loops_filter,Phir_loop_c,rad1_loop_c,rad2_loop_c,lat1_loop_c,lat2_loop_c,lon1_loop_c,lon2_loop_c,L_loop_c,opclstat_loop_c,r2Er1_loop_c,r2Er2_loop_c,Tmmean_loop_c,Fcb_loop_c,dTmds1_loop_c,dTmds2_loop_c,r2Tcuadr1_loop_c,r2Tcuadr2_loop_c,r2T1_loop_c,r2T2_loop_c,Ner01_loop_c,Ner02_loop_c,Ner11_loop_c,Ner12_loop_c,Ner21_loop_c,Ner22_loop_c,Ner31_loop_c,Ner32_loop_c,Rp_rad1_loop_c,Rp_lat1_loop_c,Rp_lon1_loop_c,Rp_rad2_loop_c,Rp_lat2_loop_c,Rp_lon2_loop_c,TmR11_loop_c,TmR12_loop_c,NR11_loop_c,NR12_loop_c,Nemean_loop_c,Long_cm_c,Phih_L_c,Ner0m_loop_c,lambda_N_loop_c,r2N1_loop_c,r2N2_loop_c,Tm01_ts_loop_c,gradT1_ts_loop_c,FTr1_ts_loop_c,Tm0s1_ts_loop_c,dTmds1_ts_loop_c,FTs1_ts_loop_c,Tm02_ts_loop_c,gradT2_ts_loop_c,FTr2_ts_loop_c,Tm0s2_ts_loop_c,dTmds2_ts_loop_c,FTs2_ts_loop_c,eplegT1_loop_c,eplegT2_loop_c,deltaS1_loop_c,deltaS2_loop_c,Smaxxx1_loop_c,Smaxxx2_loop_c,Sminnn1_loop_c,Sminnn2_loop_c,ISO_loop_c,B_basem_loop_c,Netech_loop_c,Ne0_s_loop_c,lambda_N_s_loop_c,Tm0s15_ts_loop_c,dTmds15_ts_loop_c,FTs15_ts_loop_c,Tm0s25_ts_loop_c,dTmds25_ts_loop_c,FTs25_ts_loop_c,Erlin1_F_loop_c,Erlin1_d_loop_c,Erlin1_o_loop_c,Erlin1_r0_loop_c,phir1_lin_loop_c,Erlin2_F_loop_c,Erlin2_d_loop_c,Erlin2_o_loop_c,Erlin2_r0_loop_c,phir2_lin_loop_c,Fcb5_loop_c
+common loops_filter,Phir_loop_c,rad1_loop_c,rad2_loop_c,lat1_loop_c,lat2_loop_c,lon1_loop_c,lon2_loop_c,L_loop_c,opclstat_loop_c,r2Er1_loop_c,r2Er2_loop_c,Tmmean_loop_c,Fcb_loop_c,dTmds1_loop_c,dTmds2_loop_c,r2Tcuadr1_loop_c,r2Tcuadr2_loop_c,r2T1_loop_c,r2T2_loop_c,Ner01_loop_c,Ner02_loop_c,Ner11_loop_c,Ner12_loop_c,Ner21_loop_c,Ner22_loop_c,Ner31_loop_c,Ner32_loop_c,Rp_rad1_loop_c,Rp_lat1_loop_c,Rp_lon1_loop_c,Rp_rad2_loop_c,Rp_lat2_loop_c,Rp_lon2_loop_c,TmR11_loop_c,TmR12_loop_c,NR11_loop_c,NR12_loop_c,Nemean_loop_c,Long_cm_c,Phih_L_c,Ner0m_loop_c,lambda_N_loop_c,r2N1_loop_c,r2N2_loop_c,Tm01_ts_loop_c,gradT1_ts_loop_c,FTr1_ts_loop_c,Tm0s1_ts_loop_c,dTmds1_ts_loop_c,FTs1_ts_loop_c,Tm02_ts_loop_c,gradT2_ts_loop_c,FTr2_ts_loop_c,Tm0s2_ts_loop_c,dTmds2_ts_loop_c,FTs2_ts_loop_c,eplegT1_loop_c,eplegT2_loop_c,deltaS1_loop_c,deltaS2_loop_c,Smaxxx1_loop_c,Smaxxx2_loop_c,Sminnn1_loop_c,Sminnn2_loop_c,ISO_loop_c,B_basem_loop_c,Netech_loop_c,Ne0_s_loop_c,lambda_N_s_loop_c,Tm0s15_ts_loop_c,dTmds15_ts_loop_c,FTs15_ts_loop_c,Tm0s25_ts_loop_c,dTmds25_ts_loop_c,FTs25_ts_loop_c,Erlin1_F_loop_c,Erlin1_d_loop_c,Erlin1_o_loop_c,Erlin1_r0_loop_c,Erlin2_F_loop_c,Erlin2_d_loop_c,Erlin2_o_loop_c,Erlin2_r0_loop_c,phir_lin_loop_c,Fcb5_loop_c,Phir1_loop_c,Phir2_loop_c,Fcb1_loop_c,Fcb2_loop_c,Phir1_lin_loop_c,Phir2_lin_loop_c,Fcb51_loop_c,Fcb52_loop_c,indexloop_loop_c,Bmean_loop_c,Tm0s_base_loop_c,B0_loop_c
 
 common label,T_label,Er_label
+
+common select,Fcb_tot,Phir_tot,lat1_tot,lat2_tot,lon1_tot,lon2_tot,opclstat_tot,indexloop_tot,Rp_lat1_tot,Rp_lat2_tot,Rp_lon1_tot,Rp_lon2_tot
 
  i = where(opclstat gt 0.)
 
  Nlegs = n_elements(i)*1L
 Nloops = Nlegs/2 
 
-stop
+;stop
 ;Nloops = n_elements(Phir_loop)*1L
 
 ;Etiquetado de loops
@@ -4867,105 +5379,634 @@ stop
 ;     (0) si no supera ningún ajuste en una o ambas piernas. (FTs*_ts_loop < 0.7 y FTs*5_ts_loop < 0.7)
 ;     (1) si tiene éxito el ajuste con todos los datos en ambas piernas. (FTs*_ts_loop > 0.7)
 ;     (2) si fracasa el ajuste con todos los datos pero tiene éxito el ajuste con pocos datos en ambas piernas. (FTs*5_ts_loop > 0.7) 
-;     (3) si en una pierna es (1) y en otra (2)
-;
+;     (3) si en l1 es (1) y en l2 es (2)
+;     (4) si en l1 es (2) y en l1 es (1)
+
 ;Er_label
 ;Ajuste de pérdida radiativa: (se realizan dos ajustes, el primero exponencial con todos los datos de la pierna (r2Er*_loop) y el segundo lineal con los primeros cuatro puntos (Erlin*_F_loop))
 ;     (0) si no soporta ningún ajuste en una o ambas piernas. (r2Er*_loop < 0.75 y Erlin*_F_loop < 0.5)
 ;     (1) si tiene éxito el ajuste con todos los datos en ambas piernas. (r2Er*_loop > 0.75)
 ;     (2) si fracasa el ajuste con todos los datos pero tiene éxito el ajuste con cuatro datos en ambas piernas. (Erlin*_F_loop > 0.5)
-;     (3) si en una pierna es (1) y en otra (2)
+;     (3) si en l1 es (1) y en l2 es (2)
+;     (4) si en l1 es (2) y en l1 es (1)
 
  T_label = fltarr(Nloops)-555. 
 Er_label = fltarr(Nloops)-555.
 
-stop
+;stop
 
 ;Temperatura
 
+F5crit = 0.5
+ Fcrit = 0.7
+
 for iloop = 0L,Nloops-1 do begin
-if ((FTs1_ts_loop(iloop) lt 0.70 or  FTs2_ts_loop(iloop) lt 0.70) and (FTs15_ts_loop(iloop) lt 0.70 or  FTs25_ts_loop(iloop) lt 0.70)) then T_label(iloop) = 0
-if  (FTs1_ts_loop(iloop) ge 0.70 and FTs2_ts_loop(iloop) ge 0.70)                                                                      then T_label(iloop) = 1
-if  (FTs1_ts_loop(iloop) lt 0.70 and FTs2_ts_loop(iloop) lt 0.70  and  FTs15_ts_loop(iloop) ge 0.70 and FTs25_ts_loop(iloop) ge 0.70)  then T_label(iloop) = 2
-if ((FTs1_ts_loop(iloop) ge 0.70 and FTs2_ts_loop(iloop) lt 0.70  and                                   FTs25_ts_loop(iloop) ge 0.70) $
- or (FTs1_ts_loop(iloop) lt 0.70 and FTs2_ts_loop(iloop) ge 0.70  and  FTs15_ts_loop(iloop) ge 0.70))                                  then T_label(iloop) = 3
+if ((FTs1_ts_loop(iloop) lt Fcrit and FTs15_ts_loop(iloop) lt F5crit)  or (FTs2_ts_loop(iloop) lt  Fcrit and FTs25_ts_loop(iloop) lt F5crit)) then T_label(iloop) = 0
+if  (FTs1_ts_loop(iloop) ge Fcrit and  FTs2_ts_loop(iloop) ge  Fcrit)                                                                         then T_label(iloop) = 1
+if  (FTs1_ts_loop(iloop) lt Fcrit and  FTs2_ts_loop(iloop) lt  Fcrit  and FTs15_ts_loop(iloop) ge F5crit and FTs25_ts_loop(iloop) ge F5crit)  then T_label(iloop) = 2
+if  (FTs1_ts_loop(iloop) ge Fcrit and  FTs2_ts_loop(iloop) lt  Fcrit  and                                    FTs25_ts_loop(iloop) ge F5crit)  then T_label(iloop) = 3
+if  (FTs1_ts_loop(iloop) lt Fcrit and  FTs2_ts_loop(iloop) ge  Fcrit  and FTs15_ts_loop(iloop) ge F5crit)                                     then T_label(iloop) = 4
 endfor
 
 
 ;Pérdida radiativa
 
+Erlcrit = 0.5
+ Ercrit = 0.75
+
 for iloop = 0L,Nloops-1 do begin
-if ((r2Er1_loop(iloop) lt 0.75 or  r2Er2_loop(iloop) lt 0.75) and (Erlin1_F_loop(iloop) lt 0.50 or  Erlin2_F_loop(iloop) lt 0.50)) then Er_label(iloop) = 0
-if  (r2Er1_loop(iloop) ge 0.75 and r2Er2_loop(iloop) ge 0.75)                                                                      then Er_label(iloop) = 1
-if ((r2Er1_loop(iloop) lt 0.75 and r2Er2_loop(iloop) lt 0.75) and (Erlin1_F_loop(iloop) ge 0.50 and Erlin2_F_loop(iloop) ge 0.50)) then Er_label(iloop) = 2
-if ((r2Er1_loop(iloop) ge 0.75 and r2Er2_loop(iloop) lt 0.75  and                                   Erlin2_F_loop(iloop) ge 0.50) $
- or (r2Er1_loop(iloop) lt 0.75 and r2Er2_loop(iloop) ge 0.75  and  Erlin1_F_loop(iloop) ge 0.50))                                  then Er_label(iloop) = 3
+if ((r2Er1_loop(iloop) lt Ercrit and Erlin1_F_loop(iloop) lt Erlcrit)  or (   r2Er2_loop(iloop) lt  Ercrit and Erlin2_F_loop(iloop) lt Erlcrit)) then Er_label(iloop) = 0
+if  (r2Er1_loop(iloop) ge Ercrit and    r2Er2_loop(iloop) ge  Ercrit)                                                                            then Er_label(iloop) = 1
+if ((r2Er1_loop(iloop) lt Ercrit and    r2Er2_loop(iloop) lt  Ercrit) and (Erlin1_F_loop(iloop) ge Erlcrit and Erlin2_F_loop(iloop) ge Erlcrit)) then Er_label(iloop) = 2
+if  (r2Er1_loop(iloop) ge Ercrit and    r2Er2_loop(iloop) lt  Ercrit  and                                      Erlin2_F_loop(iloop) ge Erlcrit)  then Er_label(iloop) = 3
+if  (r2Er1_loop(iloop) lt Ercrit and    r2Er2_loop(iloop) ge  Ercrit  and  Erlin1_F_loop(iloop) ge Erlcrit)                                      then Er_label(iloop) = 4
 endfor
 
-stop
+;stop
+
+;NeCritQ = 1.4
+
+;s = where(Abs(lat1_loop) le 30. and Abs(lat2_loop) le 30. and NR11_loop/1.e8 le NeCritQ and NR12_loop/1.e8 le NeCritQ and T_label ge 1 and Er_label ge 1)
+;filter_loop,s
+
+;footpoint_map,[lat1_loop_c,lat2_loop_c],[lon1_loop_c,lon2_loop_c],[opclstat_loop_c,opclstat_loop_c],filelabel='QS-mid',indexloop_c,rotacion
+;Rpoint_map,[Rp_lat1_loop_c,Rp_lat2_loop_c],[Rp_lon1_loop_c,Rp_lon2_loop_c],[opclstat_loop_c,opclstat_loop_c],filelabel='QS-mid',indexloop_c,rotacion
 
 return
 end
 
 pro select
 
-common statistic_loops,Nlegs,Nemean,Tmmean,WTmean,Nestddev,Tmstddev,WTstddev,loop_length,betamean,betaapex,Bmean,Br0
+common statistic_loops,Nlegs,Nemean,Tmmean,WTmean,Nestddev,Tmstddev,WTstddev,loop_length,betamean,betaapex,Bmean,Br0,B0
 common statistic_loops2,opclstat,lambda_N,lambda_p,Ne0,p0,Tefit,gradT,r2N,r2P,r2T,indexloop,leg_status,Tm0,Tm0s  
 common statistic_loops3,Eh,sH,r2sH,Phir,Fcb,Ner0,Ner1,Ner2,Ner3,TmR1,NR1,Fcb5
 common statistic_loops4,r2Tcuadr,Acuadr_a, s_r0_a,dTmds,r2Ts,Tmbase,Netech,Ne0_s,lambda_N_s
 common statistic_loops5,r2Er,Phirfit,Tm0_ts,gradT_ts,FTr_ts,Tm0s_ts,dTmds_ts,FTs_ts,eplegT,deltaS,Smaxxx,Sminnn,Tm0s5_ts,dTmds5_ts,FTs5_ts,Erlin_F,Erlin_d,Erlin_o,Erlin_r0,phir_lin
 common starttrace,strad,stlat,stlon,footrad,footlat,footlon,Rp_rad,Rp_lat,Rp_lon,B_base
 
-common stat_filter,Nlegs_c,Nemean_c,Tmmean_c,WTmean_c,Nestddev_c,Tmstddev_c,WTstddev_c,loop_length_c,betamean_c,betaapex_c,Bmean_c,Br0_c
+common stat_filter,Nlegs_c,Nemean_c,Tmmean_c,WTmean_c,Nestddev_c,Tmstddev_c,WTstddev_c,loop_length_c,betamean_c,betaapex_c,Bmean_c,Br0_c,B0_c
 common stat_filter2,opclstat_c,lambda_N_c,lambda_p_c,Ne0_c,p0_c,Tefit_c,gradT_c,r2N_c,r2P_c,r2T_c,indexloop_c,leg_status_c,Tm0_c,Tm0s_c,Tm0_ts_c,gradT_ts_c,FTr_ts_c,Tm0s_ts_c,dTmds_ts_c,FTs_ts_c,Tm0s5_ts_c,dTmds5_ts_c,FTs5_ts_c  
 common stat_filter3,Eh_c,sH_c,r2sH_c,Phir_c,Fcb_c,Ner0_c,Ner1_c,Ner2_c,Ner3_c,TmR1_c,NR1_c,Erlin_F_c,Erlin_d_c,Erlin_o_c,Erlin_r0_c,phir_lin_c
 common stat_filter4,r2Tcuadr_c,Acuadr_a_c, s_r0_a_c,dTmds_c,r2Ts_c,Netech_c,Ne0_s_c,lambda_N_s_c
 common stat_filter5,strad_c,stlat_c,stlon_c,footrad_c,footlat_c,footlon_c,Rp_rad_c,Rp_lat_c,Rp_lon_c
 common stat_filter6,r2Er_c,Phirfit_c,eplegT_c,deltaS_c,Smaxxx_c,Sminnn_c,B_base_c,Fcb5_c
 
-common loops,Phir_loop,rad1_loop,rad2_loop,lat1_loop,lat2_loop,lon1_loop,lon2_loop,L_loop,opclstat_loop,r2Er1_loop,r2Er2_loop,Tmmean_loop,Fcb_loop,dTmds1_loop,dTmds2_loop,r2Tcuadr1_loop,r2Tcuadr2_loop,r2T1_loop,r2T2_loop,Ner01_loop,Ner02_loop,Ner11_loop,Ner12_loop,Ner21_loop,Ner22_loop,Ner31_loop,Ner32_loop,Rp_rad1_loop,Rp_lat1_loop,Rp_lon1_loop,Rp_rad2_loop,Rp_lat2_loop,Rp_lon2_loop,TmR11_loop,TmR12_loop,NR11_loop,NR12_loop,Nemean_loop,Long_cm,Phih_L,Ner0m_loop,lambda_N_loop,r2N1_loop,r2N2_loop,Tm01_ts_loop,gradT1_ts_loop,FTr1_ts_loop,Tm0s1_ts_loop,dTmds1_ts_loop,FTs1_ts_loop,Tm02_ts_loop,gradT2_ts_loop,FTr2_ts_loop,Tm0s2_ts_loop,dTmds2_ts_loop,FTs2_ts_loop,eplegT1_loop,eplegT2_loop,deltaS1_loop,deltaS2_loop,Smaxxx1_loop,Smaxxx2_loop,s_r0_a1_loop,s_r0_a2_loop,Sminnn1_loop,Sminnn2_loop,ISO_loop,B_basem_loop,Netech_loop,Ne0_s_loop,lambda_N_s_loop,Tm0s15_ts_loop,dTmds15_ts_loop,FTs15_ts_loop,Tm0s25_ts_loop,dTmds25_ts_loop,FTs25_ts_loop,Erlin1_F_loop,Erlin1_d_loop,Erlin1_o_loop,Erlin1_r0_loop,phir1_lin_loop,Erlin2_F_loop,Erlin2_d_loop,Erlin2_o_loop,Erlin2_r0_loop,phir2_lin_loop,Fcb5_loop
+common loops,Phir_loop,rad1_loop,rad2_loop,lat1_loop,lat2_loop,lon1_loop,lon2_loop,L_loop,opclstat_loop,r2Er1_loop,r2Er2_loop,Tmmean_loop,Fcb_loop,dTmds1_loop,dTmds2_loop,r2Tcuadr1_loop,r2Tcuadr2_loop,r2T1_loop,r2T2_loop,Ner01_loop,Ner02_loop,Ner11_loop,Ner12_loop,Ner21_loop,Ner22_loop,Ner31_loop,Ner32_loop,Rp_rad1_loop,Rp_lat1_loop,Rp_lon1_loop,Rp_rad2_loop,Rp_lat2_loop,Rp_lon2_loop,TmR11_loop,TmR12_loop,NR11_loop,NR12_loop,Nemean_loop,Long_cm,Phih_L,Ner0m_loop,lambda_N_loop,r2N1_loop,r2N2_loop,Tm01_ts_loop,gradT1_ts_loop,FTr1_ts_loop,Tm0s1_ts_loop,dTmds1_ts_loop,FTs1_ts_loop,Tm02_ts_loop,gradT2_ts_loop,FTr2_ts_loop,Tm0s2_ts_loop,dTmds2_ts_loop,FTs2_ts_loop,eplegT1_loop,eplegT2_loop,deltaS1_loop,deltaS2_loop,Smaxxx1_loop,Smaxxx2_loop,s_r0_a1_loop,s_r0_a2_loop,Sminnn1_loop,Sminnn2_loop,ISO_loop,B_basem_loop,Netech_loop,Ne0_s_loop,lambda_N_s_loop,Tm0s15_ts_loop,dTmds15_ts_loop,FTs15_ts_loop,Tm0s25_ts_loop,dTmds25_ts_loop,FTs25_ts_loop,Erlin1_F_loop,Erlin1_d_loop,Erlin1_o_loop,Erlin1_r0_loop,Erlin2_F_loop,Erlin2_d_loop,Erlin2_o_loop,Erlin2_r0_loop,phir_lin_loop,Fcb5_loop,Phir1_loop,Phir2_loop,Fcb1_loop,Fcb2_loop,Phir1_lin_loop,Phir2_lin_loop,Fcb51_loop,Fcb52_loop,indexloop_loop,Bmean_loop,Tm0s_base_loop,B0_loop
 
-common loops_filter,Phir_loop_c,rad1_loop_c,rad2_loop_c,lat1_loop_c,lat2_loop_c,lon1_loop_c,lon2_loop_c,L_loop_c,opclstat_loop_c,r2Er1_loop_c,r2Er2_loop_c,Tmmean_loop_c,Fcb_loop_c,dTmds1_loop_c,dTmds2_loop_c,r2Tcuadr1_loop_c,r2Tcuadr2_loop_c,r2T1_loop_c,r2T2_loop_c,Ner01_loop_c,Ner02_loop_c,Ner11_loop_c,Ner12_loop_c,Ner21_loop_c,Ner22_loop_c,Ner31_loop_c,Ner32_loop_c,Rp_rad1_loop_c,Rp_lat1_loop_c,Rp_lon1_loop_c,Rp_rad2_loop_c,Rp_lat2_loop_c,Rp_lon2_loop_c,TmR11_loop_c,TmR12_loop_c,NR11_loop_c,NR12_loop_c,Nemean_loop_c,Long_cm_c,Phih_L_c,Ner0m_loop_c,lambda_N_loop_c,r2N1_loop_c,r2N2_loop_c,Tm01_ts_loop_c,gradT1_ts_loop_c,FTr1_ts_loop_c,Tm0s1_ts_loop_c,dTmds1_ts_loop_c,FTs1_ts_loop_c,Tm02_ts_loop_c,gradT2_ts_loop_c,FTr2_ts_loop_c,Tm0s2_ts_loop_c,dTmds2_ts_loop_c,FTs2_ts_loop_c,eplegT1_loop_c,eplegT2_loop_c,deltaS1_loop_c,deltaS2_loop_c,Smaxxx1_loop_c,Smaxxx2_loop_c,Sminnn1_loop_c,Sminnn2_loop_c,ISO_loop_c,B_basem_loop_c,Netech_loop_c,Ne0_s_loop_c,lambda_N_s_loop_c,Tm0s15_ts_loop_c,dTmds15_ts_loop_c,FTs15_ts_loop_c,Tm0s25_ts_loop_c,dTmds25_ts_loop_c,FTs25_ts_loop_c,Erlin1_F_loop_c,Erlin1_d_loop_c,Erlin1_o_loop_c,Erlin1_r0_loop_c,phir1_lin_loop_c,Erlin2_F_loop_c,Erlin2_d_loop_c,Erlin2_o_loop_c,Erlin2_r0_loop_c,phir2_lin_loop_c,Fcb5_loop_c
+common loops_filter,Phir_loop_c,rad1_loop_c,rad2_loop_c,lat1_loop_c,lat2_loop_c,lon1_loop_c,lon2_loop_c,L_loop_c,opclstat_loop_c,r2Er1_loop_c,r2Er2_loop_c,Tmmean_loop_c,Fcb_loop_c,dTmds1_loop_c,dTmds2_loop_c,r2Tcuadr1_loop_c,r2Tcuadr2_loop_c,r2T1_loop_c,r2T2_loop_c,Ner01_loop_c,Ner02_loop_c,Ner11_loop_c,Ner12_loop_c,Ner21_loop_c,Ner22_loop_c,Ner31_loop_c,Ner32_loop_c,Rp_rad1_loop_c,Rp_lat1_loop_c,Rp_lon1_loop_c,Rp_rad2_loop_c,Rp_lat2_loop_c,Rp_lon2_loop_c,TmR11_loop_c,TmR12_loop_c,NR11_loop_c,NR12_loop_c,Nemean_loop_c,Long_cm_c,Phih_L_c,Ner0m_loop_c,lambda_N_loop_c,r2N1_loop_c,r2N2_loop_c,Tm01_ts_loop_c,gradT1_ts_loop_c,FTr1_ts_loop_c,Tm0s1_ts_loop_c,dTmds1_ts_loop_c,FTs1_ts_loop_c,Tm02_ts_loop_c,gradT2_ts_loop_c,FTr2_ts_loop_c,Tm0s2_ts_loop_c,dTmds2_ts_loop_c,FTs2_ts_loop_c,eplegT1_loop_c,eplegT2_loop_c,deltaS1_loop_c,deltaS2_loop_c,Smaxxx1_loop_c,Smaxxx2_loop_c,Sminnn1_loop_c,Sminnn2_loop_c,ISO_loop_c,B_basem_loop_c,Netech_loop_c,Ne0_s_loop_c,lambda_N_s_loop_c,Tm0s15_ts_loop_c,dTmds15_ts_loop_c,FTs15_ts_loop_c,Tm0s25_ts_loop_c,dTmds25_ts_loop_c,FTs25_ts_loop_c,Erlin1_F_loop_c,Erlin1_d_loop_c,Erlin1_o_loop_c,Erlin1_r0_loop_c,Erlin2_F_loop_c,Erlin2_d_loop_c,Erlin2_o_loop_c,Erlin2_r0_loop_c,phir_lin_loop_c,Fcb5_loop_c,Phir1_loop_c,Phir2_loop_c,Fcb1_loop_c,Fcb2_loop_c,Phir1_lin_loop_c,Phir2_lin_loop_c,Fcb51_loop_c,Fcb52_loop_c,indexloop_loop_c,Bmean_loop_c,Tm0s_base_loop_c,B0_loop_c
 
 common label,T_label,Er_label
 
-R2Crit_Ne = 0.75
-FTscrit   = 0.70
-FTs5crit  = 0.90
+common select,Fcb_tot,Phir_tot,lat1_tot,lat2_tot,lon1_tot,lon2_tot,opclstat_tot,indexloop_tot,Rp_lat1_tot,Rp_lat2_tot,Rp_lon1_tot,Rp_lon2_tot
+
+
 NeCritQ   = 1.4
 
-print,n_elements(phir_loop)
- select = where(Abs(lat1_loop) le 30. and Abs(lat2_loop) le 30. and Phir_loop gt 0. $
-           and NR11_loop/1.e8 le NeCritQ and NR12_loop/1.e8 le NeCritQ $
-           and r2N1_loop ge r2crit_Ne and r2N2_loop ge r2crit_Ne $
-           and FTs1_ts_loop ge FTscrit and FTs2_ts_loop ge FTscrit)
+;print,n_elements(phir_loop)
 
-          ;and FTs15_ts_loop  ge FTs5crit  and FTs25_ts_loop  ge FTs5crit)
+ select1  = where(NR11_loop/1.e8 le NeCritQ and NR12_loop/1.e8 le NeCritQ and T_label eq 1 and Er_label eq 1)
+if n_elements(select1) eq 1 then stop
 
-filter_loop,select
+filter_loop,select1
 
-stop
+;Rpoint_map,[Rp_lat1_loop_c,Rp_lat2_loop_c],[Rp_lon1_loop_c,Rp_lon2_loop_c],[opclstat_loop_c,opclstat_loop_c],filelabel='QS-no-lab',indexloop_c,rotacion
 
+        Fcb_lab1 =      Fcb_loop_c
+       Phir_lab1 =     Phir_loop_c
+
+       lat1_lab1 =     lat1_loop_c
+       lat2_lab1 =     lat2_loop_c
+       lon1_lab1 =     lon1_loop_c
+       lon2_lab1 =     lon2_loop_c
+   opclstat_lab1 = opclstat_loop_c
+  indexloop_lab1 =indexloop_loop_c
+    Rp_lat1_lab1 =  Rp_lat1_loop_c
+    Rp_lat2_lab1 =  Rp_lat2_loop_c
+    Rp_lon1_lab1 =  Rp_lon1_loop_c
+    Rp_lon2_lab1 =  Rp_lon2_loop_c
+
+         Tm_lab1 =   Tmmean_loop_c/1.e6
+        Nr0_lab1 =   [Ner01_loop_c , Ner02_loop_c]/1.e8
+
+;Rpoint_map,[Rp_lat1_lab1,Rp_lat2_lab1],[Rp_lon1_lab1,Rp_lon2_lab1],[opclstat_lab1,opclstat_lab1],filelabel='QS-lab1',indexloop_lab1,rotacion
+
+;stop
+
+ select2  = where(NR11_loop/1.e8 le NeCritQ and NR12_loop/1.e8 le NeCritQ and T_label eq 1 and Er_label eq 2)
+if n_elements(select2) eq 1 then stop
+
+filter_loop,select2
+
+        Fcb_lab2 =      Fcb_loop_c
+       Phir_lab2 = Phir_lin_loop_c
+
+       lat1_lab2 =     lat1_loop_c
+       lat2_lab2 =     lat2_loop_c
+       lon1_lab2 =     lon1_loop_c
+       lon2_lab2 =     lon2_loop_c
+   opclstat_lab2 = opclstat_loop_c
+  indexloop_lab2 =indexloop_loop_c
+    Rp_lat1_lab2 =  Rp_lat1_loop_c
+    Rp_lat2_lab2 =  Rp_lat2_loop_c
+    Rp_lon1_lab2 =  Rp_lon1_loop_c
+    Rp_lon2_lab2 =  Rp_lon2_loop_c
+
+         Tm_lab2 =   Tmmean_loop_c/1.e6
+        Nr0_lab2 =   [Ner01_loop_c , Ner02_loop_c]/1.e8
+
+ select3  = where(NR11_loop/1.e8 le NeCritQ and NR12_loop/1.e8 le NeCritQ and T_label eq 1 and Er_label eq 3)
+if n_elements(select3) eq 1 then stop
+
+filter_loop,select3
+
+        Fcb_lab3 =      Fcb_loop_c
+       Phir_lab3 =    Phir1_loop_c + Phir2_lin_loop_c
+
+       lat1_lab3 =     lat1_loop_c
+       lat2_lab3 =     lat2_loop_c
+       lon1_lab3 =     lon1_loop_c
+       lon2_lab3 =     lon2_loop_c
+   opclstat_lab3 = opclstat_loop_c
+  indexloop_lab3 =indexloop_loop_c
+    Rp_lat1_lab3 =  Rp_lat1_loop_c
+    Rp_lat2_lab3 =  Rp_lat2_loop_c
+    Rp_lon1_lab3 =  Rp_lon1_loop_c
+    Rp_lon2_lab3 =  Rp_lon2_loop_c
+
+         Tm_lab3 =   Tmmean_loop_c/1.e6
+        Nr0_lab3 =   [Ner01_loop_c , Ner02_loop_c]/1.e8
+
+ select4  = where(NR11_loop/1.e8 le NeCritQ and NR12_loop/1.e8 le NeCritQ and T_label eq 1 and Er_label eq 4)
+if n_elements(select4) eq 1 then stop
+
+filter_loop,select4
+
+        Fcb_lab4 =       Fcb_loop_c
+       Phir_lab4 = Phir1_lin_loop_c + Phir2_loop_c
+
+       lat1_lab4 =     lat1_loop_c
+       lat2_lab4 =     lat2_loop_c
+       lon1_lab4 =     lon1_loop_c
+       lon2_lab4 =     lon2_loop_c
+   opclstat_lab4 = opclstat_loop_c
+  indexloop_lab4 =indexloop_loop_c
+    Rp_lat1_lab4 =  Rp_lat1_loop_c
+    Rp_lat2_lab4 =  Rp_lat2_loop_c
+    Rp_lon1_lab4 =  Rp_lon1_loop_c
+    Rp_lon2_lab4 =  Rp_lon2_loop_c
+
+         Tm_lab4 =   Tmmean_loop_c/1.e6
+        Nr0_lab4 =   [Ner01_loop_c , Ner02_loop_c]/1.e8
+
+ select5  = where(NR11_loop/1.e8 le NeCritQ and NR12_loop/1.e8 le NeCritQ and T_label eq 2 and Er_label eq 1)
+if n_elements(select5) eq 1 then stop
+
+filter_loop,select5
+
+        Fcb_lab5 =     Fcb5_loop_c
+       Phir_lab5 =     Phir_loop_c
+
+       lat1_lab5 =     lat1_loop_c
+       lat2_lab5 =     lat2_loop_c
+       lon1_lab5 =     lon1_loop_c
+       lon2_lab5 =     lon2_loop_c
+   opclstat_lab5 = opclstat_loop_c
+  indexloop_lab5 =indexloop_loop_c
+    Rp_lat1_lab5 =  Rp_lat1_loop_c
+    Rp_lat2_lab5 =  Rp_lat2_loop_c
+    Rp_lon1_lab5 =  Rp_lon1_loop_c
+    Rp_lon2_lab5 =  Rp_lon2_loop_c
+
+         Tm_lab5 =   Tmmean_loop_c/1.e6
+        Nr0_lab5 =   [Ner01_loop_c , Ner02_loop_c]/1.e8
+
+ select6  = where(NR11_loop/1.e8 le NeCritQ and NR12_loop/1.e8 le NeCritQ and T_label eq 2 and Er_label eq 2)
+if n_elements(select6) eq 1 then stop
+
+filter_loop,select6
+
+        Fcb_lab6 =     Fcb5_loop_c
+       Phir_lab6 = Phir_lin_loop_c
+
+       lat1_lab6 =     lat1_loop_c
+       lat2_lab6 =     lat2_loop_c
+       lon1_lab6 =     lon1_loop_c
+       lon2_lab6 =     lon2_loop_c
+   opclstat_lab6 = opclstat_loop_c
+  indexloop_lab6 =indexloop_loop_c
+    Rp_lat1_lab6 =  Rp_lat1_loop_c
+    Rp_lat2_lab6 =  Rp_lat2_loop_c
+    Rp_lon1_lab6 =  Rp_lon1_loop_c
+    Rp_lon2_lab6 =  Rp_lon2_loop_c
+
+         Tm_lab6 =   Tmmean_loop_c/1.e6
+        Nr0_lab6 =   [Ner01_loop_c , Ner02_loop_c]/1.e8
+
+ select7  = where(NR11_loop/1.e8 le NeCritQ and NR12_loop/1.e8 le NeCritQ and T_label eq 2 and Er_label eq 3)
+if n_elements(select7) eq 1 then stop
+
+filter_loop,select7
+
+        Fcb_lab7 =     Fcb5_loop_c
+       Phir_lab7 =    Phir1_loop_c + Phir2_lin_loop_c
+
+       lat1_lab7 =     lat1_loop_c
+       lat2_lab7 =     lat2_loop_c
+       lon1_lab7 =     lon1_loop_c
+       lon2_lab7 =     lon2_loop_c
+   opclstat_lab7 = opclstat_loop_c
+  indexloop_lab7 =indexloop_loop_c
+    Rp_lat1_lab7 =  Rp_lat1_loop_c
+    Rp_lat2_lab7 =  Rp_lat2_loop_c
+    Rp_lon1_lab7 =  Rp_lon1_loop_c
+    Rp_lon2_lab7 =  Rp_lon2_loop_c
+
+         Tm_lab7 =   Tmmean_loop_c/1.e6
+        Nr0_lab7 =   [Ner01_loop_c , Ner02_loop_c]/1.e8
+
+ select8  = where(NR11_loop/1.e8 le NeCritQ and NR12_loop/1.e8 le NeCritQ and T_label eq 2 and Er_label eq 4)
+if n_elements(select8) eq 1 then stop
+
+filter_loop,select8
+
+        Fcb_lab8 =      Fcb5_loop_c
+       Phir_lab8 = Phir1_lin_loop_c + Phir2_loop_c
+
+       lat1_lab8 =     lat1_loop_c
+       lat2_lab8 =     lat2_loop_c
+       lon1_lab8 =     lon1_loop_c
+       lon2_lab8 =     lon2_loop_c
+   opclstat_lab8 = opclstat_loop_c
+  indexloop_lab8 =indexloop_loop_c
+    Rp_lat1_lab8 =  Rp_lat1_loop_c
+    Rp_lat2_lab8 =  Rp_lat2_loop_c
+    Rp_lon1_lab8 =  Rp_lon1_loop_c
+    Rp_lon2_lab8 =  Rp_lon2_loop_c
+
+         Tm_lab8 =   Tmmean_loop_c/1.e6
+        Nr0_lab8 =   [Ner01_loop_c , Ner02_loop_c]/1.e8
+
+ select9  = where(NR11_loop/1.e8 le NeCritQ and NR12_loop/1.e8 le NeCritQ and T_label eq 3 and Er_label eq 1)
+if n_elements(select9) eq 1 then stop
+
+filter_loop,select9
+
+        Fcb_lab9 =     Fcb1_loop_c + Fcb52_loop_c
+       Phir_lab9 =     Phir_loop_c
+
+       lat1_lab9 =     lat1_loop_c
+       lat2_lab9 =     lat2_loop_c
+       lon1_lab9 =     lon1_loop_c
+       lon2_lab9 =     lon2_loop_c
+   opclstat_lab9 = opclstat_loop_c
+  indexloop_lab9 =indexloop_loop_c
+    Rp_lat1_lab9 =  Rp_lat1_loop_c
+    Rp_lat2_lab9 =  Rp_lat2_loop_c
+    Rp_lon1_lab9 =  Rp_lon1_loop_c
+    Rp_lon2_lab9 =  Rp_lon2_loop_c
+
+         Tm_lab9 =   Tmmean_loop_c/1.e6
+        Nr0_lab9 =   [Ner01_loop_c , Ner02_loop_c]/1.e8
+
+;Rpoint_map,[Rp_lat1_lab9,Rp_lat2_lab9],[Rp_lon1_lab9,Rp_lon2_lab9],[opclstat_lab9,opclstat_lab9],filelabel='QS-lab9',indexloop_lab9,rotacion
+
+;stop
+
+ select10 = where(NR11_loop/1.e8 le NeCritQ and NR12_loop/1.e8 le NeCritQ and T_label eq 3 and Er_label eq 2)
+if n_elements(select10) eq 1 then stop
+
+filter_loop,select10
+
+        Fcb_lab10 =     Fcb1_loop_c + Fcb52_loop_c
+       Phir_lab10 = Phir_lin_loop_c
+
+       lat1_lab10 =     lat1_loop_c
+       lat2_lab10 =     lat2_loop_c
+       lon1_lab10 =     lon1_loop_c
+       lon2_lab10 =     lon2_loop_c
+   opclstat_lab10 = opclstat_loop_c
+  indexloop_lab10 =indexloop_loop_c
+    Rp_lat1_lab10 =  Rp_lat1_loop_c
+    Rp_lat2_lab10 =  Rp_lat2_loop_c
+    Rp_lon1_lab10 =  Rp_lon1_loop_c
+    Rp_lon2_lab10 =  Rp_lon2_loop_c
+
+         Tm_lab10 =   Tmmean_loop_c/1.e6
+        Nr0_lab10 =   [Ner01_loop_c , Ner02_loop_c]/1.e8
+
+ select11 = where(NR11_loop/1.e8 le NeCritQ and NR12_loop/1.e8 le NeCritQ and T_label eq 3 and Er_label eq 3)
+if n_elements(select11) eq 1 then stop
+
+filter_loop,select11
+
+        Fcb_lab11 =     Fcb1_loop_c + Fcb52_loop_c
+       Phir_lab11 =    Phir1_loop_c + Phir2_lin_loop_c
+
+       lat1_lab11 =     lat1_loop_c
+       lat2_lab11 =     lat2_loop_c
+       lon1_lab11 =     lon1_loop_c
+       lon2_lab11 =     lon2_loop_c
+   opclstat_lab11 = opclstat_loop_c
+  indexloop_lab11 =indexloop_loop_c
+    Rp_lat1_lab11 =  Rp_lat1_loop_c
+    Rp_lat2_lab11 =  Rp_lat2_loop_c
+    Rp_lon1_lab11 =  Rp_lon1_loop_c
+    Rp_lon2_lab11 =  Rp_lon2_loop_c
+
+         Tm_lab11 =   Tmmean_loop_c/1.e6
+        Nr0_lab11 =   [Ner01_loop_c , Ner02_loop_c]/1.e8
+
+ select12 = where(NR11_loop/1.e8 le NeCritQ and NR12_loop/1.e8 le NeCritQ and T_label eq 3 and Er_label eq 4)
+if n_elements(select12) eq 1 then stop
+
+filter_loop,select12
+
+        Fcb_lab12 =      Fcb1_loop_c + Fcb52_loop_c
+       Phir_lab12 = Phir1_lin_loop_c + Phir2_loop_c
+
+       lat1_lab12 =     lat1_loop_c
+       lat2_lab12 =     lat2_loop_c
+       lon1_lab12 =     lon1_loop_c
+       lon2_lab12 =     lon2_loop_c
+   opclstat_lab12 = opclstat_loop_c
+  indexloop_lab12 =indexloop_loop_c
+    Rp_lat1_lab12 =  Rp_lat1_loop_c
+    Rp_lat2_lab12 =  Rp_lat2_loop_c
+    Rp_lon1_lab12 =  Rp_lon1_loop_c
+    Rp_lon2_lab12 =  Rp_lon2_loop_c
+
+         Tm_lab12 =   Tmmean_loop_c/1.e6
+        Nr0_lab12 =   [Ner01_loop_c , Ner02_loop_c]/1.e8
+
+ select13 = where(NR11_loop/1.e8 le NeCritQ and NR12_loop/1.e8 le NeCritQ and T_label eq 4 and Er_label eq 1)
+if n_elements(select13) eq 1 then stop
+
+filter_loop,select13
+
+        Fcb_lab13 =    Fcb51_loop_c + Fcb2_loop_c
+       Phir_lab13 =     Phir_loop_c
+
+       lat1_lab13 =     lat1_loop_c
+       lat2_lab13 =     lat2_loop_c
+       lon1_lab13 =     lon1_loop_c
+       lon2_lab13 =     lon2_loop_c
+   opclstat_lab13 = opclstat_loop_c
+  indexloop_lab13 =indexloop_loop_c
+    Rp_lat1_lab13 =  Rp_lat1_loop_c
+    Rp_lat2_lab13 =  Rp_lat2_loop_c
+    Rp_lon1_lab13 =  Rp_lon1_loop_c
+    Rp_lon2_lab13 =  Rp_lon2_loop_c
+
+         Tm_lab13 =   Tmmean_loop_c/1.e6
+        Nr0_lab13 =   [Ner01_loop_c , Ner02_loop_c]/1.e8
+
+ select14 = where(NR11_loop/1.e8 le NeCritQ and NR12_loop/1.e8 le NeCritQ and T_label eq 4 and Er_label eq 2)
+if n_elements(select14) eq 1 then stop
+
+filter_loop,select14
+
+        Fcb_lab14 =    Fcb51_loop_c + Fcb2_loop_c
+       Phir_lab14 = Phir_lin_loop_c
+
+       lat1_lab14 =     lat1_loop_c
+       lat2_lab14 =     lat2_loop_c
+       lon1_lab14 =     lon1_loop_c
+       lon2_lab14 =     lon2_loop_c
+   opclstat_lab14 = opclstat_loop_c
+  indexloop_lab14 =indexloop_loop_c
+    Rp_lat1_lab14 =  Rp_lat1_loop_c
+    Rp_lat2_lab14 =  Rp_lat2_loop_c
+    Rp_lon1_lab14 =  Rp_lon1_loop_c
+    Rp_lon2_lab14 =  Rp_lon2_loop_c
+
+         Tm_lab14 =   Tmmean_loop_c/1.e6
+        Nr0_lab14 =   [Ner01_loop_c , Ner02_loop_c]/1.e8
+
+ select15 = where(NR11_loop/1.e8 le NeCritQ and NR12_loop/1.e8 le NeCritQ and T_label eq 4 and Er_label eq 3)
+if n_elements(select15) eq 1 then stop
+
+filter_loop,select15
+
+        Fcb_lab15 =    Fcb51_loop_c + Fcb2_loop_c
+       Phir_lab15 =    Phir1_loop_c + Phir2_lin_loop_c
+
+       lat1_lab15 =     lat1_loop_c
+       lat2_lab15 =     lat2_loop_c
+       lon1_lab15 =     lon1_loop_c
+       lon2_lab15 =     lon2_loop_c
+   opclstat_lab15 = opclstat_loop_c
+  indexloop_lab15 =indexloop_loop_c
+    Rp_lat1_lab15 =  Rp_lat1_loop_c
+    Rp_lat2_lab15 =  Rp_lat2_loop_c
+    Rp_lon1_lab15 =  Rp_lon1_loop_c
+    Rp_lon2_lab15 =  Rp_lon2_loop_c
+
+         Tm_lab15 =   Tmmean_loop_c/1.e6
+        Nr0_lab15 =   [Ner01_loop_c , Ner02_loop_c]/1.e8
+
+ select16 = where(NR11_loop/1.e8 le NeCritQ and NR12_loop/1.e8 le NeCritQ and T_label eq 4 and Er_label eq 4)
+if n_elements(select16) eq 1 then stop
+
+filter_loop,select16
+
+        Fcb_lab16 =     Fcb51_loop_c + Fcb2_loop_c
+       Phir_lab16 = Phir1_lin_loop_c + Phir2_loop_c
+
+       lat1_lab16 =     lat1_loop_c
+       lat2_lab16 =     lat2_loop_c
+       lon1_lab16 =     lon1_loop_c
+       lon2_lab16 =     lon2_loop_c
+   opclstat_lab16 = opclstat_loop_c
+  indexloop_lab16 =indexloop_loop_c
+    Rp_lat1_lab16 =  Rp_lat1_loop_c
+    Rp_lat2_lab16 =  Rp_lat2_loop_c
+    Rp_lon1_lab16 =  Rp_lon1_loop_c
+    Rp_lon2_lab16 =  Rp_lon2_loop_c
+
+         Tm_lab16 =   Tmmean_loop_c/1.e6
+        Nr0_lab16 =   [Ner01_loop_c , Ner02_loop_c]/1.e8
+
+;concateno
+
+     Phir_tot = [Phir_lab1, Phir_lab2, Phir_lab3, Phir_lab4, Phir_lab5, Phir_lab6, Phir_lab7, Phir_lab8, Phir_lab9, Phir_lab10, Phir_lab11, Phir_lab12, Phir_lab13, Phir_lab14, Phir_lab15, Phir_lab16]
+      Fcb_tot = [ Fcb_lab1,  Fcb_lab2,  Fcb_lab3,  Fcb_lab4,  Fcb_lab5,  Fcb_lab6,  Fcb_lab7,  Fcb_lab8,  Fcb_lab9,  Fcb_lab10,  Fcb_lab11,  Fcb_lab12,  Fcb_lab13,  Fcb_lab14,  Fcb_lab15,  Fcb_lab16]
+
+     lat1_tot = [lat1_lab1, lat1_lab2, lat1_lab3, lat1_lab4, lat1_lab5, lat1_lab6, lat1_lab7, lat1_lab8, lat1_lab9, lat1_lab10, lat1_lab11, lat1_lab12, lat1_lab13, lat1_lab14, lat1_lab15, lat1_lab16]
+     lat2_tot = [lat2_lab1, lat2_lab2, lat2_lab3, lat2_lab4, lat2_lab5, lat2_lab6, lat2_lab7, lat2_lab8, lat2_lab9, lat2_lab10, lat2_lab11, lat2_lab12, lat2_lab13, lat2_lab14, lat2_lab15, lat2_lab16]
+     lon1_tot = [lon1_lab1, lon1_lab2, lon1_lab3, lon1_lab4, lon1_lab5, lon1_lab6, lon1_lab7, lon1_lab8, lon1_lab9, lon1_lab10, lon1_lab11, lon1_lab12, lon1_lab13, lon1_lab14, lon1_lab15, lon1_lab16]
+     lon2_tot = [lon2_lab1, lon2_lab2, lon2_lab3, lon2_lab4, lon2_lab5, lon2_lab6, lon2_lab7, lon2_lab8, lon2_lab9, lon2_lab10, lon2_lab11, lon2_lab12, lon2_lab13, lon2_lab14, lon2_lab15, lon2_lab16]
+
+ opclstat_tot = [ opclstat_lab1,  opclstat_lab2,  opclstat_lab3,  opclstat_lab4,  opclstat_lab5,  opclstat_lab6,  opclstat_lab7,  opclstat_lab8,  opclstat_lab9,  opclstat_lab10,  opclstat_lab11,  opclstat_lab12, $
+                  opclstat_lab13, opclstat_lab14, opclstat_lab15, opclstat_lab16]
+
+indexloop_tot = [indexloop_lab1,  indexloop_lab2,  indexloop_lab3,  indexloop_lab4,  indexloop_lab5,  indexloop_lab6,  indexloop_lab7,  indexloop_lab8,  indexloop_lab9,  indexloop_lab10,  indexloop_lab11,  indexloop_lab12, $
+                 indexloop_lab13, indexloop_lab14, indexloop_lab15, indexloop_lab16]
+
+  Rp_lat1_tot = [Rp_lat1_lab1,Rp_lat1_lab2,Rp_lat1_lab3,Rp_lat1_lab4,Rp_lat1_lab5,Rp_lat1_lab6,Rp_lat1_lab7,Rp_lat1_lab8,Rp_lat1_lab9,Rp_lat1_lab10,Rp_lat1_lab11,Rp_lat1_lab12,Rp_lat1_lab13,Rp_lat1_lab14,Rp_lat1_lab15,Rp_lat1_lab16]
+  Rp_lat2_tot = [Rp_lat2_lab1,Rp_lat2_lab2,Rp_lat2_lab3,Rp_lat2_lab4,Rp_lat2_lab5,Rp_lat2_lab6,Rp_lat2_lab7,Rp_lat2_lab8,Rp_lat2_lab9,Rp_lat2_lab10,Rp_lat2_lab11,Rp_lat2_lab12,Rp_lat2_lab13,Rp_lat2_lab14,Rp_lat2_lab15,Rp_lat2_lab16]
+  Rp_lon1_tot = [Rp_lon1_lab1,Rp_lon1_lab2,Rp_lon1_lab3,Rp_lon1_lab4,Rp_lon1_lab5,Rp_lon1_lab6,Rp_lon1_lab7,Rp_lon1_lab8,Rp_lon1_lab9,Rp_lon1_lab10,Rp_lon1_lab11,Rp_lon1_lab12,Rp_lon1_lab13,Rp_lon1_lab14,Rp_lon1_lab15,Rp_lon1_lab16]
+  Rp_lon2_tot = [Rp_lon2_lab1,Rp_lon2_lab2,Rp_lon2_lab3,Rp_lon2_lab4,Rp_lon2_lab5,Rp_lon2_lab6,Rp_lon2_lab7,Rp_lon2_lab8,Rp_lon2_lab9,Rp_lon2_lab10,Rp_lon2_lab11,Rp_lon2_lab12,Rp_lon2_lab13,Rp_lon2_lab14,Rp_lon2_lab15,Rp_lon2_lab16]
+
+       Tm_tot = [  Tm_lab1,  Tm_lab2,  Tm_lab3,  Tm_lab4,  Tm_lab5,  Tm_lab6,  Tm_lab7,  Tm_lab8,  Tm_lab9,  Tm_lab10,  Tm_lab11,  Tm_lab12,  Tm_lab13,  Tm_lab14,  Tm_lab15,  Tm_lab16]
+      Nr0_tot = [ Nr0_lab1, Nr0_lab2, Nr0_lab3, Nr0_lab4, Nr0_lab5, Nr0_lab6, Nr0_lab7, Nr0_lab8, Nr0_lab9, Nr0_lab10, Nr0_lab11, Nr0_lab12, Nr0_lab13, Nr0_lab14, Nr0_lab15, Nr0_lab16]
+
+;Rpoint_map,[Rp_lat1_tot,Rp_lat2_tot],[Rp_lon1_tot,Rp_lon2_tot],[opclstat_tot,opclstat_tot],filelabel='QS-tot',indexloop_tot,rotacion
+
+;stop
+
+suffix='-AIA4-full'
+
+ilow = where(Abs(lat1_tot) le 30. and Abs(lat2_tot) le 30.)
+
+        Fcb_low =        Fcb_tot(ilow)
+       Phir_low =       Phir_tot(ilow)
+
+       lat1_low =       lat1_tot(ilow)
+       lat2_low =       lat2_tot(ilow)
+       lon1_low =       lon1_tot(ilow)
+       lon2_low =       lon2_tot(ilow)
+   opclstat_low =   opclstat_tot(ilow)
+  indexloop_low =  indexloop_tot(ilow)
+    Rp_lat1_low =    Rp_lat1_tot(ilow)
+    Rp_lat2_low =    Rp_lat2_tot(ilow)
+    Rp_lon1_low =    Rp_lon1_tot(ilow)
+    Rp_lon2_low =    Rp_lon2_tot(ilow)
+
+         Tm_low =         Tm_tot(ilow)
+        Nr0_low =        Nr0_tot(ilow) 
+
+footpoint_map,[   lat1_low,   lat2_low],[   lon1_low,   lon2_low],[opclstat_low,opclstat_low],filelabel='QS-Low'+suffix,indexloop_low,rotacion
+   Rpoint_map,[Rp_lat1_low,Rp_lat2_low],[Rp_lon1_low,Rp_lon2_low],[opclstat_low,opclstat_low],filelabel='QS-Low'+suffix,indexloop_low,rotacion
+
+nbins = 80
+
+iin=where(Fcb_low/1.e5 gt -2)
+Phir_filt_low = Phir_low(iin)
+ Fcb_filt_low =  Fcb_low(iin)
+
+xxr = Phir_filt_low/1.e5
+xxf = -Fcb_filt_low/1.e5
+xxh = xxr + xxf
+mini = -2.
+maxi =  5.
+
+histoplotNe3,xxr,xxf,xxh,min=mini,max=maxi,nbins=nbins,xtit='!9f!3 [10!U5!N erg cm!U-2!N sec!U-1!N]',ytit='Frecuency Histogram',tit='QS Low closed loops',filename='QS-Low-Phis'+suffix
+
+;histoplot, Tm_low,min=mini,max=maxi,nbins=nbins,xtit='T!Dm!N [MK]'            ,ytit='Frecuency Histogram',tit= 'Tm - QS Low closed loops',filename='QS-Low-Tm' +suffix   
+;histoplot,Nr0_low,min=mini,max=maxi,nbins=nbins,xtit='N!De!N[10!U8!Ncm!U-3!N]',ytit='Frecuency Histogram',tit='Nr0 - QS Low closed loops',filename='QS-Low-Nr0'+suffix   
+
+
+imid = where(Abs(lat1_tot) gt 30. and Abs(lat2_tot) gt 30.)
+
+        Fcb_mid =        Fcb_tot(imid)
+       Phir_mid =       Phir_tot(imid)
+
+       lat1_mid =       lat1_tot(imid)
+       lat2_mid =       lat2_tot(imid)
+       lon1_mid =       lon1_tot(imid)
+       lon2_mid =       lon2_tot(imid)
+   opclstat_mid =   opclstat_tot(imid)
+  indexloop_mid =  indexloop_tot(imid)
+    Rp_lat1_mid =    Rp_lat1_tot(imid)
+    Rp_lat2_mid =    Rp_lat2_tot(imid)
+    Rp_lon1_mid =    Rp_lon1_tot(imid)
+    Rp_lon2_mid =    Rp_lon2_tot(imid)
+
+         Tm_mid =         Tm_tot(imid)
+        Nr0_mid =        Nr0_tot(imid) 
+
+footpoint_map,[   lat1_mid,   lat2_mid],[   lon1_mid,   lon2_mid],[opclstat_mid,opclstat_mid],filelabel='QS-Mid'+suffix,indexloop_mid,rotacion
+   Rpoint_map,[Rp_lat1_mid,Rp_lat2_mid],[Rp_lon1_mid,Rp_lon2_mid],[opclstat_mid,opclstat_mid],filelabel='QS-Mid'+suffix,indexloop_mid,rotacion
+
+nbins = 80
+
+iin=where(Fcb_mid/1.e5 gt -2)
+Phir_filt_mid = Phir_mid(iin)
+ Fcb_filt_mid =  Fcb_mid(iin)
+
+xxr = Phir_filt_mid/1.e5
+xxf = -Fcb_filt_mid/1.e5
+xxh = xxr + xxf
+mini = -2.
+maxi =  5.
+
+histoplotNe3,xxr,xxf,xxh,min=mini,max=maxi,nbins=nbins,xtit='!9f!3 [10!U5!N erg cm!U-2!N sec!U-1!N]',ytit='Frecuency Histogram',tit='QS Mid closed loops',filename='QS-Mid-Phis'+suffix
+
+;histoplot, Tm_mid,min=mini,max=maxi,nbins=nbins,xtit='T!Dm!N [MK]'            ,ytit='Frecuency Histogram',tit= 'Tm - QS Mid closed loops',filename='QS-mid-Tm' +suffix   
+;histoplot,Nr0_mid,min=mini,max=maxi,nbins=nbins,xtit='N!De!N[10!U8!Ncm!U-3!N]',ytit='Frecuency Histogram',tit='Nr0 - QS Mid closed loops',filename='QS-mid-Nr0'+suffix   
+
+
+goto,nocomparan
 print, 'Hacer análisis de AIAwarm ahora'
-stop
-
 p1select = p1w
 p2select = p2w
-
-stop 
 file = 'traceLDEM_CRCR2099_AIA4-hot_reg0.75_safety0.5_radstart-1.035-1.215Rs_unifgrid_v2.heating.sampled.v2.CECI.dat'
-
   statloop,file,rloopmin=1.05,p1select=p1select,p2select=p2select,/AIAhot,/linear;,/Tfitlow;,/fitcuadr
   pegatina
 print,n_elements(phir_loop)
-
-stop
   filter_loop,select
-
 print, 'Hacer análisis de AIAhot ahora'
-
-stop
+nocomparan:
 
 return
 end
+
+
+
+pro histoplot2B,data1,data2,min=min,max=max,nbins=nbins,xtit=xtit,ytit=ytit,tit=tit,filename=filename,ndig=ndig,decon=decon
+
+ps1,'./newfigs/'+filename+'.eps',0
+
+  !p.charsize=2
+  DEVICE,/INCHES,YSIZE=5,XSIZE=10,SCALE_FACTOR=1
+
+f1 = histogram(data1,min=min,max=max,nbins=nbins,locations=vbin1) & f1 = f1 / total(f1)
+f2 = histogram(data2,min=min,max=max,nbins=nbins,locations=vbin2) & f2 = f2 / total(f2)
+
+maxy=max([f1,f2])
+
+ plot,vbin1,f1,psym=10,charsize=2,xtitle=xtit,ytitle=ytit,title=tit,yr=[0,maxy],xr=[min,max],xstyle=1,/nodata,thick=3,charthick=2,Font=0
+loadct,12
+
+verde = 25
+azul =100
+rojo =200
+negro=  0
+if not keyword_set(decon) then oplot,vbin1,f1,psym=10,th=5,color=rojo
+if keyword_set(decon) then oplot,vbin1,f1,psym=10,th=5,color=verde
+oplot,vbin2,f2,psym=10,th=5,color=azul
+loadct,0
+
+avg1        =  mean(data1)
+avg2        =  mean(data2)
+med1        = median(data1)
+med2        = median(data2)
+cant1       = long(n_elements(data1))
+cant2       = long(n_elements(data2))
+stdev1      = stdev(data1)/ abs(avg1) & print,stdev(data1)
+stdev2      = stdev(data2)/ abs(avg2) & print,stdev(data2)
+
+xyouts,.98-[.4,.3,.2,.1],0.84*[1,1,1,1],['m','!9m!3','!9s!3/!9m!3','N'],/normal,charthick=3,Font=0
+
+loadct,12
+
+
+
+if not keyword_set(decon) then xyouts,0.95-[.4,.3,.2,.1],0.78*[1,1,1,1],[strmid(string(med1),5,ndig),strmid(string(avg1),5,ndig),strmid(string(stdev1),4,ndig),strmid(string(cant1),7,7)],/normal,color=[rojo,rojo,rojo,rojo],charthick=3
+if keyword_set(decon) then xyouts,0.95-[.4,.3,.2,.1],0.78*[1,1,1,1],[strmid(string(med1),4,ndig),strmid(string(avg1),4,ndig),strmid(string(stdev1),4,ndig),strmid(string(cant1),7,7)],/normal,color=[verde,verde,verde,verde],charthick=3
+xyouts,0.95-[.4,.3,.2,.1],0.73*[1,1,1,1],[strmid(string(med2),4,ndig),strmid(string(avg2),4,ndig),strmid(string(stdev2),4,ndig),strmid(string(cant2),7,7)],/normal,color=[azul,azul,azul,azul],charthick=3
+
+;xyouts,.9-[.2,.1],0.7*[1,1],[strmid(string(avg1),4,ndig),strmid(string(stdev1),4,5)],/normal,color=[rojo,rojo],charthick=2                                                                  ;xyouts,.9-[.2,.1],0.6*[1,1],[strmid(string(avg2),4,ndig),strmid(string(stdev2),4,5)],/normal,color=[azul,azul],charthick=2                                                                                                                                                                                                                                                          
+
+if not keyword_set(decon) then xyouts,0.2*[1,1],[0.8,0.75],['DEMT','AWSOM'],/normal,color=[rojo,azul],charthick=3
+;if keyword_set(decon) then xyouts,0.2*[1,1],[0.8,0.75],['condeconv. PSF','sindeconv. PSF'],/normal,color=[verde,azul],charthick=2                                                                                                                                                                                                                                                 
+if keyword_set(decon) then xyouts,0.68*[1,1],[0.5,0.45],['con deconv. PSF','sin deconv. PSF'],/normal,color=[verde,azul],charthick=2
+
+loadct,0
+ps2
+
+return
+end
+
+
 

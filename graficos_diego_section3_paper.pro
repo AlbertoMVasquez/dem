@@ -376,22 +376,36 @@ pro hacer_visualizacion,create=create
 common structure,sph_data
 common flags,flag_fan,flag_spine,flag_onebyone,flag_create,flag_extra,flag_vnormal,flag_cube,flag_interpol
 
+radstart= 1.035 + 0.08 *findgen(3)
+Nrad = n_elements(radstart)
+dlat = 11. + fltarr(Nrad)
+dlon = 11. + fltarr(Nrad)
+
 flag_create = 0
 if keyword_set(create) then flag_create=1
 flag_interpol=0 
 
-visual3D,'fdips_field_15x180x360_cr2192.ubdat',$
-         'CR2192.gif',$
-         lat0=0,lon0=0,/marcgrid
+;visual3D,'fdips_field_15x180x360_cr2192.ubdat','CR2192.gif', lat0=0,lon0=0,/marcgrid
 ; record_gif,'~/','Albondiga-con-fideos_'+suffix+'.gif','X'
 
+entrada='fdips_field_150x180x360_synop_Mr_0.polfil.2081.ubdat'
+salida ='cr_2081_testeando.gif'
+
+entrada='sphere_FDIPS_B.dat'
+salida ='cr_2081_awsom_test.gif'
+
+visual3D,entrada,salida,lat0=0,lon0=0,dlat=dlat,dlon=dlon,radstart=radstart,/unifgrid_v2,/MHD_awsom
+;Hay que compilar create_structure_MHD_new.pro
+
+
+         
 return
 end
 
 ; open field lines:
 ; verde:  polaridad positiva
 ; magenta:polaridad negativa
-pro visual3D,input_dat,output_gif,lat0=lat0,lon0=lon0,image_max=image_max,win=win,spacing=spacing,radstart=radstart,npx=npx,box=box,create=create,dlat=dlat,dlon=dlon,unifgrid=unifgrid,marcgrid=marcgrid,tony=tony,cubegrid=cubegrid,null=null,cubesize=cubesize,cubedensity=cubedensity,sizef=sizef,densityf=densityf,MHD=MHD,interpol=interpol,sinlabel=sinlabel,addlines=addlines
+pro visual3D,input_dat,output_gif,lat0=lat0,lon0=lon0,image_max=image_max,win=win,spacing=spacing,radstart=radstart,npx=npx,box=box,create=create,dlat=dlat,dlon=dlon,unifgrid=unifgrid,marcgrid=marcgrid,tony=tony,cubegrid=cubegrid,null=null,cubesize=cubesize,cubedensity=cubedensity,sizef=sizef,densityf=densityf,MHD=MHD,interpol=interpol,sinlabel=sinlabel,addlines=addlines,unifgrid_v2=unifgrid_v2,MHD_awsom=MHD_awsom
   common structure,sph_data
   common flags,flag_fan,flag_spine,flag_onebyone,flag_create,flag_extra,flag_vnormal,flag_cube,flag_interpol
 ;+ 
@@ -418,7 +432,7 @@ pro visual3D,input_dat,output_gif,lat0=lat0,lon0=lon0,image_max=image_max,win=wi
 ; if keyword_set(interpol) eq 0 then flag_interpol=0
 
   if flag_create eq 1 then begin
-     if not keyword_set(tony) AND not keyword_set(MHD) then begin
+     if not keyword_set(tony) AND not keyword_set(MHD) and not keyword_set(MHD_awsom) then begin
         PFSSM_model=input_dat
         create_structure,PFSSM_model
      endif 
@@ -429,6 +443,10 @@ pro visual3D,input_dat,output_gif,lat0=lat0,lon0=lon0,image_max=image_max,win=wi
      if keyword_set(MHD)  then  begin
         model='/data1/DATA/MHD_SWMF/'+input_dat
         create_structure_MHD,model
+     endif
+     if keyword_set(MHD_awsom)  then  begin
+        model='/data1/DATA/MHD_SWMF/'+input_dat
+        create_structure_MHD_new,model
      endif
   endif
 
@@ -452,10 +470,14 @@ pro visual3D,input_dat,output_gif,lat0=lat0,lon0=lon0,image_max=image_max,win=wi
   ; Set up the starting points:
   if keyword_set(marcgrid) then spherical_field_start_coord,pfss_data,fieldtype,spacing,radstart=radstart,bbox=box
   if keyword_set(unifgrid) then sph_field_str_coord_unifang,pfss_data,dlat,dlon,radstart=radstart,bbox=box
+
+if keyword_set(unifgrid_v2) then sph_field_str_coord_unifang_v2,pfss_data,dlatv=dlat,dlonv=dlon,radstartv=radstart,bbox=box
+  
   ; Trace the fieldlines:
   if not keyword_set(safety) then  safety=0.5
-  spherical_trace_field,pfss_data,linekind=linekind,safety=safety,stepmax=30000,outfield=outfield ;,/oneway
-
+;  spherical_trace_field,pfss_data,linekind=linekind,safety=safety,stepmax=30000,outfield=outfield ;,/oneway
+    spherical_trace_field,pfss_data,linekind=linekind,safety=safety,stepmax=8000,outfield=outfield ;,/oneway
+;stop
 
 
 ;-----------------------------------------------------------
@@ -482,15 +504,16 @@ if NOT keyword_set(lat0) then lat0=0 ; Latitud  centro del disco
 if NOT keyword_set(lon0) then lon0=0 ; Longitud centro del disco
 if NOT keyword_set(win ) then win =0 ; Window number
 
+stop
 ; Crear imagen
-spherical_draw_field,pfss_data,outim=outim,bcent=lat0,lcent=lon0,$
-xsize=npx,ysize=npy,im_data=image_data,imsc=image_max,/for_ps;,width=0.55
+spherical_draw_field,pfss_data,outim=outim,bcent=lat0,lcent=lon0,xsize=npx,ysize=npy,im_data=image_data,imsc=image_max,/for_ps;,width=0.55
 window,win,xs=npx,ys=npx
 tv,outim,/true
 if not keyword_set(sinlabel) then xyouts,0.02,0.02,'Lat='+strcompress(lat0)+'  Long='+strcompress(lon0),charsize=2,charthick=2.5,color=0;,/norm
-  record_gif,'~/Descargas/',output_gif
+stop
+  record_gif,'/data1/work/dem/newfigs/',output_gif,'X'
   nname=strlen(output_gif)
-  record_jpg,'~/Descargas/',strmid(output_gif,0,nname-4)+'.jpg'
+  record_jpg,'/data1/work/dem/newfigs/',strmid(output_gif,0,nname-4)+'.jpg','X'
 
 ; using the spherical_trackball_widget.pro from solar soft
 ; spherical_trackball_widget,pfss_data,im_data=image_data,imsc=image_max
@@ -498,8 +521,9 @@ if not keyword_set(sinlabel) then xyouts,0.02,0.02,'Lat='+strcompress(lat0)+'  L
 ; using the spherical_trackball_widget.pro in /data1/work/dem/
 ; you need to compilate before
   spherical_trackball_widget,pfss_data,im_data=image_data,imsc=image_max,/for_ps
+stop
+  record_gif,'/data1/work/dem/newfigs/',output_gif,'X'
 
-;stop
 return
 end
 

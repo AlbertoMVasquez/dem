@@ -5,6 +5,27 @@
 ;de las fbes.
 
 
+pro testeo_regularizacion
+
+;CR2081
+compare_fbes,'x_euvi.A.171.cr2081.26x90_bf4_ri.000_ro1.025_l0.75_NODECON.halfhollow1','x_euvi.A.171.cr2081.26x90_bf4_ri.000_ro1.025_l0.225_NODECON.halfhollow1',171,7,win=0,/cr2081,irad1=irad1,irad2=irad2,/full
+compare_fbes,'x_euvi.A.195.cr2081.26x90_bf4_ri.000_ro1.025_l0.75_NODECON.halfhollow1','x_euvi.A.195.cr2081.26x90_bf4_ri.000_ro1.025_l0.225_NODECON.halfhollow1',195,7,win=4,/cr2081,irad1=irad1,irad2=irad2,/full
+compare_fbes,'x_euvi.A.284.cr2081.26x90_bf4_ri.000_ro1.025_l0.75_NODECON.halfhollow1','x_euvi.A.284.cr2081.26x90_bf4_ri.000_ro1.025_l0.225_NODECON.halfhollow1',284,7,win=8,/cr2081,irad1=irad1,irad2=irad2,/full
+  
+compare_fbes,'x_euvi.A.171.cr2081.26x90_bf4_ri.000_ro1.025_l0.75_NODECON.halfhollow2','x_euvi.A.171.cr2081.26x90_bf4_ri.000_ro1.025_l0.225_NODECON.halfhollow2',171,7,win=0,/cr2081,irad1=irad1,irad2=irad2,/full
+compare_fbes,'x_euvi.A.195.cr2081.26x90_bf4_ri.000_ro1.025_l0.75_NODECON.halfhollow2','x_euvi.A.195.cr2081.26x90_bf4_ri.000_ro1.025_l0.225_NODECON.halfhollow2',195,7,win=4,/cr2081,irad1=irad1,irad2=irad2,/full
+compare_fbes,'x_euvi.A.284.cr2081.26x90_bf4_ri.000_ro1.025_l0.75_NODECON.halfhollow2','x_euvi.A.284.cr2081.26x90_bf4_ri.000_ro1.025_l0.225_NODECON.halfhollow2',284,7,win=8,/cr2081,irad1=irad1,irad2=irad2,/full
+
+compare_fbes,'x_euvi.A.171.cr2081.26x90_bf4_ri.000_ro1.025_l0.75_NODECON.halfhollow2','x_euvi.A.171.cr2081.26x90_bf4_ri.000_ro1.025_l0.375_NODECON',171,7,win=0,/cr2081,irad1=irad1,irad2=irad2,/full
+compare_fbes,'x_euvi.A.195.cr2081.26x90_bf4_ri.000_ro1.025_l0.75_NODECON.halfhollow2','x_euvi.A.195.cr2081.26x90_bf4_ri.000_ro1.025_l0.375_NODECON',195,7,win=4,/cr2081,irad1=irad1,irad2=irad2,/full
+compare_fbes,'x_euvi.A.284.cr2081.26x90_bf4_ri.000_ro1.025_l0.75_NODECON.halfhollow2','x_euvi.A.284.cr2081.26x90_bf4_ri.000_ro1.025_l0.375_NODECON',284,7,win=8,/cr2081,irad1=irad1,irad2=irad2,/full
+
+  return
+end
+
+
+
+
 pro wrapper,irad1,irad2,cr1915=cr1915,cr2081=cr2081
 
 if keyword_set(cr2081) then begin
@@ -35,11 +56,11 @@ stop
 
 ;Compare TESIS HOLLOW  y 1/2*(half-Hollow1 + half-hollow2) for CR-2081
 fc='x_euvi.A.171.cr2081.26x90_bf4_ri.000_ro1.025_l0.75_NODECON.halfhollow2'
-compare_fbes,'x_euvi.A.171.cr2081.26x90_bf4_ri.000_ro1.025_l0.75_NODECON' ,'x_euvi.A.171.cr2081.26x90_bf4_ri.000_ro1.025_l0.75_NODECON.halfhollow1' ,171,7,win=0,/cr1915,irad1=irad1,irad2=irad2,fc=fc,/promedio
+compare_fbes,'x_euvi.A.171.cr2081.26x90_bf4_ri.000_ro1.025_l0.75_NODECON' ,'x_euvi.A.171.cr2081.26x90_bf4_ri.000_ro1.025_l0.75_NODECON.halfhollow1' ,171,7,win=0,/cr2081,irad1=irad1,irad2=irad2,fc=fc,/promedio,/zda
 fc='x_euvi.A.195.cr2081.26x90_bf4_ri.000_ro1.025_l0.75_NODECON.halfhollow2'
-compare_fbes,'x_euvi.A.195.cr2081.26x90_bf4_ri.000_ro1.025_l0.75_NODECON' ,'x_euvi.A.195.cr2081.26x90_bf4_ri.000_ro1.025_l0.75_NODECON.halfhollow1' ,195,7,win=0,/cr1915,irad1=irad1,irad2=irad2,fc=fc,/promedio
+compare_fbes,'x_euvi.A.195.cr2081.26x90_bf4_ri.000_ro1.025_l0.75_NODECON' ,'x_euvi.A.195.cr2081.26x90_bf4_ri.000_ro1.025_l0.75_NODECON.halfhollow1' ,195,7,win=0,/cr2081,irad1=irad1,irad2=irad2,fc=fc,/promedio,/zda
 fc='x_euvi.A.284.cr2081.26x90_bf4_ri.000_ro1.025_l0.75_NODECON.halfhollow2'
-compare_fbes,'x_euvi.A.284.cr2081.26x90_bf4_ri.000_ro1.025_l0.75_NODECON' ,'x_euvi.A.284.cr2081.26x90_bf4_ri.000_ro1.025_l0.75_NODECON.halfhollow1' ,284,7,win=0,/cr1915,irad1=irad1,irad2=irad2,fc=fc,/promedio
+compare_fbes,'x_euvi.A.284.cr2081.26x90_bf4_ri.000_ro1.025_l0.75_NODECON' ,'x_euvi.A.284.cr2081.26x90_bf4_ri.000_ro1.025_l0.75_NODECON.halfhollow1' ,284,7,win=0,/cr2081,irad1=irad1,irad2=irad2,fc=fc,/promedio,/zda
 
 
 endif
@@ -70,11 +91,11 @@ stop
 
 stop
  fc='x_eit.171.cr1915.26x90_bf4_ri.000_ro1.025_b4_l0.75.halfhollow2'
- compare_fbes,'x_eit.171.cr1915.26x90_bf4_ri.000_ro1.025_b4_l0.75' ,'x_eit.171.cr1915.26x90_bf4_ri.000_ro1.025_b4_l0.75.halfhollow1' ,171,7,win=0,/cr1915,irad1=irad1,irad2=irad2,fc=fc,/promedio
+ compare_fbes,'x_eit.171.cr1915.26x90_bf4_ri.000_ro1.025_b4_l0.75','x_eit.171.cr1915.26x90_bf4_ri.000_ro1.025_b4_l0.75.halfhollow1'  ,171,7,win=0,/cr1915,irad1=irad1,irad2=irad2,fc=fc,/promedio,/zda
  fc='x_eit.195.cr1915.26x90_bf4_ri.000_ro1.025_b4_l0.75.halfhollow2'
- compare_fbes,'x_eit.195.cr1915.26x90_bf4_ri.000_ro1.025_b4_l0.75','x_eit.195.cr1915.26x90_bf4_ri.000_ro1.025_b4_l0.75.halfhollow1'  ,195,7,win=0,/cr1915,irad1=irad1,irad2=irad2,fc=fc,/promedio
+ compare_fbes,'x_eit.195.cr1915.26x90_bf4_ri.000_ro1.025_b4_l0.75','x_eit.195.cr1915.26x90_bf4_ri.000_ro1.025_b4_l0.75.halfhollow1'  ,195,7,win=0,/cr1915,irad1=irad1,irad2=irad2,fc=fc,/promedio,/zda
  fc='x_eit.284.cr1915.26x90_bf4_ri.000_ro1.025_b4_l0.75.halfhollow2'
- compare_fbes,'x_eit.284.cr1915.26x90_bf4_ri.000_ro1.025_b4_l0.75','x_eit.284.cr1915.26x90_bf4_ri.000_ro1.025_b4_l0.75.halfhollow1'  ,284,7,win=0,/cr1915,irad1=irad1,irad2=irad2,fc=fc,/promedio
+ compare_fbes,'x_eit.284.cr1915.26x90_bf4_ri.000_ro1.025_b4_l0.75','x_eit.284.cr1915.26x90_bf4_ri.000_ro1.025_b4_l0.75.halfhollow1'  ,284,7,win=0,/cr1915,irad1=irad1,irad2=irad2,fc=fc,/promedio,/zda
 endif
 
 return
@@ -89,7 +110,7 @@ return
 return
 end
 
-pro compare_fbes,fa,fb,band,ir,full=full,win=win,cr1915=cr1915,cr2081=cr2081,irad1=irad1,irad2=irad2,fc=fc,promedio=promedio
+pro compare_fbes,fa,fb,band,ir,full=full,win=win,cr1915=cr1915,cr2081=cr2081,irad1=irad1,irad2=irad2,fc=fc,promedio=promedio,zda=zda
 
  device, retain     = 2
  device, true_color = 24
@@ -107,7 +128,9 @@ pro compare_fbes,fa,fb,band,ir,full=full,win=win,cr1915=cr1915,cr2081=cr2081,ira
 ;if not keyword_set(irad2) then irad1=20
 if not keyword_set(irad1) then irad1=7
 if not keyword_set(irad2) then irad2=7
- 
+irad2=irad1
+if keyword_set(zda) then goto,skipzda
+
 ; Mean rad
  meanir=mean([irad1,irad2])
 
@@ -224,6 +247,7 @@ if not keyword_set(irad2) then irad2=7
     minx=0.
     hdata=histogram(data,nbins=nb,min=minx,max=maxx,LOCATIONS=La)
     maxy=max(hdata)
+    ;goto,skiphisto1
     !p.multi=0
     window,win+5,xs=500,ys=300
     plot,La,hdata,xr=[minx,maxx],yr=[0,maxy],title='Hist. of A.F.D. of FBE-'+strmid(string(band),5,3)+' @ ['+strmid(string(radv(irad1)),6,5)+','+strmid(string(radv(irad2)),6,5)+'] Rs',xstyle=1,psym=10
@@ -234,15 +258,18 @@ if not keyword_set(irad2) then irad2=7
     
 ;--------------------------------------
     ;mapas de carrington de la diferencia a alturas fijas.     
-scalefactor=3
-superhigh=1.
-superlow=-1.
-instrument='euvi'
-stop
-win=5
-ir=7
-display_carrmap,xa,xb,ir,win+1,scalefactor,1.,superlow,superhigh,12,'Carrmap diff(fbes) @ '+strmid(string(radv(ir)),6,5)+' Rs - '+strmid(string(band),5,3),instrument
-    
+    stop
+    skiphisto1:
+
+    scalefactor=3
+    superhigh=1.
+    superlow=-1.
+    instrument='euvi'
+    ;stop
+    ;win=5
+    ;ir=7
+    display_carrmap,xa,xb,ir,win+1,scalefactor,1.,superlow,superhigh,12,'Carrmap diff(fbes) @ '+strmid(string(radv(ir)),6,5)+' Rs - '+strmid(string(band),5,3),instrument
+    stop
 ;--------------------------------------    
     
     
@@ -305,6 +332,7 @@ display_carrmap,xa,xb,ir,win+1,scalefactor,1.,superlow,superhigh,12,'Carrmap dif
     minx=0.
     hdata=histogram(data,nbins=nb,min=minx,max=maxx,LOCATIONS=La)
     maxy=max(hdata)
+    ;goto,skiphisto2
     !p.multi=0
     window,win+5,xs=500,ys=300
     plot,La,hdata,xr=[minx,maxx],yr=[0,maxy],title='Hist. of A.F.D. of FBE-'+strmid(string(band),5,3)+' @ ['+strmid(string(radv(irad1)),6,5)+','+strmid(string(radv(irad2)),6,5)+'] Rs',xstyle=1,psym=10
@@ -315,19 +343,101 @@ display_carrmap,xa,xb,ir,win+1,scalefactor,1.,superlow,superhigh,12,'Carrmap dif
      ;--------------------------------------
                                 ;mapas de carrington de la diferencia
                                 ;a alturas fijas.
+    stop
+    skiphisto2:
     scalefactor=3
     superhigh=1.
     superlow=-1.
     instrument='euvi'
-    stop
-    win=5
-    ir=7
+    ;stop
+    ;win=5
+    ;ir=7
     display_carrmap,xa,xd,ir,win+1,scalefactor,1.,superlow,superhigh,12,'Carrmap diff(fbes) @ '+strmid(string(radv(ir)),6,5)+' Rs - '+strmid(string(band),5,3),instrument
+    stop
     ;--------------------------------------                                                                                                                    
  endif
  
+ if keyword_set(zda) then begin
+skipzda:
+xd = xc *0.
+    for ra=0,25 do begin
+       for ila=0,89 do begin
+          for ilo=0,179 do begin
+             xd[ra,ila,ilo]= (xc[ra,ila,ilo] + xb[ra,ila,ilo])/2.
+             if xc[ra,ila,ilo] ge 0. and xb[ra,ila,ilo] le 0. then xd[ra,ila,ilo]= xc[ra,ila,ilo]
+             if xc[ra,ila,ilo] le 0. and xb[ra,ila,ilo] ge 0. then xd[ra,ila,ilo]= xb[ra,ila,ilo]
+          endfor
+       endfor
+    endfor
+    
+   ilat1=0 & ilat2=89
+   ilon1=0 & ilon2=179
+   if keyword_set(cr1915) then begin
+      ilon1=0 & ilon2=100       ;1915
+   endif
+   radv=1.005+.01*findgen(26)
+   zdas1 = radv * 0.
+   zdas2 = radv * 0.
+   zdas3 = radv * 0.
+   zdas4 = radv * 0.
+   
+   for irad=0,25 do begin
+     
+      sa=reform(xa(irad,ilat1:ilat2,ilon1:ilon2)) & pa = where (sa lt 0.)
+      sd=reform(xd(irad,ilat1:ilat2,ilon1:ilon2)) & pd = where (sd lt 0.)
+      se=reform(xb(irad,ilat1:ilat2,ilon1:ilon2)) & pe = where (se lt 0.)
+      sf=reform(xc(irad,ilat1:ilat2,ilon1:ilon2)) & pf = where (sf lt 0.)
+      zdas1[irad]=n_elements(pa)
+      zdas2[irad]=n_elements(pd)
+      zdas3[irad]=n_elements(pe)
+      zdas4[irad]=n_elements(pf)
+      if n_elements(pa) eq 1 then begin
+         if pa le 0. then zdas1[irad]=0
+      endif
+      if n_elements(pd) eq 1 then begin
+         if pd le 0. then zdas2[irad]=0
+      endif
+      if n_elements(pe) eq 1 then begin
+         if pe le 0. then zdas3[irad]=0
+      endif
+      if n_elements(pf) eq 1 then begin
+         if pf le 0. then zdas4[irad]=0
+      endif
+      
+   endfor
 
+valoresy=zdas1[2:23]*0.
+vec=[max(zdas1(2:23)),max(zdas2(2:23)),max(zdas3(2:23)),max(zdas4(2:23))]
+valoresy[1]=max(vec)
+ps1,'./newfigs/conteoZDAs_fullhollow_promediohollow_1915_'+strmid(band,5,5)+'.eps',0
+   plot,radv[2:23],valoresy,xtitle='rad[Rsun]',ytitle='ZDA',$
+        title='Conteo de ZDAs 2081 '+strmid(band,5,5)+' FullHollow vs. Promediohollows vs hollow1 / 2',$
+        xstyle=1,$
+        font=1,/nodata
+   loadct,12
+   blue =100
+   red  =200
+   green=50
+   dg   =10
+   thick=1
+     size=1                
+
+     xyouts,0.2,0.8, 'fullhollow'      ,/normal,color=blue
+     xyouts,0.2,0.75,'promedio hollows',/normal,color=red
+     xyouts,0.2,0.7, 'hollow1'         ,/normal,color=green
+     xyouts,0.2,0.65,'hollow2'         ,/normal,color=dg
+     
+   oplot, radv[2:23],zdas1[2:23],color=blue
+   oplot, radv[2:23],zdas2[2:23],color=red
+   oplot, radv[2:23],zdas3[2:23],color=green
+   oplot, radv[2:23],zdas4[2:23],color=dg
+                                ;record_gif,'/data1/work/dem/newfigs/','conteoZDAs_fullhollow_promediohollow_2081_171.gif','X'
+   ps2
+   
+ endif
  
+ 
+stop 
 return
 end
 

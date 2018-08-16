@@ -73,6 +73,7 @@ pro create_structure,inputfile,writefile=writefile
                          PTR: ptr_new() ,PTTH: ptr_new() ,PTPH: ptr_new()   ,$
                          NSTEP: ptr_new() ,EXTRA_OBJECTS: ptr_new()          }
 
+stop
 ;----------------------------------------------------------------------------------------
      if keyword_set(writefile) then begin
         nname=strlen(inputfile)

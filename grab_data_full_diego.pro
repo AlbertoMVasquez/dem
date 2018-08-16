@@ -3,7 +3,11 @@ pro explore
 ;grab_data_full_diego,'2009-03-09','2009-04-05','EUVI_A','/data1/work/Minimum_2009/','data_cr2081_diego',/graf;tesis
 ;grab_data_full_diego,'1996-10-15','1996-11-11','EIT'   ,'/data1/work/Minimum_1996/','data_cr1915_diego',/graf;tesis
 
-grab_data_full_diego,'2017-06-23T00:00:00','2017-07-20T23:59:59','EUVI_A' ,'/data1/tomography/DATA/euvi/CR2192/','data_euvi_cr2192',/graf
+grab_data_full_diego,'2017-12-03T00:00:00','2017-12-30T23:59:59','EUVI_A','/data1/tomography/DATA/euvi/CR2198/','data_euviA_cr2198',/graf
+grab_data_full_diego,'2009-04-05T00:00:00','2009-05-03T23:59:59','EUVI_A','/data1/tomography/DATA/euvi/CR2082/','data_euviA_cr2082',/graf
+stop
+grab_data_full_diego,'2017-12-03T00:00:00','2017-12-30T23:59:59','AIA'   ,'/data1/tomography/DATA/aia/CR2198/','data_aia_cr2198',/graf
+grab_data_full_diego,'2017-06-23T00:00:00','2017-07-20T23:59:59','EUVI_A','/data1/tomography/DATA/euvi/CR2192/','data_euvi_cr2192',/graf
 stop
 grab_data_full_diego,'2017-06-23T00:00:00','2017-07-20T23:59:59','AIA'   ,'/data1/tomography/DATA/aia/CR2192/','data_cr2192',/graf
 stop
@@ -76,8 +80,8 @@ if inst eq 'AIA' then begin
 endif
 
  cadences  =  [1,10,20,30,40,50,60] * 60L
- cadences2 =  [30,40,50,60] * 60L
- cadences2 =  [60,60,60,60] * 60L
+; cadences2 =  [30,60,40,30] * 60L
+ cadences2 =  [60,60,60,60] * 60L 
 
 
 ;modificar nombre de esta entrada y extender a aia que necesita 3 wave mas
@@ -272,7 +276,7 @@ if inst eq 'EUVI_A' then begin
  euvi171 = vso_get(euvi171,/force,out_dir=dira171)
  euvi195 = vso_get(euvi195,/force,out_dir=dira195)
  euvi284 = vso_get(euvi284,/force,out_dir=dira284)
- euvi304 = vso_get(euvi304,/force,out_dir=dira304)
+; euvi304 = vso_get(euvi304,/force,out_dir=dira304)
 endif
 
 if inst eq 'AIA' then begin
@@ -362,6 +366,7 @@ if instru eq 'EIT' or instru eq 'EUVI_A' or instru eq 'EUVI_B' then begin
  plot,julians304-min(julians304)+1,findgen(n304)+1,title='304 from '+dates304(0)+' to '+dates304(n304-1),psym=8,xstyle=1,ystyle=1,th=1
  xyouts,[0.05,0.55,0.05,0.55],[0.8,0.8,0.2,0.2],[string(n171),string(n195),string(n284),string(n304)],/normal
  record_gif,basedir,filename+'.gif','X'
+ stop
 endif
 
 if instru eq 'AIA' then begin

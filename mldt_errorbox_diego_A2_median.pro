@@ -3329,13 +3329,17 @@ pro trace_LDEM,fdips_file=fdips_file,$
                mhd=mhd,$
                dgfw=dgfw,$
                expand=expand,$
-               unifgrid_v2=unifgrid_v2
+               unifgrid_v2=unifgrid_v2,$
+               field_awsom=field_awsom,$
+               awsom_file=awsom_file
   common comunes,tm,wt,nband,demc,PHI,parametrizacion,Tmin,Tmax,nr,nth,np,rad,lat,lon,lambda,WTc
   common results_tomo,tfbe,sfbe,N_e
   common loss_rate,Er
   common structure ,sph_data
   common structure2,pfss_data 
 
+  common grilla_chip,r_grilla,theta_grilla,phi_grilla,ne_swmf,te_swmf,rho_swmf,er_swmf,ti_swmf
+  
 ;+
 ; PURPOSE: 
 ; To trace tomographic results along magnetic field lines. 
@@ -3359,7 +3363,8 @@ pro trace_LDEM,fdips_file=fdips_file,$
 ; /unifgrid = set up a uniform angular grid for the starting points.
 ; /marcgrid = use Marc's tools starting points routine.
 ; /dgfw     = set up if the double normal LDEM parametrization is used.
-;
+; /awsom    = use SWMF magnetic field.
+;  
 ; OUTPUTS:
 ; A file containing the results, to be afterwards used as INPUT by the routine
 ; "sample_traced_ldem". Modificar
@@ -3383,14 +3388,18 @@ pro trace_LDEM,fdips_file=fdips_file,$
 ;
 
 !EXCEPT=2
+
+if keyword_set(ldem_file)  then file_flag = 0
+if keyword_set(awsom_file) then file_flag = 1
+
   if not keyword_set(fdips_file) then begin
      print,'set the PFSS model to trace the DEMT results'
      return
   endif
-  if not keyword_set(ldem_file ) then begin
-     print,'set a DEMT file to be traced'
+  if not keyword_set(ldem_file ) and not keyword_set(awsom_file) then begin
+     print,'set a DEMT or AWSOM file to be traced'
      return
-  endif
+  endif     
   if not keyword_set(period)     then begin
      print,'set a string with the period'
      return
@@ -3421,9 +3430,15 @@ if keyword_set(expand) then period=period+'_expand'
 
   print,'-------------------------------------------'
   print,'     Period: ',period
-  print,'  LDEM file: ',ldem_file
-  print,' FDIPS file: ',fdips_file
-  print,'Output file: ',output_file
+  case file_flag of 
+     0: print,'  LDEM file: ',ldem_file
+     1: print,'  awsom file: ',awsom_file
+  endcase
+  case file_flag of
+     0: print,' FDIPS file: ',fdips_file
+     1: print,' Field AWSOM file: ',fdips_file
+  endcase
+     print,'Output file: ',output_file
   print,'-------------------------------------------'
 
   print,'safety: ',safety
@@ -3433,11 +3448,13 @@ if keyword_set(expand) then period=period+'_expand'
 ; PFSSM_model='/data1/DATA/PFSSM/'+fdips_file
   PFSSM_model= fdips_file
 ; Read the FDIPS model and create a structure to serve as input to Marc's routines:
-  if not keyword_set(mhd)  then create_structure    ,PFSSM_model
-  if     keyword_set(mhd)  then create_structure_MHD,'/data1/DATA/MHD_SWMF/'+fdips_file
+  if not keyword_set(mhd) and not keyword_set(field_awsom)   then create_structure    ,    PFSSM_model
+  if     keyword_set(mhd)                              then create_structure_MHD,    '/data1/DATA/MHD_SWMF/'+fdips_file
+  if     keyword_set(field_awsom)                            then create_structure_MHD_new,'/data1/DATA/MHD_SWMF/'+fdips_file
 ; change the name of the created structure to a new name:
   pfss_data = sph_data
-
+  print, 'PROBANDOOOO.....z'
+  
 ; Set the uniform grid size, in case /unifgrid is used for the starting points. 
 ; Default size is 90x180.
   if NOT keyword_set(dlat) then dlat = 2   
@@ -3453,8 +3470,9 @@ if keyword_set(expand) then period=period+'_expand'
   if keyword_set(unifgrid_v2) then sph_field_str_coord_unifang_v2,pfss_data,dlatv=dlat,dlonv=dlon,radstartv=radstart,bbox=box
 
 ; And now, do trace the field lines:
+;stop
   spherical_trace_field,pfss_data,linekind=linekind,linelengths=linelengths,safety=safety,stepmax=stepmax 
-
+;stop
 ; Change the coding for linekind:
   linekind=linekind-2           ; so that 0=open and 1=closed
 
@@ -3481,10 +3499,36 @@ if keyword_set(expand) then period=period+'_expand'
 
 ; Read the tomographics results and set a few parameters concerning
 ; the tomographic grid:
-  if not keyword_set(dgfw) then $
-     read_ldem,ldem_file,/ldem,/gauss1
-  if     keyword_set(dgfw) then $
-     read_ldem,ldem_file,/ldem,/dgfw
+  if not keyword_set(dgfw) and not keyword_set(awsom_file) then  read_ldem,ldem_file,/ldem,/gauss1
+  if     keyword_set(dgfw)      then      read_ldem,ldem_file,/ldem,/dgfw
+  if     keyword_set(awsom_file)then      read_awsom,awsom_file
+
+  ;definimos commons que faltane n el read_awsom
+  if     keyword_set(awsom_file)then begin
+     Nrad=26
+     nr=26
+     Nlat=90
+     nth=90
+     Nlon=180
+     np =180
+     dt = 2.
+     dr = 0.01
+     rad =   1. + dr/2. + dr * findgen(Nrad)
+     lon =   0. + dt/2. + dt * findgen(Nlon)
+     lat = -90. + dt/2. + dt * findgen(Nlat)
+
+     N_e = ne_swmf
+     Tm  = te_swmf
+     Er  = er_swmf
+     DEMc= N_e * 0. - 666.
+     ScoreR=N_e * 0. - 666.
+     Wt = N_e * 0. - 666.
+     lambda= fltarr(26,90,180,3) - 666.
+     WTc = -666.
+     Tmin=500000.
+     Tmax=3.50000e+06
+  endif
+
   dr_tom = rad(1)-rad(0)        ; grid radial bin size
   Rmax_tom = rad(nr-3)          ; maximum height for which LDEM was computed
 
@@ -3495,13 +3539,16 @@ rad=1.+dr_tom/2+dr_tom*findgen(Nr)
 endif
 ;<--
 
+if not keyword_set(awsom_file) then begin
 ; Compute the scoreR for quality-selection purposes:
   ratio = sfbe/tfbe
  ;scoreR=total(    (1.-ratio)^2 , 4 ) / float(nband)
   scoreR=total( abs(1.-ratio)   , 4 ) / float(nband)
+endif
 
   Nptmax_v = 150                ; ESTO NO ES ROBUSTO, 
   if keyword_set(expand) then Nptmax_v = 1500
+  if keyword_set(field_awsom)  then Nptmax_v = 7000
 ;  sin embargo, por la experiencia de haber realizado varios trazados
 ;  creo que va funcionar. 
 ;  Ningun sampleo supera este valor de puntos por linea
@@ -3760,7 +3807,7 @@ scoreR_v  = reform( scoreR_v(0:Npts_max-1,*) )
    writeu,1,lambda_v   
 ;<---------------
   close,  1
-return
+  return
 end
 
 

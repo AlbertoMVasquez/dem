@@ -170,7 +170,7 @@ endif
  ; The PIVOTAL point (the disk center) is changed from FITS to IDL indexing convention.
  if keyword_set(rot) then begin
  ANGLE     = -hdr.crota
- image    = rot(image,ANGLE,1,hdr.crpix1-1,hdr.crpix2-1,/pivot,missing=hugenegnum)
+; image    = rot(image,ANGLE,1,hdr.crpix1-1,hdr.crpix2-1,/pivot,missing=hugenegnum)
  hdr.crota = 0.
  rotstring='rotat'
  endif

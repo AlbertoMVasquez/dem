@@ -3,7 +3,7 @@
 
 ; process_data_aia_lev10,'CR2099/hicad/',/letitbe
 
-;  process_data_aia_lev10,'CR2192/',ib1=0,ib2=0,/rbn
+;  process_data_aia_lev10,'CR2198/',ib1=0,ib2=3,/rbn
 
 pro process_data_aia_lev10,rotationdir,suffix=suffix,ib1=ib1,ib2=ib2,rbn=rbn
 
@@ -184,6 +184,13 @@ end
 
 pro timebin_cycle
 
+  timebinning,'','/data1/tomography/DATA/aia/CR2198/171/','list.171.processed',4
+  timebinning,'','/data1/tomography/DATA/aia/CR2198/193/','list.193.processed',4
+  timebinning,'','/data1/tomography/DATA/aia/CR2198/211/','list.211.processed',4
+  timebinning,'','/data1/tomography/DATA/aia/CR2198/335/','list.335.processed',4
+  stop
+  return
+  
   timebinning,'','/data1/tomography/DATA/aia/CR2192/171/','list.171.processed',4
   
 return
