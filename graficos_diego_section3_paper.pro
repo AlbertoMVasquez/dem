@@ -60,22 +60,26 @@ ldemfiles=['LDEM.v3.error_box.1915.eit.HLL.l1.15_oreg075_gauss1_lin_Norm-median_
            'LDEM.v3.error_box.1915.eit.HLH.l0.35_ureg075_gauss1_lin_Norm-median_singlStart',$
            'LDEM.v3.error_box.1915.eit.LLH.l0.35_ureg075_gauss1_lin_Norm-median_singlStart',$
            'LDEM.v3.error_box.1915.eit.HHL.l0.35_ureg075_gauss1_lin_Norm-median_singlStart']
- file=ldemfiles(11)
+
+ldem_new=['LDEM.v3_cr2082_l0.225_h1_r3d_oldset_chianti.ioneq_sun_coronal_1992_feldman_ext.abund_euvi.A_L171_DECON_gauss1_lin_Norm-median_singlStart',$
+          'LDEM.v3_cr2082_l0.75_fd_r3d_oldset_chianti.ioneq_sun_coronal_1992_feldman_ext.abund_euvi.A_L171_DECON_gauss1_lin_Norm-median_singlStart']
+;file=ldemfiles(11)
+file=ldem_new(0)
 print,file
 
   ;read_ldem_albert,file,/ldem,/gauss1
-  read_ldem_albert,ldemfile,/ldem,/gauss1
+  read_ldem_v2,ldemfile,/ldem,/gauss1
   
   scalefactor=3                 ; es un factor de escala respecto al mapa original 180x90 pixeles
  ;load_mapoc,'CR2099_90X180blines_r_',1.075,/gng ; lee el mapa O/C
  ;load_mapoc,'CR2099_90X180blines_r_',1.075,/mdi ; lee el mapa O/C    
- load_mapoc,'CR1915_90X180blines_r_',1.075,/mdi ; lee el mapa O/C  
+ ;load_mapoc,'CR1915_90X180blines_r_',1.075,/mdi ; lee el mapa O/C  
  ;graficos,3,scalefactor,'CR2099l0.75',/xtit,/ytit,/Bfield ;1.035 Rsun 
 
 
  ;graficos,7,scalefactor,'CR2099_AIA4-l0.75-ALBERT-FULLCORONA',instrument='aia',Nemax=1.5,Tmmax=2.5,Ermax=1.0,/xtit,/ytit,/Bfield  ;1.075 Rsun
  ;graficos,7,scalefactor,'CR1915_errorbox_EIT_l0.75'+'.'+strmid(file,27,3)+'.'+strmid(file,37,4),instrument='eit' ,/xtit,/ytit,/Bfield;,Nemax=1.5,Tmmax=2.5,/xtit,/ytit,/Bfield  ;1.075 Rsun
-  graficos,7,scalefactor,'CR1915_errorbox_EIT_l0.75'+'.base',instrument='eit' ,/xtit,/ytit,/Bfield;,Nemax=1.5,Tmmax=2.5,/xtit,/ytit,/Bfield  ;1.075 Rsun
+  graficos,3,scalefactor,'CR2082_test_fd_l0.75',instrument='euvi' ,/xtit,/ytit;,/Bfield;,Nemax=1.5,Tmmax=2.5,/xtit,/ytit,/Bfield  ;1.075 Rsun
   return
 end
 
@@ -160,13 +164,13 @@ pro graficos,ir,scalefactor,suffix,instrument=instrument,zbuff=zbuff,Bfield=Bfie
 ; record_gif,'/data1/work/dem/newfigs/','Tm_'+suffix+'.gif';,'X'
 
  display_carrmap,R,ir,2*Nband,scalefactor,1.,superlow,superhigh,12,'R @ '+strmid(suffix,0,5)+' Rsun'+'  base',instrument ;,/log                       
- record_gif,'/data1/work/dem/newfigs/','R_'+suffix+'.gif';,'X'                                                                     
+; record_gif,'/data1/work/dem/newfigs/','R_'+suffix+'.gif';,'X'                                                                     
 
  display_carrmap,Nesat/1.e8,ir,2*Nband+1,scalefactor,1.,0.,Nemax,4,'Ne [10!U8!Ncm!U-3!N] @ '+strmid(suffix,0,5)+' Rsun'+'  base',instrument
- record_gif,'/data1/work/dem/newfigs/','Ne_'+suffix+'.gif';,'X'                                                                                         
+; record_gif,'/data1/work/dem/newfigs/','Ne_'+suffix+'.gif';,'X'                                                                                         
 
  display_carrmap,Tmsat/1.e6,ir,2*Nband+2,scalefactor,1.,0.,Tmmax,5,'Tm [MK] @'+strmid(suffix,0,5)+' Rsun'+'  base',instrument
- record_gif,'/data1/work/dem/newfigs/','Tm_'+suffix+'.gif';,'X'
+; record_gif,'/data1/work/dem/newfigs/','Tm_'+suffix+'.gif';,'X'
 
  return
 end

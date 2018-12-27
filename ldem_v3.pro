@@ -153,7 +153,8 @@ end
 pro ldem_v2_aia,gauss1=gauss1,doublegauss=doublegauss,gauss2c=gauss2c,$
                 glc=glc,newpar4=newpar4,newpar5=newpar5,lorentz=lorentz,$
                 gauss3c=gauss3c,gauss7par=gauss7par,equalizer=equalizer,$
-                dgfw=dgfw,g2cfw=g2cfw,dem=dem,usebox=usebox,datafiles=datafiles
+                dgfw=dgfw,g2cfw=g2cfw,dem=dem,usebox=usebox,datafiles=datafiles,$
+                nr=nr,CRstring=CRstring
 
 ;L=171, Tmin=0.5, Tmax=3.5 para usar con 3 bandas (171, 193 y 211 A)
 ;L=256, Tmin=0.5, Tmax=5.0 para usar con 4 bandas, incluyendo 335
@@ -162,9 +163,9 @@ pro ldem_v2_aia,gauss1=gauss1,doublegauss=doublegauss,gauss2c=gauss2c,$
 
 
   Tmin = 0.5                    ; MK
-  Tmax = 5.0                    ; MK
-  L    = 256   &   Lstring='_256' ; Number of Temp bins
-  nr   = 26                       ; Number of tomographic radial bins
+  Tmax = 3.5                    ; MK
+  L    = 171   &   Lstring='_171' ; Number of Temp bins
+if not keyword_set (nr) then  nr   = 26                     ; Number of tomographic radial bins
   nth  = 90                       ; Number of latitudinal bins
   npx  = 1024                     ; Number of Image pixels, for DEM.
   box  = [400,620,240,380]        ; box of pixeles where do DEM  
@@ -172,13 +173,13 @@ pro ldem_v2_aia,gauss1=gauss1,doublegauss=doublegauss,gauss2c=gauss2c,$
  ; 4 bandas, probar   2,3,4,5
  ; 5 bandas, probar 1,2,3,4,5
 
- bandsindexes = [2,3,4,5]   &  Expstring='_AIA4_FullCorona'
-
+; bandsindexes = [2,3,4,5]   &  Expstring='aia3'
+ bandsindexes = [0,1,2]   &  Expstring='aia3'
  
  dir    = '/data1/tomography/bindata/' ;Tomography directory
 
 ; the FBE files
- if not keyword_det(datafiles) then begin
+ if not keyword_set(datafiles) then begin
     datafiles=[ '',$
                 '',$
                 'x_AIA.171.CR2099.26x90_bf4_ri.98_ro1.025_b4_l0.75.CECI.corregido',$
@@ -186,18 +187,19 @@ pro ldem_v2_aia,gauss1=gauss1,doublegauss=doublegauss,gauss2c=gauss2c,$
                 'x_AIA.211.CR2099.26x90_bf4_ri.98_ro1.025_b4_l0.75.CECI.corregido',$ 
                 'x_AIA.335.CR2099.26x90_bf4_ri.98_ro1.025_b4_l0.75.CECI.corregido']
  endif
- CRstring='_CR2099_l0.75'
+if not keyword_set(CRstring) then  CRstring='_CR2099_l0.75'
 
 ;este archivo se utiliza como sustrato en la corrida de AIA-4/2-normal 
 ; sustrato='LDEM.v2_cr2099_l1.0_chianti.ioneq_sun_coronal_1992_feldman_ext.abund_AIA-3band_171_gauss1_lin_Norm-median_singlStart'
-   sustrato='LDEM.v3_CR2099_l0.75_chianti.ioneq_sun_coronal_1992_feldman_ext.abund_AIA3_FullCorona_192_corregido_gauss1_lin_Norm-median_singlStart'
+;   sustrato='LDEM.v3_CR2099_l0.75_chianti.ioneq_sun_coronal_1992_feldman_ext.abund_AIA3_FullCorona_192_corregido_gauss1_lin_Norm-median_singlStart'
 
 
 
 ; The TRF
  file_ioneq='chianti.ioneq'
  file_abund='sun_coronal_1992_feldman_ext.abund'
-   qklfiles=['Qkl_094_','Qkl_131_','Qkl_171_','Qkl_193_','Qkl_211_','Qkl_335_']+$
+; qklfiles=['Qkl_094_','Qkl_131_','Qkl_171_','Qkl_193_','Qkl_211_','Qkl_335_']+$
+ qklfiles=['Qkl_171_','Qkl_193_','Qkl_211_']+$
              file_ioneq+'_'+file_abund+$
              '.AIA-lastoptimizedWL-photons-Abund-1e-3-ALL-withCONTINUUM_Ne1E08_C71.extended.interpolated.out'
 
@@ -212,7 +214,7 @@ goto,skipqklold
 ;-------------------------------------------------------------------------------------
 skipqklold:
 
- suffix = 'v3'+CRstring+'_'+file_ioneq+'_'+file_abund+Expstring+Lstring+'_corregido'
+ suffix = 'v3'+CRstring+'_'+file_ioneq+'_'+file_abund+Expstring+Lstring+''
 
  binfactor=2
  fact     =1
@@ -468,15 +470,15 @@ return
 end
 
 ;--------------------------------------------------------------------------------
-pro ldem_v2_euvi,gauss1=gauss1,equalizer=equalizer,datafiles=datafiles
+pro ldem_v2_euvi,gauss1=gauss1,equalizer=equalizer,datafiles=datafiles,nr=nr,CRstring=CRstring
 
 ;========================================================================
   Tmin =  0.5 ;MK
   Tmax =  3.5 ;MK
-  L    =  171             &   Lstring='_L171_DECON_FULLHOLLOW' ; number of temperature bins    
+  L    =  171             &   Lstring='_L171_DECON' ; number of temperature bins    
   bandsindexes = [0,1,2]  
 ;=========================================================================
-  nr   =   26 ;nr = 50
+  if not keyword_set(nr) then  nr   =   26 ;nr = 50
   nth  =   90
   npx  = 1024
   fact = 4.
@@ -490,8 +492,12 @@ pro ldem_v2_euvi,gauss1=gauss1,equalizer=equalizer,datafiles=datafiles
                  'x_euvi.A.195.cr2081.26x90_bf4_ri.000_ro1.025_l0.375_DECON',$
                  'x_euvi.A.284.cr2081.26x90_bf4_ri.000_ro1.025_l0.375_DECON' ]  
   endif
-  CRstring='_cr2081_l0.375'  &  Expstring='_euvi.A' 
-; Qkl files 
+
+  if not keyword_set (CRstring) then  CRstring='_cr2081_l0.375'
+
+  Expstring='_euvi.A' 
+
+;Qkl files 
   file_ioneq='chianti.ioneq'  
   file_abund='sun_coronal_1992_feldman_ext.abund'
   filter='S1a'
@@ -927,7 +933,7 @@ endif
 ; TOMOGRAPHY FBE
 if keyword_set(ldem) then begin
   irad1=2    ;1.025 Rsun
-  irad2=nr-3 ;1.235 Rsun
+  irad2=nr-1 ;1.235 Rsun
   if keyword_set(oneheight) then begin
      irad1=oneheight
      irad2=irad1

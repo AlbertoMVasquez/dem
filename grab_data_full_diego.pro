@@ -1,5 +1,56 @@
 pro explore
+
+;  DESCARGAS:
+  grab_data_full_diego,'2018-09-29T13:50:00','2018-10-08T23:59:59','AIA'   ,'/data1/tomography/DATA/aia/CR2209/'
+  grab_data_full_diego,'2018-10-09T00:00:00','2018-10-18T23:59:59','AIA'   ,'/data1/tomography/DATA/aia/CR2209/'
+  grab_data_full_diego,'2018-10-19T00:00:00','2018-10-26T20:47:00','AIA'   ,'/data1/tomography/DATA/aia/CR2209/'
+
+  grab_data_full_diego,'2018-09-02T07:24:00','2018-09-11T23:59:59','AIA'   ,'/data1/tomography/DATA/aia/CR2208/'
+  grab_data_full_diego,'2018-09-12T00:00:00','2018-09-21T23:59:59','AIA'   ,'/data1/tomography/DATA/aia/CR2208/'
+  grab_data_full_diego,'2018-09-22T00:00:00','2018-09-29T13:50:00','AIA'   ,'/data1/tomography/DATA/aia/CR2208/'
+
+  grab_data_full_diego,'2018-03-22T22:25:00','2018-03-31T23:59:59','AIA'   ,'/data1/tomography/DATA/aia/CR2202/'
+  grab_data_full_diego,'2018-04-01T00:00:00','2018-04-09T23:59:59','AIA'   ,'/data1/tomography/DATA/aia/CR2202/'
+  grab_data_full_diego,'2018-04-10T00:00:00','2018-04-19T05:10:00','AIA'   ,'/data1/tomography/DATA/aia/CR2202/'
+ goto,desc 
+  grab_data_full_diego,'2018-01-27T00:00:00','2018-02-23T23:59:59','AIA'   ,'/data1/tomography/ciclo24/','data_aia_cr2200',/graf
+  grab_data_full_diego,'2018-02-23T00:00:00','2018-03-22T23:59:59','AIA'   ,'/data1/tomography/ciclo24/','data_aia_cr2201',/graf
+  grab_data_full_diego,'2018-03-22T00:00:00','2018-04-19T23:59:59','AIA'   ,'/data1/tomography/ciclo24/','data_aia_cr2202',/graf
+  grab_data_full_diego,'2018-04-19T00:00:00','2018-05-16T23:59:59','AIA'   ,'/data1/tomography/ciclo24/','data_aia_cr2203',/graf
+  grab_data_full_diego,'2018-05-16T00:00:00','2018-06-12T23:59:59','AIA'   ,'/data1/tomography/ciclo24/','data_aia_cr2204',/graf
+  grab_data_full_diego,'2018-06-12T00:00:00','2018-07-09T23:59:59','AIA'   ,'/data1/tomography/ciclo24/','data_aia_cr2205',/graf
+  grab_data_full_diego,'2018-07-09T00:00:00','2018-08-06T23:59:59','AIA'   ,'/data1/tomography/ciclo24/','data_aia_cr2206',/graf
+  grab_data_full_diego,'2018-08-06T00:00:00','2018-09-02T23:59:59','AIA'   ,'/data1/tomography/ciclo24/','data_aia_cr2207',/graf
+  grab_data_full_diego,'2018-09-02T00:00:00','2018-09-29T23:59:59','AIA'   ,'/data1/tomography/ciclo24/','data_aia_cr2208',/graf
   
+  
+  grab_data_full_diego,'2017-04-27T00:00:00','2017-05-26T23:59:59','AIA'   ,'/data1/tomography/DATA/aia/CR2190/','data_aia_cr2190',/graf
+  grab_data_full_diego,'2017-05-26T00:00:00','2017-06-23T23:59:59','AIA'   ,'/data1/tomography/DATA/aia/CR2191/','data_aia_cr2191',/graf
+  grab_data_full_diego,'2017-06-23T00:00:00','2017-07-20T23:59:59','AIA'   ,'/data1/tomography/DATA/aia/CR2192/','data_aia_cr2192',/graf
+
+  grab_data_full_diego,'2017-07-20T00:00:00','2017-08-16T23:59:59','AIA'   ,'/data1/tomography/DATA/aia/CR2193/','data_aia_cr2193',/graf
+  grab_data_full_diego,'2017-08-16T00:00:00','2017-09-12T23:59:59','AIA'   ,'/data1/tomography/DATA/aia/CR2194/','data_aia_cr2194',/graf
+  grab_data_full_diego,'2017-09-12T00:00:00','2017-10-10T23:59:59','AIA'   ,'/data1/tomography/DATA/aia/CR2195/','data_aia_cr2195',/graf
+
+  grab_data_full_diego,'2017-10-20T00:00:00','2017-11-06T23:59:59','AIA'   ,'/data1/tomography/DATA/aia/CR2196/','data_aia_cr2196',/graf
+  grab_data_full_diego,'2017-11-06T00:00:00','2017-12-03T23:59:59','AIA'   ,'/data1/tomography/DATA/aia/CR2197/','data_aia_cr2197',/graf
+  grab_data_full_diego,'2017-12-03T00:00:00','2017-12-30T23:59:59','AIA'   ,'/data1/tomography/DATA/aia/CR2198/','data_aia_cr2198',/graf
+
+  grab_data_full_diego,'2017-12-30T00:00:00','2018-01-27T23:59:59','AIA'   ,'/data1/tomography/DATA/aia/CR2199/','data_aia_cr2199',/graf
+  grab_data_full_diego,'2017-01-27T00:00:00','2017-02-23T23:59:59','AIA'   ,'/data1/tomography/DATA/aia/CR2100/','data_aia_cr2100',/graf
+  grab_data_full_diego,'2017-02-23T00:00:00','2017-03-22T23:59:59','AIA'   ,'/data1/tomography/DATA/aia/CR2101/','data_aia_cr2101',/graf
+
+  grab_data_full_diego,'2017-03-22T00:00:00','2017-04-19T23:59:59','AIA'   ,'/data1/tomography/DATA/aia/CR2102/','data_aia_cr2102',/graf
+  grab_data_full_diego,'2017-04-19T00:00:00','2017-05-16T23:59:59','AIA'   ,'/data1/tomography/DATA/aia/CR2103/','data_aia_cr2103',/graf
+  grab_data_full_diego,'2017-05-16T00:00:00','2017-06-12T23:59:59','AIA'   ,'/data1/tomography/DATA/aia/CR2104/','data_aia_cr2104',/graf
+
+  grab_data_full_diego,'2017-06-12T00:00:00','2017-07-09T23:59:59','AIA'   ,'/data1/tomography/DATA/aia/CR2105/','data_aia_cr2105',/graf
+  grab_data_full_diego,'2017-07-09T00:00:00','2017-08-06T23:59:59','AIA'   ,'/data1/tomography/DATA/aia/CR2106/','data_aia_cr2106',/graf
+  grab_data_full_diego,'2017-09-02T00:00:00','2017-09-29T23:59:59','AIA'   ,'/data1/tomography/DATA/aia/CR2108/','data_aia_cr2108',/graf
+
+
+  
+grab_data_full_diego,'2017-12-03T00:00:00','2017-12-30T23:59:59','AIA'   ,'/data1/tomography/DATA/aia/CR2198/','data_aia_cr2198',/graf
 ;grab_data_full_diego,'2009-03-09','2009-04-05','EUVI_A','/data1/work/Minimum_2009/','data_cr2081_diego',/graf;tesis
 ;grab_data_full_diego,'1996-10-15','1996-11-11','EIT'   ,'/data1/work/Minimum_1996/','data_cr1915_diego',/graf;tesis
 
@@ -24,6 +75,7 @@ grab_data_full_diego,'2016-07-30T00:00:00','2016-08-26T23:59:59','AIA'   ,'/data
 
 ;para los magnetogramas ver el mreadfits.pro de solar soft y el array
 ;que tira puede graficarse con tvscl
+desc:
 return
 end
 
@@ -73,16 +125,16 @@ if inst eq 'AIA' then begin
  dir335=basedir+'335/'
  wave=['094 Angstrom','131 Angstrom','171 Angstrom','193 Angstrom','211 Angstrom','304 Angstrom','335 Angstrom']
  pix = 4096
- maxval = 5000L
-; cadences3 =  [10,20,30] * 60L
- cadences3 =  [60] * 60L ;cadencia de 1 imagen por hora
+ maxval =400000L ; 5000L
+ cadences3 =  [1]*600L
+; cadences3 =  [60] * 60L ;cadencia de 1 imagen por hora
 ; cadences3 =  [30,40,50,60] * 60L
 endif
 
  cadences  =  [1,10,20,30,40,50,60] * 60L
 ; cadences2 =  [30,60,40,30] * 60L
- cadences2 =  [60,60,60,60] * 60L 
-
+ cadences2 =  [60] * 10L 
+maxval = 5000L
 
 ;modificar nombre de esta entrada y extender a aia que necesita 3 wave mas
 ;OBS: euvi lleva source='STEREO_A' o B, y AIA lleva
@@ -137,7 +189,7 @@ print,'Records for'+wave(0)+':'
  research171_2:
  cadence=cadences2[icad] 
 euvi171 = vso_search(date1,date2, inst=instru,wave=wave(0),sample=cadence,source=source)
- if n_elements(euvi171.time) gt 999L then begin
+ if n_elements(euvi171.time) gt maxval then begin
     icad=icad+1
     goto,research171_2
  endif
@@ -147,7 +199,7 @@ euvi171 = vso_search(date1,date2, inst=instru,wave=wave(0),sample=cadence,source
  research195_2:
  cadence=cadences2[icad]
  euvi195 = vso_search(date1,date2, inst=instru,wave=wave(1),sample=cadence,source=source)
- if n_elements(euvi195.time) gt 999L then begin
+ if n_elements(euvi195.time) gt maxval then begin
     icad=icad+1
     goto,research195_2
  endif
@@ -157,7 +209,7 @@ euvi171 = vso_search(date1,date2, inst=instru,wave=wave(0),sample=cadence,source
  research284_2:
  cadence=cadences2[icad]
  euvi284 = vso_search(date1,date2, inst=instru,wave=wave(2),sample=cadence,source=source)
- if n_elements(euvi284.time) gt 999L then begin
+ if n_elements(euvi284.time) gt maxval then begin
     icad=icad+1
     goto,research284_2
  endif
@@ -167,7 +219,7 @@ euvi171 = vso_search(date1,date2, inst=instru,wave=wave(0),sample=cadence,source
  research304_2:
  cadence=cadences2[icad]
  euvi304 = vso_search(date1,date2, inst=instru,wave=wave(3),sample=cadence,source=source)
- if n_elements(euvi304.time) gt 999L then begin
+ if n_elements(euvi304.time) gt maxval then begin
     icad=icad+1
     goto,research304_2
  endif
@@ -175,81 +227,90 @@ endif
 
 
 if inst eq 'AIA' then begin
-print,'Records for'+wave(0)+':'
- icad=0
- research094_3:
- cadence=cadences3[icad]
- aia094 = vso_search(date1,date2, inst=inst,wave=wave(0),sample=cadence,pixels=pix,level=lev1)
- if n_elements(aia094.time) gt maxval then begin
-    icad=icad+1
-    goto,research094_3
- endif
+;stop
+;   goto,test1
+   print,'Records for'+wave(0)+':'
+   icad=0
+   research094_3:
+   cadence=cadences3[icad]
+   aia094 = vso_search(date1,date2, inst=inst,wave=wave(0),sample=cadence,pixels=pix,level=lev1)
+   if n_elements(aia094.time) gt maxval then begin
+      icad=icad+1
+      goto,research094_3
+   endif
+   
+   print,'Records for'+wave(1)+':'
+   icad=0
+   research131_3:
+   cadence=cadences3[icad]
+   aia131 = vso_search(date1,date2, inst=inst,wave=wave(1),sample=cadence,pixels=pix,level=lev1)
 
-print,'Records for'+wave(1)+':'
- icad=0
- research131_3:
- cadence=cadences3[icad]
- aia131 = vso_search(date1,date2, inst=inst,wave=wave(1),sample=cadence,pixels=pix,level=lev1)
- if n_elements(aia131.time) gt maxval then begin
-    icad=icad+1
-    goto,research131_3
- endif
+   if n_elements(aia131.time) gt maxval then begin
+      icad=icad+1
+      goto,research131_3
+   endif
+   test1:
+   
+   print,'Records for'+wave(2)+':'
+   icad=0
+   research171_3:
+   cadence=cadences3[icad]
+  
+   aia171 = vso_search(date1,date2, inst=inst,wave=wave(2),sample=cadence,pixels=pix,level=lev1)
+   if n_elements(aia171.time) gt maxval then begin
+      print,n_elements(aia171.time)
+ ;     stop
+      icad=icad+1
+      goto,research171_3
+   endif
 
-print,'Records for'+wave(2)+':'
- icad=0
- research171_3:
- cadence=cadences3[icad]
-aia171 = vso_search(date1,date2, inst=inst,wave=wave(2),sample=cadence,pixels=pix,level=lev1)
- if n_elements(aia171.time) gt maxval then begin
-    icad=icad+1
-    goto,research171_3
- endif
+;   goto,test2
+   print,'Records for'+wave(3)+':'
+   icad=0
+   research193_3:
+   cadence=cadences3[icad]
+   aia193 = vso_search(date1,date2, inst=inst,wave=wave(3),sample=cadence,pixels=pix,level=lev1)
+   if n_elements(aia193.time) gt maxval then begin
+      icad=icad+1
+      goto,research193_3
+   endif
+   
+   print,'Records for'+wave(4)+':'
+   icad=0
+   research211_3:
+   cadence=cadences3[icad]
+   aia211 = vso_search(date1,date2, inst=inst,wave=wave(4),sample=cadence,pixels=pix,level=lev1)
+   if n_elements(aia211.time) gt maxval then begin
+      icad=icad+1
+      goto,research211_3
+   endif
 
- print,'Records for'+wave(3)+':'
- icad=0
- research193_3:
- cadence=cadences3[icad]
- aia193 = vso_search(date1,date2, inst=inst,wave=wave(3),sample=cadence,pixels=pix,level=lev1)
- if n_elements(aia193.time) gt maxval then begin
-    icad=icad+1
-    goto,research193_3
- endif
+;   goto,test2
+   print,'Records for'+wave(5)+':'
+   icad=0
+   research304_3:
+   cadence=cadences3[icad]
+   aia304 = vso_search(date1,date2, inst=inst,wave=wave(5),sample=cadence,pixels=pix,level=lev1)
+   if n_elements(aia304.time) gt maxval then begin
+      icad=icad+1
+      goto,research304_3
+   endif
 
- print,'Records for'+wave(4)+':'
- icad=0
- research211_3:
- cadence=cadences3[icad]
- aia211 = vso_search(date1,date2, inst=inst,wave=wave(4),sample=cadence,pixels=pix,level=lev1)
- if n_elements(aia211.time) gt maxval then begin
-    icad=icad+1
-    goto,research211_3
- endif
-
- print,'Records for'+wave(5)+':'
- icad=0
- research304_3:
- cadence=cadences3[icad]
- aia304 = vso_search(date1,date2, inst=inst,wave=wave(5),sample=cadence,pixels=pix,level=lev1)
- if n_elements(aia304.time) gt maxval then begin
-    icad=icad+1
-    goto,research304_3
- endif
-
- print,'Records for'+wave(6)+':'
- icad=0
- research335_3:
- cadence=cadences3[icad]
- aia335 = vso_search(date1,date2, inst=inst,wave=wave(6),sample=cadence,pixels=pix,level=lev1)
- if n_elements(aia335.time) gt maxval then begin
-    icad=icad+1
-    goto,research335_3
- endif
-
+   print,'Records for'+wave(6)+':'
+   icad=0
+   research335_3:
+   cadence=cadences3[icad]
+   aia335 = vso_search(date1,date2, inst=inst,wave=wave(6),sample=cadence,pixels=pix,level=lev1)
+   if n_elements(aia335.time) gt maxval then begin
+      icad=icad+1
+      goto,research335_3
+   endif
+   test2:
 endif
 
 
 ;aca debo agregar 3 wave de aia
-
+;stop
  if keyword_set(graf) then begin
      graph_data,basedir,filename,inst 
      print,'plot of the data generated in '+basedir+filename+'.gif'
@@ -269,7 +330,7 @@ if inst eq 'EUVI_B' then begin
  euvi171 = vso_get(euvi171,/force,out_dir=dirb171)
  euvi195 = vso_get(euvi195,/force,out_dir=dirb195)
  euvi284 = vso_get(euvi284,/force,out_dir=dirb284)
- euvi304 = vso_get(euvi304,/force,out_dir=dirb304)
+; euvi304 = vso_get(euvi304,/force,out_dir=dirb304)
 endif
 
 if inst eq 'EUVI_A' then begin
@@ -436,6 +497,7 @@ if instru eq 'AIA' then begin
  plot,julians304-min(julians304)+1,findgen(n304)+1,title='304 from '+dates304(0)+' to '+dates304(n304-1),psym=8,xstyle=1,ystyle=1,th=1
  plot,julians335-min(julians335)+1,findgen(n335)+1,title='335 from '+dates335(0)+' to '+dates335(n335-1),psym=8,xstyle=1,ystyle=1,th=1
  xyouts,[0.05,0.30,0.55,0.80,0.05,0.30,0.55],[0.8,0.8,0.8,0.8,0.25,0.25,0.25],[string(n094),string(n131),string(n171),string(n193),string(n211),string(n304),string(n335)],/normal
+
  record_gif,basedir,filename+'.gif','X'
 endif
 
