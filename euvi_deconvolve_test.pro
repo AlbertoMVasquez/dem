@@ -15,6 +15,7 @@
 ; binfactor : An integer specifying the binfactor to be used if the
 ;             /REBIN flag is set. The Binfactor must be an integer
 ;             divisor of the EUVI image size (2048).
+; outdir    : if set, output directory is different tha directory.
 ;
 ; FLAGS
 ; /decon    : If set the output image is PSF-deconvolved, as determined
@@ -53,11 +54,13 @@
 
 pro euvi_deconvolve_test,DIRECTORY=DIRECTORY,LISTFILE=LISTFILE,BINFACTOR=BINFACTOR,NFILES=NFILES,$
                     REBIN=REBIN,DESPIKE=DESPIKE,RESCALE=RESCALE,ROT=ROT,DECON=DECON,$
-                    PHOTONS=PHOTONS,DNSEC=DNSEC,NORMALIZE=NORMALIZE
+                    PHOTONS=PHOTONS,DNSEC=DNSEC,NORMALIZE=NORMALIZE,OUTDIR=OUTDIR
 
 ; Read list of filenames to process.
 if not keyword_set(directory) then directory='./'
 if not keyword_set(nfiles)    then nfiles=1 ; will read only the FIRST file in the list by default.
+if not keyword_set(outdir)    then outdir=directory
+
 filenames = strarr(nfiles)
 tmp = ''
 openr,1,directory+listfile
@@ -99,17 +102,19 @@ if keyword_set(DNSEC)   then begin
 ; REMOVE /NORMAL_OFF if scale up to OPEN is desired here.
 ;if NOT keyword_set(despike) then begin
    secchi_prep,directory+filenames[i],hdr,image,/DN2P_OFF,/CALIMG_OFF,/NORMAL_OFF
-   img0=image
+   print,'hdr:',hdr.crpix1,median(image),mean(image),stdev(image),hdr.exptime
    hdr0=hdr
-;endif
+;endif 
  if keyword_set(despike) then begin
   ; TNV values as recommended by Jean Pierre Wulsen
-   secchi_prep,directory+filenames(i),hdr,image,/DN2P_OFF,/CALIMG_OFF,/EXPTIME_OFF,/NORMAL_OFF
-   tnv=8
+    secchi_prep,directory+filenames[i],hdr,image,/DN2P_OFF,/CALIMG_OFF,/NORMAL_OFF,/EXPTIME_OFF
+    print,'hdr: ',hdr.crpix1,median(image),mean(image),stdev(image),hdr.exptime
+    tnv=8    
    if hdr.wavelnth eq 284 then tnv=4
  ; data benefits from several passes of despiking
    for ii=1,3 do image=despike_gen(image,tn=tnv,/low3)
    image=euvi_correction(image,hdr,/DN2P_OFF,/CALIMG_OFF,/NORMAL_OFF) ; exposure normalization here
+   print,'hdr: ',hdr.crpix1,median(image),mean(image),stdev(image),hdr.exptime
    hdr=hdr0
  endif
 endif
@@ -170,7 +175,7 @@ endif
  ; The PIVOTAL point (the disk center) is changed from FITS to IDL indexing convention.
  if keyword_set(rot) then begin
  ANGLE     = -hdr.crota
- image    = rot(image,ANGLE,1,hdr.crpix1-1,hdr.crpix2-1,/pivot,missing=hugenegnum)
+;image     = rot(image,ANGLE,1,hdr.crpix1-1,hdr.crpix2-1,/pivot,missing=hugenegnum)
  hdr.crota = 0.
  rotstring='rotat'
  endif
@@ -237,7 +242,7 @@ if keyword_set(decon) then newfilename = newfilename+'.DECON'
 newfilename=newfilename+'.fts'
 hdr.filename=newfilename
 
-newfilename=directory+newfilename
+newfilename=outdir+newfilename
 
 print,newfilename
 
@@ -250,7 +255,7 @@ endif else begin
  if flag eq  6 then reason='  +50% of pixels are missing data'
 printf,1,filenames(i),reason
 endelse
-
+;stop
 endfor ; next image
 close,1
 print,'All your data has been processed.'
