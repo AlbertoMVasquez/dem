@@ -268,11 +268,23 @@ end
 ;-------------------------------------------------------------------------------------
 pro timebinning_cycle
 
- timebinning,'','/data1/tomography/DATA/eit/CR1919/171/','list.171.proc.selected',4,/eit
- timebinning,'','/data1/tomography/DATA/eit/CR1919/195/','list.195.proc.selected',4,/eit
- timebinning,'','/data1/tomography/DATA/eit/CR1919/284/','list.284.proc.selected',4,/eit
- timebinning,'','/data1/tomography/DATA/eit/CR1919/304/','list.304.proc.selected',4,/eit
 
+  timebinning,'','/data1/tomography/DATA/euvi/CR2082/A171/','list.A171.DECON_2.proc.selected.video_selection',4,/euvi
+  timebinning,'','/data1/tomography/DATA/euvi/CR2082/A195/','list.A195.DECON_2.proc.selected.video_selection',4,/euvi
+  timebinning,'','/data1/tomography/DATA/euvi/CR2082/A284/','list.A284.DECON_2.proc.selected.video_selection',4,/euvi
+stop
+  return
+  timebinning,'','/data1/tomography/DATA/euvi/CR2082/A171/','list.A171.DECON_2.proc.selected',4,/euvi
+  timebinning,'','/data1/tomography/DATA/euvi/CR2082/A195/','list.A195.DECON_2.proc.selected',4,/euvi
+  timebinning,'','/data1/tomography/DATA/euvi/CR2082/A284/','list.A284.DECON_2.proc.selected',4,/euvi
+  
+stop
+  return
+  timebinning,'','/data1/tomography/DATA/eit/CR1919/171/','list.171.proc.selected',4,/eit
+  timebinning,'','/data1/tomography/DATA/eit/CR1919/195/','list.195.proc.selected',4,/eit
+  timebinning,'','/data1/tomography/DATA/eit/CR1919/284/','list.284.proc.selected',4,/eit
+  timebinning,'','/data1/tomography/DATA/eit/CR1919/304/','list.304.proc.selected',4,/eit
+  
  timebinning,'','/data1/tomography/DATA/eit/CR1915/171/','list.171.proc.selected',4,/eit
  timebinning,'','/data1/tomography/DATA/eit/CR1915/195/','list.195.proc.selected',4,/eit
  timebinning,'','/data1/tomography/DATA/eit/CR1915/284/','list.284.proc.selected',4,/eit
@@ -1217,7 +1229,7 @@ endif
 filenames=filenames(p)
 skipthis:
 help,filenames
-stop
+;stop
 if keyword_set(eit) then begin
 p171A=where(strmid(filenames,19,3) eq '171')
 p195A=where(strmid(filenames,19,3) eq '195')

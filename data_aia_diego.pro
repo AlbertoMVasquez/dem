@@ -4,8 +4,12 @@
 ; process_data_aia_lev10,'CR2099/hicad/',/letitbe
 
 ;  process_data_aia_lev10,'CR2192/',ib1=0,ib2=0,/rbn
+;Nuevos cambios 20/12/2018 D.Lloveras
+;agregado input basedir y outrotdir
+;la idea es que lea y/o escriba desde /data1/ o /data2/
 
-pro process_data_aia_lev10,rotationdir,suffix=suffix,ib1=ib1,ib2=ib2,rbn=rbn
+; process_data_aia_lev10,'CR2208/',ib1=0,ib2=0,/rbn,basedir='/data1/',dirout='/data2/'
+pro process_data_aia_lev10,rotationdir,suffix=suffix,ib1=ib1,ib2=ib2,rbn=rbn,dirout=dirout,basedir=basedir
 
 common calibration_parameters,Omega_p,PHI0_v,aiacorr
 
@@ -14,87 +18,81 @@ common calibration_parameters,Omega_p,PHI0_v,aiacorr
     ; get time-dpendent correction factors
      aiacorr = aia_bp_get_corrections()
 
-     if NOT keyword_set(ib1)    then ib1=0
-;     if NOT keyword_set(ib2)    then ib2=3
- 
-;     case ib2 of
-;        0: ib2=0
-;        else:begin
-;           ib2=3
-;        end
-;     endcase
-  
-     if NOT keyword_set(suffix) then suffix=''    
-     
-     basedir='/data1/'
-     dir=basedir+'tomography/DATA/aia/'+rotationdir
-; subdir=['094/','131/','171/','193/','211/','335/','304/']
-  subdir=['171/','193/','211/','335/','131/','094/','304/'] ; A more reasonable order to process.
-   list  ='list.'+strmid(subdir,0,3)+suffix
-   listp ='list.'+strmid(subdir,0,3)+suffix+'.processed'
-filename=''
-       n=0
+     if NOT keyword_set(ib1)       then ib1=0
+     if NOT keyword_set(ib2)       then ib2=2  
+     if NOT keyword_set(suffix)    then suffix=''    
+     if NOT keyword_set(basedir)   then basedir='/data1/'
+     if NOT keyword_set(dirout)    then dirout =basedir
 
-for ib=ib1,ib2 do begin
-  openr,1,dir+subdir[ib]+list[ib]
-  readf,1,n
-  openw,2,dir+subdir[ib]+listp[ib]
- printf,2,n
- for i=0,n-1 do begin
- readf,1,filename
- aia_prep,dir+subdir[ib]+filename,[0],header15,image15
- ssw_file_delete,'/tmp/AIA*fits'
+     dir    =basedir +'tomography/DATA/aia/'+rotationdir
+     dir2   =dirout  +'tomography/DATA/aia/'+rotationdir
 
- newfilename=strmid(header15.DATE_OBS, 0,4)+strmid(header15.DATE_OBS, 5,2)+$
-             strmid(header15.DATE_OBS, 8,2)+'.'+$
-             strmid(header15.DATE_OBS,11,2)+strmid(header15.DATE_OBS,14,2)+'.'+$
-             strmid(subdir[ib],0,3)+'.lev1p5'
+     subdir=['171/','193/','211/','335/','131/','094/','304/'] ; A more reasonable order to process.
+     list  ='list.'+strmid(subdir,0,3)+suffix
+     listp ='list.'+strmid(subdir,0,3)+suffix+'.processed'
+     filename=''
+     n=0
 
-goto,skip_table
- print,newfilename
- ix=3000
- iy=lindgen(7)*500+500
-int,strmid(subdir[ib],0,3),reform(image15(ix,iy))
- close,/all
- stop
+     for ib=ib1,ib2 do begin
+        openr,1,dir+subdir[ib]+list[ib]
+        readf,1,n
+        openw,2,dir2+subdir[ib]+listp[ib]
+        printf,2,n
+        for i=0,n-1 do begin
+           readf,1,filename
+           aia_prep,dir+subdir[ib]+filename,[0],header15,image15
+           ssw_file_delete,'/tmp/AIA*fits'
+           
+           newfilename=strmid(header15.DATE_OBS, 0,4)+strmid(header15.DATE_OBS, 5,2)+$
+                       strmid(header15.DATE_OBS, 8,2)+'.'+$
+                       strmid(header15.DATE_OBS,11,2)+strmid(header15.DATE_OBS,14,2)+'.'+$
+                       strmid(subdir[ib],0,3)+'.lev1p5'
+           
+           goto,skip_table
+           print,newfilename
+           ix=3000
+           iy=lindgen(7)*500+500
+           int,strmid(subdir[ib],0,3),reform(image15(ix,iy))
+           close,/all
+           stop
 skip_table:
-
+           
 ; goto,test
 ; Normalize by exposure time
-  image15 = image15 / header15.EXPTIME
-  newfilename=newfilename+'.ETN'
-
+           image15 = image15 / header15.EXPTIME
+           newfilename=newfilename+'.ETN'
+  
 ; Divide by Ck0
-  divide_by_ck0,image15,header15,newimage15
-  image15=newimage15
-  newfilename=newfilename+'.Norm-Ck0'
-
+           divide_by_ck0,image15,header15,newimage15
+           image15=newimage15
+           newfilename=newfilename+'.Norm-Ck0'
+           
 ; Rebin to 1024^2
-if keyword_set(rbn) then begin
-  rbn,image15,header15,4
-  newfilename=newfilename+'.1024'
-endif
+           if keyword_set(rbn) then begin
+              rbn,image15,header15,4
+              newfilename=newfilename+'.1024'
+           endif
 
 ; Make -999 all negative pixels
-goto,skip_make_999
-  p=where(image15 lt 0.)
-  if p(0) ne -1 then image15(p)=-999.
+           goto,skip_make_999
+           p=where(image15 lt 0.)
+           if p(0) ne -1 then image15(p)=-999.
 skip_make_999:
-
+           
 test:
-
+           
 ; Finish making newfilename, write new image, and print newlist
- newfilename=newfilename+suffix+'.fts'
-  mwritefits,header15,image15,outfile=dir+subdir[ib]+newfilename   
-  printf,2,newfilename
+           newfilename=newfilename+suffix+'.fts'
+           mwritefits,header15,image15,outfile=dir2+subdir[ib]+newfilename   
+           printf,2,newfilename
+           
+        endfor
+        close,1
+        close,2
+     endfor
 
-endfor
-close,1
-close,2
-endfor
-
-return
-end
+     return
+  end
 
 pro rbn,image,hdr,binfactor
  image=rebin(image,hdr.NAXIS1/binfactor,hdr.NAXIS2/binfactor)
@@ -185,21 +183,12 @@ return
 end
 
 
-pro process_aia,ib1=ib1,ib2=ib2
- process_data_aia_lev10,'CR2097/',/letitbe,ib1=ib1,ib2=ib2
-return
-end
-
 
 pro timebin_cycle
 ;17/08/2017
   timebinning,'','/data1/tomography/DATA/aia/CR2192/171/','list.171.processed.selected',4
   timebinning,'','/data1/tomography/DATA/aia/CR2192/193/','list.193.processed.selected',4
   timebinning,'','/data1/tomography/DATA/aia/CR2192/211/','list.211.processed.selected',4
-  
-
-
-
 return
 end
 
