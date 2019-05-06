@@ -3,6 +3,7 @@
 ;read_awsom,'CR2082_grid1X1_1.85_AWSOM_LASCO_3d.dat',grilla_demt=1.26,te_out='Te_awsom_2082_1.85',ne_out='Ne_awsom_2082_1.85',/interpol
 ;read_awsom,'CR2208_grid1X1_ADAPT_GONG_AWSOM.dat','awsom_2208_1.85',grilla_demt=1.26,/te_out,/ne_out,/B_sph_out,/interpol,N1=25
 ;read_awsom,'CR2208_grid1X1_ADAPT_GONG_AWSOM.dat','awsom_2208_1.85',grilla_demt=1.26,N1=25,/sph_data
+;read_awsom,'CR2082_grid1X1_1.85_AWSOM_LASCO_3d.dat','awsom_2082_1.85',grilla_demt=1.26,/sph_data
 pro read_awsom,inputfile,file_out,dir_out=dir_out,grilla_demt=grilla_demt,te_out=te_out,ne_out=ne_out,B_sph_out=B_sph_out,interpol=interpol,N1=N1,sph_data=sph_data
 ;  common grilla_chip,r_grilla,theta_grilla,phi_grilla,ne_awsom,te_awsom,rho_awsom,er_awsom,ti_awsom,ne_lasco
 
@@ -51,10 +52,6 @@ if not keyword_set(dir_out) then dir_out='/data1/work/MHD/'
   theta_grilla   = fltarr(nr,nth,nph)
   phi_grilla     = fltarr(nr,nth,nph)
   
-;  r_grilla2      = fltarr(nr,nth,nph)
-;  theta_grilla2  = fltarr(nr,nth,nph)
-;  phi_grilla2    = fltarr(nr,nth,nph)
-  
   ne_awsom       = fltarr(nr,nth,nph)
   te_awsom       = fltarr(nr,nth,nph)
   rho_awsom      = fltarr(nr,nth,nph)
@@ -62,7 +59,7 @@ if not keyword_set(dir_out) then dir_out='/data1/work/MHD/'
   tp_awsom       = fltarr(nr,nth,nph)
   ne_lasco_awsom = fltarr(nr,nth,nph)
 
-  if keyword_set (B_sph_out) then begin
+  if keyword_set (B_sph_out) or keyword_set(sph_data) then begin
      Br  = fltarr(nr,nth,nph)
      Bth = fltarr(nr,nth,nph)
      Bph = fltarr(nr,nth,nph)
@@ -74,7 +71,7 @@ if not keyword_set(dir_out) then dir_out='/data1/work/MHD/'
      Vph = fltarr(nr,nth,nph)
   endif
 
-; inputfile = '3dAWSoM_DEMT_LASCO_1.85.dat'
+
   openr,1,'/data1/work/MHD/'+inputfile
   
   for i=1L,N1-1 do begin
@@ -85,30 +82,23 @@ if not keyword_set(dir_out) then dir_out='/data1/work/MHD/'
      for ith=0,Ntheta-1 do begin
         for ir =0, Nr-1 do begin
 ;           readf,1, x,y,z,vx,vy,vz,tp,te,bx,by,bz,i01,i02,qrad,qheat,qebyq,qparbyq,n_e,ne_lasco
-;           readf,1, x,y,z,rho,vx,vy,vz,te,tp,bx,by,bz,i01,i02,qrad,qheat,qebyq,n_e,ne_lasco
-           readf,1, x,y,z,rho,vx,vy,vz,te,tp,bx,by,bz,i01,i02,qrad,qheat,qebyq,n_e
+           readf,1, x,y,z,rho,vx,vy,vz,te,tp,bx,by,bz,i01,i02,qrad,qheat,qebyq,n_e,ne_lasco
+;           readf,1, x,y,z,rho,vx,vy,vz,te,tp,bx,by,bz,i01,i02,qrad,qheat,qebyq,n_e
            V=[x,y,z]
            cart_to_sphcoord,V,sphcoord
-           ;r  = sqrt(x^2+y^2+z^2)
-           ;th = acos(z/r)
-           ;ph =          atan(y/x)
-           ;if x gt 0 and y lt 0. then ph = 2*!dpi + atan(y/x)
-           ;if x lt 0             then ph =   !dpi - atan(y/abs(x))
+
            r_grilla(ir,ith,iph)     = sphcoord[0]         ;r          
            theta_grilla(ir,ith,iph) = sphcoord[1] ;th *180./!pi         
            phi_grilla(ir,ith,iph)   = sphcoord[2] ;ph *180./!pi         
-;           r_grilla2(ir,ith,iph)     = r
-;           theta_grilla2(ir,ith,iph) = th *180./!pi
-;           phi_grilla2(ir,ith,iph)   = ph *180./!pi
            
            ne_awsom(ir,ith,iph)       = n_e
            te_awsom(ir,ith,iph)       = te
            rho_awsom(ir,ith,iph)      = rho
            er_awsom(ir,ith,iph)       = qrad
            tp_awsom(ir,ith,iph)       = tp
-;           ne_lasco_awsom(ir,ith,iph) = ne_lasco
+           ne_lasco_awsom(ir,ith,iph) = ne_lasco
            
-           if keyword_set (B_sph_out) then begin
+           if keyword_set (B_sph_out) or keyword_set(sph_data) then begin
               transform_b_cart_to_sph,sphcoord[1],sphcoord[2],[Bx,By,Bz],B_sph
               Br(ir,ith,iph)  = B_sph[0]
               Bth(ir,ith,iph) = B_sph[1]
@@ -208,7 +198,6 @@ if not keyword_set(dir_out) then dir_out='/data1/work/MHD/'
                          PTR: ptr_new() ,PTTH: ptr_new() ,PTPH: ptr_new(),$
                          NSTEP: ptr_new() ,EXTRA_OBJECTS: ptr_new()       }     
      
-     stop
      save,sph_data,FILENAME = 'sph_data_'+file_out+'.sav'
   endif
 

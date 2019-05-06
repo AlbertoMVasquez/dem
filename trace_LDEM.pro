@@ -184,8 +184,12 @@ if keyword_set(expand) then period=period+'_expand'
   if not keyword_set(dgfw) then      read_ldem,ldem_file,/ldem,/gauss1
   if     keyword_set(dgfw) then      read_ldem,ldem_file,/ldem,/dgfw
 ;  if     keyword_set(awsom)then      read_awsom,awsom_file
-  if     keyword_set(awsom) then      read_awsom_matrix,awsom_file
-
+  if     keyword_set(awsom) then      begin
+     read_awsom_matrix,suff_file=suff_awsom_file,nr=26,nt=90,nph=180,/n_e,/te,ne_awsom,te_awsom
+     N_e = ne_awsom
+     Tm  = te_awsom
+  endif
+  
   dr_tom = rad(1)-rad(0)        ; grid radial bin size
   Rmax_tom = rad(nr-3)          ; maximum height for which LDEM was computed
 stop
@@ -313,11 +317,13 @@ xxx=0L
         if  rad_l(ir) le Rmax_tom+dr_tom/2 then begin ;<--
              Ne_l(ir)   = N_e(irad,ilat,ilon)
              Tm_l(ir)   = Tm (irad,ilat,ilon)
-             WT_l(ir)   = WT (irad,ilat,ilon)
-             Er_l(ir)   = Er (irad,ilat,ilon)
-         lambda_l(ir,*) = lambda(irad,ilat,ilon,*)  ;<-- grabo cada componente
-         DEMc_l  (ir)   = DEMc  (irad,ilat,ilon)  ;<--
-         scoreR_l(ir)   = scoreR (irad,ilat,ilon) 
+             if not keyword_set (awsom) then begin
+                Er_l(ir)   = Er (irad,ilat,ilon)
+                WT_l(ir)   = WT (irad,ilat,ilon)
+                lambda_l(ir,*) = lambda(irad,ilat,ilon,*) ;<-- grabo cada componente
+                DEMc_l  (ir)   = DEMc  (irad,ilat,ilon)   ;<--
+                scoreR_l(ir)   = scoreR (irad,ilat,ilon) 
+             endif
         endif                
           Br_l(ir) = Brc
          Bth_l(ir) = Bthc
