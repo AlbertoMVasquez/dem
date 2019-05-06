@@ -23,7 +23,7 @@ pro trace_LDEM,fdips_file=fdips_file,$
   common loss_rate,Er
   common structure ,sph_data
   common structure2,pfss_data 
-
+;test
 ;+
 ; PURPOSE: 
 ; To trace tomographic results along magnetic field lines. 
