@@ -4,7 +4,8 @@
 ;read_awsom,'CR2208_grid1X1_ADAPT_GONG_AWSOM.dat','awsom_2208_1.85',grilla_demt=1.26,/te_out,/ne_out,/B_sph_out,/interpol,N1=25
 ;read_awsom,'CR2208_grid1X1_ADAPT_GONG_AWSOM.dat','awsom_2208_1.85',grilla_demt=1.26,N1=25,/sph_data
 ;read_awsom,'CR2082_grid1X1_1.85_AWSOM_LASCO_3d.dat','awsom_2082_1.85',grilla_demt=1.26,/sph_data
-pro read_awsom,inputfile,file_out,dir_out=dir_out,grilla_demt=grilla_demt,te_out=te_out,ne_out=ne_out,B_sph_out=B_sph_out,interpol=interpol,N1=N1,sph_data=sph_data
+;read_awsom,'CR2082_grid1X1_1.85_AWSOM_LASCO_3d.dat','awsom_2082_1.85',/te_out,/ne_out,/qrad_out,/qheat_out,/qebyq_out,/ne_lasco_out,/interpol
+pro read_awsom,inputfile,file_out,dir_out=dir_out,grilla_demt=grilla_demt,te_out=te_out,ne_out=ne_out,qrad_out=qrad_out,qheat_out=qheat_out,qebyq_out=qebyq_out,ne_lasco_out=ne_lasco_out,B_sph_out=B_sph_out,interpol=interpol,N1=N1,sph_data=sph_data
 ;  common grilla_chip,r_grilla,theta_grilla,phi_grilla,ne_awsom,te_awsom,rho_awsom,er_awsom,ti_awsom,ne_lasco
 
 ;file out es un string, nombre de archivo
@@ -52,17 +53,25 @@ if not keyword_set(dir_out) then dir_out='/data1/work/MHD/'
   theta_grilla   = fltarr(nr,nth,nph)
   phi_grilla     = fltarr(nr,nth,nph)
   
-  ne_awsom       = fltarr(nr,nth,nph)
-  te_awsom       = fltarr(nr,nth,nph)
-  rho_awsom      = fltarr(nr,nth,nph)
-  er_awsom       = fltarr(nr,nth,nph)
-  tp_awsom       = fltarr(nr,nth,nph)
-  ne_lasco_awsom = fltarr(nr,nth,nph)
+  ne_awsom          = fltarr(nr,nth,nph)
+  te_awsom          = fltarr(nr,nth,nph)
+  rho_awsom         = fltarr(nr,nth,nph)
+  qrad_awsom        = fltarr(nr,nth,nph)
+  qheat_awsom       = fltarr(nr,nth,nph)
+  qebyq_awsom       = fltarr(nr,nth,nph)
+  tp_awsom          = fltarr(nr,nth,nph)
+  ne_lasco_awsom    = fltarr(nr,nth,nph)
+
+  Bxx = fltarr(nr,nth,nph)
+  Byy = fltarr(nr,nth,nph)
+  Bzz = fltarr(nr,nth,nph)
+  B_cart_mod = fltarr(nr,nth,nph)
 
   if keyword_set (B_sph_out) or keyword_set(sph_data) then begin
      Br  = fltarr(nr,nth,nph)
      Bth = fltarr(nr,nth,nph)
      Bph = fltarr(nr,nth,nph)
+     B_mod = fltarr(nr,nth,nph)
   endif
 
   if keyword_set (V_field) then begin
@@ -91,22 +100,36 @@ if not keyword_set(dir_out) then dir_out='/data1/work/MHD/'
            theta_grilla(ir,ith,iph) = sphcoord[1] ;th *180./!pi         
            phi_grilla(ir,ith,iph)   = sphcoord[2] ;ph *180./!pi         
            
-           ne_awsom(ir,ith,iph)       = n_e
-           te_awsom(ir,ith,iph)       = te
-           rho_awsom(ir,ith,iph)      = rho
-           er_awsom(ir,ith,iph)       = qrad
-           tp_awsom(ir,ith,iph)       = tp
-           ne_lasco_awsom(ir,ith,iph) = ne_lasco
-           
+           ne_awsom(ir,ith,iph)          = n_e
+           te_awsom(ir,ith,iph)          = te
+           rho_awsom(ir,ith,iph)         = rho
+           qrad_awsom(ir,ith,iph)        = qrad
+           qheat_awsom(ir,ith,iph)       = qheat
+           qebyq_awsom(ir,ith,iph)       = qebyq
+           tp_awsom(ir,ith,iph)          = tp
+           ne_lasco_awsom(ir,ith,iph)    = ne_lasco
+
+           Bxx(ir,ith,iph) = bx
+           Byy(ir,ith,iph) = by
+           Bzz(ir,ith,iph) = bz
+           B_cart_mod(ir,ith,iph) = bx^2 + by^2 +bz^2
+           if B_cart_mod(ir,ith,iph) le 0 then stop ;this should not happen
+
            if keyword_set (B_sph_out) or keyword_set(sph_data) then begin
-              transform_b_cart_to_sph,sphcoord[1],sphcoord[2],[Bx,By,Bz],B_sph
+              cord_th = sphcoord[1]*!dtor
+              cord_ph = sphcoord[2]*!dtor
+              transform_b_cart_to_sph,cord_th,cord_ph,[Bx,By,Bz],B_sph
               Br(ir,ith,iph)  = B_sph[0]
               Bth(ir,ith,iph) = B_sph[1]
               Bph(ir,ith,iph) = B_sph[2]
+              B_mod(ir,ith,iph) = B_sph[0]^2 + B_sph[1]^2 + B_sph[2]^2
+              if B_mod(ir,ith,iph) le 0 then stop
            endif
            
            if keyword_set (Vfield) then begin
-              transform_b_cart_to_sph,sphcoord[1],sphcoord[2],[vx,vy,vz],V_sph
+              cord_th = sphcoord[1]*!dtor
+              cord_ph = sphcoord[2]*!dtor
+              transform_b_cart_to_sph,cord_th,cord_ph,[vx,vy,vz],V_sph
               Vr(ir,ith,iph)  = V_sph[0]
               Vth(ir,ith,iph) = V_sph[1]
               Vph(ir,ith,iph) = V_sph[2]
@@ -130,20 +153,40 @@ if not keyword_set(dir_out) then dir_out='/data1/work/MHD/'
   endif
 
   if keyword_set(interpol) then begin
-     nrads = n_elements(ok)
+     if keyword_set(grilla_demt)     then nrads = n_elements(ok)
+     if not keyword_set(grilla_demt) then nrads = Nr
      nlat2 = 90
      nlon2 = 180
-     ne_awsom_interp  = fltarr(nrads,nlat2,nlon2)
-     te_awsom_interp  = fltarr(nrads,nlat2,nlon2)
+     ne_awsom_interp       = fltarr(nrads,nlat2,nlon2)
+     te_awsom_interp       = fltarr(nrads,nlat2,nlon2)
+     rho_awsom_interp      = fltarr(nrads,nlat2,nlon2)
+     qrad_awsom_interp     = fltarr(nrads,nlat2,nlon2)
+     qheat_awsom_interp    = fltarr(nrads,nlat2,nlon2)
+     qebyq_awsom_interp    = fltarr(nrads,nlat2,nlon2)
+     ne_lasco_awsom_interp = fltarr(nrads,nlat2,nlon2)
 
      for ir=0,nrads-1 do begin
         A1 = reform(ne_awsom(ir,*,*))
         B1 = reform(te_awsom(ir,*,*))
-        inter,A1=A1,A2=A2,Nlat1=180,Nlon1=360,Nlat2=90,Nlon2=180;,Lat1=Lat1,Lon1=Lon1,Lat2=Lat2,Lon2=Lon2
-        inter,A1=B1,A2=B2,Nlat1=180,Nlon1=360,Nlat2=90,Nlon2=180;,Lat1=Lat1,Lon1=Lon1,Lat2=Lat2,Lon2=Lon2
-        ne_awsom_interp[ir,*,*] = A2
-        te_awsom_interp[ir,*,*] = B2
-
+        C1 = reform(rho_awsom(ir,*,*))
+        D1 = reform(qrad_awsom(ir,*,*))
+        E1 = reform(qheat_awsom(ir,*,*))
+        F1 = reform(qebyq_awsom(ir,*,*))
+        G1 = reform(ne_lasco_awsom(ir,*,*))
+        inter,A1=A1,A2=A2,Nlat1=180,Nlon1=360,Nlat2=90,Nlon2=180
+        inter,A1=B1,A2=B2,Nlat1=180,Nlon1=360,Nlat2=90,Nlon2=180
+        inter,A1=C1,A2=C2,Nlat1=180,Nlon1=360,Nlat2=90,Nlon2=180
+        inter,A1=D1,A2=D2,Nlat1=180,Nlon1=360,Nlat2=90,Nlon2=180
+        inter,A1=E1,A2=E2,Nlat1=180,Nlon1=360,Nlat2=90,Nlon2=180
+        inter,A1=F1,A2=F2,Nlat1=180,Nlon1=360,Nlat2=90,Nlon2=180
+        inter,A1=G1,A2=G2,Nlat1=180,Nlon1=360,Nlat2=90,Nlon2=180
+        ne_awsom_interp[ir,*,*]       = A2
+        te_awsom_interp[ir,*,*]       = B2
+        rho_awsom_interp[ir,*,*]      = C2     
+        qrad_awsom_interp[ir,*,*]     = D2      
+        qheat_awsom_interp[ir,*,*]    = E2   
+        qebyq_awsom_interp[ir,*,*]    = F2   
+        ne_lasco_awsom_interp[ir,*,*] = G2
      endfor
   endif
 
@@ -158,7 +201,33 @@ if not keyword_set(dir_out) then dir_out='/data1/work/MHD/'
      writeu,3,te_awsom_interp
      close,3
   endif
+  if keyword_set(rho_out) then begin
+     openw,3,dir_out+'rho_'+file_out
+     writeu,3,rho_awsom_interp
+     close,3
+  endif
+  if keyword_set(qrad_out) then begin
+     openw,3,dir_out+'qrad_'+file_out
+     writeu,3,qrad_awsom_interp
+     close,3
+  endif
+  if keyword_set(qheat_out) then begin
+     openw,3,dir_out+'qheat_'+file_out
+     writeu,3,qheat_awsom_interp
+     close,3
+  endif
+  if keyword_set(qebyq_out) then begin
+     openw,3,dir_out+'qebyq_'+file_out
+     writeu,3,qebyq_awsom_interp
+     close,3
+  endif
+  if keyword_set(ne_lasco_out) then begin
+     openw,3,dir_out+'ne_lasco_'+file_out
+     writeu,3,ne_lasco_awsom_interp
+     close,3
+  endif
  
+
   if keyword_set(B_sph_out) then begin
      openw,4,dir_out+'Br_'+file_out
      writeu,4,Br
@@ -171,7 +240,7 @@ if not keyword_set(dir_out) then dir_out='/data1/work/MHD/'
      close,6
   endif
 
-
+stop
   if keyword_set(sph_data) then begin
 
      Br_new  = TRANSPOSE(  Br , [2, 1, 0] )
@@ -189,15 +258,15 @@ if not keyword_set(dir_out) then dir_out='/data1/work/MHD/'
                          NLAT: long(Nth)                                 ,$
                          NLON: long(Nph)                                 ,$
                          RIX: ptr_new(  rg * 1.d )                       ,$
-                         THETA: ptr_new( thg * 1.d )                     ,$
-                         PHI: ptr_new( phg * 1.d )                       ,$
-                         LAT: ptr_new( thg - 90.d)                       ,$
-                         LON: ptr_new(  reform(phg(0,0,*) ))             ,$
+                         THETA: ptr_new( (thg * 1.d )*!dtor)             ,$
+                         PHI: ptr_new( (phg * 1.d )*!dtor)               ,$
+                         LAT: ptr_new( 90.d - thg)                       ,$
+                         LON: ptr_new( phg)                              ,$
                          LONBOUNDS: dblarr(2)-1.                         ,$
                          STR: ptr_new() ,STTH: ptr_new() ,STPH: ptr_new(),$
                          PTR: ptr_new() ,PTTH: ptr_new() ,PTPH: ptr_new(),$
                          NSTEP: ptr_new() ,EXTRA_OBJECTS: ptr_new()       }     
-     
+stop     
      save,sph_data,FILENAME = 'sph_data_'+file_out+'.sav'
   endif
 
