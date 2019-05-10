@@ -181,8 +181,8 @@ if keyword_set(expand) then period=period+'_expand'
 
 ; Read the tomographics results and set a few parameters concerning
 ; the tomographic grid:
-  if not keyword_set(dgfw) then      read_ldem,ldem_file,/ldem,/gauss1
-  if     keyword_set(dgfw) then      read_ldem,ldem_file,/ldem,/dgfw
+  if not keyword_set(dgfw) and not keyword_set(awsom) then      read_ldem,ldem_file,/ldem,/gauss1
+  if     keyword_set(dgfw) and not keyword_set(awsom) then      read_ldem,ldem_file,/ldem,/dgfw
 ;  if     keyword_set(awsom)then      read_awsom,awsom_file
   if     keyword_set(awsom) then  begin
      read_awsom_matrix,suff_file=suff_awsom_file,nr=500,nt=90,nph=180,/n_e,/te,/qrad,/qheat,/qebyq,/ne_lasco,n_e,te,qrad,qheat,qebyq,ne_lasco 
@@ -208,20 +208,21 @@ if keyword_set(expand) then period=period+'_expand'
   endif
   
   dr_tom = rad(1)-rad(0)        ; grid radial bin size
-  Rmax_tom = rad(nr-3)          ; maximum height for which LDEM was computed
-stop
+  if keyword_set(awsom) then Rmax_tom = rad(nr-1)
+  if not keyword_set(awsom) then Rmax_tom = rad(nr-3) ; maximum height for which LDEM was computed
+  stop
 ;<--
-if keyword_set(expand) then begin
-   nr=150
-   rad=1.+dr_tom/2+dr_tom*findgen(Nr)
-endif
+  if keyword_set(expand) then begin
+     nr=150
+     rad=1.+dr_tom/2+dr_tom*findgen(Nr)
+  endif
 ;<--
-
+  if not keyword_set(awsom) then begin
 ; Compute the scoreR for quality-selection purposes:
-  ratio = sfbe/tfbe
+     ratio = sfbe/tfbe
  ;scoreR=total(    (1.-ratio)^2 , 4 ) / float(nband)
-  scoreR=total( abs(1.-ratio)   , 4 ) / float(nband)
-
+     scoreR=total( abs(1.-ratio)   , 4 ) / float(nband)
+  endif
   Nptmax_v = 150                ; ESTO NO ES ROBUSTO, 
   if keyword_set(expand) then Nptmax_v = 1500
   if keyword_set(awsom)  then Nptmax_v = 7000 ;ESTO AHORA QUE QUEREMOS TRAZAR HASTA 6RSUN QUIZAS DEBA SER MUCHO MAS GRANDE
@@ -262,9 +263,7 @@ endif
 ; selected field lines:
 xxx=0
   for il = 0L, Nlin-1 do begin
-
      ;stop    ;<--
-
      print,'tracing the DEMT results along the line '+string(il+1)+'    of '+string(Nlin)
      il_all=(findgen(Nlin_all))(iOC(il))
      Np_l      = Nstep(il)      ;  Number of points along the il-line
@@ -312,9 +311,9 @@ xxx=0
 ;-------------AGREGADO---------------------------------------
 ; Store coordinates of ending point of all OPEN field lines
 if opcls(il) eq 0 then begin
-enrad_v(il)=rad_l(Np_l-1)
-enlat_v(il)=lat_l(Np_l-1)
-enlon_v(il)=lon_l(Np_l-1)
+   enrad_v(il)=rad_l(Np_l-1)
+   enlat_v(il)=lat_l(Np_l-1)
+   enlon_v(il)=lon_l(Np_l-1)
 endif 
 ;-----------------------------------------------------------
 ;
@@ -364,7 +363,7 @@ xxx=0L
 ; beginning the sampled
 ;--------------------------------------------------------------------------------------------------
 
-if rad_l(0) gt 2.4 then stop ;ESTO DEBE CAMBIARSE AHORA QUE TRAZAMOS HASTA 6RSUN
+;if rad_l(0) gt 2.4 then stop ;ESTO DEBE CAMBIARSE AHORA QUE TRAZAMOS HASTA 6RSUN
 
         line_end = 0
         ivox     = 0
@@ -456,7 +455,7 @@ skip_print:
           midcell_v(il)= escalar(0)
                                 ;Mofied 12/05/2016 by D.G.L, evading a
                                 ;vector prevents an erroneous loop definition
-       if n_elements(escalar) gt 1 then xxx=xxx+1
+       if n_elements(escalar) gt 1 then xxx=xxx+1; xxx should be eq 0 at the end of the trace, otherwise the other line is not working properly
        endif
 ;   if opcls(il) eq 0. and midcell_v(il) gt -666. then stop
 ;-------------------------------------------------------------------------------------------
