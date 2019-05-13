@@ -1,0 +1,12 @@
+.r trace_LDEM.pro
+.r read_structure_MHD
+.r read_awsom_matrix
+
+radstart= 1.035
+Nrad = n_elements(radstart)
+dlat = 2. + fltarr(Nrad)
+dlon = 2. + fltarr(Nrad)
+period='teste_awsom_full'
+
+trace_LDEM,field_awsom='/data1/work/MHD/sph_data_awsom_2082_1.85.sav',awsom_file='awsom_2082_1.85',period=period,safety=.5,stepmax=8000,/unifgrid_v2,dlat=dlat,dlon=dlon,radstart=radstart
+

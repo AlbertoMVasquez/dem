@@ -1,3 +1,4 @@
+;trace_LDEM,field_awsom='/data1/work/MHD/sph_data_awsom_2082_1.85.sav',awsom_file='awsom_2082_1.85',period=period,safety=.5,stepmax=8000,/unifgrid_v2,dlat=dlat,dlon=dlon,radstart=radstart
 pro trace_LDEM,fdips_file=fdips_file,$
                ldem_file=ldem_file,$
                period=period,$
@@ -76,7 +77,7 @@ pro trace_LDEM,fdips_file=fdips_file,$
 if keyword_set(ldem_file)  then file_flag = 0
 if keyword_set(awsom_file) then file_flag = 1
 
-  if not keyword_set(fdips_file) then begin
+  if not keyword_set(fdips_file) and not keyword_set(field_awsom) then begin
      print,'set the PFSS model to trace the DEMT results'
      return
   endif
@@ -118,7 +119,8 @@ if keyword_set(expand) then period=period+'_expand'
      0: print,'  LDEM file: ',ldem_file
      1: print,'  awsom file: ',awsom_file
   endcase
-  print,' FDIPS file: ',fdips_file
+  if keyword_set(fdips_file) then print,' FDIPS file: ',fdips_file
+  if keyword_set(awsom_file) then print,' AWSOM suffix: ',awsom_file
   print,'Output file: ',output_file
   print,'-------------------------------------------'
 
@@ -127,12 +129,13 @@ if keyword_set(expand) then period=period+'_expand'
 
 ; Set the FDIPS filename to read:
 ; PFSSM_model='/data1/DATA/PFSSM/'+fdips_file
-  PFSSM_model= fdips_file
+if keyword_set(fdips_file) then PFSSM_model= fdips_file
 ; Read the FDIPS model and create a structure to serve as input to Marc's routines:
   if not keyword_set(mhd) and not keyword_set(field_awsom)   then create_structure    ,    PFSSM_model
   if     keyword_set(mhd)                                    then create_structure_MHD,    '/data1/DATA/MHD_SWMF/'+fdips_file
 ;  if     keyword_set(field_awsom)                            then create_structure_MHD_new,'/data1/DATA/MHD_SWMF/'+fdips_file
-  if     keyword_set(field_awsom)                            then read_structure_MHD,'/data1/DATA/MHD/'+fdips_file
+  if     keyword_set(field_awsom)                            then read_structure_MHD,'/media/Data/'+field_awsom,sph_data
+
 ; change the name of the created structure to a new name:
   pfss_data = sph_data
   print, 'PROBANDOOOO.....z'
@@ -181,11 +184,12 @@ if keyword_set(expand) then period=period+'_expand'
 
 ; Read the tomographics results and set a few parameters concerning
 ; the tomographic grid:
-  if not keyword_set(dgfw) and not keyword_set(awsom) then      read_ldem,ldem_file,/ldem,/gauss1
-  if     keyword_set(dgfw) and not keyword_set(awsom) then      read_ldem,ldem_file,/ldem,/dgfw
+  if not keyword_set(dgfw) and not keyword_set(awsom_file) then      read_ldem,ldem_file,/ldem,/gauss1
+  if     keyword_set(dgfw) and not keyword_set(awsom_file) then      read_ldem,ldem_file,/ldem,/dgfw
 ;  if     keyword_set(awsom)then      read_awsom,awsom_file
-  if     keyword_set(awsom) then  begin
-     read_awsom_matrix,suff_file=suff_awsom_file,nr=500,nt=90,nph=180,/n_e,/te,/qrad,/qheat,/qebyq,/ne_lasco,n_e,te,qrad,qheat,qebyq,ne_lasco 
+  
+  if     keyword_set(awsom_file) then  begin
+     read_awsom_matrix,suff_file=awsom_file,nr=500,nt=90,np=180,/ne_out,n_e,/te_out,te,/qrad_out,qrad,/nelasco_out,ne_lasco,/qheat_out,qheat,/qebyq_out,qebyq
      Nrad=500
      nr=500
      Nlat=90
@@ -205,19 +209,20 @@ if keyword_set(expand) then period=period+'_expand'
      Tmin=500000.
      Tmax=3.50000e+06
      Er = qrad ;solo un cambio de nombre
+     Tm = Te
   endif
   
   dr_tom = rad(1)-rad(0)        ; grid radial bin size
-  if keyword_set(awsom) then Rmax_tom = rad(nr-1)
-  if not keyword_set(awsom) then Rmax_tom = rad(nr-3) ; maximum height for which LDEM was computed
-  stop
+  if keyword_set(awsom_file) then Rmax_tom = rad(nr-1)
+  if not keyword_set(awsom_file) then Rmax_tom = rad(nr-3) ; maximum height for which LDEM was computed
+  
 ;<--
   if keyword_set(expand) then begin
      nr=150
      rad=1.+dr_tom/2+dr_tom*findgen(Nr)
   endif
 ;<--
-  if not keyword_set(awsom) then begin
+  if not keyword_set(awsom_file) then begin
 ; Compute the scoreR for quality-selection purposes:
      ratio = sfbe/tfbe
  ;scoreR=total(    (1.-ratio)^2 , 4 ) / float(nband)
@@ -225,7 +230,7 @@ if keyword_set(expand) then period=period+'_expand'
   endif
   Nptmax_v = 150                ; ESTO NO ES ROBUSTO, 
   if keyword_set(expand) then Nptmax_v = 1500
-  if keyword_set(awsom)  then Nptmax_v = 7000 ;ESTO AHORA QUE QUEREMOS TRAZAR HASTA 6RSUN QUIZAS DEBA SER MUCHO MAS GRANDE
+  if keyword_set(awsom_file)  then Nptmax_v = 7000 ;ESTO AHORA QUE QUEREMOS TRAZAR HASTA 6RSUN QUIZAS DEBA SER MUCHO MAS GRANDE
 ;  sin embargo, por la experiencia de haber realizado varios trazados
 ;  creo que va funcionar. 
 ;  Ningun sampleo supera este valor de puntos por linea
@@ -239,7 +244,7 @@ if keyword_set(expand) then period=period+'_expand'
     qrad_v = fltarr(Nptmax_v,Nlin)
    qheat_v = fltarr(Nptmax_v,Nlin)
    qebyq_v = fltarr(Nptmax_v,Nlin)
-  ne_lasco = fltarr(Nptmax_v,Nlin) 
+ne_lasco_v = fltarr(Nptmax_v,Nlin) 
       npar = (size(lambda))(4)         
   lambda_v = fltarr(Nptmax_v,Nlin,npar)
     DEMc_v = fltarr(Nptmax_v,Nlin)     
@@ -340,8 +345,8 @@ xxx=0L
            Ne_l(ir)   = N_e(irad,ilat,ilon)
            Tm_l(ir)   = Tm (irad,ilat,ilon)
            Er_l(ir)   = Er (irad,ilat,ilon)
-           if keyword_set(awsom) then begin
-              Ne_lasco_l(ir) = ne_lasco (irad,ilat,ilon)
+           if keyword_set(awsom_file) then begin
+           Ne_lasco_l(ir) = ne_lasco (irad,ilat,ilon)
               qheat_l(ir) = qheat (irad,ilat,ilon)
               qebyq_l(ir) = qebyq (irad,ilat,ilon)
            endif
@@ -389,10 +394,10 @@ xxx=0L
                 Tm_v(ivox,il) =     Tm_l(ind)
                 WT_v(ivox,il) =     WT_l(ind)
                 Er_v(ivox,il) =     Er_l(ind)
-                if keyword_set(awsom) then begin
-                   Ne_lasco_v(ivox,il) = ne_lasco (ind)
-                   qheat_v(ivox,il) = qheat (ind)
-                   qebyq_v(ivox,il) = qebyq (ind)
+                if keyword_set(awsom_file) then begin
+                Ne_lasco_v(ivox,il) = ne_lasco_l (ind)
+                   qheat_v(ivox,il) = qheat_l (ind)
+                   qebyq_v(ivox,il) = qebyq_l (ind)
                 endif
            lambda_v(ivox,il,*)=lambda_l(ind,*)
               DEMc_v(ivox,il) =   DEMc_l(ind)  
@@ -468,8 +473,8 @@ print, xxx
     Tm_v  = reform(     Tm_v(0:Npts_max-1,*) ) 
     WT_v  = reform(     WT_v(0:Npts_max-1,*) )
     Er_v  = reform(     Er_v(0:Npts_max-1,*) )
-    if keyword_set(awsom) then begin
-       Ne_lasco_v = reform( ne_lasco_v (0:Npts_max-1,*) )
+    if keyword_set(awsom_file) then begin
+    Ne_lasco_v = reform( ne_lasco_v (0:Npts_max-1,*) )
        qheat_v = reform( qheat_v (0:Npts_max-1,*) )
        qebyq_v = reform( qebyq_v (0:Npts_max-1,*) )
     endif
@@ -494,7 +499,7 @@ scoreR_v  = reform( scoreR_v(0:Npts_max-1,*) )
    writeu,1,B_v,Br_v,Bth_v,Bph_v   
 ;------AGREGADO--------------
    writeu,1,enrad_v,enlon_v,enlat_v
-   if keyword_set(awsom) then    writeu,1,ne_lasco_v,qheat_v,qebyq_v
+   if keyword_set(awsom_file) then    writeu,1,ne_lasco_v,qheat_v,qebyq_v
 ;<---------------
    L=0
    if Tmax gt 3.4e6 and Tmax lt 3.6e6 then L=171
