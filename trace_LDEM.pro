@@ -157,7 +157,7 @@ if keyword_set(fdips_file) then PFSSM_model= fdips_file
 ; And now, do trace the field lines:
 ;stop
   spherical_trace_field,pfss_data,linekind=linekind,linelengths=linelengths,safety=safety,stepmax=stepmax 
-;stop
+stop
 ; Change the coding for linekind:
   linekind=linekind-2           ; so that 0=open and 1=closed
 
@@ -201,17 +201,17 @@ if keyword_set(fdips_file) then PFSSM_model= fdips_file
      rad =   1. + dr/2. + dr * findgen(Nrad)
      lon =   0. + dt/2. + dt * findgen(Nlon)
      lat = -90. + dt/2. + dt * findgen(Nlat)
-     DEMc= N_e * 0. - 666.
-     ScoreR=N_e * 0. - 666.
-     Wt = N_e * 0. - 666.
-     lambda= fltarr(nr,nth,np,3) - 666.
+     ;DEMc= N_e * 0. - 666.
+     ;ScoreR=N_e * 0. - 666.
+     ;Wt = N_e * 0. - 666.
+     ;lambda= fltarr(nr,nth,np,3) - 666.
      WTc = -666.
      Tmin=500000.
      Tmax=3.50000e+06
      Er = qrad ;solo un cambio de nombre
      Tm = Te
   endif
-  
+ 
   dr_tom = rad(1)-rad(0)        ; grid radial bin size
   if keyword_set(awsom_file) then Rmax_tom = rad(nr-1)
   if not keyword_set(awsom_file) then Rmax_tom = rad(nr-3) ; maximum height for which LDEM was computed
@@ -230,7 +230,7 @@ if keyword_set(fdips_file) then PFSSM_model= fdips_file
   endif
   Nptmax_v = 150                ; ESTO NO ES ROBUSTO, 
   if keyword_set(expand) then Nptmax_v = 1500
-  if keyword_set(awsom_file)  then Nptmax_v = 7000 ;ESTO AHORA QUE QUEREMOS TRAZAR HASTA 6RSUN QUIZAS DEBA SER MUCHO MAS GRANDE
+  if keyword_set(awsom_file)  then Nptmax_v = 1100 ;ESTO AHORA QUE QUEREMOS TRAZAR HASTA 6RSUN QUIZAS DEBA SER MUCHO MAS GRANDE
 ;  sin embargo, por la experiencia de haber realizado varios trazados
 ;  creo que va funcionar. 
 ;  Ningun sampleo supera este valor de puntos por linea
@@ -239,18 +239,21 @@ if keyword_set(fdips_file) then PFSSM_model= fdips_file
 ; one data point per tomographic voxel crossed by line.
       Ne_v = fltarr(Nptmax_v,Nlin)
       Tm_v = fltarr(Nptmax_v,Nlin)
-      WT_v = fltarr(Nptmax_v,Nlin)
-      Er_v = fltarr(Nptmax_v,Nlin)
-    qrad_v = fltarr(Nptmax_v,Nlin)
-   qheat_v = fltarr(Nptmax_v,Nlin)
-   qebyq_v = fltarr(Nptmax_v,Nlin)
-ne_lasco_v = fltarr(Nptmax_v,Nlin) 
-      npar = (size(lambda))(4)         
-  lambda_v = fltarr(Nptmax_v,Nlin,npar)
-    DEMc_v = fltarr(Nptmax_v,Nlin)     
-
-  scoreR_v = fltarr(Nptmax_v,Nlin) 
-     rad_v = fltarr(Nptmax_v,Nlin)
+      if keyword_set(awsom_file)  then begin
+;         Er_v = fltarr(Nptmax_v,Nlin)
+;         qheat_v = fltarr(Nptmax_v,Nlin)
+;         qebyq_v = fltarr(Nptmax_v,Nlin)
+;         ne_lasco_v = fltarr(Nptmax_v,Nlin) 
+      endif
+      
+      if keyword_set(ldem_file) then begin
+         npar = (size(lambda))(4)         
+         WT_v = fltarr(Nptmax_v,Nlin)
+         lambda_v = fltarr(Nptmax_v,Nlin,npar)
+         DEMc_v = fltarr(Nptmax_v,Nlin)     
+         scoreR_v = fltarr(Nptmax_v,Nlin) 
+      endif
+  rad_v = fltarr(Nptmax_v,Nlin)
      lat_v = fltarr(Nptmax_v,Nlin)
      lon_v = fltarr(Nptmax_v,Nlin)
        s_v = fltarr(Nptmax_v,Nlin)
@@ -274,23 +277,27 @@ xxx=0
      Np_l      = Nstep(il)      ;  Number of points along the il-line
      
 ; Build more arrays:   
-           s_l = fltarr(Np_l)      -666. ;fltarr(Nptmax,Nlin) -666.
-          Ne_l = fltarr(Np_l)      -666. ;fltarr(Nptmax,Nlin) -666.
-          Tm_l = fltarr(Np_l)      -666. ;fltarr(Nptmax,Nlin) -666.
-          WT_l = fltarr(Np_l)      -666. ;fltarr(Nptmax,Nlin) -666.
-          Er_l = fltarr(Np_l)      -666. ;fltarr(Nptmax,Nlin) -666.  
-      lambda_l = fltarr(Np_l,npar) -666. ;fltarr(Nptmax,Nlin) -666.
-        DEMc_l = fltarr(Np_l)      -666. ;fltarr(Nptmax,Nlin) -666.
-      scoreR_l = fltarr(Np_l)      -666. ;fltarr(Nptmax,Nlin) -666.
-          Br_l = fltarr(Np_l)      -666. ;fltarr(Nptmax,Nlin) -666.
-         Bth_l = fltarr(Np_l)      -666. ;fltarr(Nptmax,Nlin) -666.
-         Bph_l = fltarr(Np_l)      -666. ;fltarr(Nptmax,Nlin) -666.
-           B_l = fltarr(Np_l)      -666. ;fltarr(Nptmax,Nlin) -666.
-         lab_l = fltarr(Np_l)      -666. ;fltarr(Nptmax,Nlin) -666.
-    Ne_lasco_l = fltarr(Np_l)      -666.
-        qrad_l = fltarr(Np_l)      -666.
-       qheat_l = fltarr(Np_l)      -666.
-       qebyq_l = fltarr(Np_l)      -666.
+           s_l = fltarr(Np_l)      -666. 
+          Ne_l = fltarr(Np_l)      -666. 
+          Tm_l = fltarr(Np_l)      -666. 
+ 
+          if keyword_set(ldem_file) then begin
+             WT_l = fltarr(Np_l)      -666. 
+             lambda_l = fltarr(Np_l,npar) -666. 
+             DEMc_l = fltarr(Np_l)      -666. 
+             scoreR_l = fltarr(Np_l)      -666. 
+          endif
+          Br_l = fltarr(Np_l)      -666. 
+          Bth_l = fltarr(Np_l)      -666. 
+          Bph_l = fltarr(Np_l)      -666. 
+          B_l = fltarr(Np_l)      -666. 
+          lab_l = fltarr(Np_l)      -666. 
+          if keyword_set(awsom_file)  then begin
+;             Er_l = fltarr(Np_l)      -666. 
+;             Ne_lasco_l = fltarr(Np_l)      -666.
+ ;            qheat_l = fltarr(Np_l)      -666.
+ ;            qebyq_l = fltarr(Np_l)      -666.
+          endif
 ; These next five arrays are futures implementacion
   ;Happix    = fltarr(Np_l) -666.
   ;Bappix    = fltarr(Np_l) -666.
@@ -344,17 +351,18 @@ xxx=0L
         if  rad_l(ir) le Rmax_tom+dr_tom/2 then begin ;<--
            Ne_l(ir)   = N_e(irad,ilat,ilon)
            Tm_l(ir)   = Tm (irad,ilat,ilon)
-           Er_l(ir)   = Er (irad,ilat,ilon)
            if keyword_set(awsom_file) then begin
-           Ne_lasco_l(ir) = ne_lasco (irad,ilat,ilon)
-              qheat_l(ir) = qheat (irad,ilat,ilon)
-              qebyq_l(ir) = qebyq (irad,ilat,ilon)
+  ;            Er_l(ir)   = Er (irad,ilat,ilon)
+  ;            Ne_lasco_l(ir) = ne_lasco (irad,ilat,ilon)
+  ;            qheat_l(ir) = qheat (irad,ilat,ilon)
+  ;            qebyq_l(ir) = qebyq (irad,ilat,ilon)
            endif
-           WT_l(ir)   = WT (irad,ilat,ilon)
-           lambda_l(ir,*) = lambda(irad,ilat,ilon,*) ;<-- grabo cada componente
-           DEMc_l  (ir)   = DEMc  (irad,ilat,ilon)   ;<--
-           scoreR_l(ir)   = scoreR (irad,ilat,ilon) 
-
+           if keyword_set(ldem_file) then begin           
+              WT_l(ir)   = WT (irad,ilat,ilon)
+              lambda_l(ir,*) = lambda(irad,ilat,ilon,*) ;<-- grabo cada componente
+              DEMc_l  (ir)   = DEMc  (irad,ilat,ilon)   ;<--
+              scoreR_l(ir)   = scoreR (irad,ilat,ilon) 
+           endif
         endif                
           Br_l(ir) = Brc
          Bth_l(ir) = Bthc
@@ -392,16 +400,19 @@ xxx=0L
            ind = (median(index))(0)
                 Ne_v(ivox,il) =     Ne_l(ind)
                 Tm_v(ivox,il) =     Tm_l(ind)
-                WT_v(ivox,il) =     WT_l(ind)
-                Er_v(ivox,il) =     Er_l(ind)
+               
                 if keyword_set(awsom_file) then begin
-                Ne_lasco_v(ivox,il) = ne_lasco_l (ind)
-                   qheat_v(ivox,il) = qheat_l (ind)
-                   qebyq_v(ivox,il) = qebyq_l (ind)
+   ;                Er_v(ivox,il) =     Er_l(ind)
+   ;                Ne_lasco_v(ivox,il) = ne_lasco_l (ind)
+   ;                qheat_v(ivox,il) = qheat_l (ind)
+   ;                qebyq_v(ivox,il) = qebyq_l (ind)
                 endif
-           lambda_v(ivox,il,*)=lambda_l(ind,*)
-              DEMc_v(ivox,il) =   DEMc_l(ind)  
-            scoreR_v(ivox,il) = scoreR_l(ind)
+                if keyword_set(ldem_file) then begin
+                   WT_v(ivox,il) =     WT_l(ind)
+                   lambda_v(ivox,il,*)=lambda_l(ind,*)
+                   DEMc_v(ivox,il) =   DEMc_l(ind)  
+                   scoreR_v(ivox,il) = scoreR_l(ind)
+                endif
            if npp mod 2 eq 1 then begin  ; does this if np=odd 
                rad_v(ivox,il) =    rad_l(ind)
                lat_v(ivox,il) =    lat_l(ind)
@@ -465,22 +476,26 @@ skip_print:
 ;   if opcls(il) eq 0. and midcell_v(il) gt -666. then stop
 ;-------------------------------------------------------------------------------------------
 endfor                          ; closes lines loop
-print, xxx
+  print, xxx
 
 ; Trim all unnecesary information from resulting arrays:
- Npts_max = max(Npts_v)
+  Npts_max = max(Npts_v)
+  print, 'IMPORTANTE: puntos maximos de todas las lineas --> Npts_max'+Npts_max
+stop
     Ne_v  = reform(     Ne_v(0:Npts_max-1,*) ) 
     Tm_v  = reform(     Tm_v(0:Npts_max-1,*) ) 
-    WT_v  = reform(     WT_v(0:Npts_max-1,*) )
-    Er_v  = reform(     Er_v(0:Npts_max-1,*) )
     if keyword_set(awsom_file) then begin
-    Ne_lasco_v = reform( ne_lasco_v (0:Npts_max-1,*) )
-       qheat_v = reform( qheat_v (0:Npts_max-1,*) )
-       qebyq_v = reform( qebyq_v (0:Npts_max-1,*) )
+    ;   Er_v  = reform(     Er_v(0:Npts_max-1,*) )
+    ;   Ne_lasco_v = reform( ne_lasco_v (0:Npts_max-1,*) )
+    ;   qheat_v = reform( qheat_v (0:Npts_max-1,*) )
+    ;   qebyq_v = reform( qebyq_v (0:Npts_max-1,*) )
     endif
-lambda_v  = reform( lambda_v(0:Npts_max-1,*,*) )
-  DEMc_v  = reform(   DEMc_v(0:Npts_max-1,*) )  
-scoreR_v  = reform( scoreR_v(0:Npts_max-1,*) ) 
+    if keyword_set(ldem_file) then begin
+       WT_v  = reform(     WT_v(0:Npts_max-1,*) )
+       lambda_v  = reform( lambda_v(0:Npts_max-1,*,*) )
+       DEMc_v  = reform(   DEMc_v(0:Npts_max-1,*) )  
+       scoreR_v  = reform( scoreR_v(0:Npts_max-1,*) )
+    endif
    rad_v  = reform(    rad_v(0:Npts_max-1,*) ) 
    lat_v  = reform(    lat_v(0:Npts_max-1,*) ) 
    lon_v  = reform(    lon_v(0:Npts_max-1,*) ) 
@@ -490,11 +505,14 @@ scoreR_v  = reform( scoreR_v(0:Npts_max-1,*) )
    Bth_v  = reform(    Bth_v(0:Npts_max-1,*) )
    Bph_v  = reform(    Bph_v(0:Npts_max-1,*) )  
 ; Save the sampled data:
-      openw,1,output_file
-   writeu,1,fieldtype,spacing,radstart,Rmax_tom,dr_tom,WTc
+   stop
+   openw,1,output_file
+      if keyword_set(ldem_file) then  writeu,1,fieldtype,spacing,radstart,Rmax_tom,dr_tom,WTc
+      if keyword_set(awsom_file) then  writeu,1,fieldtype,spacing,radstart,Rmax_tom,dr_tom
    writeu,1,Nlin,Npts_max
    writeu,1,rad_v,lat_v,lon_v,s_v,npts_v,midcell_v,loopL,opcls
-   writeu,1,Ne_v,Tm_v,WT_v,Er_v,scoreR_v
+   if keyword_set(ldem_file) then writeu,1,Ne_v,Tm_v,WT_v,scoreR_v
+   if keyword_set(awsom_file) then writeu,1,Ne_v,Tm_v,Er_v
    writeu,1,str_v,stth_v,stph_v
    writeu,1,B_v,Br_v,Bth_v,Bph_v   
 ;------AGREGADO--------------
@@ -505,8 +523,10 @@ scoreR_v  = reform( scoreR_v(0:Npts_max-1,*) )
    if Tmax gt 3.4e6 and Tmax lt 3.6e6 then L=171
    if Tmax gt 3.9e6 and Tmax lt 4.1e6 then L=192
    writeu,1,Tmin,Tmax,L
-   writeu,1,npar,DEMc_v
-   writeu,1,lambda_v   
+   if keyword_set(ldem_file) then begin
+      writeu,1,npar,DEMc_v
+      writeu,1,lambda_v
+   endif
 ;<---------------
   close,  1
   return

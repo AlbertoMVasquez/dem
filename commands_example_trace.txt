@@ -2,11 +2,15 @@
 .r read_structure_MHD
 .r read_awsom_matrix
 
-radstart= 1.035
+
+radstart= 1.035 + 0.02 *findgen(10)
 Nrad = n_elements(radstart)
 dlat = 2. + fltarr(Nrad)
 dlon = 2. + fltarr(Nrad)
-period='teste_awsom_full'
+period='2082_test_awsom_full_asd_diarrea_putrefacta'
 
 trace_LDEM,field_awsom='/data1/work/MHD/sph_data_awsom_2082_1.85.sav',awsom_file='awsom_2082_1.85',period=period,safety=.5,stepmax=8000,/unifgrid_v2,dlat=dlat,dlon=dlon,radstart=radstart
+
+
+nohup ./auto_cv_brent -r1 -w1 -m AIA_CR2208_211_H13imag_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_bf4_B -i x_AIA_CR2208_211_H13imag_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_bf4_B_L0.75 -o x_AIA_CR2208_211_H13imag_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_bf4_B_r1w1 > termout.autocv.cr2208.211.h.13imag.r1w1  2>&1 &
 
