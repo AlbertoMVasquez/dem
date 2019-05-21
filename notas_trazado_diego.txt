@@ -1,0 +1,72 @@
+CR2082 - Awsom 1.85
+tomamos hasta 6rsun de awsom
+se corrio spherical_trace_field con nstep =8000 y safety=.5
+las matrices ptr, ptth, ptph son pointers salidas del spherical trace y tienen la posicion de los puntos trazados de las lineas de campo con dimensiones nstepmax * cant_lineas, en este caso 8000*162000 y ocupan cada una 5gb.
+
+Opciones para reducirlo:
+Opcion 1) limitar el rango de alturas de campo magnetico en el sph_data otorgado por awsom. Eso funcionara, pero algunas lineas cerradas serán catalogadas erroneamente de abiertas. Pero esto generaria lineas donde no sea necesario tantos nstepmax con lo cual se reducidan las dimensiones de las matrices.
+Opcion 2) Hacer trazados de 5 alturas en lugar de 10, esto reducira las matrices a la mitad.
+
+Observaciones:
+plot, (*pfss_data.nstep),psym=4
+muestra que el 99.9% de las lineas requieren menos de 7500 puntos.
+
+El trazado en general otorga 85k lineas cerradas y 75k lineas abiertas
+IDL> help,where(linekind eq -1)
+<Expression>    LONG      = Array[98]
+IDL> help,where(linekind eq 0)
+<Expression>    LONG      = Array[76432]
+IDL> help,where(linekind eq 1)
+<Expression>    LONG      = Array[85322]
+
+step=(*pfss_data.nstep)
+print, n_elements(where(step gt 6000 and linekind eq 0))
+76410
+print, n_elements(where(step gt 6000 and linekind eq 1))
+730
+print, n_elements(where(step gt 6000 and linekind eq -1))
+98
+
+Notar que 
+print, n_elements(where(step le 6000 and linekind eq 0))
+22    
+Con lo cual las lineas abiertas ocupan fuertemente > 6000 puntos al trazar a 6rsun. Estan todas entre 6000 y 7500 puntos.
+En cambio las lineas cerradas estan casi todas abajo de 1000 puntos 85% de las cerradas. 93% abajo de 2000 puntos.
+
+Estos comentarios dejan bien en claro el grafico adjunto donde se ven claramente poblaciones de lineas abiertas entre 6000 y 7500 puntos y otra de lineas cerradas por debajo de 2000.
+
+La periodicidad del plot corresponde con las 10 alturas ya que el vector nstep esta esta ordenado segun el trazado. Que no se observen grandes diferencias entre una franca y la sucesiva es lo que nos hace pensar que que cada trazado aporta mas o menos el mismo tipo de lineas en cuanto a topologia (longitud) que el anterios. Con lo cual desidimos hacer un trazado de 5 alturas, llevar las matrices pesadas a la mitad de dimension y en el futuro podemos mergear matrices si es lo que deseamos para ganar estadistica.
+
+TRAZANDO A 6 ALTURAS
+tomamos hasta 6rsun de awsom
+se corrio spherical_trace_field con nstep =7500 y safety=.5
+radstart= 1.025 + 0.04 *findgen(6)
+la solucion (mas que nada las 3 matrices pesadas) ocupan 8.6 Gb
+
+IDL> help,where(linekind eq -1)
+<Expression>    LONG      = Array[171], son las lineas que superan los 7500 puntos maximos.
+IDL> help,where(linekind eq 0) 
+<Expression>    LONG      = Array[45675]
+IDL> help,where(linekind eq 1) 
+<Expression>    LONG      = Array[51266]
+
+ print, n_elements(where(step le 6000 and linekind eq 0))
+          14
+
+.r trace_LDEM.pro
+.r read_structure_MHD
+.r read_awsom_matrix
+
+radstart= 1.025 + 0.04 *findgen(6)
+Nrad = n_elements(radstart)
+dlat = 2. + fltarr(Nrad)
+dlon = 2. + fltarr(Nrad)
+period='2082_test_awsom_full_asd_diarrea_putrefacta'
+
+trace_LDEM,pfss_data_file='pfss_data_cr2082_trazado5alturas.sav',ldem_file='LDEM.v3_CR2082_l.25.75.5_fd_Rmin1.00_Rmax1.30_Nr26_InstRmax1.26_bf4_r3d_B_vfullcadence_chianti.ioneq_sun_coronal_1992_feldman_ext.abund_euvi.B_L171_DECON_gauss1_lin_Norm-median_singlStart',period=period,safety=.5,stepmax=8000,/unifgrid_v2,dlat=dlat,dlon=dlon,radstart=radstart
+
+
+
+
+
+

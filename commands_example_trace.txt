@@ -2,15 +2,34 @@
 .r read_structure_MHD
 .r read_awsom_matrix
 
-
-radstart= 1.035 + 0.02 *findgen(10)
+radstart= 1.025 + 0.04 *findgen(6)
 Nrad = n_elements(radstart)
 dlat = 2. + fltarr(Nrad)
 dlon = 2. + fltarr(Nrad)
 period='2082_test_awsom_full_asd_diarrea_putrefacta'
 
-trace_LDEM,field_awsom='/data1/work/MHD/sph_data_awsom_2082_1.85.sav',awsom_file='awsom_2082_1.85',period=period,safety=.5,stepmax=8000,/unifgrid_v2,dlat=dlat,dlon=dlon,radstart=radstart
+trace_LDEM,pfss_data_file='pfss_data_cr2082_trazado5alturas.sav',ldem_file='LDEM.v3_CR2082_l.25.75.5_fd_Rmin1.00_Rmax1.30_Nr26_InstRmax1.26_bf4_r3d_B_vfullcadence_chianti.ioneq_sun_coronal_1992_feldman_ext.abund_euvi.B_L171_DECON_gauss1_lin_Norm-median_singlStart',period=period,safety=.5,stepmax=8000,/unifgrid_v2,dlat=dlat,dlon=dlon,radstart=radstart
+
+
+trace_LDEM,field_awsom='/data1/work/MHD/sph_data_awsom_2082_1.85.sav',awsom_file='awsom_2082_1.85',period=period,safety=.5,stepmax=7500,/unifgrid_v2,dlat=dlat,dlon=dlon,radstart=radstart
+;largado a las 16:30
 
 
 nohup ./auto_cv_brent -r1 -w1 -m AIA_CR2208_211_H13imag_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_bf4_B -i x_AIA_CR2208_211_H13imag_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_bf4_B_L0.75 -o x_AIA_CR2208_211_H13imag_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_bf4_B_r1w1 > termout.autocv.cr2208.211.h.13imag.r1w1  2>&1 &
 
+
+save,pfss_data,linekind,linelengths,safety,stepmax,FILENAME = 'pfss_data_cr2082.sav'
+
+save,pfss_data,linekind,linelengths,safety,stepmax,FILENAME = 'pfss_data_cr2082_trazado5alturas.sav'
+
+openw,1,output_file
+writeu,1,fieldtype,spacing,radstart,Rmax_tom,dr_tom
+writeu,1,Nlin,Npts_max
+writeu,1,rad_v,lat_v,lon_v,s_v,npts_v,midcell_v,loopL,opcls
+writeu,1,Ne_v,Tm_v
+writeu,1,str_v,stth_v,stph_v
+writeu,1,B_v,Br_v,Bth_v,Bph_v
+writeu,1,enrad_v,enlon_v,enlat_v
+writeu,1,Tmin,Tmax,L
+
+read_trace_sampled_diego_auxiliar,dir='/data1/work/dem/github_dem/dem/','traceLDEM_CR2082_test_awsom_full_asd_diarrea_putrefacta_radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat',6

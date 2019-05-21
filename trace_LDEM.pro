@@ -1,4 +1,5 @@
 ;trace_LDEM,field_awsom='/data1/work/MHD/sph_data_awsom_2082_1.85.sav',awsom_file='awsom_2082_1.85',period=period,safety=.5,stepmax=8000,/unifgrid_v2,dlat=dlat,dlon=dlon,radstart=radstart
+;trace_LDEM,pfss_data_file='pfss_data_cr2082_trazado5alturas.sav',ldem_file='LDEM.v3_CR2082_l.25.75.5_fd_Rmin1.00_Rmax1.30_Nr26_InstRmax1.26_bf4_r3d_B_vfullcadence_chianti.ioneq_sun_coronal_1992_feldman_ext.abund_euvi.B_L171_DECON_gauss1_lin_Norm-median_singlStart',period=period,safety=.5,stepmax=8000,/unifgrid_v2,dlat=dlat,dlon=dlon,radstart=radstart
 pro trace_LDEM,fdips_file=fdips_file,$
                ldem_file=ldem_file,$
                period=period,$
@@ -18,7 +19,9 @@ pro trace_LDEM,fdips_file=fdips_file,$
                expand=expand,$
                unifgrid_v2=unifgrid_v2,$
                field_awsom=field_awsom,$
-               awsom_file=awsom_file
+               awsom_file=awsom_file,$
+               pfss_data_file=pfss_data_file
+  
   common comunes,tm,wt,nband,demc,PHI,parametrizacion,Tmin,Tmax,nr,nth,np,rad,lat,lon,lambda,WTc
   common results_tomo,tfbe,sfbe,N_e
   common loss_rate,Er
@@ -77,7 +80,7 @@ pro trace_LDEM,fdips_file=fdips_file,$
 if keyword_set(ldem_file)  then file_flag = 0
 if keyword_set(awsom_file) then file_flag = 1
 
-  if not keyword_set(fdips_file) and not keyword_set(field_awsom) then begin
+  if not keyword_set(fdips_file) and not keyword_set(field_awsom) and not keyword_set(pfss_data_file) then begin
      print,'set the PFSS model to trace the DEMT results'
      return
   endif
@@ -127,6 +130,7 @@ if keyword_set(expand) then period=period+'_expand'
   print,'safety: ',safety
   print,'stepmax: ',stepmax
 
+  if keyword_set(pfss_data_file) then goto,salto_creacion_pfss
 ; Set the FDIPS filename to read:
 ; PFSSM_model='/data1/DATA/PFSSM/'+fdips_file
 if keyword_set(fdips_file) then PFSSM_model= fdips_file
@@ -138,8 +142,7 @@ if keyword_set(fdips_file) then PFSSM_model= fdips_file
 
 ; change the name of the created structure to a new name:
   pfss_data = sph_data
-  print, 'PROBANDOOOO.....z'
-  
+  undefine,sph_data             ;liberando espacio 300Mb  
 ; Set the uniform grid size, in case /unifgrid is used for the starting points. 
 ; Default size is 90x180.
   if NOT keyword_set(dlat) then dlat = 2   
@@ -156,8 +159,13 @@ if keyword_set(fdips_file) then PFSSM_model= fdips_file
 
 ; And now, do trace the field lines:
 ;stop
-  spherical_trace_field,pfss_data,linekind=linekind,linelengths=linelengths,safety=safety,stepmax=stepmax 
+if not keyword_set (pfss_data_file) then  spherical_trace_field,pfss_data,linekind=linekind,linelengths=linelengths,safety=safety,stepmax=stepmax 
 stop
+save,pfss_data,FILENAME = 'sph_data_'+awsom_file+period+'.sav'
+salto_creacion_pfss:
+if keyword_set (pfss_data_file) then restore,pfss_data_file
+stop
+
 ; Change the coding for linekind:
   linekind=linekind-2           ; so that 0=open and 1=closed
 
@@ -184,8 +192,8 @@ stop
 
 ; Read the tomographics results and set a few parameters concerning
 ; the tomographic grid:
-  if not keyword_set(dgfw) and not keyword_set(awsom_file) then      read_ldem,ldem_file,/ldem,/gauss1
-  if     keyword_set(dgfw) and not keyword_set(awsom_file) then      read_ldem,ldem_file,/ldem,/dgfw
+  if not keyword_set(dgfw) and not keyword_set(awsom_file) and keyword_set(ldem_file) then      read_ldem,ldem_file,/ldem,/gauss1
+  if     keyword_set(dgfw) and not keyword_set(awsom_file) and keyword_set(ldem_file) then      read_ldem,ldem_file,/ldem,/dgfw
 ;  if     keyword_set(awsom)then      read_awsom,awsom_file
   
   if     keyword_set(awsom_file) then  begin
@@ -271,7 +279,7 @@ stop
 ; selected field lines:
 xxx=0
   for il = 0L, Nlin-1 do begin
-     ;stop    ;<--
+     ;stop  ;<--
      print,'tracing the DEMT results along the line '+string(il+1)+'    of '+string(Nlin)
      il_all=(findgen(Nlin_all))(iOC(il))
      Np_l      = Nstep(il)      ;  Number of points along the il-line
@@ -506,6 +514,16 @@ stop
    Bph_v  = reform(    Bph_v(0:Npts_max-1,*) )  
 ; Save the sampled data:
    stop
+   if keyword_set(ldem_file) then save,fieldtype,spacing,radstart,Rmax_tom,dr_tom,WTc,Nlin,Npts_max,rad_v,lat_v,lon_v,$
+                                       s_v,npts_v,midcell_v,loopL,opcls,Ne_v,Tm_v,WT_v,scoreR_v,str_v,stth_v,stph_v,$
+                                       B_v,Br_v,Bth_v,Bph_v,Tmin,Tmax,npar,DEMc_v,lambda_v,FILENAME = output_file+'.sav'
+
+   if keyword_set(awsom_file) then save,fieldtype,spacing,radstart,Rmax_tom,dr_tom,Nlin,Npts_max,rad_v,lat_v,lon_v,$
+                                        s_v,npts_v,midcell_v,loopL,opcls,Ne_v,Tm_v,Er_v,str_v,stth_v,stph_v,$
+                                        B_v,Br_v,Bth_v,Bph_v,ne_lasco_v,qheat_v,qebyq_v,Tmin,Tmax,FILENAME = output_file+'.sav'
+
+   stop
+   goto,final
    openw,1,output_file
       if keyword_set(ldem_file) then  writeu,1,fieldtype,spacing,radstart,Rmax_tom,dr_tom,WTc
       if keyword_set(awsom_file) then  writeu,1,fieldtype,spacing,radstart,Rmax_tom,dr_tom
@@ -528,6 +546,7 @@ stop
       writeu,1,lambda_v
    endif
 ;<---------------
-  close,  1
-  return
+   close,  1
+   final:
+   return
 end
