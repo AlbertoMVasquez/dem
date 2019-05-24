@@ -267,7 +267,7 @@ Rp_alto  = {lat:fltarr(Nlegs)-555.,lon:fltarr(Nlegs)-555.}
         B_l =   B_l (p)
         
         p_l   = kB/bb *Ne_l*Tm_l
-        beta_l = p_l/(B_l^2/(8*!pi))
+        beta_l = p_l/(B_l^2/(8*!pi));valor crudo
         
         Nemean(ileg) =   mean(Ne_l)
         betamean(ileg) =   mean(beta_l)
@@ -278,14 +278,6 @@ Rp_alto  = {lat:fltarr(Nlegs)-555.,lon:fltarr(Nlegs)-555.}
            keyword_set(ajuste_awsom_bajo) eq 1: Tmmean(ileg) =  mean(Tm_l(where(rad_l le corte_awsom)))
            else: Tmmean(ileg) =   mean(Tm_l)
         endcase
-
-;estos valores miny max de longitud de loops se utilizan para        
-;luego, en el vector iso, pero se definen aca luego de usar p
-;asi tienen en cuenta la longitud fiteada
-        min_s = s_l(findel(1.025,rad_l))
-        max_s = s_l(findel(1.2 ,rad_l))
-        min_r = rad_l(findel(1.025,rad_l))
-        max_r = rad_l(findel(1.2 ,rad_l))
 
 ;se guardan valores pero no hay fiteo si hay menos de 5 puntos.
         if n_elements(p) lt Ndata then goto,skipfitloop_open
@@ -333,19 +325,28 @@ Rp_alto  = {lat:fltarr(Nlegs)-555.,lon:fltarr(Nlegs)-555.}
    ;de 1.05 entonces partimos el ajuste en 2                           
 
     case 1 of
-       keyword_set(ajuste_awsom_alto) eq 1: begin
-          sfit =  s_l  (where(rad_l ge corte_awsom))
-          xfit =  rad_l(where(rad_l ge corte_awsom))
-          yfit =  Ne_l (where(rad_l ge corte_awsom))
-          zfit =  p_l  (where(rad_l ge corte_awsom))
-          wfit =  Tm_l (where(rad_l ge corte_awsom))
+       keyword_set(ajuste_alto) eq 1: begin
+          sfit =  s_l  (where(rad_l ge findel(val_corte,rad_l)))
+          xfit =  rad_l(where(rad_l ge val_corte))
+          yfit =  Ne_l (where(rad_l ge val_corte))
+          zfit =  p_l  (where(rad_l ge val_corte))
+          wfit =  Tm_l (where(rad_l ge val_corte))
+          min_s = s_l(findel(val_corte,rad_l))
+          max_s = s_l(findel(1.2 ,rad_l))
+          min_r = rad_l(findel(val_corte,rad_l))
+          max_r = rad_l(findel(1.2 ,rad_l))
        end
        keyword_set(ajuste_awsom_bajo) eq 1: begin
-          sfit =  s_l  (where(rad_l le corte_awsom))
-          xfit =  rad_l(where(rad_l le corte_awsom))
-          yfit =  Ne_l (where(rad_l le corte_awsom))
-          zfit =  P_l  (where(rad_l le corte_awsom))
-          wfit =  Tm_l (where(rad_l le corte_awsom))
+          sfit =  s_l  (where(rad_l le findel(val_corte,rad_l)))
+          xfit =  rad_l(where(rad_l le val_corte))
+          yfit =  Ne_l (where(rad_l le val_corte))
+          zfit =  P_l  (where(rad_l le val_corte))
+          wfit =  Tm_l (where(rad_l le val_corte))
+          min_s = s_l(findel(1.025,rad_l))
+          max_s = s_l(findel(val_corte ,rad_l))
+          min_r = rad_l(findel(1.025,rad_l))
+          max_r = rad_l(findel(val_corte ,rad_l))
+
        end
        else: begin
           sfit = s_l
@@ -353,14 +354,18 @@ Rp_alto  = {lat:fltarr(Nlegs)-555.,lon:fltarr(Nlegs)-555.}
           yfit = Ne_l
           zfit = p_l
           wfit = Tm_l
+          min_s = s_l(findel(1.025,rad_l))
+          max_s = s_l(findel(1.2 ,rad_l))
+          min_r = rad_l(findel(1.025,rad_l))
+          max_r = rad_l(findel(1.2 ,rad_l))
+
        end
     endcase
 
 
-    rminhs = min(rad_l)         ;rmin
-    rmaxhs = max(rad_l)         ;rmax
+
 ;Fiteando Ne
-    linear_fit,1/xfit,alog(yfit),rminhs,rmaxhs,A,r2,salidafit,/theilsen
+    linear_fit,1/xfit,alog(yfit),min_r,max_r,A,r2,salidafit,/theilsen
 
     Ne0(ileg) = exp(A[0]+A[1])
     lambda_N(ileg) = 1./A[1]
@@ -369,26 +374,27 @@ Rp_alto  = {lat:fltarr(Nlegs)-555.,lon:fltarr(Nlegs)-555.}
     Tefit_ts(ileg) = bb* mu * mH * gsun * (lambda_N_ts(ileg)*rsun) / kB
     Nebasal(ileg) = Ne0_ts(ileg) * exp(-1/lambda_n_ts(ileg)* (1. - 1./rad_l_orig(rrr0)))
     ;Estas 2 NO son necesarias, podria armarse luego.
-    franja_lineal,yfit,salidafit,rminhs,rmaxhs,eps_ne,fraccion
+    franja_lineal,yfit,salidafit,min_r,max_r,eps_ne,fraccion
     f_ne (ileg) = fraccion
 
 ;Fiteando temperatura
-    linear_fit,xfit,wfit,rminhs,rmaxhs,A,r2,salidafit,/theilsen
+    linear_fit,xfit,wfit,min_r,max_r,A,r2,salidafit,/theilsen
     Tm0(ileg)   = A[0]
     gradT(ileg) = A[1]
     r2t (ileg)  = r2;si es isotermico va a dar bajo.
     
-    franja_lineal,wfit,salidafit,rminhs,rmaxhs,eps_t,fraccion
+    franja_lineal,wfit,salidafit,min_r,max_r,eps_t,fraccion
     f_t (ileg) = fraccion
 
     
-    linear_fit,sfit,wfit,rminhs,rmaxhs,A,r2,salidafit,/theilsen
+    linear_fit,sfit,wfit,min_s,max_s,A,r2,salidafit,/theilsen
     Tm0_s(ileg)   = A[0]
     gradT_s(ileg) = A[1]
     
     Te_base(ileg) = gradT(ileg) * rad_l_orig(rrr0) + Tm0(ileg)
     betabase(ileg) = (kb/bb * nebasal(ileg) * te_base(ileg)) /(B_base(ileg)^2/(8*!pi))
-    ;Estas 2 NO son necesarias, podria armarse luego.
+    ;Estas 2 NO son necesarias, podria armarse luego. Hacer lo mismo calcu
+    ;lando sobre el loop s!
     ;betabase puede ser negativo para los malos fiteos de temperatura
 
     if not keyword_set(ajuste_awsom_bajo) && betabase(ileg) lt 0. && f_t(ileg) ge 0.7 && r2N(ileg) ge 0.7 then stop
@@ -431,12 +437,14 @@ Rp_alto  = {lat:fltarr(Nlegs)-555.,lon:fltarr(Nlegs)-555.}
        Ne_l2 = reform ( Ne_v(ifirs_2:ilast_2,il))
        Tm_l1 = reform ( Tm_v(ifirs_1:ilast_1,il))
        Tm_l2 = reform ( Tm_v(ifirs_2:ilast_2,il))
-       WT_l1 = reform ( WT_v(ifirs_1:ilast_1,il))
-       WT_l2 = reform ( WT_v(ifirs_2:ilast_2,il))
-       Er_l1 = reform ( Er_v(ifirs_1:ilast_1,il))
-       Er_l2 = reform ( Er_v(ifirs_2:ilast_2,il))
-       scoreR_l1 = reform ( scoreR_v(ifirs_1:ilast_1,il))
-       scoreR_l2 = reform ( scoreR_v(ifirs_2:ilast_2,il))
+       if keyword_set(demt) then begin
+          WT_l1 = reform ( WT_v(ifirs_1:ilast_1,il))
+          WT_l2 = reform ( WT_v(ifirs_2:ilast_2,il))
+          Er_l1 = reform ( Er_v(ifirs_1:ilast_1,il))
+          Er_l2 = reform ( Er_v(ifirs_2:ilast_2,il))
+          scoreR_l1 = reform ( scoreR_v(ifirs_1:ilast_1,il))
+          scoreR_l2 = reform ( scoreR_v(ifirs_2:ilast_2,il))
+       endif
        rad_l1 = reform( rad_v(ifirs_1:ilast_1,il))
        rad_l2 = reform( rad_v(ifirs_2:ilast_2,il))
        lat_l1 = reform( lat_v(ifirs_1:ilast_1,il))
@@ -481,25 +489,315 @@ Rp_alto  = {lat:fltarr(Nlegs)-555.,lon:fltarr(Nlegs)-555.}
        endif
        
 
+       Footrad(ileg)   = rad_ini(ileg)
+       Footrad(ileg+1) = rad_fin(ileg+1)
+       Footlat(ileg)   = lat_ini(ileg)
+       Footlat(ileg+1) = lat_fin(ileg+1)
+       Footlon(ileg)   = lon_ini(ileg)
+       Footlon(ileg+1) = lon_fin(ileg+1)
+       
+
+       rrr01=findel(1.025,rad_l1)
+       Rp_base.lat(ileg)  = lat_l1(rrr01)
+       Rp_base.lon(ileg)  = lon_l1(rrr01)
+       
+       rrr1=findel(1.075,rad_l1)
+       Rp_medio.lat(ileg) = lat_l1(rrr1)
+       Rp_medio.lon(ileg) = lon_l1(rrr1)
+       
+       rrr2=findel(1.105,rad_l1)
+       Rp_alto.lat(ileg)  = lat_l1(rrr2)
+       Rp_alto.lon(ileg)  = lon_l1(rrr2)
+       
+       rrr02=findel(1.025,rad_l2)
+       Rp_base.lat(ileg+1)  = lat_l2(rrr02)
+       Rp_base.lon(ileg+1)  = lon_l2(rrr02)
+       
+       rrr1=findel(1.075,rad_l2)
+       Rp_medio.lat(ileg+1) = lat_l2(rrr1)
+       Rp_medio.lon(ileg+1) = lon_l2(rrr1)
+       
+       rrr2=findel(1.105,rad_l2)
+       Rp_alto.lat(ileg+1)  = lat_l2(rrr2)
+       Rp_alto.lon(ileg+1)  = lon_l2(rrr2)
+       
+       rad_l1_orig = rad_l1
+       rad_l2_orig = rad_l2
+       B_base (ileg  ) = B_l1 (rrr01)
+       B_base (ileg+1) = B_l2 (rrr02)
+
+
+  p1 = where ( rad_l1 ge rmin and rad_l1 le rmax and Ne_l1 ne -999. and scoreR_l1 lt 0.1 and WT_l1 ge WTc*1.e6)
+  p2 = where ( rad_l2 ge rmin and rad_l2 le rmax and Ne_l2 ne -999. and scoreR_l2 lt 0.1 and WT_l2 ge WTc*1.e6)
+
+  if  p1(0) eq -1 || p2(0) eq -1 then goto,skipnextloop
+
+  Ne_l1 =  Ne_l1 (p1)
+  Ne_l2 =  Ne_l2 (p2)
+  Tm_l1 =  Tm_l1 (p1)
+  Tm_l2 =  Tm_l2 (p2)
+  if keyword_set(demt) then begin
+     WT_l1 =  WT_l1 (p1)
+     WT_l2 =  WT_l2 (p2)
+     Er_l1 =  Er_l1 (p1)
+     Er_l2 =  Er_l2 (p2)
+  endif
+  rad_l1 = rad_l1 (p1)
+  rad_l2 = rad_l2 (p2)
+  s_l1 =   s_l1 (p1)
+  s_l2 =   s_l2 (p2)
+  B_l1 =   B_l1 (p1)
+  B_l2 =   B_l2 (p2)
+; tomographic pressure     
+  p_l1 = kB/bb *Ne_l1*Tm_l1
+  p_l2 = kB/bb *Ne_l2*Tm_l2
+;make Beta plasma parameter, valor crudo            
+  beta_l1 = p_l1/(B_l1^2/(8*!pi))
+  beta_l2 = p_l2/(B_l2^2/(8*!pi))
+  
+  Nemean(ileg)   = mean(Ne_l1)
+  Nemean(ileg+1) = mean(Ne_l2)
+  if keyword_set(demt) then begin
+     WTmean(ileg)   = mean(WT_l1)
+     WTmean(ileg+1) = mean(WT_l2)
+     WTstddev(ileg)   = stddev(WT_l1)
+     WTstddev(ileg+1) = stddev(WT_l2)
+  endif
+  Nestddev(ileg)   = stddev(Ne_l1)
+  Nestddev(ileg+1) = stddev(Ne_l2)
+  Tmstddev(ileg)   = stddev(Tm_l1)
+  Tmstddev(ileg+1) = stddev(Tm_l2)  
+  betamean(ileg)   = mean(beta_l1)
+  betamean(ileg+1) = mean(beta_l2)
+  betaapex(ileg)   = beta_l1(n_elements(rad_l1(p1))-1)
+  betaapex(ileg+1) = beta_l2(0)
+  Bmean(ileg)   = mean(B_l1)
+  Bmean(ileg+1) = mean(B_l2)
+
+  case 1 of
+     keyword_set(ajuste_awsom_alto) eq 1: begin
+        Tmmean(ileg)   =  mean(Tm_l1(where(rad_l1 ge corte_awsom)))
+        Tmmean(ileg+1) =  mean(Tm_l2(where(rad_l2 ge corte_awsom)))
+     end
+     keyword_set(ajuste_awsom_bajo) eq 1: begin
+        Tmmean(ileg)   =  mean(Tm_l1(where(rad_l1 le corte_awsom)))
+        Tmmean(ileg+1) =  mean(Tm_l2(where(rad_l2 le corte_awsom)))
+     end
+     else: begin
+        Tmmean(ileg)   =   mean(Tm_l1)
+        Tmmean(ileg+1) =   mean(Tm_l2)
+     end
+  endcase
+  
+  if n_elements(p1) lt Ndata || n_elements(p2) lt Ndata then goto,skipfitloop
 
 
 
 
+if lefts_l1(0) eq -1 or diomes_l1(0) eq -1 or rights_l1(0) eq -1 then goto,skipfitloop
+if lefts_l2(0) eq -1 or diomes_l2(0) eq -1 or rights_l2(0) eq -1 then goto,skipfitloop
 
+  
+        CASE opcl(il) OF
+           1: begin
+              if (footlat(ileg) ge stfn_i && footlat(ileg) le stfn_f) || (footlat(ileg) le stfs_f && footlat(ileg) ge stfs_i) then begin
+                 error_ne (ileg) = st_f_ne
+                 error_t  (ileg) = st_f_t
+              endif
+;en este caso, ileg y ileg+1 deberian caer aca entonces mismo error para
+;ambas piernas
+           end
+           2: begin
+              if footlat(ileg) le stlb_f. && footlat(ileg) ge stlb_i. then begin
+                 error_ne (ileg) = st_lb_ne
+                 error_t  (ileg) = st_lb_t
+              endif
+              
+              if footlat(ileg) ge stlin_i. || footlat(ileg) le stlis_f then begin
+                 error_ne (ileg) = st_li_ne
+                 error_t  (ileg) = st_li_t
+              endif
+           end
+;en este caso quizas una pierna ileg tiene un error pero ileg+1 tiene
+;un error diferente
+        endcase
+        
+        CASE opcl(il+1) OF
+           1: begin
+              if (footlat(ileg+1) ge stfn_i && footlat(ileg+1) le stfn_f) || (footlat(ileg+1) le stfs_f and footlat(ileg+1) ge stfs_i) then begin
+                 error_ne (ileg+1) = st_f_ne
+                 error_t  (ileg+1) = st_f_t
+;deberian valer igual que ileg xq son cerrados chicos y deberian estar
+;en la misma franja                 
+              endif
+           end
+           2: begin
+              if footlat(ileg+1) le stlb_f. && footlat(ileg+1) ge stlb_i. then begin
+                 error_ne (ileg+1) = st_lb_ne
+                 error_t  (ileg+1) = st_lb_t
+              endif
+              if footlat(ileg+1) ge stlin_i. || footlat(ileg+1) le stlis_f then begin
+                 error_ne (ileg+1) = st_li_ne
+                 error_t  (ileg+1) = st_li_t
+              endif
+           end
+        endcase
+                
+case 1 of
+       keyword_set(ajuste_alto) eq 1: begin
+          sfit1  = s_l1  (where(rad_l1 ge findel(val_corte,rad_l1)))
+          xfit1  = rad_l1(where(rad_l1 ge val_corte))
+          yfit1  = Ne_l1 (where(rad_l1 ge val_corte))
+          zfit1  = p_l1  (where(rad_l1 ge val_corte))
+          wfit1  = Tm_l1 (where(rad_l1 ge val_corte))
+          min_s1 = s_l1(findel(val_corte,rad_l1))
+          max_s1 = s_l1(findel(1.2 ,rad_l1))
+          min_r1 = rad_l1(findel(val_corte,rad_l1))
+          max_r1 = rad_l1(findel(1.2 ,rad_l1))
+          sfit2  = s_l2  (where(rad_l2 ge findel(val_corte,rad_l2)))
+          xfit2  = rad_l2(where(rad_l2 ge val_corte))
+          yfit2  = Ne_l2 (where(rad_l2 ge val_corte))
+          zfit2  = p_l2  (where(rad_l2 ge val_corte))
+          wfit2  = Tm_l2 (where(rad_l2 ge val_corte))
+          min_s2 = s_l2(findel(val_corte,rad_l2))
+          max_s2 = s_l2(findel(1.2 ,rad_l2))
+          min_r2 = rad_l2(findel(val_corte,rad_l2))
+          max_r2 = rad_l2(findel(1.2 ,rad_l2))
+       end
+       keyword_set(ajuste_bajo) eq 1: begin
+          sfit1 =  s_l1  (where(rad_l1 le findel(val_corte,rad_l1)))
+          xfit1 =  rad_l1(where(rad_l1 le val_corte))
+          yfit1 =  Ne_l1 (where(rad_l1 le val_corte))
+          zfit1 =  P_l1  (where(rad_l1 le val_corte))
+          wfit1 =  Tm_l1 (where(rad_l1 le val_corte))
+          min_s1 = s_l1(findel(1.025,rad_l11))
+          max_s1 = s_l1(findel(val_corte ,rad_l1))
+          min_r1 = rad_l1(findel(1.025,rad_l1))
+          max_r1 = rad_l1(findel(val_corte ,rad_l1))
+          sfit2 =  s_l2  (where(rad_l2 le findel(val_corte,rad_l2)))
+          xfit2 =  rad_l2(where(rad_l2 le val_corte))
+          yfit2 =  Ne_l2 (where(rad_l2 le val_corte))
+          zfit2 =  P_l2  (where(rad_l2 le val_corte))
+          wfit2 =  Tm_l2 (where(rad_l2 le val_corte))
+          min_s2 = s_l2(findel(1.025,rad_l2))
+          max_s2 = s_l2(findel(val_corte ,rad_l2))
+          min_r2 = rad_l2(findel(1.025,rad_l2))
+          max_r2 = rad_l2(findel(val_corte ,rad_l2))
+       end
+       else: begin
+          sfit1 = s_l1
+          xfit1 = rad_l1
+          yfit1 = Ne_l1
+          zfit1 = p_l1
+          wfit1 = Tm_l1
+          min_s1 = s_l1(findel(1.025,rad_l1))
+          max_s1 = s_l1(findel(1.2 ,rad_l1))
+          min_r1 = rad_l1(findel(1.025,rad_l1))
+          max_r1 = rad_l1(findel(1.2 ,rad_l1))
+          sfit2 = s_l2
+          xfit2 = rad_l2
+          yfit2 = Ne_l2
+          zfit2 = p_l2
+          wfit2 = Tm_l2
+          min_s2 = s_l2(findel(1.025,rad_l2))
+          max_s2 = s_l2(findel(1.2 ,rad_l2))
+          min_r2 = rad_l2(findel(1.025,rad_l2))
+          max_r2 = rad_l2(findel(1.2 ,rad_l2))
+       end
+    endcase
 
+;Fiteando Ne 
+; pata l1
+    linear_fit,1/xfit1,alog(yfit1),min_r1,max_r1,A,r2,salidafit,/theilsen
+    Ne0(ileg) = exp(A[0]+A[1])
+    lambda_N(ileg) = 1./A[1]
+    r2N(ileg) = r2
+    Tefit_ts(ileg) = bb* mu * mH * gsun * (lambda_N_ts(ileg)*rsun) / kB
+    Nebasal(ileg) = Ne0_ts(ileg) * exp(-1/lambda_n_ts(ileg)* (1. - 1./rad_l1_orig(rrr0)))
+    
+    franja_lineal,yfit1,salidafit,min_r1,max_r1,eps_ne,fraccion
+    f_ne (ileg) = fraccion
+;pata l2    
+    linear_fit,1/xfit2,alog(yfit2),min_r2,max_r2,A,r2,salidafit,/theilsen
+    Ne0(ileg+1) = exp(A[0]+A[1])
+    lambda_N(ileg+1) = 1./A[1]
+    r2N(ileg+1) = r2
+    Tefit_ts(ileg+1) = bb* mu * mH * gsun * (lambda_N_ts(ileg+1)*rsun) / kB
+    Nebasal(ileg+1) = Ne0_ts(ileg+1) * exp(-1/lambda_n_ts(ileg+1)* (1. - 1./rad_l2_orig(rrr0)))
 
-
-
-
-
-
-
+    franja_lineal,yfit2,salidafit,min_r2,max_r2,eps_ne,fraccion
+    f_ne (ileg+1) = fraccion
 
     
+;Fiteando temperatura          
+;para l1
+    linear_fit,xfit1,wfit1,min_r1,max_r1,A,r2,salidafit,/theilsen
+    Tm0(ileg)   = A[0]
+    gradT(ileg) = A[1]
+    r2t (ileg)  = r2;si es isotermico va a dar bajo.      
+    franja_lineal,wfit1,salidafit,min_r1,max_r1,eps_t,fraccion
+    f_t (ileg) = fraccion
 
-    
+    linear_fit,sfit1,wfit1,min_s1,max_s1,A,r2,salidafit,/theilsen
+    Tm0_s(ileg)   = A[0]
+    gradT_s(ileg) = A[1]
+    Te_base(ileg) = gradT(ileg) * rad_l1_orig(rrr0) + Tm0(ileg)
+    betabase(ileg) = (kb/bb * nebasal(ileg) * te_base(ileg)) /(B_base(ileg)^2/(8*!pi))
+;pata l2
+    linear_fit,xfit2,wfit2,min_r2,max_r2,A,r2,salidafit,/theilsen
+    Tm0(ileg+1)   = A[0]
+    gradT(ileg+1) = A[1]
+    r2t (ileg+1)  = r2
+    franja_lineal,wfit2,salidafit,min_r2,max_r2,eps_t,fraccion
+    f_t (ileg+1) = fraccion
 
-endfor
+    linear_fit,sfit2,wfit2,min_s2,max_s2,A,r2,salidafit,/theilsen
+    Tm0_s(ileg+1)   = A[0]
+    gradT_s(ileg+1) = A[1]
+    Te_base(ileg+1) = gradT(ileg+1) * rad_l2_orig(rrr0) + Tm0(ileg+1)
+    betabase(ileg+1) = (kb/bb * nebasal(ileg+1) * te_base(ileg+1)) /(B_base(ileg+1)^2/(8*!pi))
+
+    iso  (ileg)   = abs(gradT (ileg)    * abs(max_r1 - min_r1)) / (2 * error_t(ileg))
+    iso_s(ileg)   = abs(gradT_s(ileg)   * abs(max_s1 - min_s1)) / (2 * error_t(ileg))
+    iso  (ileg+1) = abs(gradT (ileg+1)   * abs(max_r2 - min_r2)) / (2 * error_t(ileg+1))
+    iso_s(ileg+1) = abs(gradT_s(ileg+1)  * abs(max_s2 - min_s2)) / (2 * error_t(ileg+1))
+
+
+    long_r (ileg)   = abs(max_r1 - min_r1)
+    long_s (ileg)   = abs(max_s1 - min_s1)
+    long_r (ileg+1) = abs(max_r2 - min_r2)
+    long_s (ileg+1) = abs(max_s2 - min_s2)
+
+
+  skipfitloop:
+     opclstat(ileg)   =      opcls(il)
+     opclstat(ileg+1) =      opcls(il)
+  loop_length(ileg)   =      loopL(il)
+  loop_length(ileg+1) =      loopL(il)
+        strad(ileg)   =      str_v(il)
+        stlat(ileg)   = (90-stth_v(il)/!dtor)
+        stlon(ileg)   =     stph_v(il)/!dtor
+        strad(ileg+1) =      str_v(il)
+        stlat(ileg+1) = (90-stth_v(il)/!dtor)
+        stlon(ileg+1) =     stph_v(il)/!dtor
+  skipnextloop:
+  indexloop(ileg)  = il
+  indexloop(ileg+1)= il
+;  if gradT(ileg)*gradT(ileg+1) lt 0. then begin
+;     indexloop(ileg)   = -678.
+;     indexloop(ileg+1) = -678.
+;  endif
+  
+  ileg = ileg+2
+endelse
+ endfor
+  Rp_full  = {base:Rp_base,medio:Rp_medio,alto:Rp_alto}
+
+  
+  return
+end
+
+
 
 
 
