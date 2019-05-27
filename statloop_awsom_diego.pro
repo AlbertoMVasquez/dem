@@ -51,7 +51,8 @@ WTstddev= fltarr(Nlegs)-555.
  Pmean = fltarr(Nlegs)-555.
 Ne2mean = fltarr(Nlegs)-555.
 Ermean  = fltarr(Nlegs)-555.
-
+Bmean = fltarr(Nlegs)-555.
+betamean = fltarr(Nlegs)-555.
 ;fiteos densidad y temperatura en funcion de r y s
 Ne0 = fltarr(Nlegs)-555.
 lambda_N = fltarr(Nlegs)-555.
@@ -93,7 +94,6 @@ Te_base = fltarr(Nlegs)-555.
  deltaEh = fltarr(Nlegs)-555. ;??
 betamean = fltarr(Nlegs)-555.
 betaapex = fltarr(Nlegs)-555.
-   Bmean = fltarr(Nlegs)-555.
    Br0 = fltarr(Nlegs)-555.
    
   B_base = fltarr(Nlegs)-555.
@@ -255,7 +255,9 @@ Rp_alto  = {lat:fltarr(Nlegs)-555.,lon:fltarr(Nlegs)-555.}
         Nemean(ileg) =   mean(Ne_l)
         betamean(ileg) =   mean(beta_l)
         Bmean(ileg) =   mean(B_l)
-     
+        Pmean(ileg) =   mean(p_l)                                  
+        Ne2mean(ileg) =   mean((Ne_l)^2)                                   
+        Ermean(ileg) =   mean(Er_l)
         case 1 of
            keyword_set(ajuste_awsom_alto) eq 1: Tmmean(ileg) =  mean(Tm_l(where(rad_l ge corte_awsom)))
            keyword_set(ajuste_awsom_bajo) eq 1: Tmmean(ileg) =  mean(Tm_l(where(rad_l le corte_awsom)))
@@ -447,7 +449,7 @@ Rp_alto  = {lat:fltarr(Nlegs)-555.,lon:fltarr(Nlegs)-555.}
        s_l2 = loopL(il) - reform(   s_v(ifirs_2:ilast_2,il))
        B_l1 = reform(   B_v(ifirs_1:ilast_1,il))
        B_l2 = reform(   B_v(ifirs_2:ilast_2,il))
-  
+stop;quiero ver si rad_l2 y s_l2 hay que hacerles un reverse()  
 
        switching = 'no'
        leg_status(ileg+1) = 2.
@@ -513,7 +515,7 @@ Rp_alto  = {lat:fltarr(Nlegs)-555.,lon:fltarr(Nlegs)-555.}
        Rp_alto.lat(ileg+1)  = lat_l2(rrr2)
        Rp_alto.lon(ileg+1)  = lon_l2(rrr2)
        
-       rad_l1_orig = rad_l1
+       rad_l1_orig = rad_l1;donde se usa?
        rad_l2_orig = rad_l2
        B_base (ileg  ) = B_l1 (rrr01)
        B_base (ileg+1) = B_l2 (rrr02)
@@ -533,6 +535,8 @@ Rp_alto  = {lat:fltarr(Nlegs)-555.,lon:fltarr(Nlegs)-555.}
      WT_l2 =  WT_l2 (p2)
      Er_l1 =  Er_l1 (p1)
      Er_l2 =  Er_l2 (p2)
+     Ermean(ileg)   = mean(Er_l1)                                       
+     Ermean(ileg+1) = mean(Er_l2) 
   endif
   rad_l1 = rad_l1 (p1)
   rad_l2 = rad_l2 (p2)
@@ -549,6 +553,9 @@ Rp_alto  = {lat:fltarr(Nlegs)-555.,lon:fltarr(Nlegs)-555.}
   
   Nemean(ileg)   = mean(Ne_l1)
   Nemean(ileg+1) = mean(Ne_l2)
+  Ne2mean(ileg)   = mean((Ne_l1)^2)
+  Ne2mean(ileg+1) = mean((Ne_l2)^2)
+
   if keyword_set(demt) then begin
      WTmean(ileg)   = mean(WT_l1)
      WTmean(ileg+1) = mean(WT_l2)
@@ -565,7 +572,8 @@ Rp_alto  = {lat:fltarr(Nlegs)-555.,lon:fltarr(Nlegs)-555.}
   betaapex(ileg+1) = beta_l2(0)
   Bmean(ileg)   = mean(B_l1)
   Bmean(ileg+1) = mean(B_l2)
-
+  Pmean(ileg)   = mean(p_l1)
+  Pmean(ileg+1) = mean(p_l2)
   case 1 of
      keyword_set(ajuste_awsom_alto) eq 1: begin
         Tmmean(ileg)   =  mean(Tm_l1(where(rad_l1 ge corte_awsom)))
@@ -746,7 +754,7 @@ case 1 of
     linear_fit,sfit1,wfit1,min_s1,max_s1,A,r2,salidafit,/theilsen
     Tm0_s(ileg)   = A[0]
     gradT_s(ileg) = A[1]
-    Te_base(ileg) = gradT(ileg) * rad_l1_orig(rrr0) + Tm0(ileg)
+    Te_base(ileg) = gradT_s(ileg) * rad_l1_orig(rrr0) + Tm0_s(ileg)
     betabase(ileg) = (kb/bb * nebasal(ileg) * te_base(ileg)) /(B_base(ileg)^2/(8*!pi))
 ;pata l2
     linear_fit,xfit2,wfit2,min_r2,max_r2,A,r2,salidafit,/theilsen
@@ -759,7 +767,7 @@ case 1 of
     linear_fit,sfit2,wfit2,min_s2,max_s2,A,r2,salidafit,/theilsen
     Tm0_s(ileg+1)   = A[0]
     gradT_s(ileg+1) = A[1]
-    Te_base(ileg+1) = gradT(ileg+1) * rad_l2_orig(rrr0) + Tm0(ileg+1)
+    Te_base(ileg+1) = gradT_s(ileg+1) * rad_l2_orig(rrr0) + Tm0_s(ileg+1)
     betabase(ileg+1) = (kb/bb * nebasal(ileg+1) * te_base(ileg+1)) /(B_base(ileg+1)^2/(8*!pi))
 
     iso  (ileg)   = abs(gradT (ileg)    * abs(max_r1 - min_r1)) / (2 * error_t(ileg))
@@ -773,7 +781,27 @@ case 1 of
     long_r (ileg+1) = abs(max_r2 - min_r2)
     long_s (ileg+1) = abs(max_s2 - min_s2)
 
+;fit s_l1_base = m1 * rad_l1_base + s0r1
+  linear_fit,sfit1,wfit1,min(s_l1),max(s_l1),A,r2,salidafit,/theilsen
+  S0r1 = A[0]
+  m1   = A[1]
+  r2s1 = r2;si m1 es chica entonces r2 no sirve como estimador
 
+;fit s_l2_base = m2 * rad_l2_base + s0r2 
+  linear_fit,sfit2,wfit2,min(s_l2),max(s_l2),A,r2,salidafit,/theilsen
+  S0r2 = A[0]
+  m2   = A[1]
+  r2s2 = r2
+
+  s_r0_a(ileg  ) = m1 * r0 + s0r1
+  s_r0_a(ileg+1) = m2 * r0 + s0r2
+    
+;FCb calculo
+  Fc2_l1 = -kappa*Te_base^(5./2)*gradt_s(ileg)
+  Fc2_l2 = -kappa*Te_base^(5./2)*gradt_s(ileg+1)
+  Fcb(ileg  ) = Fc2_l1 * B_l2_r0/(B_l1_r0+B_l2_r0);b_l_0 depende y no es necesariamente en 1.025
+  Fcb(ileg+1) = Fc2_l2 * B_l1_r0/(B_l1_r0+B_l2_r0)
+;ADEMAS PODRIA FITEARSE EL ER, VER!
   skipfitloop:
      opclstat(ileg)   =      opcls(il)
      opclstat(ileg+1) =      opcls(il)
