@@ -1,29 +1,29 @@
 pro statloop_awsom_diego
 
 
-!except=2
-device, retain     = 2
-device, true_color = 24
-device, decomposed = 0
-
+  !except=2
+  device, retain     = 2
+  device, true_color = 24
+  device, decomposed = 0
+  
 ; Physical constants needed for the HS fits:             
-  rsun = 6.955e10    ; cm                                             
+  rsun = 6.955e10               ; cm                                             
   gsun = 2.74e4      ; cm/sec²                                
     kB = 1.38e-16    ; erg/K                                           
     mH = 1.6726e-24  ; gr                                    
      a = 0.08        ; N_He / N_H                       
     mu = (1.+4.*a)/(1.+2.*a)
     bb = (1.+2.*a)/(2.+3.*a)
- kappa = 9.2e-7      ; erg s ^-1 cm ^-1 K ^-7/2                
+    kappa = 9.2e-7              ; erg s ^-1 cm ^-1 K ^-7/2                
 
-if not keyword_set(rmin) then rmin = 1.025
-if not keyword_set(rmax) then rmax = 1.20
-if not keyword_set(rloopmin) then rloopmin = 1.07
-rminloop=rloopmin
+    if not keyword_set(rmin) then rmin = 1.025
+    if not keyword_set(rmax) then rmax = 1.20
+    if not keyword_set(rloopmin) then rloopmin = 1.07
+    rminloop=rloopmin
 ;Para que estan estos valores de rloopmin???
 
-if not keyword_set (altura) then read_trace_sampled,file,0
-if     keyword_set (altura) then read_trace_sampled,file,alturas
+    if not keyword_set (altura) then read_trace_sampled,file,0
+    if     keyword_set (altura) then read_trace_sampled,file,alturas
 ;cambiar el read_trace por un restore!
 
 Nloop = n_elements(loopL)
@@ -43,67 +43,54 @@ Nlegs = Nloop0 + 2*Nloop1 + 2*Nloop2
 ;se definen variables estadisticas!
 ; Mean and standard desviation values for each leg
 Nemean = fltarr(Nlegs)-555.
- Tmmean = fltarr(Nlegs)-555.
+Tmmean = fltarr(Nlegs)-555.
 Nestddev= fltarr(Nlegs)-555.
 Tmstddev= fltarr(Nlegs)-555.
 WTmean = fltarr(Nlegs)-555.
 WTstddev= fltarr(Nlegs)-555.
+ Pmean = fltarr(Nlegs)-555.
+Ne2mean = fltarr(Nlegs)-555.
+Ermean  = fltarr(Nlegs)-555.
 
-
-    Ne0 = fltarr(Nlegs)-555.
+;fiteos densidad y temperatura en funcion de r y s
+Ne0 = fltarr(Nlegs)-555.
 lambda_N = fltarr(Nlegs)-555.
-   Tefit = fltarr(Nlegs)-555.
      r2N = fltarr(Nlegs)-555.
-      P0 = fltarr(Nlegs)-555.
+Ne0_ts = fltarr(Nlegs)-555.
+lambda_N_ts = fltarr(Nlegs)-555.
+r2N_s = fltarr(Nlegs)-555.
+
+     P0 = fltarr(Nlegs)-555.
 lambda_P = fltarr(Nlegs)-555.
      r2P = fltarr(Nlegs)-555.
-   gradT = fltarr(Nlegs)-555.
+
+     gradT = fltarr(Nlegs)-555.
      Tm0 = fltarr(Nlegs)-555.
-
-gradT_2 = fltarr(Nlegs)-555.
-     r2T_2 = fltarr(Nlegs)-555.
-     Tm0_2 = fltarr(Nlegs)-555.
-     error_ladfit = fltarr(Nlegs)-555.
-     r2T_new = fltarr(Nlegs)-555.
-     r2T_2_new = fltarr(Nlegs)-555.
-     r2T_3_new = fltarr(Nlegs)-555.
-     gradT_3 = fltarr(Nlegs)-555.
-     Tm0_3 = fltarr(Nlegs)-555.
-     r2T_3 = fltarr(Nlegs)-555.
+     r2T = fltarr(Nlegs)-555.
+     gradT_s = fltarr(Nlegs)-555.
+     Tm0_s = fltarr(Nlegs)-555.
      r2N_ts = fltarr(Nlegs)-555.
-     lambda_N_ts = fltarr(Nlegs)-555.
-     Ne0_ts = fltarr(Nlegs)-555.
+     
+     ft  = fltarr(Nlegs)-555.
+     ft_s  = fltarr(Nlegs)-555.
+     fne = fltarr(Nlegs)-555.
+     fne_s = fltarr(Nlegs)-555.
 
-     gradT_3s = fltarr(Nlegs)-555.
-     Tm0_3s = fltarr(Nlegs)-555.
-
-     f_T  = fltarr(Nlegs)-555.
-     f_ne = fltarr(Nlegs)-555.
-f_ne_cuad = fltarr(Nlegs)-555.
-     r2_lin = fltarr(Nlegs)-555.
-     r2_lin_ts = fltarr(Nlegs)-555.
-
+     Tefit = fltarr(Nlegs)-555.
    Tefit_ts = fltarr(Nlegs)-555.
-
 Te_base = fltarr(Nlegs)-555.
 
-Tm0s = fltarr(Nlegs)-555.                                                             
-
-     r2T = fltarr(Nlegs)-555.
+;pedidos especiales por ceci
    dTmds = fltarr(Nlegs)-555.
-    r2Ts = fltarr(Nlegs)-555.
-r2Tcuadr = fltarr(Nlegs)-555.
-Acuadr_a = fltarr(Nlegs,3)-555.
-  s_r0_a = fltarr(Nlegs)-555.
       Eh = fltarr(Nlegs)-555.
-
-Phir =fltarr(Nlegs)-963.
-                                                                                                 
-Fcb=fltarr(Nlegs)-963.                                                 
-
- deltaEh = fltarr(Nlegs)-555.
-      sH = fltarr(Nlegs)-555.
-    r2sH = fltarr(Nlegs)-555.
+      Smaxxx = fltarr(Nlegs)-555. 
+      Sminnn = fltarr(Nlegs)-555.
+      Phir =fltarr(Nlegs)-555.; flujo radiativo 
+      Fcb=fltarr(Nlegs)-555.  ;flujo conductivo enla base
+      Phirfit = fltarr(Nlegs)-555. ; flujo radiativo fiteado
+      eplegT = fltarr(Nlegs)-555.
+      
+ deltaEh = fltarr(Nlegs)-555. ;??
 betamean = fltarr(Nlegs)-555.
 betaapex = fltarr(Nlegs)-555.
    Bmean = fltarr(Nlegs)-555.
@@ -208,13 +195,10 @@ Rp_alto  = {lat:fltarr(Nlegs)-555.,lon:fltarr(Nlegs)-555.}
   endif
   
 
-
-
-
   
   for il=0L,Nloop-1 do begin
 
-; Analysis for OPEN loops:                                                                           
+; Analysis for OPEN loops:                     
      if opcls(il) eq 0. then begin
 
         Ne_l = reform ( Ne_v(0:Npts_v(il)-1,il))
@@ -247,8 +231,7 @@ Rp_alto  = {lat:fltarr(Nlegs)-555.,lon:fltarr(Nlegs)-555.}
 
         rrr0=findel(1.025,rad_l) ;se usa para evaluar Nebasal
         
-;select usefull data
-                                                                                              
+;select usefull data                                                     
         p = where ( rad_l ge rmin and rad_l le rmax and Ne_l ne -999. and scoreR_l lt 0.10)
 ;podria relajarse a 0.25??
 ;hacer estadistica de scoreR_l  !!!
@@ -265,7 +248,7 @@ Rp_alto  = {lat:fltarr(Nlegs)-555.,lon:fltarr(Nlegs)-555.}
         lon_l = lon_l (p)
         s_l =   s_l (p)
         B_l =   B_l (p)
-        
+      
         p_l   = kB/bb *Ne_l*Tm_l
         beta_l = p_l/(B_l^2/(8*!pi));valor crudo
         
@@ -366,31 +349,40 @@ Rp_alto  = {lat:fltarr(Nlegs)-555.,lon:fltarr(Nlegs)-555.}
 
 ;Fiteando Ne
     linear_fit,1/xfit,alog(yfit),min_r,max_r,A,r2,salidafit,/theilsen
-
     Ne0(ileg) = exp(A[0]+A[1])
     lambda_N(ileg) = 1./A[1]
     r2N(ileg) = r2
     
-    Tefit_ts(ileg) = bb* mu * mH * gsun * (lambda_N_ts(ileg)*rsun) / kB
+    Tefit_ts(ileg) = bb* mu * mH * gsun * (lambda_N(ileg)*rsun) / kB
     Nebasal(ileg) = Ne0_ts(ileg) * exp(-1/lambda_n_ts(ileg)* (1. - 1./rad_l_orig(rrr0)))
     ;Estas 2 NO son necesarias, podria armarse luego.
     franja_lineal,yfit,salidafit,min_r,max_r,eps_ne,fraccion
-    f_ne (ileg) = fraccion
+    fne (ileg) = fraccion
 
+    linear_fit,1/sfit,alog(yfit),min_s,max_s,A,r2,salidafit,/theilsen
+    Ne0_s(ileg) = exp(A[0]+A[1])
+    lambda_N_s(ileg) = 1./A[1]
+    r2N_s(ileg) = r2
+    franja_lineal,yfit,salidafit,min_s,max_s,eps_ne,fraccion
+    fne_s (ileg) = fraccion
+
+    
 ;Fiteando temperatura
     linear_fit,xfit,wfit,min_r,max_r,A,r2,salidafit,/theilsen
     Tm0(ileg)   = A[0]
     gradT(ileg) = A[1]
-    r2t (ileg)  = r2;si es isotermico va a dar bajo.
-    
+    r2t (ileg)  = r2;si es isotermico va a dar bajo.  
     franja_lineal,wfit,salidafit,min_r,max_r,eps_t,fraccion
-    f_t (ileg) = fraccion
+    ft (ileg) = fraccion
 
     
     linear_fit,sfit,wfit,min_s,max_s,A,r2,salidafit,/theilsen
     Tm0_s(ileg)   = A[0]
     gradT_s(ileg) = A[1]
-    
+    r2t_s (ileg)
+    franja_lineal,wfit,salidafit,min_s,max_s,eps_t,fraccion
+    ft_s (ileg) = fraccion
+
     Te_base(ileg) = gradT(ileg) * rad_l_orig(rrr0) + Tm0(ileg)
     betabase(ileg) = (kb/bb * nebasal(ileg) * te_base(ileg)) /(B_base(ileg)^2/(8*!pi))
     ;Estas 2 NO son necesarias, podria armarse luego. Hacer lo mismo calcu
@@ -714,9 +706,16 @@ case 1 of
     r2N(ileg) = r2
     Tefit_ts(ileg) = bb* mu * mH * gsun * (lambda_N_ts(ileg)*rsun) / kB
     Nebasal(ileg) = Ne0_ts(ileg) * exp(-1/lambda_n_ts(ileg)* (1. - 1./rad_l1_orig(rrr0)))
-    
     franja_lineal,yfit1,salidafit,min_r1,max_r1,eps_ne,fraccion
-    f_ne (ileg) = fraccion
+    fne (ileg) = fraccion
+;s    
+    linear_fit,1/sfit1,alog(yfit1),min_s1,max_s1,A,r2,salidafit,/theilsen
+    Ne0_s(ileg) = exp(A[0]+A[1])
+    lambda_N_s(ileg) = 1./A[1]
+    r2N_s(ileg) = r2
+    franja_lineal,yfit1,salidafit,min_r1,max_r1,eps_ne,fraccion
+    fne_s (ileg) = fraccion
+
 ;pata l2    
     linear_fit,1/xfit2,alog(yfit2),min_r2,max_r2,A,r2,salidafit,/theilsen
     Ne0(ileg+1) = exp(A[0]+A[1])
@@ -724,9 +723,15 @@ case 1 of
     r2N(ileg+1) = r2
     Tefit_ts(ileg+1) = bb* mu * mH * gsun * (lambda_N_ts(ileg+1)*rsun) / kB
     Nebasal(ileg+1) = Ne0_ts(ileg+1) * exp(-1/lambda_n_ts(ileg+1)* (1. - 1./rad_l2_orig(rrr0)))
-
     franja_lineal,yfit2,salidafit,min_r2,max_r2,eps_ne,fraccion
-    f_ne (ileg+1) = fraccion
+    fne (ileg+1) = fraccion
+
+    linear_fit,1/sfit2,alog(yfit2),min_s2,max_s2,A,r2,salidafit,/theilsen
+    Ne0_s(ileg+1) = exp(A[0]+A[1])
+    lambda_N_s(ileg+1) = 1./A[1]
+    r2N_s(ileg+1) = r2
+    franja_lineal,yfit2,salidafit,min_s2,max_s2,eps_ne,fraccion
+    fne_s (ileg+1) = fraccion
 
     
 ;Fiteando temperatura          
@@ -736,7 +741,7 @@ case 1 of
     gradT(ileg) = A[1]
     r2t (ileg)  = r2;si es isotermico va a dar bajo.      
     franja_lineal,wfit1,salidafit,min_r1,max_r1,eps_t,fraccion
-    f_t (ileg) = fraccion
+    ft (ileg) = fraccion
 
     linear_fit,sfit1,wfit1,min_s1,max_s1,A,r2,salidafit,/theilsen
     Tm0_s(ileg)   = A[0]
@@ -749,7 +754,7 @@ case 1 of
     gradT(ileg+1) = A[1]
     r2t (ileg+1)  = r2
     franja_lineal,wfit2,salidafit,min_r2,max_r2,eps_t,fraccion
-    f_t (ileg+1) = fraccion
+    ft (ileg+1) = fraccion
 
     linear_fit,sfit2,wfit2,min_s2,max_s2,A,r2,salidafit,/theilsen
     Tm0_s(ileg+1)   = A[0]
