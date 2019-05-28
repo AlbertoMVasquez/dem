@@ -58,9 +58,9 @@ readu,1,Ne_v,Tm_v,WT_v,Er_v,scoreR_v
     npar   = 0   
     DEMc_v = fltarr(Npts_max,Nlin)
  readu,1,npar,DEMc_v
-stop
- lambda_v = fltarr(Npts_max,Nlin,npar)
- readu,1,lambda_v
+;stop
+; lambda_v = fltarr(Npts_max,Nlin,npar)
+; readu,1,lambda_v
   close,1
 
   return

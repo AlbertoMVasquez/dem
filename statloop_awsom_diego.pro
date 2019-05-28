@@ -32,7 +32,7 @@ pro statloop_awsom_diego,rmin=rmin,rmax=rmax,alturas=alturas,ajuste_alto=ajuste_
     if not keyword_set (alturas) then read_trace_diego,file,0
     if     keyword_set (alturas) then read_trace_diego,file,alturas
 ;cambiar el read_trace por un restore!
-
+stop
 Nloop = n_elements(loopL)
 
 index0 = where(opcls eq 0.)
@@ -159,6 +159,7 @@ Rp_alto  = {lat:fltarr(Nlegs)-555.,lon:fltarr(Nlegs)-555.}
   Ndata=5
 
 ;Error segun Lloveras et. al 2017
+  error_euvi=1;seteo estos errores por ahora
   if keyword_set(error_euvi) then begin
      st_lb_ne= 3.8* 1.e6
      st_li_ne= 2.9* 1.e6
@@ -187,7 +188,7 @@ Rp_alto  = {lat:fltarr(Nlegs)-555.,lon:fltarr(Nlegs)-555.}
   endif
 ;seteo variables de fiteo
   
-
+cr2081 = 1 ;seteo las latitudes del paper con 2081
   if keyword_set(cr2081) then begin
 ;coronal holes latitudinal sets
      chlan_i =  73.
@@ -309,18 +310,15 @@ Rp_alto  = {lat:fltarr(Nlegs)-555.,lon:fltarr(Nlegs)-555.}
 
 ;se setean los errores segun la region de donde sea el loop abierto
         if (footlat(il) le chlbn_f && footlat(il) ge chlbn_i) || (footlat(il) ge chlbs_i && footlat(il) le chlbs_f) then begin
-           eps_ne = ch_lb_ne
-           eps_t  = ch_lb_t
+           error_ne(ileg) = ch_lb_ne
+           error_t(ileg)  = ch_lb_t
         endif
 
         if (footlat(il) gt chlan_i) || (footlat(il) lt chlas_f) then begin
-           eps_ne = ch_la_ne
-           eps_t  = ch_la_t
+           error_ne(ileg) = ch_la_ne
+           error_t(ileg)  = ch_la_t
         endif
 
-        error_ne (ileg) = eps_ne
-        error_t  (ileg) = eps_t
-        
 
    ;Make HS-fit to Ne(r) for each open leg/loop                                                
    ;Como no le creemos a awsom por debajo                                        
@@ -365,8 +363,10 @@ Rp_alto  = {lat:fltarr(Nlegs)-555.,lon:fltarr(Nlegs)-555.}
     endcase
 
 
-
+stop
 ;Fiteando Ne
+;OBS ESTE VALOR DE MIN Y MAX ESTA MAL YA QUE DEBERIA IR COMO 1/, VER
+;COMO APLICARLO MEJOR.
     linear_fit,1/xfit,alog(yfit),min_r,max_r,A,r2,salidafit,/theilsen
     Ne0(ileg) = exp(A[0]+A[1])
     lambda_N(ileg) = 1./A[1]
