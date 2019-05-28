@@ -12,7 +12,7 @@ pro read_trace_sampled_diego_auxiliar,dir=dir,file,alturas
   Rmax_tom=0.
   dr_tom=0.
 
-  if not keyword_set(dir) then  dir='/data1/dem/'
+  if not keyword_set(dir) then dir='/data1/work/dem/github_dem/dem/'; dir='/data1/dem/'
   openr,1,dir+file
   readu,1,fieldtype,spacing,radstart,Rmax_tom,dr_tom
   readu,1,Nlin,Npts_max

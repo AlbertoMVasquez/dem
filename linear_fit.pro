@@ -1,4 +1,4 @@
-pro linear_fit,xx,yy,xmin,xmax,A,r2,yfit,linfit=linfit,ladfit=ladfit,robustfit=robustfit,theilsen=theilsen
+pro linear_fit,xx,yy,xmin,xmax,A,r2,salidafit,linfit=linfit,ladfit=ladfit,robustfit=robustfit,theilsen=theilsen
   p=where(xx ge xmin and xx le xmax)
   xx=xx(p)
   yy=yy(p)
@@ -7,10 +7,10 @@ pro linear_fit,xx,yy,xmin,xmax,A,r2,yfit,linfit=linfit,ladfit=ladfit,robustfit=r
   if keyword_set (robustfit) then  A = robust_fit(xx,yy)
   if keyword_set (theilsen)  then  A = theil_sen(xx,yy)
 
-  yfit =  A[0]+A[1]*xx          
+  salidafit =  A[0]+A[1]*xx          
   meanyy= mean(yy)
-  SStot = total( (yy-meanyy)^2 )
-  SSerr = total( (yy-yfit  )^2 )
+  SStot = total( (yy-     meanyy)^2 )
+  SSerr = total( (yy-salidafit  )^2 )
   r2    = 1.-SSerr/SStot
   return
 end

@@ -1,4 +1,4 @@
-pro read_trace_diego,file,alturas
+pro read_trace_diego,file,alturas,dir=dir
   common trace_sampled,rad_v,lat_v,lon_v,s_v,Ne_v,Tm_v,WT_v,Er_v,scoreR_v,midcell_v,Npts_v,str_v,stth_v,stph_v,radstart,enrad_v,enlon_v,enlat_v,npar,DEMc_v,lambda_v,L,Tmin,Tmax
   common B_sampled,B_v,Br_v,Bth_v,Bph_v
   common opclstatus,opcls,loopL,WTc
@@ -14,7 +14,7 @@ pro read_trace_diego,file,alturas
   Rmax_tom=0.
   dr_tom=0.
   WTc=0.
-  dir='/data1/DATA/MLDT/'
+if not keyword_set(dir) then dir='/data1/work/dem/github_dem/dem/';  dir='/data1/DATA/MLDT/'
   openr,1,dir+file
   readu,1,fieldtype,spacing,radstart,Rmax_tom,dr_tom,WTc
   readu,1,Nlin,Npts_max
@@ -58,7 +58,8 @@ readu,1,Ne_v,Tm_v,WT_v,Er_v,scoreR_v
     npar   = 0   
     DEMc_v = fltarr(Npts_max,Nlin)
  readu,1,npar,DEMc_v
-  lambda_v = fltarr(Npts_max,Nlin,npar)
+stop
+ lambda_v = fltarr(Npts_max,Nlin,npar)
  readu,1,lambda_v
   close,1
 

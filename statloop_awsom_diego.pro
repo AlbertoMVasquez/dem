@@ -1,6 +1,12 @@
-pro statloop_awsom_diego
+;statloop_awsom_diego,file='traceLDEM_CR2082_test_DEMT_full_asd_diarrea_putrefacta2_radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat',alturas=6,/demt
+pro statloop_awsom_diego,rmin=rmin,rmax=rmax,alturas=alturas,ajuste_alto=ajuste_alto,ajuste_bajo=ajuste_bajo,demt=demt,file=file
+    common trace_sampled,rad_v,lat_v,lon_v,s_v,Ne_v,Tm_v,WT_v,Er_v,scoreR_v,midcell_v,Npts_v,str_v,stth_v,stph_v,radstart,enrad_v,enlon_v,enlat_v,npar,DEMc_v,lambda_v,L,Tmin,Tmax
+  common B_sampled,B_v,Br_v,Bth_v,Bph_v
+  common opclstatus,opcls,loopL,WTc
 
 
+;si se usa un antiguo read_trace, es necesario usar commons, si se usa
+;un restore, no es necesario.  
   !except=2
   device, retain     = 2
   device, true_color = 24
@@ -19,11 +25,12 @@ pro statloop_awsom_diego
     if not keyword_set(rmin) then rmin = 1.025
     if not keyword_set(rmax) then rmax = 1.20
     if not keyword_set(rloopmin) then rloopmin = 1.07
+    if not keyword_set(corte_awsom) then corte_awsom = 1.055
     rminloop=rloopmin
 ;Para que estan estos valores de rloopmin???
 
-    if not keyword_set (altura) then read_trace_sampled,file,0
-    if     keyword_set (altura) then read_trace_sampled,file,alturas
+    if not keyword_set (alturas) then read_trace_diego,file,0
+    if     keyword_set (alturas) then read_trace_diego,file,alturas
 ;cambiar el read_trace por un restore!
 
 Nloop = n_elements(loopL)
@@ -179,10 +186,10 @@ Rp_alto  = {lat:fltarr(Nlegs)-555.,lon:fltarr(Nlegs)-555.}
      ch_la_t = 5.3* 1.e4
   endif
 ;seteo variables de fiteo
-  corte_awsom = 1.055
+  
 
   if keyword_set(cr2081) then begin
-     ;coronal holes latitudinal sets
+;coronal holes latitudinal sets
      chlan_i =  73.
      chlan_f =  90.
      chlas_f = -71.
@@ -191,7 +198,17 @@ Rp_alto  = {lat:fltarr(Nlegs)-555.,lon:fltarr(Nlegs)-555.}
      chlbn_f =  73.
      chlbs_i = -71.
      chlbs_f =   0.
-
+;streamer
+     stlb_i  = -27.
+     stlb_f  =  30.
+     stlin_i =  30.
+;     stlin_f =
+;     stlis_i =
+     stlis_f = -27.
+     stfn_i  =  48.
+     stfn_f  =  80.
+     stfs_i  = -80.
+     stfs_f  = -45.
   endif
   
 
@@ -259,8 +276,8 @@ Rp_alto  = {lat:fltarr(Nlegs)-555.,lon:fltarr(Nlegs)-555.}
         Ne2mean(ileg) =   mean((Ne_l)^2)                                   
         Ermean(ileg) =   mean(Er_l)
         case 1 of
-           keyword_set(ajuste_awsom_alto) eq 1: Tmmean(ileg) =  mean(Tm_l(where(rad_l ge corte_awsom)))
-           keyword_set(ajuste_awsom_bajo) eq 1: Tmmean(ileg) =  mean(Tm_l(where(rad_l le corte_awsom)))
+           keyword_set(ajuste_alto) eq 1: Tmmean(ileg) =  mean(Tm_l(where(rad_l ge corte_awsom)))
+           keyword_set(ajuste_bajo) eq 1: Tmmean(ileg) =  mean(Tm_l(where(rad_l le corte_awsom)))
            else: Tmmean(ileg) =   mean(Tm_l)
         endcase
 
@@ -269,7 +286,7 @@ Rp_alto  = {lat:fltarr(Nlegs)-555.,lon:fltarr(Nlegs)-555.}
 
 ; La idea es considerar tercios sobre 1.05  
 
-     if not keyword_set(ajuste_awsom_alto) || not keyword_set(ajuste_awsom_bajo) then begin
+     if not keyword_set(ajuste_alto) || not keyword_set(ajuste_awsom_bajo) then begin
         rr1 = 1.07              ;rr1 = 1.06
         rr2 = 1.12              ;1.16
         lefts  = (where(rad_l le rr1))
@@ -279,7 +296,7 @@ Rp_alto  = {lat:fltarr(Nlegs)-555.,lon:fltarr(Nlegs)-555.}
 
 ;     esto en realidad no es necesario, ya que awsom no tiene zda. pero eliminara
 ;     loops abiertos que sean chicos (cosas raras)
-     if  keyword_set(ajuste_awsom_alto) then begin 
+     if  keyword_set(ajuste_alto) then begin 
        rr1 = 1.10
        rr2 = 1.13
        lefts  = (where(rad_l ge corte_awsom and rad_l le rr1))
@@ -291,12 +308,12 @@ Rp_alto  = {lat:fltarr(Nlegs)-555.,lon:fltarr(Nlegs)-555.}
      if lefts(0) eq -1 || diomes(0) eq -1 || rights(0) eq -1 then goto,skipfitloop_open
 
 ;se setean los errores segun la region de donde sea el loop abierto
-        if (footlat(il) le chlbn_f && footlat(il) ge chlbn_i) || (footlat(il) ge chlbs_i. && footlat(il) le chlbs_f) then begin
+        if (footlat(il) le chlbn_f && footlat(il) ge chlbn_i) || (footlat(il) ge chlbs_i && footlat(il) le chlbs_f) then begin
            eps_ne = ch_lb_ne
            eps_t  = ch_lb_t
         endif
 
-        if (footlat(il) gt chlan_i.) || (footlat(il) lt chlas_f) then begin
+        if (footlat(il) gt chlan_i) || (footlat(il) lt chlas_f) then begin
            eps_ne = ch_la_ne
            eps_t  = ch_la_t
         endif
@@ -321,7 +338,7 @@ Rp_alto  = {lat:fltarr(Nlegs)-555.,lon:fltarr(Nlegs)-555.}
           min_r = rad_l(findel(val_corte,rad_l))
           max_r = rad_l(findel(1.2 ,rad_l))
        end
-       keyword_set(ajuste_awsom_bajo) eq 1: begin
+       keyword_set(ajuste_bajo) eq 1: begin
           sfit =  s_l  (where(rad_l le findel(val_corte,rad_l)))
           xfit =  rad_l(where(rad_l le val_corte))
           yfit =  Ne_l (where(rad_l le val_corte))
@@ -381,7 +398,7 @@ Rp_alto  = {lat:fltarr(Nlegs)-555.,lon:fltarr(Nlegs)-555.}
     linear_fit,sfit,wfit,min_s,max_s,A,r2,salidafit,/theilsen
     Tm0_s(ileg)   = A[0]
     gradT_s(ileg) = A[1]
-    r2t_s (ileg)
+    r2t_s (ileg)  = r2
     franja_lineal,wfit,salidafit,min_s,max_s,eps_t,fraccion
     ft_s (ileg) = fraccion
 
@@ -391,7 +408,7 @@ Rp_alto  = {lat:fltarr(Nlegs)-555.,lon:fltarr(Nlegs)-555.}
     ;lando sobre el loop s!
     ;betabase puede ser negativo para los malos fiteos de temperatura
 
-    if not keyword_set(ajuste_awsom_bajo) && betabase(ileg) lt 0. && f_t(ileg) ge 0.7 && r2N(ileg) ge 0.7 then stop
+    if not keyword_set(ajuste_bajo) && betabase(ileg) lt 0. && f_t(ileg) ge 0.7 && r2N(ileg) ge 0.7 then stop
     
     long_r(ileg)  = max_r - min_r
     long_s(ileg)  = max_s - min_s
@@ -409,7 +426,8 @@ Rp_alto  = {lat:fltarr(Nlegs)-555.,lon:fltarr(Nlegs)-555.}
     indexloop(ileg) = il
     ileg = ileg+1
    
-    endif else begin
+ endif else begin
+    
 
        if max(rad_v(0:Npts_v(il)-1,il)) lt rminloop then goto,skipnextloop
 
@@ -468,8 +486,8 @@ stop;quiero ver si rad_l2 y s_l2 hay que hacerles un reverse()
           lon_fin(ileg+1) = lon_l2(n_elements(lon_l2)-1)
        endif
        if switching eq 'yes' then begin
-          rad_ini(ileg)     = rad_l1(n_elements(rad_l1)-1)
-          rad_iOAni(ileg+1) = rad_l1(n_elements(rad_l1)-1)
+          rad_ini(ileg)   = rad_l1(n_elements(rad_l1)-1)
+          rad_ini(ileg+1) = rad_l1(n_elements(rad_l1)-1)
           rad_fin(ileg)   = rad_l2(0)
           rad_fin(ileg+1) = rad_l2(0)
           lat_ini(ileg)   = lat_l1(n_elements(lat_l1)-1)
@@ -535,8 +553,6 @@ stop;quiero ver si rad_l2 y s_l2 hay que hacerles un reverse()
      WT_l2 =  WT_l2 (p2)
      Er_l1 =  Er_l1 (p1)
      Er_l2 =  Er_l2 (p2)
-     Ermean(ileg)   = mean(Er_l1)                                       
-     Ermean(ileg+1) = mean(Er_l2) 
   endif
   rad_l1 = rad_l1 (p1)
   rad_l2 = rad_l2 (p2)
@@ -561,6 +577,8 @@ stop;quiero ver si rad_l2 y s_l2 hay que hacerles un reverse()
      WTmean(ileg+1) = mean(WT_l2)
      WTstddev(ileg)   = stddev(WT_l1)
      WTstddev(ileg+1) = stddev(WT_l2)
+     Ermean(ileg)   = mean(Er_l1)
+     Ermean(ileg+1) = mean(Er_l2)
   endif
   Nestddev(ileg)   = stddev(Ne_l1)
   Nestddev(ileg+1) = stddev(Ne_l2)
@@ -575,11 +593,11 @@ stop;quiero ver si rad_l2 y s_l2 hay que hacerles un reverse()
   Pmean(ileg)   = mean(p_l1)
   Pmean(ileg+1) = mean(p_l2)
   case 1 of
-     keyword_set(ajuste_awsom_alto) eq 1: begin
+     keyword_set(ajuste_alto) eq 1: begin
         Tmmean(ileg)   =  mean(Tm_l1(where(rad_l1 ge corte_awsom)))
         Tmmean(ileg+1) =  mean(Tm_l2(where(rad_l2 ge corte_awsom)))
      end
-     keyword_set(ajuste_awsom_bajo) eq 1: begin
+     keyword_set(ajuste_bajo) eq 1: begin
         Tmmean(ileg)   =  mean(Tm_l1(where(rad_l1 le corte_awsom)))
         Tmmean(ileg+1) =  mean(Tm_l2(where(rad_l2 le corte_awsom)))
      end
@@ -590,9 +608,6 @@ stop;quiero ver si rad_l2 y s_l2 hay que hacerles un reverse()
   endcase
   
   if n_elements(p1) lt Ndata || n_elements(p2) lt Ndata then goto,skipfitloop
-
-
-
 
 if lefts_l1(0) eq -1 or diomes_l1(0) eq -1 or rights_l1(0) eq -1 then goto,skipfitloop
 if lefts_l2(0) eq -1 or diomes_l2(0) eq -1 or rights_l2(0) eq -1 then goto,skipfitloop
@@ -608,12 +623,12 @@ if lefts_l2(0) eq -1 or diomes_l2(0) eq -1 or rights_l2(0) eq -1 then goto,skipf
 ;ambas piernas
            end
            2: begin
-              if footlat(ileg) le stlb_f. && footlat(ileg) ge stlb_i. then begin
+              if footlat(ileg) le stlb_f && footlat(ileg) ge stlb_i then begin
                  error_ne (ileg) = st_lb_ne
                  error_t  (ileg) = st_lb_t
               endif
               
-              if footlat(ileg) ge stlin_i. || footlat(ileg) le stlis_f then begin
+              if footlat(ileg) ge stlin_i || footlat(ileg) le stlis_f then begin
                  error_ne (ileg) = st_li_ne
                  error_t  (ileg) = st_li_t
               endif
@@ -632,11 +647,11 @@ if lefts_l2(0) eq -1 or diomes_l2(0) eq -1 or rights_l2(0) eq -1 then goto,skipf
               endif
            end
            2: begin
-              if footlat(ileg+1) le stlb_f. && footlat(ileg+1) ge stlb_i. then begin
+              if footlat(ileg+1) le stlb_f && footlat(ileg+1) ge stlb_i then begin
                  error_ne (ileg+1) = st_lb_ne
                  error_t  (ileg+1) = st_lb_t
               endif
-              if footlat(ileg+1) ge stlin_i. || footlat(ileg+1) le stlis_f then begin
+              if footlat(ileg+1) ge stlin_i || footlat(ileg+1) le stlis_f then begin
                  error_ne (ileg+1) = st_li_ne
                  error_t  (ileg+1) = st_li_t
               endif
@@ -825,7 +840,7 @@ case 1 of
 endelse
  endfor
   Rp_full  = {base:Rp_base,medio:Rp_medio,alto:Rp_alto}
-
+stop
   
   return
 end
