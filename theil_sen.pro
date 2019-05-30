@@ -16,7 +16,7 @@ function theil_sen,x,y
            yb(j,i)=yy(j,i)-y(i)
            ts(j,i)=yb(j,i)/xb(j,i);floating divide by 0 chequear!!
         endif else begin
-           if j lt i then ts(j,i)=0
+           if j le i then ts(j,i)=0
         endelse
      endfor
   endfor

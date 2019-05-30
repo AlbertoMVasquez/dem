@@ -29,8 +29,9 @@ pro statloop_awsom_diego,rmin=rmin,rmax=rmax,alturas=alturas,ajuste_alto=ajuste_
     rminloop=rloopmin
 ;Para que estan estos valores de rloopmin???
 
-    if not keyword_set (alturas) then read_trace_diego,file,0
-    if     keyword_set (alturas) then read_trace_diego,file,alturas
+;    if not keyword_set (alturas) then read_trace_diego,file,0
+;    if     keyword_set (alturas) then read_trace_diego,file,alturas
+    restore,file
 ;cambiar el read_trace por un restore!
 stop
 Nloop = n_elements(loopL)

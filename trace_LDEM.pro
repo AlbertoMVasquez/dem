@@ -64,17 +64,22 @@ pro trace_LDEM,fdips_file=fdips_file,$
 ; HISTORY:
 ; Created by F.A. Nuevo & A.M. Vasquez.
 ;
-; 7/24/15
-; Modified by C. Mac Cormack & A.M. Vasquez.
-;    - Trazado de los parámetros de la LDEM
-;    - Expansión del trazado geométrico hasta 2.5 Rsun
-;-
+;
 ; 12/5/2016
-; Modified by Vasquez & Lloveras
-;    - Two bugs, tracing loops.
+; Modified by A. Vasquez & D. Lloveras
+;    - Two bugs fixed during tracing loops.
 ;
+; 29/05/2019
+; Modified by D. Lloveras
+;  - Atomisacion del codigo, se guarda el trazado magnetico primero en
+;    un output.sav para futuro uso.
+;  - Agregado de pfss_data_file para trazar a partir de un .sav
+;    previamente guardado.  
+;  - Optimizacion del uso de memoria ram
+;  - Incorporacion de resultados termodinamicos dados por SWMF
+;  - Incorporacion de campo magnetico dado por SWMF y trazado a
+;    travez de èl.  
 ;
-
 !EXCEPT=2
 
 if keyword_set(ldem_file)  then file_flag = 0
@@ -160,8 +165,7 @@ if keyword_set(fdips_file) then PFSSM_model= fdips_file
 ; And now, do trace the field lines:
 ;stop
 if not keyword_set (pfss_data_file) then  spherical_trace_field,pfss_data,linekind=linekind,linelengths=linelengths,safety=safety,stepmax=stepmax 
-stop
-save,pfss_data,FILENAME = 'sph_data_'+awsom_file+period+'.sav'
+if not keyword_set (pfss_data_file) then  save,pfss_data,FILENAME = 'sph_data_'+awsom_file+period+'.sav'
 salto_creacion_pfss:
 if keyword_set (pfss_data_file) then restore,pfss_data_file
 stop
@@ -189,7 +193,7 @@ stop
   stth_v      = (*pfss_data.stth) (iOC) ; N_lineas  
   stph_v      = (*pfss_data.stph) (iOC) ; N_lineas  
 ;-----------------------------------------------------------
-
+stop
 ; Read the tomographics results and set a few parameters concerning
 ; the tomographic grid:
   if not keyword_set(dgfw) and not keyword_set(awsom_file) and keyword_set(ldem_file) then      read_ldem,ldem_file,/ldem,/gauss1
@@ -221,15 +225,10 @@ stop
   endif
  
   dr_tom = rad(1)-rad(0)        ; grid radial bin size
-  if keyword_set(awsom_file) then Rmax_tom = rad(nr-1)
+  if     keyword_set(awsom_file) then Rmax_tom = rad(nr-1)
   if not keyword_set(awsom_file) then Rmax_tom = rad(nr-3) ; maximum height for which LDEM was computed
   
-;<--
-  if keyword_set(expand) then begin
-     nr=150
-     rad=1.+dr_tom/2+dr_tom*findgen(Nr)
-  endif
-;<--
+
   if not keyword_set(awsom_file) then begin
 ; Compute the scoreR for quality-selection purposes:
      ratio = sfbe/tfbe
@@ -237,8 +236,7 @@ stop
      scoreR=total( abs(1.-ratio)   , 4 ) / float(nband)
   endif
   Nptmax_v = 150                ; ESTO NO ES ROBUSTO, 
-  if keyword_set(expand) then Nptmax_v = 1500
-  if keyword_set(awsom_file)  then Nptmax_v = 1100 ;ESTO AHORA QUE QUEREMOS TRAZAR HASTA 6RSUN QUIZAS DEBA SER MUCHO MAS GRANDE
+  if keyword_set(awsom_file)  then Nptmax_v = 1100 
 ;  sin embargo, por la experiencia de haber realizado varios trazados
 ;  creo que va funcionar. 
 ;  Ningun sampleo supera este valor de puntos por linea
