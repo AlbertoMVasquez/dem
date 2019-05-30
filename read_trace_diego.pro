@@ -39,7 +39,7 @@ if not keyword_set(dir) then dir='/data1/work/dem/github_dem/dem/';  dir='/data1
      str_v = fltarr(Nlin)
     stth_v = dblarr(Nlin)
     stph_v = dblarr(Nlin)
-
+stop
   readu,1,rad_v,lat_v,lon_v,s_v,npts_v,midcell_v,loopL,opcls
 readu,1,Ne_v,Tm_v,WT_v,Er_v,scoreR_v
   readu,1,str_v,stth_v,stph_v

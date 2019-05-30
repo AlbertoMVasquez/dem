@@ -64,8 +64,8 @@ betamean = fltarr(Nlegs)-555.
 Ne0 = fltarr(Nlegs)-555.
 lambda_N = fltarr(Nlegs)-555.
      r2N = fltarr(Nlegs)-555.
-Ne0_ts = fltarr(Nlegs)-555.
-lambda_N_ts = fltarr(Nlegs)-555.
+Ne0_s = fltarr(Nlegs)-555.
+lambda_N_s = fltarr(Nlegs)-555.
 r2N_s = fltarr(Nlegs)-555.
 
      P0 = fltarr(Nlegs)-555.
@@ -77,7 +77,7 @@ lambda_P = fltarr(Nlegs)-555.
      r2T = fltarr(Nlegs)-555.
      gradT_s = fltarr(Nlegs)-555.
      Tm0_s = fltarr(Nlegs)-555.
-     r2N_ts = fltarr(Nlegs)-555.
+     r2t_s = fltarr(Nlegs)-555.
      
      ft  = fltarr(Nlegs)-555.
      ft_s  = fltarr(Nlegs)-555.
@@ -362,27 +362,23 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
        end
     endcase
 
-
-stop
 ;Fiteando Ne
-;OBS ESTE VALOR DE MIN Y MAX ESTA MAL YA QUE DEBERIA IR COMO 1/, VER
-;COMO APLICARLO MEJOR.
-    linear_fit,1/xfit,alog(yfit),min_r,max_r,A,r2,salidafit,/theilsen
+    linear_fit,1/xfit,alog(yfit),min_r,max_r,A,r2,salidafit,/theilsen,/xinverted
     Ne0(ileg) = exp(A[0]+A[1])
     lambda_N(ileg) = 1./A[1]
     r2N(ileg) = r2
     
     Tefit_ts(ileg) = bb* mu * mH * gsun * (lambda_N(ileg)*rsun) / kB
-    Nebasal(ileg) = Ne0_ts(ileg) * exp(-1/lambda_n_ts(ileg)* (1. - 1./rad_l_orig(rrr0)))
+;    Nebasal(ileg) = Ne0_ts(ileg) * exp(-1/lambda_n_ts(ileg)* (1. - 1./rad_l_orig(rrr0)))
     ;Estas 2 NO son necesarias, podria armarse luego.
-    franja_lineal,yfit,salidafit,min_r,max_r,eps_ne,fraccion
+    franja_lineal,yfit,salidafit,min_r,max_r,error_ne(ileg),fraccion
     fne (ileg) = fraccion
 
-    linear_fit,1/sfit,alog(yfit),min_s,max_s,A,r2,salidafit,/theilsen
+    linear_fit,1/sfit,alog(yfit),min_s,max_s,A,r2,salidafit,/theilsen,/xinverted
     Ne0_s(ileg) = exp(A[0]+A[1])
     lambda_N_s(ileg) = 1./A[1]
     r2N_s(ileg) = r2
-    franja_lineal,yfit,salidafit,min_s,max_s,eps_ne,fraccion
+    franja_lineal,yfit,salidafit,min_s,max_s,error_ne(ileg),fraccion
     fne_s (ileg) = fraccion
 
     
@@ -391,7 +387,7 @@ stop
     Tm0(ileg)   = A[0]
     gradT(ileg) = A[1]
     r2t (ileg)  = r2;si es isotermico va a dar bajo.  
-    franja_lineal,wfit,salidafit,min_r,max_r,eps_t,fraccion
+    franja_lineal,wfit,salidafit,min_r,max_r,error_t(ileg),fraccion
     ft (ileg) = fraccion
 
     
@@ -399,10 +395,10 @@ stop
     Tm0_s(ileg)   = A[0]
     gradT_s(ileg) = A[1]
     r2t_s (ileg)  = r2
-    franja_lineal,wfit,salidafit,min_s,max_s,eps_t,fraccion
+    franja_lineal,wfit,salidafit,min_s,max_s,error_t(ileg),fraccion
     ft_s (ileg) = fraccion
 
-    Te_base(ileg) = gradT(ileg) * rad_l_orig(rrr0) + Tm0(ileg)
+;    Te_base(ileg) = gradT(ileg) * rad_l_orig(rrr0) + Tm0(ileg)
     betabase(ileg) = (kb/bb * nebasal(ileg) * te_base(ileg)) /(B_base(ileg)^2/(8*!pi))
     ;Estas 2 NO son necesarias, podria armarse luego. Hacer lo mismo calcu
     ;lando sobre el loop s!
@@ -412,8 +408,8 @@ stop
     
     long_r(ileg)  = max_r - min_r
     long_s(ileg)  = max_s - min_s
-    iso  (ileg)   = abs(gradT (ileg)    * long_r(ileg)) / (2 * eps_t)
-    iso_s(ileg)   = abs(gradT_s(ileg)   * long_s(ileg)) / (2 * eps_t)
+    iso  (ileg)   = abs(gradT (ileg)    * long_r(ileg)) / (2 * error_t(ileg))
+    iso_s(ileg)   = abs(gradT_s(ileg)   * long_s(ileg)) / (2 * error_t(ileg))
     
 
     skipfitloop_open:
@@ -468,7 +464,7 @@ stop
        B_l1 = reform(   B_v(ifirs_1:ilast_1,il))
        B_l2 = reform(   B_v(ifirs_2:ilast_2,il))
 stop;quiero ver si rad_l2 y s_l2 hay que hacerles un reverse()  
-
+;SI, ESTAN INVERTIDOS
        switching = 'no'
        leg_status(ileg+1) = 2.
        if switching eq 'no' then begin
@@ -538,7 +534,7 @@ stop;quiero ver si rad_l2 y s_l2 hay que hacerles un reverse()
        B_base (ileg  ) = B_l1 (rrr01)
        B_base (ileg+1) = B_l2 (rrr02)
 
-
+stop;falta invertir...
   p1 = where ( rad_l1 ge rmin and rad_l1 le rmax and Ne_l1 ne -999. and scoreR_l1 lt 0.1 and WT_l1 ge WTc*1.e6)
   p2 = where ( rad_l2 ge rmin and rad_l2 le rmax and Ne_l2 ne -999. and scoreR_l2 lt 0.1 and WT_l2 ge WTc*1.e6)
 
@@ -723,37 +719,37 @@ case 1 of
 
 ;Fiteando Ne 
 ; pata l1
-    linear_fit,1/xfit1,alog(yfit1),min_r1,max_r1,A,r2,salidafit,/theilsen
+    linear_fit,1/xfit1,alog(yfit1),min_r1,max_r1,A,r2,salidafit,/theilsen,/xinverted
     Ne0(ileg) = exp(A[0]+A[1])
     lambda_N(ileg) = 1./A[1]
     r2N(ileg) = r2
     Tefit_ts(ileg) = bb* mu * mH * gsun * (lambda_N_ts(ileg)*rsun) / kB
     Nebasal(ileg) = Ne0_ts(ileg) * exp(-1/lambda_n_ts(ileg)* (1. - 1./rad_l1_orig(rrr0)))
-    franja_lineal,yfit1,salidafit,min_r1,max_r1,eps_ne,fraccion
+    franja_lineal,yfit1,salidafit,min_r1,max_r1,error_ne(ileg),fraccion
     fne (ileg) = fraccion
 ;s    
     linear_fit,1/sfit1,alog(yfit1),min_s1,max_s1,A,r2,salidafit,/theilsen
     Ne0_s(ileg) = exp(A[0]+A[1])
     lambda_N_s(ileg) = 1./A[1]
     r2N_s(ileg) = r2
-    franja_lineal,yfit1,salidafit,min_r1,max_r1,eps_ne,fraccion
+    franja_lineal,yfit1,salidafit,min_r1,max_r1,error_ne(ileg),fraccion
     fne_s (ileg) = fraccion
 
 ;pata l2    
-    linear_fit,1/xfit2,alog(yfit2),min_r2,max_r2,A,r2,salidafit,/theilsen
+    linear_fit,1/xfit2,alog(yfit2),min_r2,max_r2,A,r2,salidafit,/theilsen,/xinverted
     Ne0(ileg+1) = exp(A[0]+A[1])
     lambda_N(ileg+1) = 1./A[1]
     r2N(ileg+1) = r2
     Tefit_ts(ileg+1) = bb* mu * mH * gsun * (lambda_N_ts(ileg+1)*rsun) / kB
     Nebasal(ileg+1) = Ne0_ts(ileg+1) * exp(-1/lambda_n_ts(ileg+1)* (1. - 1./rad_l2_orig(rrr0)))
-    franja_lineal,yfit2,salidafit,min_r2,max_r2,eps_ne,fraccion
+    franja_lineal,yfit2,salidafit,min_r2,max_r2,error_ne(ileg+1),fraccion
     fne (ileg+1) = fraccion
 
     linear_fit,1/sfit2,alog(yfit2),min_s2,max_s2,A,r2,salidafit,/theilsen
     Ne0_s(ileg+1) = exp(A[0]+A[1])
     lambda_N_s(ileg+1) = 1./A[1]
     r2N_s(ileg+1) = r2
-    franja_lineal,yfit2,salidafit,min_s2,max_s2,eps_ne,fraccion
+    franja_lineal,yfit2,salidafit,min_s2,max_s2,error_ne(ileg+1),fraccion
     fne_s (ileg+1) = fraccion
 
     
@@ -763,7 +759,7 @@ case 1 of
     Tm0(ileg)   = A[0]
     gradT(ileg) = A[1]
     r2t (ileg)  = r2;si es isotermico va a dar bajo.      
-    franja_lineal,wfit1,salidafit,min_r1,max_r1,eps_t,fraccion
+    franja_lineal,wfit1,salidafit,min_r1,max_r1,error_t(ileg),fraccion
     ft (ileg) = fraccion
 
     linear_fit,sfit1,wfit1,min_s1,max_s1,A,r2,salidafit,/theilsen
@@ -776,7 +772,7 @@ case 1 of
     Tm0(ileg+1)   = A[0]
     gradT(ileg+1) = A[1]
     r2t (ileg+1)  = r2
-    franja_lineal,wfit2,salidafit,min_r2,max_r2,eps_t,fraccion
+    franja_lineal,wfit2,salidafit,min_r2,max_r2,error_t(ileg+1),fraccion
     ft (ileg+1) = fraccion
 
     linear_fit,sfit2,wfit2,min_s2,max_s2,A,r2,salidafit,/theilsen
@@ -841,7 +837,7 @@ endelse
  endfor
   Rp_full  = {base:Rp_base,medio:Rp_medio,alto:Rp_alto}
 stop
-  
+;ACA VA UN SAVE!!!  
   return
 end
 

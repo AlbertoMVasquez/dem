@@ -4,10 +4,10 @@ pro franja_lineal,y,salidafit,rmin,rmax,error,fraccion
 ;dada entre la recta fiteada +- los errores
 ;-  
  
-  p=where(y ge rmin and y le rmax)
-  y = y(p)
+;  p=where(y ge rmin and y le rmax)
+;  y = y(p)
   if n_elements(y) ne n_elements(salidafit) then stop
-  n = n_elements(yfit)
+  n = n_elements(y)
   yru = salidafit + error
   yrd = salidafit - error
   

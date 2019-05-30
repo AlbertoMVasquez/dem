@@ -15,31 +15,22 @@ function theil_sen,x,y
            xb(j,i)=xx(j,i)-x(i)
            yb(j,i)=yy(j,i)-y(i)
            ts(j,i)=yb(j,i)/xb(j,i);floating divide by 0 chequear!!
-           stop;quizas deba hacerlos float?
         endif else begin
            if j lt i then ts(j,i)=0
         endelse
      endfor
   endfor
-  for j=0,n-1 do begin
-     for i=0,n-1 do begin
-        if j gt i then begin
-           ts(j,i)=ts(j,i)
-        endif else begin
-           if j le i then ts(j,i)=0
-        endelse
-     endfor
-  endfor
+;OBS, ANTES LOS ELEMENTOS DE LA DEAGONAL TMB ERAN CEROS, CHEQUEAR
+  
   ts1=ts[where(ts ne 0)]
   infin = !values.f_infinity
-  print, n_elemets(ts1);chequeando si hay valores nulos
-  ok = where(ts1 ne infin)
-  print, n_elements(ok) ;chequeando si hay valores infinitos
+  print, n_elements(ts1);chequeando si hay valores nulos
+  ok = where(ts1 eq infin)
+  if ok(0) ne -1. then stop               ;chequeando si hay valores infinitos
   a1=median(ts1,/even) 
   for i=0,n-1 do begin
      bb(i)=y(i)-a1*x(i)
   endfor
   b1=median(bb,/even) 
-  stop
   return,[b1,a1]
 end
