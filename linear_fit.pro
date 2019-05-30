@@ -13,7 +13,7 @@ pro linear_fit,xx,yy,xmin,xmax,A,r2,salidafit,linfit=linfit,ladfit=ladfit,robust
   if keyword_set (linfit)    then  A = linfit(xx,yy)
   if keyword_set (ladfit)    then  A = ladfit(xx,yy,absdev)
   if keyword_set (robustfit) then  A = robust_fit(xx,yy)
-  if keyword_set (theilsen)  then  A = theil_sen(xx,yy)
+  if keyword_set (theilsen)  then  A = theil_sen2(xx,yy)
 
   salidafit =  A[0]+A[1]*xx          
   meanyy= mean(yy)
