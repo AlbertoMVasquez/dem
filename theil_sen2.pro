@@ -10,7 +10,7 @@ function theil_sen2, x, y
      endfor
   endfor
   infin = !values.f_infinity
-  ok = where(ts1 eq infin)   
+  ok = where(theil eq infin)   
   if ok(0) ne -1. then stop
   slope=median(theil ,/even)
   intercept=median(y-slope*x, /even)

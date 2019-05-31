@@ -1,8 +1,9 @@
 ;statloop_awsom_diego,file='traceLDEM_CR2082_test_DEMT_full_asd_diarrea_putrefacta2_radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat',alturas=6,/demt
+;statloop_awsom_diego,file='traceLDEM_CR2082_test_ldem_6alturas_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav',alturas=6,/demt
 pro statloop_awsom_diego,rmin=rmin,rmax=rmax,alturas=alturas,ajuste_alto=ajuste_alto,ajuste_bajo=ajuste_bajo,demt=demt,file=file
-    common trace_sampled,rad_v,lat_v,lon_v,s_v,Ne_v,Tm_v,WT_v,Er_v,scoreR_v,midcell_v,Npts_v,str_v,stth_v,stph_v,radstart,enrad_v,enlon_v,enlat_v,npar,DEMc_v,lambda_v,L,Tmin,Tmax
-  common B_sampled,B_v,Br_v,Bth_v,Bph_v
-  common opclstatus,opcls,loopL,WTc
+;    common trace_sampled,rad_v,lat_v,lon_v,s_v,Ne_v,Tm_v,WT_v,Er_v,scoreR_v,midcell_v,Npts_v,str_v,stth_v,stph_v,radstart,enrad_v,enlon_v,enlat_v,npar,DEMc_v,lambda_v,L,Tmin,Tmax
+;  common B_sampled,B_v,Br_v,Bth_v,Bph_v
+;  common opclstatus,opcls,loopL,WTc
 
 
 ;si se usa un antiguo read_trace, es necesario usar commons, si se usa
@@ -33,7 +34,7 @@ pro statloop_awsom_diego,rmin=rmin,rmax=rmax,alturas=alturas,ajuste_alto=ajuste_
 ;    if     keyword_set (alturas) then read_trace_diego,file,alturas
     restore,file
 ;cambiar el read_trace por un restore!
-stop
+
 Nloop = n_elements(loopL)
 
 index0 = where(opcls eq 0.)
@@ -98,6 +99,7 @@ Te_base = fltarr(Nlegs)-555.
       Fcb=fltarr(Nlegs)-555.  ;flujo conductivo enla base
       Phirfit = fltarr(Nlegs)-555. ; flujo radiativo fiteado
       eplegT = fltarr(Nlegs)-555.
+      s_r0_a = fltarr(Nlegs)-555.
       
  deltaEh = fltarr(Nlegs)-555. ;??
 betamean = fltarr(Nlegs)-555.
@@ -231,7 +233,7 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
 
         if keyword_set(demt) then begin
            WT_l = reform ( WT_v(0:Npts_v(il)-1,il))
-           Er_l = reform ( Er_v(0:Npts_v(il)-1,il))
+;           Er_l = reform ( Er_v(0:Npts_v(il)-1,il))
            scoreR_l = reform ( scoreR_v(0:Npts_v(il)-1,il))
         endif
         
@@ -239,7 +241,7 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
         lat_ini(ileg) = lat_l(0)
         lon_ini(ileg) = lon_l(0)
         Br0(ileg) =  Br_l(0)
-        
+       
         rad_fin(ileg) = enrad_v(il) ;no seria il-1??
         lat_fin(ileg) = enlat_v(il)
         lon_fin(ileg) = enlon_v(il)
@@ -249,7 +251,7 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
         footlon(ileg) = lon_ini(ileg)
 
         rrr0=findel(1.025,rad_l) ;se usa para evaluar Nebasal
-        
+        B_base (ileg) = B_l (rrr0)
 ;select usefull data                                                     
         p = where ( rad_l ge rmin and rad_l le rmax and Ne_l ne -999. and scoreR_l lt 0.10)
 ;podria relajarse a 0.25??
@@ -260,7 +262,7 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
         Tm_l =  Tm_l (p)
         if keyword_set (demt) then begin
            WT_l =  WT_l (p)
-           Er_l =  Er_l (p)
+;           Er_l =  Er_l (p)
         endif
         rad_l = rad_l (p)
         lat_l = lat_l (p)
@@ -276,7 +278,7 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
         Bmean(ileg) =   mean(B_l)
         Pmean(ileg) =   mean(p_l)                                  
         Ne2mean(ileg) =   mean((Ne_l)^2)                                   
-        Ermean(ileg) =   mean(Er_l)
+        ;Ermean(ileg) =   mean(Er_l)
         case 1 of
            keyword_set(ajuste_alto) eq 1: Tmmean(ileg) =  mean(Tm_l(where(rad_l ge corte_awsom)))
            keyword_set(ajuste_bajo) eq 1: Tmmean(ileg) =  mean(Tm_l(where(rad_l le corte_awsom)))
@@ -332,8 +334,12 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
           yfit =  Ne_l (where(rad_l ge val_corte))
           zfit =  p_l  (where(rad_l ge val_corte))
           wfit =  Tm_l (where(rad_l ge val_corte))
-          min_s = s_l(findel(val_corte,rad_l))
-          max_s = s_l(findel(1.2 ,rad_l))
+;          min_s = s_l(findel(val_corte,rad_l))
+;          max_s = s_l(findel(1.2 ,rad_l))
+;Usar definiciones como las de arriba pueden ocasionar errores cuando
+;rad_l rad_l1/2 no son monotonamente crecientes/decrecientes.
+          min_s = min(s_l)
+          max_s = max(s_l)
           min_r = rad_l(findel(val_corte,rad_l))
           max_r = rad_l(findel(1.2 ,rad_l))
        end
@@ -343,8 +349,8 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
           yfit =  Ne_l (where(rad_l le val_corte))
           zfit =  P_l  (where(rad_l le val_corte))
           wfit =  Tm_l (where(rad_l le val_corte))
-          min_s = s_l(findel(1.025,rad_l))
-          max_s = s_l(findel(val_corte ,rad_l))
+          min_s = min(s_l)
+          max_s = max(s_l)
           min_r = rad_l(findel(1.025,rad_l))
           max_r = rad_l(findel(val_corte ,rad_l))
 
@@ -355,8 +361,8 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
           yfit = Ne_l
           zfit = p_l
           wfit = Tm_l
-          min_s = s_l(findel(1.025,rad_l))
-          max_s = s_l(findel(1.2 ,rad_l))
+          min_s = min(s_l)
+          max_s = max(s_l)
           min_r = rad_l(findel(1.025,rad_l))
           max_r = rad_l(findel(1.2 ,rad_l))
 
@@ -370,7 +376,7 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
     r2N(ileg) = r2
     
     Tefit_ts(ileg) = bb* mu * mH * gsun * (lambda_N(ileg)*rsun) / kB
-;    Nebasal(ileg) = Ne0_ts(ileg) * exp(-1/lambda_n_ts(ileg)* (1. - 1./rad_l_orig(rrr0)))
+    Nebasal(ileg) = Ne0(ileg) * exp(-1/lambda_n(ileg)* (1. - 1./1.025))
     ;Estas 2 NO son necesarias, podria armarse luego.
     franja_lineal,yfit,salidafit,min_r,max_r,error_ne(ileg),fraccion
     fne (ileg) = fraccion
@@ -399,13 +405,13 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
     franja_lineal,wfit,salidafit,min_s,max_s,error_t(ileg),fraccion
     ft_s (ileg) = fraccion
 
-;    Te_base(ileg) = gradT(ileg) * rad_l_orig(rrr0) + Tm0(ileg)
+    Te_base(ileg) = gradT(ileg) * 1.025 + Tm0(ileg)
     betabase(ileg) = (kb/bb * nebasal(ileg) * te_base(ileg)) /(B_base(ileg)^2/(8*!pi))
     ;Estas 2 NO son necesarias, podria armarse luego. Hacer lo mismo calcu
     ;lando sobre el loop s!
     ;betabase puede ser negativo para los malos fiteos de temperatura
 
-    if not keyword_set(ajuste_bajo) && betabase(ileg) lt 0. && f_t(ileg) ge 0.7 && r2N(ileg) ge 0.7 then stop
+;    if not keyword_set(ajuste_bajo) && betabase(ileg) lt 0. && ft_s(ileg) ge 0.7 && r2N(ileg) ge 0.8 then stop
     
     long_r(ileg)  = max_r - min_r
     long_s(ileg)  = max_s - min_s
@@ -449,8 +455,8 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
        if keyword_set(demt) then begin
           WT_l1 = reform ( WT_v(ifirs_1:ilast_1,il))
           WT_l2 = reform ( WT_v(ifirs_2:ilast_2,il))
-          Er_l1 = reform ( Er_v(ifirs_1:ilast_1,il))
-          Er_l2 = reform ( Er_v(ifirs_2:ilast_2,il))
+        ;  Er_l1 = reform ( Er_v(ifirs_1:ilast_1,il))
+         ; Er_l2 = reform ( Er_v(ifirs_2:ilast_2,il))
           scoreR_l1 = reform ( scoreR_v(ifirs_1:ilast_1,il))
           scoreR_l2 = reform ( scoreR_v(ifirs_2:ilast_2,il))
        endif
@@ -464,7 +470,7 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
        s_l2 = loopL(il) - reform(   s_v(ifirs_2:ilast_2,il))
        B_l1 = reform(   B_v(ifirs_1:ilast_1,il))
        B_l2 = reform(   B_v(ifirs_2:ilast_2,il))
-stop;quiero ver si rad_l2 y s_l2 hay que hacerles un reverse()  
+;quiero ver si rad_l2 y s_l2 hay que hacerles un reverse()  
 ;SI, ESTAN INVERTIDOS
        switching = 'no'
        leg_status(ileg+1) = 2.
@@ -535,7 +541,7 @@ stop;quiero ver si rad_l2 y s_l2 hay que hacerles un reverse()
        B_base (ileg  ) = B_l1 (rrr01)
        B_base (ileg+1) = B_l2 (rrr02)
 
-stop;falta invertir...
+;stop;falta invertir...
   p1 = where ( rad_l1 ge rmin and rad_l1 le rmax and Ne_l1 ne -999. and scoreR_l1 lt 0.1 and WT_l1 ge WTc*1.e6)
   p2 = where ( rad_l2 ge rmin and rad_l2 le rmax and Ne_l2 ne -999. and scoreR_l2 lt 0.1 and WT_l2 ge WTc*1.e6)
 
@@ -548,8 +554,8 @@ stop;falta invertir...
   if keyword_set(demt) then begin
      WT_l1 =  WT_l1 (p1)
      WT_l2 =  WT_l2 (p2)
-     Er_l1 =  Er_l1 (p1)
-     Er_l2 =  Er_l2 (p2)
+   ;  Er_l1 =  Er_l1 (p1)
+   ;  Er_l2 =  Er_l2 (p2)
   endif
   rad_l1 = rad_l1 (p1)
   rad_l2 = rad_l2 (p2)
@@ -574,8 +580,8 @@ stop;falta invertir...
      WTmean(ileg+1) = mean(WT_l2)
      WTstddev(ileg)   = stddev(WT_l1)
      WTstddev(ileg+1) = stddev(WT_l2)
-     Ermean(ileg)   = mean(Er_l1)
-     Ermean(ileg+1) = mean(Er_l2)
+   ;  Ermean(ileg)   = mean(Er_l1)
+   ;  Ermean(ileg+1) = mean(Er_l2)
   endif
   Nestddev(ileg)   = stddev(Ne_l1)
   Nestddev(ileg+1) = stddev(Ne_l2)
@@ -605,12 +611,55 @@ stop;falta invertir...
   endcase
   
   if n_elements(p1) lt Ndata || n_elements(p2) lt Ndata then goto,skipfitloop
+  if keyword_set(demt) then begin ;no quiero que entre aca si lo trazados son datos de awsom
+     rrr_min = 1.025              ;antes decia 1.035 pero ahora tenemos datos ahi abajo.
+     if max(rad_l1) ge 1.2 then begin  ;igual que las piernas baiertas     
+        rr1_l1 = 1.07             ;(max(rad_l1)-1.)*0.25 +1.0                                      
+        rr2_l1 = 1.12             ;(max(rad_l1)-1.)*0.5 +1.0            
+        if     keyword_set(ajuste_bajo) then lefts_l1  = where(rad_l1 le rr1_l1 and rad_l1 ge 1.05)
+        if not keyword_set(ajuste_bajo) then lefts_l1  = where(rad_l1 le rr1_l1)
+        rights_l1 = where(rad_l1 ge rr2_l1)
+        diomes_l1 = where(rad_l1 gt rr1_l1 and rad_l1 lt rr2_l1)
+     endif
+     if max(rad_l1) lt 1.2 then begin
+        Drr = max(rad_l1) - rrr_min ;se asume un pto en 1.035                                   
+        rr1_l1  = rrr_min + Drr * 1./3.
+        rr2_l1  = rrr_min + Drr * 2./3.
+    ;rr1_l1 = 1.07                                                                                    
+    ;rr2_l1 = (max(rad_l1)-1.)*0.75 +1.0                                                                
+        if     keyword_set(ajuste_bajo) then lefts_l1  = where(rad_l1 le rr1_l1 and rad_l1 ge 1.05)
+        if not keyword_set(ajuste_bajo) then lefts_l1  = where(rad_l1 le rr1_l1)
+        rights_l1 = where(rad_l1 le rr2_l1)
+        diomes_l1 = where(rad_l1 gt rr1_l1 and rad_l1 lt rr2_l1)
+     endif
 
-if lefts_l1(0) eq -1 or diomes_l1(0) eq -1 or rights_l1(0) eq -1 then goto,skipfitloop
-if lefts_l2(0) eq -1 or diomes_l2(0) eq -1 or rights_l2(0) eq -1 then goto,skipfitloop
+     if max(rad_l2) ge 1.2 then begin
+        rr1_l2 = 1.07           ;(max(rad_l2)-1.)*0.25 +1.0                                      
+        rr2_l2 = 1.12           ;(max(rad_l2)-1.)*0.5 +1.0                             
+        if     keyword_set(ajuste_bajo) then lefts_l2  = where(rad_l2 le rr1_l2 and rad_l2 ge 1.05)
+        if not keyword_set(ajuste_bajo) then lefts_l2  = where(rad_l2 le rr1_l2)
+        rights_l2 = where(rad_l2 ge rr2_l2)
+        diomes_l2 = where(rad_l2 gt rr1_l2 and rad_l2 lt rr2_l2)
+     endif
+
+     if max(rad_l2) lt 1.2 then begin
+        Drr = max(rad_l2) - rrr_min 
+        rr1_l2  = rrr_min + Drr * 1./3.
+        rr2_l2  = rrr_min + Drr * 2./3.
+;    rr1_l2 = 1.07                     
+;    rr2_l2 = (max(rad_l2)-1.)*0.75 +1.0                 
+        if     keyword_set(ajuste_bajo) then lefts_l2  = where(rad_l2 le rr1_l2 and rad_l2 ge 1.05)
+        if not keyword_set(ajuste_bajo) then lefts_l2  = where(rad_l2 le rr1_l2)
+        rights_l2 = where(rad_l2 ge rr2_l2)
+        diomes_l2 = where(rad_l2 gt rr1_l2 and rad_l2 lt rr2_l2)
+     endif
+  endif
+  
+     if lefts_l1(0) eq -1 or diomes_l1(0) eq -1 or rights_l1(0) eq -1 then goto,skipfitloop
+     if lefts_l2(0) eq -1 or diomes_l2(0) eq -1 or rights_l2(0) eq -1 then goto,skipfitloop
 
   
-        CASE opcl(il) OF
+        CASE opcls(il) OF
            1: begin
               if (footlat(ileg) ge stfn_i && footlat(ileg) le stfn_f) || (footlat(ileg) le stfs_f && footlat(ileg) ge stfs_i) then begin
                  error_ne (ileg) = st_f_ne
@@ -634,7 +683,12 @@ if lefts_l2(0) eq -1 or diomes_l2(0) eq -1 or rights_l2(0) eq -1 then goto,skipf
 ;un error diferente
         endcase
         
-        CASE opcl(il+1) OF
+        CASE opcls(il) OF
+;Se vuelve a evaluar opcls(il) xq aun no se definio que la 2da pata
+;tenga el mismo valor de opcls que la primera. Para que quede claro,
+;il e ileg no tienen igual dimension. Es decir que por cada il cerrado
+;tengo dos ileg. Pero a la segunda ileg aun no se le asigno el valor
+;que le corresponde de opcls. (esto se hace mas abajo)           
            1: begin
               if (footlat(ileg+1) ge stfn_i && footlat(ileg+1) le stfn_f) || (footlat(ileg+1) le stfs_f and footlat(ileg+1) ge stfs_i) then begin
                  error_ne (ileg+1) = st_f_ne
@@ -655,68 +709,68 @@ if lefts_l2(0) eq -1 or diomes_l2(0) eq -1 or rights_l2(0) eq -1 then goto,skipf
            end
         endcase
                 
-case 1 of
-       keyword_set(ajuste_alto) eq 1: begin
-          sfit1  = s_l1  (where(rad_l1 ge findel(val_corte,rad_l1)))
-          xfit1  = rad_l1(where(rad_l1 ge val_corte))
-          yfit1  = Ne_l1 (where(rad_l1 ge val_corte))
-          zfit1  = p_l1  (where(rad_l1 ge val_corte))
-          wfit1  = Tm_l1 (where(rad_l1 ge val_corte))
-          min_s1 = s_l1(findel(val_corte,rad_l1))
-          max_s1 = s_l1(findel(1.2 ,rad_l1))
-          min_r1 = rad_l1(findel(val_corte,rad_l1))
-          max_r1 = rad_l1(findel(1.2 ,rad_l1))
-          sfit2  = s_l2  (where(rad_l2 ge findel(val_corte,rad_l2)))
-          xfit2  = rad_l2(where(rad_l2 ge val_corte))
-          yfit2  = Ne_l2 (where(rad_l2 ge val_corte))
-          zfit2  = p_l2  (where(rad_l2 ge val_corte))
-          wfit2  = Tm_l2 (where(rad_l2 ge val_corte))
-          min_s2 = s_l2(findel(val_corte,rad_l2))
-          max_s2 = s_l2(findel(1.2 ,rad_l2))
-          min_r2 = rad_l2(findel(val_corte,rad_l2))
-          max_r2 = rad_l2(findel(1.2 ,rad_l2))
-       end
-       keyword_set(ajuste_bajo) eq 1: begin
-          sfit1 =  s_l1  (where(rad_l1 le findel(val_corte,rad_l1)))
-          xfit1 =  rad_l1(where(rad_l1 le val_corte))
-          yfit1 =  Ne_l1 (where(rad_l1 le val_corte))
-          zfit1 =  P_l1  (where(rad_l1 le val_corte))
-          wfit1 =  Tm_l1 (where(rad_l1 le val_corte))
-          min_s1 = s_l1(findel(1.025,rad_l11))
-          max_s1 = s_l1(findel(val_corte ,rad_l1))
-          min_r1 = rad_l1(findel(1.025,rad_l1))
-          max_r1 = rad_l1(findel(val_corte ,rad_l1))
-          sfit2 =  s_l2  (where(rad_l2 le findel(val_corte,rad_l2)))
-          xfit2 =  rad_l2(where(rad_l2 le val_corte))
-          yfit2 =  Ne_l2 (where(rad_l2 le val_corte))
-          zfit2 =  P_l2  (where(rad_l2 le val_corte))
-          wfit2 =  Tm_l2 (where(rad_l2 le val_corte))
-          min_s2 = s_l2(findel(1.025,rad_l2))
-          max_s2 = s_l2(findel(val_corte ,rad_l2))
-          min_r2 = rad_l2(findel(1.025,rad_l2))
-          max_r2 = rad_l2(findel(val_corte ,rad_l2))
-       end
-       else: begin
-          sfit1 = s_l1
-          xfit1 = rad_l1
-          yfit1 = Ne_l1
-          zfit1 = p_l1
-          wfit1 = Tm_l1
-          min_s1 = s_l1(findel(1.025,rad_l1))
-          max_s1 = s_l1(findel(1.2 ,rad_l1))
-          min_r1 = rad_l1(findel(1.025,rad_l1))
-          max_r1 = rad_l1(findel(1.2 ,rad_l1))
-          sfit2 = s_l2
-          xfit2 = rad_l2
-          yfit2 = Ne_l2
-          zfit2 = p_l2
-          wfit2 = Tm_l2
-          min_s2 = s_l2(findel(1.025,rad_l2))
-          max_s2 = s_l2(findel(1.2 ,rad_l2))
-          min_r2 = rad_l2(findel(1.025,rad_l2))
-          max_r2 = rad_l2(findel(1.2 ,rad_l2))
-       end
-    endcase
+        case 1 of
+           keyword_set(ajuste_alto) eq 1: begin
+              sfit1  = s_l1  (where(rad_l1 ge findel(val_corte,rad_l1)))
+              xfit1  = rad_l1(where(rad_l1 ge val_corte))
+              yfit1  = Ne_l1 (where(rad_l1 ge val_corte))
+              zfit1  = p_l1  (where(rad_l1 ge val_corte))
+              wfit1  = Tm_l1 (where(rad_l1 ge val_corte))
+              min_s1 = min(s_l1)
+              max_s1 = max(s_l1) 
+              min_r1 = rad_l1(findel(val_corte,rad_l1))
+              max_r1 = rad_l1(findel(1.2 ,rad_l1))
+              sfit2  = s_l2  (where(rad_l2 ge findel(val_corte,rad_l2)))
+              xfit2  = rad_l2(where(rad_l2 ge val_corte))
+              yfit2  = Ne_l2 (where(rad_l2 ge val_corte))
+              zfit2  = p_l2  (where(rad_l2 ge val_corte))
+              wfit2  = Tm_l2 (where(rad_l2 ge val_corte))
+              min_s2 = min(s_l2)
+              max_s2 = max(s_l2)
+              min_r2 = rad_l2(findel(val_corte,rad_l2))
+              max_r2 = rad_l2(findel(1.2 ,rad_l2))
+           end
+           keyword_set(ajuste_bajo) eq 1: begin
+              sfit1 =  s_l1  (where(rad_l1 le findel(val_corte,rad_l1)))
+              xfit1 =  rad_l1(where(rad_l1 le val_corte))
+              yfit1 =  Ne_l1 (where(rad_l1 le val_corte))
+              zfit1 =  P_l1  (where(rad_l1 le val_corte))
+              wfit1 =  Tm_l1 (where(rad_l1 le val_corte))
+              min_s1 = min(s_l1)
+              max_s1 = max(s_l1)
+              min_r1 = rad_l1(findel(1.025,rad_l1))
+              max_r1 = rad_l1(findel(val_corte ,rad_l1))
+              sfit2 =  s_l2  (where(rad_l2 le findel(val_corte,rad_l2)))
+              xfit2 =  rad_l2(where(rad_l2 le val_corte))
+              yfit2 =  Ne_l2 (where(rad_l2 le val_corte))
+              zfit2 =  P_l2  (where(rad_l2 le val_corte))
+              wfit2 =  Tm_l2 (where(rad_l2 le val_corte))
+              min_s2 = min(s_l2)
+              max_s2 = max(s_l2)
+              min_r2 = rad_l2(findel(1.025,rad_l2))
+              max_r2 = rad_l2(findel(val_corte ,rad_l2))
+           end
+           else: begin
+              sfit1 = s_l1
+              xfit1 = rad_l1
+              yfit1 = Ne_l1
+              zfit1 = p_l1
+              wfit1 = Tm_l1
+              min_s1 = min(s_l1)
+              max_s1 = max(s_l1)
+              min_r1 = rad_l1(findel(1.025,rad_l1))
+              max_r1 = rad_l1(findel(1.2 ,rad_l1))
+              sfit2 = s_l2
+              xfit2 = rad_l2
+              yfit2 = Ne_l2
+              zfit2 = p_l2
+              wfit2 = Tm_l2
+              min_s2 = min(s_l2)
+              max_s2 = max(s_l2)
+              min_r2 = rad_l2(findel(1.025,rad_l2))
+              max_r2 = rad_l2(findel(1.2 ,rad_l2))
+           end
+        endcase
 
 ;Fiteando Ne 
 ; pata l1
@@ -724,16 +778,17 @@ case 1 of
     Ne0(ileg) = exp(A[0]+A[1])
     lambda_N(ileg) = 1./A[1]
     r2N(ileg) = r2
-    Tefit_ts(ileg) = bb* mu * mH * gsun * (lambda_N_ts(ileg)*rsun) / kB
-    Nebasal(ileg) = Ne0_ts(ileg) * exp(-1/lambda_n_ts(ileg)* (1. - 1./rad_l1_orig(rrr0)))
+    Tefit_ts(ileg) = bb* mu * mH * gsun * (lambda_N(ileg)*rsun) / kB
+    Nebasal(ileg) = Ne0(ileg) * exp(-1/lambda_n(ileg)* (1. - 1./1.025))
     franja_lineal,yfit1,salidafit,min_r1,max_r1,error_ne(ileg),fraccion
     fne (ileg) = fraccion
 ;s    
-    linear_fit,1/sfit1,alog(yfit1),min_s1,max_s1,A,r2,salidafit,/theilsen
+    linear_fit,1/sfit1,alog(yfit1),min_s1,max_s1,A,r2,salidafit,/theilsen,/xinverted
     Ne0_s(ileg) = exp(A[0]+A[1])
     lambda_N_s(ileg) = 1./A[1]
     r2N_s(ileg) = r2
-    franja_lineal,yfit1,salidafit,min_r1,max_r1,error_ne(ileg),fraccion
+    if n_elements(yfit1) ne n_elements(salidafit) then stop
+    franja_lineal,yfit1,salidafit,min_s1,max_s1,error_ne(ileg),fraccion
     fne_s (ileg) = fraccion
 
 ;pata l2    
@@ -741,15 +796,16 @@ case 1 of
     Ne0(ileg+1) = exp(A[0]+A[1])
     lambda_N(ileg+1) = 1./A[1]
     r2N(ileg+1) = r2
-    Tefit_ts(ileg+1) = bb* mu * mH * gsun * (lambda_N_ts(ileg+1)*rsun) / kB
-    Nebasal(ileg+1) = Ne0_ts(ileg+1) * exp(-1/lambda_n_ts(ileg+1)* (1. - 1./rad_l2_orig(rrr0)))
+    Tefit_ts(ileg+1) = bb* mu * mH * gsun * (lambda_N(ileg+1)*rsun) / kB
+    Nebasal(ileg+1) = Ne0(ileg+1) * exp(-1/lambda_n(ileg+1)* (1. - 1./1.025))
     franja_lineal,yfit2,salidafit,min_r2,max_r2,error_ne(ileg+1),fraccion
     fne (ileg+1) = fraccion
 
-    linear_fit,1/sfit2,alog(yfit2),min_s2,max_s2,A,r2,salidafit,/theilsen
+    linear_fit,1/sfit2,alog(yfit2),min_s2,max_s2,A,r2,salidafit,/theilsen,/xinverted
     Ne0_s(ileg+1) = exp(A[0]+A[1])
     lambda_N_s(ileg+1) = 1./A[1]
     r2N_s(ileg+1) = r2
+    if n_elements(yfit2) ne n_elements(salidafit) then stop
     franja_lineal,yfit2,salidafit,min_s2,max_s2,error_ne(ileg+1),fraccion
     fne_s (ileg+1) = fraccion
 
@@ -766,7 +822,7 @@ case 1 of
     linear_fit,sfit1,wfit1,min_s1,max_s1,A,r2,salidafit,/theilsen
     Tm0_s(ileg)   = A[0]
     gradT_s(ileg) = A[1]
-    Te_base(ileg) = gradT_s(ileg) * rad_l1_orig(rrr0) + Tm0_s(ileg)
+    Te_base(ileg) = gradT_s(ileg) * 1.025 + Tm0_s(ileg)
     betabase(ileg) = (kb/bb * nebasal(ileg) * te_base(ileg)) /(B_base(ileg)^2/(8*!pi))
 ;pata l2
     linear_fit,xfit2,wfit2,min_r2,max_r2,A,r2,salidafit,/theilsen
@@ -779,7 +835,7 @@ case 1 of
     linear_fit,sfit2,wfit2,min_s2,max_s2,A,r2,salidafit,/theilsen
     Tm0_s(ileg+1)   = A[0]
     gradT_s(ileg+1) = A[1]
-    Te_base(ileg+1) = gradT_s(ileg+1) * rad_l2_orig(rrr0) + Tm0_s(ileg+1)
+    Te_base(ileg+1) = gradT_s(ileg+1) * 1.025 + Tm0_s(ileg+1)
     betabase(ileg+1) = (kb/bb * nebasal(ileg+1) * te_base(ileg+1)) /(B_base(ileg+1)^2/(8*!pi))
 
     iso  (ileg)   = abs(gradT (ileg)    * abs(max_r1 - min_r1)) / (2 * error_t(ileg))
@@ -804,13 +860,15 @@ case 1 of
   S0r2 = A[0]
   m2   = A[1]
   r2s2 = r2
-
+  r0 = 1.025
   s_r0_a(ileg  ) = m1 * r0 + s0r1
   s_r0_a(ileg+1) = m2 * r0 + s0r2
     
 ;FCb calculo
-  Fc2_l1 = -kappa*Te_base^(5./2)*gradt_s(ileg)
-  Fc2_l2 = -kappa*Te_base^(5./2)*gradt_s(ileg+1)
+  b_l1_r0 = b_l1(0)
+  b_l2_r0 = b_l2(0)  
+  Fc2_l1 = kappa*Te_base(ileg)^(5./2)*gradt_s(ileg)
+  Fc2_l2 = kappa*Te_base(ileg+1)^(5./2)*gradt_s(ileg+1)
   Fcb(ileg  ) = Fc2_l1 * B_l2_r0/(B_l1_r0+B_l2_r0);b_l_0 depende y no es necesariamente en 1.025
   Fcb(ileg+1) = Fc2_l2 * B_l1_r0/(B_l1_r0+B_l2_r0)
 ;ADEMAS PODRIA FITEARSE EL ER, VER!
@@ -835,7 +893,7 @@ case 1 of
   
   ileg = ileg+2
 endelse
- endfor
+endfor
   Rp_full  = {base:Rp_base,medio:Rp_medio,alto:Rp_alto}
 stop
 ;ACA VA UN SAVE!!!  
