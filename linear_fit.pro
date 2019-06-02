@@ -14,11 +14,10 @@ pro linear_fit,xx,yy,xmin,xmax,A,r2,salidafit,linfit=linfit,ladfit=ladfit,robust
   if keyword_set (ladfit)    then  A = ladfit(xx,yy,absdev)
   if keyword_set (robustfit) then  A = robust_fit(xx,yy)
   if keyword_set (theilsen)  then  A = theil_sen2(xx,yy)
-
+;obs: theilsen puede dar valores infinitos si xx tiene valores
+;repetidos. Esto no suele pasar, pero a veces si se utiliza rad_l y
+;este hace cosas raras entonces puede pasar. con s_l seguro que no.
   salidafit =  A[0]+A[1]*xx          
-  meanyy= mean(yy)
-  SStot = total( (yy-     meanyy)^2 )
-  SSerr = total( (yy-salidafit  )^2 )
-  r2    = 1.-SSerr/SStot
+  r2 = r2(y,salidafit)
   return
 end

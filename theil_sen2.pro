@@ -1,4 +1,6 @@
 function theil_sen2, x, y
+  x = float(x)
+  y = float(y)
   num = n_elements(x)
   n=float(num)*(num-1)/2
   theil=fltarr(n)
@@ -6,12 +8,11 @@ function theil_sen2, x, y
   for i=0,num-2 do begin
      for j=i+1,num-1 do begin
         theil[t]=float(y[j]-y[i])/(x[j]-x[i])
+        if abs(theil[t]) eq !values.f_infinity then print,'estas dividiendo por infinito, chequea el vector x'
         t=t+1
      endfor
   endfor
-  infin = !values.f_infinity
-  ok = where(theil eq infin)   
-  if ok(0) ne -1. then stop
+  theil = theil (where(theil ne !values.f_infinity));dejamos de lado los valores infinitos
   slope=median(theil ,/even)
   intercept=median(y-slope*x, /even)
   results=[intercept, slope]

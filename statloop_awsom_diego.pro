@@ -23,9 +23,9 @@ pro statloop_awsom_diego,rmin=rmin,rmax=rmax,alturas=alturas,ajuste_alto=ajuste_
     bb = (1.+2.*a)/(2.+3.*a)
     kappa = 9.2e-7              ; erg s ^-1 cm ^-1 K ^-7/2                
 
-    if not keyword_set(rmin) then rmin = 1.025
-    if not keyword_set(rmax) then rmax = 1.20
-    if not keyword_set(rloopmin) then rloopmin = 1.07
+    if not keyword_set(rmin)        then rmin = 1.025
+    if not keyword_set(rmax)        then rmax = 1.20
+    if not keyword_set(rloopmin)    then rloopmin = 1.07
     if not keyword_set(corte_awsom) then corte_awsom = 1.055
     rminloop=rloopmin
 ;Para que estan estos valores de rloopmin???
@@ -80,7 +80,7 @@ lambda_P = fltarr(Nlegs)-555.
      gradT_s = fltarr(Nlegs)-555.
      Tm0_s = fltarr(Nlegs)-555.
      r2t_s = fltarr(Nlegs)-555.
-     
+;r2 o chi-square coefficient
      ft  = fltarr(Nlegs)-555.
      ft_s  = fltarr(Nlegs)-555.
      fne = fltarr(Nlegs)-555.
@@ -88,7 +88,12 @@ lambda_P = fltarr(Nlegs)-555.
 
      Tefit = fltarr(Nlegs)-555.
    Tefit_ts = fltarr(Nlegs)-555.
-Te_base = fltarr(Nlegs)-555.
+   Te_base = fltarr(Nlegs)-555
+;pearson correlation coefficient
+   pearson_n  = fltarr(Nlegs)-555. 
+   pearson_ns = fltarr(Nlegs)-555.
+   pearson_t  = fltarr(Nlegs)-555.
+   pearson_ts = fltarr(Nlegs)-555.
 
 ;pedidos especiales por ceci
    dTmds = fltarr(Nlegs)-555.
@@ -100,6 +105,7 @@ Te_base = fltarr(Nlegs)-555.
       Phirfit = fltarr(Nlegs)-555. ; flujo radiativo fiteado
       eplegT = fltarr(Nlegs)-555.
       s_r0_a = fltarr(Nlegs)-555.
+;----------------------------
       
  deltaEh = fltarr(Nlegs)-555. ;??
 betamean = fltarr(Nlegs)-555.
@@ -374,6 +380,7 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
     Ne0(ileg) = exp(A[0]+A[1])
     lambda_N(ileg) = 1./A[1]
     r2N(ileg) = r2
+    pearson_n(ileg) = correlate(xfit,alog(yfit))
     
     Tefit_ts(ileg) = bb* mu * mH * gsun * (lambda_N(ileg)*rsun) / kB
     Nebasal(ileg) = Ne0(ileg) * exp(-1/lambda_n(ileg)* (1. - 1./1.025))
@@ -385,6 +392,8 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
     Ne0_s(ileg) = exp(A[0]+A[1])
     lambda_N_s(ileg) = 1./A[1]
     r2N_s(ileg) = r2
+    pearson_ns(ileg) = correlate(sfit,alog(yfit))
+
     franja_lineal,yfit,salidafit,min_s,max_s,error_ne(ileg),fraccion
     fne_s (ileg) = fraccion
 
@@ -396,7 +405,7 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
     r2t (ileg)  = r2;si es isotermico va a dar bajo.  
     franja_lineal,wfit,salidafit,min_r,max_r,error_t(ileg),fraccion
     ft (ileg) = fraccion
-
+    pearson_t(ileg) = correlate(xfit,wfit)
     
     linear_fit,sfit,wfit,min_s,max_s,A,r2,salidafit,/theilsen
     Tm0_s(ileg)   = A[0]
@@ -404,7 +413,8 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
     r2t_s (ileg)  = r2
     franja_lineal,wfit,salidafit,min_s,max_s,error_t(ileg),fraccion
     ft_s (ileg) = fraccion
-
+    pearson_ts(ileg) = correlate(sfit,wfit)
+    
     Te_base(ileg) = gradT(ileg) * 1.025 + Tm0(ileg)
     betabase(ileg) = (kb/bb * nebasal(ileg) * te_base(ileg)) /(B_base(ileg)^2/(8*!pi))
     ;Estas 2 NO son necesarias, podria armarse luego. Hacer lo mismo calcu
@@ -778,6 +788,8 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
     Ne0(ileg) = exp(A[0]+A[1])
     lambda_N(ileg) = 1./A[1]
     r2N(ileg) = r2
+    pearson_n(ileg) = correlate(xfit1,alog(yfit1))
+    
     Tefit_ts(ileg) = bb* mu * mH * gsun * (lambda_N(ileg)*rsun) / kB
     Nebasal(ileg) = Ne0(ileg) * exp(-1/lambda_n(ileg)* (1. - 1./1.025))
     franja_lineal,yfit1,salidafit,min_r1,max_r1,error_ne(ileg),fraccion
@@ -787,6 +799,8 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
     Ne0_s(ileg) = exp(A[0]+A[1])
     lambda_N_s(ileg) = 1./A[1]
     r2N_s(ileg) = r2
+    pearson_ns(ileg) = correlate(sfit1,alog(yfit1))
+    
     if n_elements(yfit1) ne n_elements(salidafit) then stop
     franja_lineal,yfit1,salidafit,min_s1,max_s1,error_ne(ileg),fraccion
     fne_s (ileg) = fraccion
@@ -796,6 +810,8 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
     Ne0(ileg+1) = exp(A[0]+A[1])
     lambda_N(ileg+1) = 1./A[1]
     r2N(ileg+1) = r2
+    pearson_n(ileg+1) = correlate(xfit2,alog(yfit2))
+    
     Tefit_ts(ileg+1) = bb* mu * mH * gsun * (lambda_N(ileg+1)*rsun) / kB
     Nebasal(ileg+1) = Ne0(ileg+1) * exp(-1/lambda_n(ileg+1)* (1. - 1./1.025))
     franja_lineal,yfit2,salidafit,min_r2,max_r2,error_ne(ileg+1),fraccion
@@ -805,6 +821,8 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
     Ne0_s(ileg+1) = exp(A[0]+A[1])
     lambda_N_s(ileg+1) = 1./A[1]
     r2N_s(ileg+1) = r2
+    pearson_ns(ileg+1) = correlate(sfit2,alog(yfit2))
+    
     if n_elements(yfit2) ne n_elements(salidafit) then stop
     franja_lineal,yfit2,salidafit,min_s2,max_s2,error_ne(ileg+1),fraccion
     fne_s (ileg+1) = fraccion
@@ -816,12 +834,17 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
     Tm0(ileg)   = A[0]
     gradT(ileg) = A[1]
     r2t (ileg)  = r2;si es isotermico va a dar bajo.      
+    pearson_t(ileg) = correlate(xfit1,alog(wfit1))
+
     franja_lineal,wfit1,salidafit,min_r1,max_r1,error_t(ileg),fraccion
     ft (ileg) = fraccion
 
     linear_fit,sfit1,wfit1,min_s1,max_s1,A,r2,salidafit,/theilsen
     Tm0_s(ileg)   = A[0]
     gradT_s(ileg) = A[1]
+    r2t_s (ileg)  = r2
+    pearson_ts(ileg) = correlate(sfit1,alog(wfit1))
+    
     Te_base(ileg) = gradT_s(ileg) * 1.025 + Tm0_s(ileg)
     betabase(ileg) = (kb/bb * nebasal(ileg) * te_base(ileg)) /(B_base(ileg)^2/(8*!pi))
 ;pata l2
@@ -829,12 +852,17 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
     Tm0(ileg+1)   = A[0]
     gradT(ileg+1) = A[1]
     r2t (ileg+1)  = r2
+    pearson_t(ileg+1) = correlate(xfit2,alog(wfit2))
+
     franja_lineal,wfit2,salidafit,min_r2,max_r2,error_t(ileg+1),fraccion
     ft (ileg+1) = fraccion
 
     linear_fit,sfit2,wfit2,min_s2,max_s2,A,r2,salidafit,/theilsen
     Tm0_s(ileg+1)   = A[0]
     gradT_s(ileg+1) = A[1]
+    r2t_s (ileg+1)  = r2
+    pearson_ts(ileg+1) = correlate(sfit2,alog(wfit2))
+
     Te_base(ileg+1) = gradT_s(ileg+1) * 1.025 + Tm0_s(ileg+1)
     betabase(ileg+1) = (kb/bb * nebasal(ileg+1) * te_base(ileg+1)) /(B_base(ileg+1)^2/(8*!pi))
 
