@@ -470,15 +470,15 @@ skip_print:
          endwhile; closes each line's while
         Npts_v(il) = ivox; For each line, record the number of points in vector
 ; Label small-closed-loops as "2"
-   if opcls(il) eq 1. and midCell_v(il) eq -666. then begin
-      ;midcell_v(il) = where ( rad_v(0:npts_v(il)-1,il) eq max (rad_v(0:npts_v(il)-1,il)))
-          opcls(il) = 2.
-          escalar = where ( rad_v(0:npts_v(il)-1,il) eq max (rad_v(0:npts_v(il)-1,il)))
-          midcell_v(il)= escalar(0)
+        if opcls(il) eq 1. and midCell_v(il) eq -666. then begin
+                                ;midcell_v(il) = where ( rad_v(0:npts_v(il)-1,il) eq max (rad_v(0:npts_v(il)-1,il)))
+           opcls(il) = 2.
+           escalar = where ( rad_v(0:npts_v(il)-1,il) eq max (rad_v(0:npts_v(il)-1,il)))
+           midcell_v(il)= escalar(0)
                                 ;Mofied 12/05/2016 by D.G.L, evading a
                                 ;vector prevents an erroneous loop definition
-       if n_elements(escalar) gt 1 then xxx=xxx+1; xxx should be eq 0 at the end of the trace, otherwise the other line is not working properly
-       endif
+           if n_elements(escalar) gt 1 then xxx=xxx+1 ; xxx should be eq 0 at the end of the trace, otherwise the other line is not working properly
+        endif
 ;   if opcls(il) eq 0. and midcell_v(il) gt -666. then stop
 ;-------------------------------------------------------------------------------------------
 endfor                          ; closes lines loop
@@ -514,11 +514,11 @@ stop
    stop
    if keyword_set(ldem_file) then save,fieldtype,spacing,radstart,Rmax_tom,dr_tom,WTc,Nlin,Npts_max,rad_v,lat_v,lon_v,$
                                        s_v,npts_v,midcell_v,loopL,opcls,Ne_v,Tm_v,WT_v,scoreR_v,str_v,stth_v,stph_v,$
-                                       B_v,Br_v,Bth_v,Bph_v,Tmin,Tmax,npar,DEMc_v,lambda_v,FILENAME = output_file+'.sav'
+                                       B_v,Br_v,Bth_v,Bph_v,Tmin,Tmax,npar,DEMc_v,lambda_v,enrad_v,enlat_v,enlon_v,FILENAME = output_file+'.sav'
 
    if keyword_set(awsom_file) then save,fieldtype,spacing,radstart,Rmax_tom,dr_tom,Nlin,Npts_max,rad_v,lat_v,lon_v,$
                                         s_v,npts_v,midcell_v,loopL,opcls,Ne_v,Tm_v,Er_v,str_v,stth_v,stph_v,$
-                                        B_v,Br_v,Bth_v,Bph_v,ne_lasco_v,qheat_v,qebyq_v,Tmin,Tmax,FILENAME = output_file+'.sav'
+                                        B_v,Br_v,Bth_v,Bph_v,enrad_v,enlat_v,enlon_v,ne_lasco_v,qheat_v,qebyq_v,Tmin,Tmax,FILENAME = output_file+'.sav'
 
    stop
    goto,final
