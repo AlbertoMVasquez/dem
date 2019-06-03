@@ -923,29 +923,13 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
 endelse
 endfor
   Rp_full  = {base:Rp_base,medio:Rp_medio,alto:Rp_alto}
-stop
+  stop
 ;ACA VA UN SAVE!!!  
+  save,Nemean,Tmmean,Nestddev,Tmstddev,WTmean,WTstddev,Pmean,Ne2mean,Ermean,Bmean,betamean,$
+       Ne0,lambda_N,r2N,Ne0_s,lambda_N_s,r2N_s,P0,lambda_P,r2P,gradT,Tm0,r2T,gradT_s,Tm0_s,r2t_s,$
+       ft,ft_s,fne,fne_s,Tefit,Tefit_ts,Te_base,pearson_n,pearson_ns,pearson_t,pearson_ts,$
+       betamean,betaapex,Br0,B_base,Nebasal,B_base,opclstat,indexloop,$
+       footrad,footlat,footlon,iso,iso_s,long_r,long_s,$
+       Rp_base,Rp_medio,Rp_alto,FILENAME = 'trace_vectors_'+file_out+'.sav'
   return
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,5 +1,5 @@
 pro xhistoplot,data,min=min,max=max,nbins=nbins,xtit=xtit,ytit=ytit,tit=tit,filename=filename
-  
+;sumarle data2 como se hizo en histoplot2B  
   if not keyword_set(nbins) then nbins = 50
   if not keyword_set(ytit)  then ytit = 'Freq. Histogram' 
   if not keyword_set(min)   then min = min(data)
