@@ -1,10 +1,12 @@
 ;statloop_awsom_diego,file='traceLDEM_CR2082_test_DEMT_full_asd_diarrea_putrefacta2_radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat',alturas=6,/demt
 ;statloop_awsom_diego,file='traceLDEM_CR2082_test_ldem_6alturas_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav',alturas=6,/demt
-pro statloop_awsom_diego,rmin=rmin,rmax=rmax,alturas=alturas,ajuste_alto=ajuste_alto,ajuste_bajo=ajuste_bajo,demt=demt,file=file
+pro statloop_awsom_diego,rmin=rmin,rmax=rmax,alturas=alturas,ajuste_alto=ajuste_alto,ajuste_bajo=ajuste_bajo,demt=demt,file=file,out_file=out_file
 ;    common trace_sampled,rad_v,lat_v,lon_v,s_v,Ne_v,Tm_v,WT_v,Er_v,scoreR_v,midcell_v,Npts_v,str_v,stth_v,stph_v,radstart,enrad_v,enlon_v,enlat_v,npar,DEMc_v,lambda_v,L,Tmin,Tmax
 ;  common B_sampled,B_v,Br_v,Bth_v,Bph_v
 ;  common opclstatus,opcls,loopL,WTc
 
+  longitud = strlen(file)-5-4 ;5 de la long de la palabra trace y 4 del .sav
+  if not keyword_set(out_file) then file_out = strmid(file,5,longitud)
 
 ;si se usa un antiguo read_trace, es necesario usar commons, si se usa
 ;un restore, no es necesario.  
@@ -843,6 +845,9 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
     Tm0_s(ileg)   = A[0]
     gradT_s(ileg) = A[1]
     r2t_s (ileg)  = r2
+    
+    franja_lineal,wfit1,salidafit,min_s1,max_s1,error_t(ileg),fraccion
+    ft_s  (ileg)  = fraccion
     pearson_ts(ileg) = correlate(sfit1,alog(wfit1))
     
     Te_base(ileg) = gradT_s(ileg) * 1.025 + Tm0_s(ileg)
@@ -861,6 +866,9 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
     Tm0_s(ileg+1)   = A[0]
     gradT_s(ileg+1) = A[1]
     r2t_s (ileg+1)  = r2
+
+    franja_lineal,wfit2,salidafit,min_s2,max_s2,error_t(ileg+1),fraccion
+    ft_s  (ileg+1)  = fraccion
     pearson_ts(ileg+1) = correlate(sfit2,alog(wfit2))
 
     Te_base(ileg+1) = gradT_s(ileg+1) * 1.025 + Tm0_s(ileg+1)
@@ -925,11 +933,15 @@ endfor
   Rp_full  = {base:Rp_base,medio:Rp_medio,alto:Rp_alto}
   stop
 ;ACA VA UN SAVE!!!  
+  if not keyword_set(file_out) then stop
+  
   save,Nemean,Tmmean,Nestddev,Tmstddev,WTmean,WTstddev,Pmean,Ne2mean,Ermean,Bmean,betamean,$
        Ne0,lambda_N,r2N,Ne0_s,lambda_N_s,r2N_s,P0,lambda_P,r2P,gradT,Tm0,r2T,gradT_s,Tm0_s,r2t_s,$
        ft,ft_s,fne,fne_s,Tefit,Tefit_ts,Te_base,pearson_n,pearson_ns,pearson_t,pearson_ts,$
        betamean,betaapex,Br0,B_base,Nebasal,B_base,opclstat,indexloop,$
        footrad,footlat,footlon,iso,iso_s,long_r,long_s,$
        Rp_base,Rp_medio,Rp_alto,FILENAME = 'trace_vectors_'+file_out+'.sav'
+
+  print, 'vectores guardados en -->' +'trace_vectors_'+file_out+'.sav'
   return
 end

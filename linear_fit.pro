@@ -18,6 +18,6 @@ pro linear_fit,xx,yy,xmin,xmax,A,r2,salidafit,linfit=linfit,ladfit=ladfit,robust
 ;repetidos. Esto no suele pasar, pero a veces si se utiliza rad_l y
 ;este hace cosas raras entonces puede pasar. con s_l seguro que no.
   salidafit =  A[0]+A[1]*xx          
-  r2 = r2(y,salidafit)
+  r2 = r2_fun(yy,salidafit)
   return
 end
