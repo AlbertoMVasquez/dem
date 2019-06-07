@@ -97,6 +97,7 @@ lambda_P = fltarr(Nlegs)-555.
    pearson_t  = fltarr(Nlegs)-555.
    pearson_ts = fltarr(Nlegs)-555.
 
+   scoreR = fltarr(Nlegs)-555.
 ;pedidos especiales por ceci
    dTmds = fltarr(Nlegs)-555.
       Eh = fltarr(Nlegs)-555.
@@ -260,6 +261,7 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
 
         rrr0=findel(1.025,rad_l) ;se usa para evaluar Nebasal
         B_base (ileg) = B_l (rrr0)
+        scoreR (ileg) = scoreR_l
 ;select usefull data                                                     
         p = where ( rad_l ge rmin and rad_l le rmax and Ne_l ne -999. and scoreR_l lt 0.10)
 ;podria relajarse a 0.25??
@@ -943,5 +945,6 @@ endfor
        Rp_base,Rp_medio,Rp_alto,FILENAME = 'trace_vectors_'+file_out+'.sav'
 
   print, 'vectores guardados en -->' +'trace_vectors_'+file_out+'.sav'
+  stop
   return
 end
