@@ -4,12 +4,23 @@ pro estadistica_diego,file
 ;restore del trzado.sav
   restore,file
   
-fcrit_t=0.7
-fcrit_n=0.75
 r2crit_t=0.7
 r2crit_N=0.75
-ok = where(gradt ne -555.)
-histoplot,ft(ok),min=0
+ok = where(gradt ne -555. and opclstat eq 0. and r2n gt 0.7 )
+histoplot,nebasal(ok),min=0
+histoplot,pearson_n(ok),min=-1
+histoplot, lambda_n(ok)
+rpoint_map,ok,[0],footlon, footlat
+
+ok = where(gradt ne -555. and opclstat eq 0. and ft gt 0.5 )
+histoplot,pearson_t(ok),min=-1
+histoplot,te_base(ok)
+histoplot,tmmean(ok)
+rpoint_map,ok,[0],footlon, footlat
+
+
+
+
 histoplot,r2n(ok),min=0
 histoplot,r2t(ok),min=0
 

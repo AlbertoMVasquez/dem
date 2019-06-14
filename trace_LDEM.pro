@@ -1,5 +1,9 @@
 ;trace_LDEM,field_awsom='/data1/work/MHD/sph_data_awsom_2082_1.85.sav',awsom_file='awsom_2082_1.85',period=period,safety=.5,stepmax=8000,/unifgrid_v2,dlat=dlat,dlon=dlon,radstart=radstart
 ;trace_LDEM,pfss_data_file='pfss_data_cr2082_trazado5alturas.sav',ldem_file='LDEM.v3_CR2082_l.25.75.5_fd_Rmin1.00_Rmax1.30_Nr26_InstRmax1.26_bf4_r3d_B_vfullcadence_chianti.ioneq_sun_coronal_1992_feldman_ext.abund_euvi.B_L171_DECON_gauss1_lin_Norm-median_singlStart',period=period,safety=.5,stepmax=8000,/unifgrid_v2,dlat=dlat,dlon=dlon,radstart=radstart
+;trace_LDEM,field_awsom='sph_data_awsom_2208_1.85.sav',ldem_file='asd',period='probando_nuevamente_',safety=.5,stepmax=7500,/unifgrid_v2,radstart=1.025+0.04*findgen(6),awsom_file='awsom_2208_1.85_new'
+;trace_LDEM,ldem_file='LDEM.v3_CR2208_l.50.20.20_h1_Rmin1.00_Rmax1.26_Nr26_InstRmax1.26_bf4_r3d_B_chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',pfss_data_file='pfss_data_awsom_2208_1.85_newprobando_nuevamente__radstart-1.025-1.225Rs.sav',radstart=1.025 + 0.04 *findgen(6),period='probando_cr2208_con_demt_',/unifgrid_v2
+;trace_LDEM,awsom_file='awsom_2208_1.85',pfss_data_file='pfss_data_awsom_2208_1.85_newprobando_nuevamente__radstart-1.025-1.225Rs.sav',radstart=1.025 + 0.04 *findgen(6),period='2208_con_awsomdata_',/unifgrid_v2
+;trace_LDEM,pfss_data_file='pfss_data_cr2082_trazado5alturas.sav',awsom_file='awsom_2082_1.85_short',period='2082_con_awsomdata_',/unifgrid_v2,radstart=1.025 + 0.04 *findgen(6)
 pro trace_LDEM,fdips_file=fdips_file,$
                ldem_file=ldem_file,$
                period=period,$
@@ -25,8 +29,8 @@ pro trace_LDEM,fdips_file=fdips_file,$
   common comunes,tm,wt,nband,demc,PHI,parametrizacion,Tmin,Tmax,nr,nth,np,rad,lat,lon,lambda,WTc
   common results_tomo,tfbe,sfbe,N_e
   common loss_rate,Er
-  common structure ,sph_data
-  common structure2,pfss_data 
+;  common structure ,sph_data
+;  common structure2,pfss_data 
 ;test
 ;+
 ; PURPOSE: 
@@ -98,8 +102,6 @@ if keyword_set(awsom_file) then file_flag = 1
      return
   endif
 
-if keyword_set(expand) then period=period+'_expand'
-
 ; Add radstart suffix to the output filename:
   if n_elements(radstart) eq 1 then $
   period=period+'_radstart-'+strmid(string(radstart),6,5)+'Rs'
@@ -143,15 +145,15 @@ if keyword_set(fdips_file) then PFSSM_model= fdips_file
   if not keyword_set(mhd) and not keyword_set(field_awsom)   then create_structure    ,    PFSSM_model
   if     keyword_set(mhd)                                    then create_structure_MHD,    '/data1/DATA/MHD_SWMF/'+fdips_file
 ;  if     keyword_set(field_awsom)                            then create_structure_MHD_new,'/data1/DATA/MHD_SWMF/'+fdips_file
-  if     keyword_set(field_awsom)                            then read_structure_MHD,'/media/Data/'+field_awsom,sph_data
+  if     keyword_set(field_awsom)                            then read_structure_MHD,'/data1/work/MHD/'+field_awsom,sph_data ;esto e sun simple restore!!!!
 
 ; change the name of the created structure to a new name:
   pfss_data = sph_data
   undefine,sph_data             ;liberando espacio 300Mb  
 ; Set the uniform grid size, in case /unifgrid is used for the starting points. 
 ; Default size is 90x180.
-  if NOT keyword_set(dlat) then dlat = 2   
-  if NOT keyword_set(dlon) then dlon = 2
+  if NOT keyword_set(dlat) then dlat = 2. + fltarr(n_elements(radstart))  
+  if NOT keyword_set(dlon) then dlon = 2. + fltarr(n_elements(radstart))
 
 ; If BOX was not set use the full corona:
   if NOT keyword_set(box)  then box = [0.,-90,360.,+90.] 
@@ -161,14 +163,14 @@ if keyword_set(fdips_file) then PFSSM_model= fdips_file
   if keyword_set(marcgrid) then spherical_field_start_coord,pfss_data,fieldtype,spacing,radstart=radstart,bbox=box
   if keyword_set(aunifgrid) then sph_field_str_coord_unifang,pfss_data,dlat,dlon        ,radstart=radstart,bbox=box
   if keyword_set(unifgrid_v2) then sph_field_str_coord_unifang_v2,pfss_data,dlatv=dlat,dlonv=dlon,radstartv=radstart,bbox=box
-
+;guardar el pfss_data si se acaba de calcular.
 ; And now, do trace the field lines:
-;stop
+stop
 if not keyword_set (pfss_data_file) then  spherical_trace_field,pfss_data,linekind=linekind,linelengths=linelengths,safety=safety,stepmax=stepmax 
-if not keyword_set (pfss_data_file) then  save,pfss_data,FILENAME = 'sph_data_'+awsom_file+period+'.sav'
+stop
+if not keyword_set (pfss_data_file) then  save,pfss_data,linekind,linelengths,FILENAME = 'pfss_data_'+awsom_file+period+'.sav'
 salto_creacion_pfss:
 if keyword_set (pfss_data_file) then restore,pfss_data_file
-stop
 
 ; Change the coding for linekind:
   linekind=linekind-2           ; so that 0=open and 1=closed
@@ -193,7 +195,7 @@ stop
   stth_v      = (*pfss_data.stth) (iOC) ; N_lineas  
   stph_v      = (*pfss_data.stph) (iOC) ; N_lineas  
 ;-----------------------------------------------------------
-stop
+
 ; Read the tomographics results and set a few parameters concerning
 ; the tomographic grid:
   if not keyword_set(dgfw) and not keyword_set(awsom_file) and keyword_set(ldem_file) then      read_ldem,ldem_file,/ldem,/gauss1
@@ -201,9 +203,12 @@ stop
 ;  if     keyword_set(awsom)then      read_awsom,awsom_file
   
   if     keyword_set(awsom_file) then  begin
-     read_awsom_matrix,suff_file=awsom_file,nr=500,nt=90,np=180,/ne_out,n_e,/te_out,te,/qrad_out,qrad,/nelasco_out,ne_lasco,/qheat_out,qheat,/qebyq_out,qebyq
-     Nrad=500
-     nr=500
+     read_awsom_matrix,suff_file=awsom_file,nr=26,nt=90,np=180,/ne_out,n_e,/te_out,te;,/qrad_out,qrad,/nelasco_out,ne_lasco,/qheat_out,qheat,/qebyq_out,qebyq
+;     Nrad=500
+;     nr=500
+;las matrices fueron previamente interpoladas
+     Nrad=26
+     nr=26
      Nlat=90
      nth=90
      Nlon=180
@@ -220,12 +225,13 @@ stop
      WTc = -666.
      Tmin=500000.
      Tmax=3.50000e+06
-     Er = qrad ;solo un cambio de nombre
+     qrad = N_e * 0. - 666.
+     Er = qrad                  ;solo un cambio de nombre
      Tm = Te
   endif
  
   dr_tom = rad(1)-rad(0)        ; grid radial bin size
-  if     keyword_set(awsom_file) then Rmax_tom = rad(nr-1)
+  if     keyword_set(awsom_file) then Rmax_tom = rad(nr-3)
   if not keyword_set(awsom_file) then Rmax_tom = rad(nr-3) ; maximum height for which LDEM was computed
   
 
@@ -236,7 +242,7 @@ stop
      scoreR=total( abs(1.-ratio)   , 4 ) / float(nband)
   endif
   Nptmax_v = 150                ; ESTO NO ES ROBUSTO, 
-  if keyword_set(awsom_file)  then Nptmax_v = 1100 
+  if keyword_set(awsom_file)  then Nptmax_v = 150
 ;  sin embargo, por la experiencia de haber realizado varios trazados
 ;  creo que va funcionar. 
 ;  Ningun sampleo supera este valor de puntos por linea
@@ -487,7 +493,7 @@ endfor                          ; closes lines loop
 ; Trim all unnecesary information from resulting arrays:
   Npts_max = max(Npts_v)
   print, 'IMPORTANTE: puntos maximos de todas las lineas --> Npts_max'+Npts_max
-stop
+  
     Ne_v  = reform(     Ne_v(0:Npts_max-1,*) ) 
     Tm_v  = reform(     Tm_v(0:Npts_max-1,*) ) 
     if keyword_set(awsom_file) then begin
@@ -511,16 +517,16 @@ stop
    Bth_v  = reform(    Bth_v(0:Npts_max-1,*) )
    Bph_v  = reform(    Bph_v(0:Npts_max-1,*) )  
 ; Save the sampled data:
-   stop
+
    if keyword_set(ldem_file) then save,fieldtype,spacing,radstart,Rmax_tom,dr_tom,WTc,Nlin,Npts_max,rad_v,lat_v,lon_v,$
                                        s_v,npts_v,midcell_v,loopL,opcls,Ne_v,Tm_v,WT_v,scoreR_v,str_v,stth_v,stph_v,$
                                        B_v,Br_v,Bth_v,Bph_v,Tmin,Tmax,npar,DEMc_v,lambda_v,enrad_v,enlat_v,enlon_v,FILENAME = output_file+'.sav'
 
    if keyword_set(awsom_file) then save,fieldtype,spacing,radstart,Rmax_tom,dr_tom,Nlin,Npts_max,rad_v,lat_v,lon_v,$
-                                        s_v,npts_v,midcell_v,loopL,opcls,Ne_v,Tm_v,Er_v,str_v,stth_v,stph_v,$
-                                        B_v,Br_v,Bth_v,Bph_v,enrad_v,enlat_v,enlon_v,ne_lasco_v,qheat_v,qebyq_v,Tmin,Tmax,FILENAME = output_file+'.sav'
+                                        s_v,npts_v,midcell_v,loopL,opcls,Ne_v,Tm_v,str_v,stth_v,stph_v,$
+                                        B_v,Br_v,Bth_v,Bph_v,enrad_v,enlat_v,enlon_v,Tmin,Tmax,FILENAME = output_file+'.sav'
 
-   stop
+   ;stop
    goto,final
    openw,1,output_file
       if keyword_set(ldem_file) then  writeu,1,fieldtype,spacing,radstart,Rmax_tom,dr_tom,WTc

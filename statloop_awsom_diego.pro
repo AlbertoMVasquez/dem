@@ -1,5 +1,6 @@
 ;statloop_awsom_diego,file='traceLDEM_CR2082_test_DEMT_full_asd_diarrea_putrefacta2_radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat',alturas=6,/demt
 ;statloop_awsom_diego,file='traceLDEM_CR2082_test_ldem_6alturas_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav',alturas=6,/demt
+;statloop_awsom_diego,file='traceLDEM_CR2208_demt_radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav',alturas=6,/demt
 pro statloop_awsom_diego,rmin=rmin,rmax=rmax,alturas=alturas,ajuste_alto=ajuste_alto,ajuste_bajo=ajuste_bajo,demt=demt,file=file,out_file=out_file
 ;    common trace_sampled,rad_v,lat_v,lon_v,s_v,Ne_v,Tm_v,WT_v,Er_v,scoreR_v,midcell_v,Npts_v,str_v,stth_v,stph_v,radstart,enrad_v,enlon_v,enlat_v,npar,DEMc_v,lambda_v,L,Tmin,Tmax
 ;  common B_sampled,B_v,Br_v,Bth_v,Bph_v
@@ -261,7 +262,7 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
 
         rrr0=findel(1.025,rad_l) ;se usa para evaluar Nebasal
         B_base (ileg) = B_l (rrr0)
-        scoreR (ileg) = scoreR_l
+;        scoreR (ileg) = scoreR_l
 ;select usefull data                                                     
         p = where ( rad_l ge rmin and rad_l le rmax and Ne_l ne -999. and scoreR_l lt 0.10)
 ;podria relajarse a 0.25??
@@ -418,6 +419,7 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
     franja_lineal,wfit,salidafit,min_s,max_s,error_t(ileg),fraccion
     ft_s (ileg) = fraccion
     pearson_ts(ileg) = correlate(sfit,wfit)
+;    if ft (ileg) le 0.1 or ft_s (ileg) le 0.1 then stop
     
     Te_base(ileg) = gradT(ileg) * 1.025 + Tm0(ileg)
     betabase(ileg) = (kb/bb * nebasal(ileg) * te_base(ileg)) /(B_base(ileg)^2/(8*!pi))
@@ -555,9 +557,9 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
        B_base (ileg  ) = B_l1 (rrr01)
        B_base (ileg+1) = B_l2 (rrr02)
 
-;stop;falta invertir...
-  p1 = where ( rad_l1 ge rmin and rad_l1 le rmax and Ne_l1 ne -999. and scoreR_l1 lt 0.1 and WT_l1 ge WTc*1.e6)
-  p2 = where ( rad_l2 ge rmin and rad_l2 le rmax and Ne_l2 ne -999. and scoreR_l2 lt 0.1 and WT_l2 ge WTc*1.e6)
+
+  p1 = where ( rad_l1 ge rmin and rad_l1 le rmax and Ne_l1 ne -999. and scoreR_l1 lt 0.1 );and WT_l1 ge WTc*1.e6)
+  p2 = where ( rad_l2 ge rmin and rad_l2 le rmax and Ne_l2 ne -999. and scoreR_l2 lt 0.1 );and WT_l2 ge WTc*1.e6)
 
   if  p1(0) eq -1 || p2(0) eq -1 then goto,skipnextloop
 
@@ -838,7 +840,7 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
     Tm0(ileg)   = A[0]
     gradT(ileg) = A[1]
     r2t (ileg)  = r2;si es isotermico va a dar bajo.      
-    pearson_t(ileg) = correlate(xfit1,alog(wfit1))
+    pearson_t(ileg) = correlate(xfit1,wfit1)
 
     franja_lineal,wfit1,salidafit,min_r1,max_r1,error_t(ileg),fraccion
     ft (ileg) = fraccion
@@ -850,7 +852,9 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
     
     franja_lineal,wfit1,salidafit,min_s1,max_s1,error_t(ileg),fraccion
     ft_s  (ileg)  = fraccion
-    pearson_ts(ileg) = correlate(sfit1,alog(wfit1))
+    pearson_ts(ileg) = correlate(sfit1,wfit1)
+
+;    if opcls(il) eq 2 and ft (ileg) le 0.1  then stop
     
     Te_base(ileg) = gradT_s(ileg) * 1.025 + Tm0_s(ileg)
     betabase(ileg) = (kb/bb * nebasal(ileg) * te_base(ileg)) /(B_base(ileg)^2/(8*!pi))
@@ -859,7 +863,7 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
     Tm0(ileg+1)   = A[0]
     gradT(ileg+1) = A[1]
     r2t (ileg+1)  = r2
-    pearson_t(ileg+1) = correlate(xfit2,alog(wfit2))
+    pearson_t(ileg+1) = correlate(xfit2,wfit2)
 
     franja_lineal,wfit2,salidafit,min_r2,max_r2,error_t(ileg+1),fraccion
     ft (ileg+1) = fraccion
@@ -871,8 +875,10 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
 
     franja_lineal,wfit2,salidafit,min_s2,max_s2,error_t(ileg+1),fraccion
     ft_s  (ileg+1)  = fraccion
-    pearson_ts(ileg+1) = correlate(sfit2,alog(wfit2))
+    pearson_ts(ileg+1) = correlate(sfit2,wfit2)
 
+;    if opcls(il) eq 2 and ft (ileg+1) le 0.1 then stop
+    
     Te_base(ileg+1) = gradT_s(ileg+1) * 1.025 + Tm0_s(ileg+1)
     betabase(ileg+1) = (kb/bb * nebasal(ileg+1) * te_base(ileg+1)) /(B_base(ileg+1)^2/(8*!pi))
 
