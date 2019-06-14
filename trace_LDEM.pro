@@ -1,9 +1,12 @@
 ;trace_LDEM,field_awsom='/data1/work/MHD/sph_data_awsom_2082_1.85.sav',awsom_file='awsom_2082_1.85',period=period,safety=.5,stepmax=8000,/unifgrid_v2,dlat=dlat,dlon=dlon,radstart=radstart
 ;trace_LDEM,pfss_data_file='pfss_data_cr2082_trazado5alturas.sav',ldem_file='LDEM.v3_CR2082_l.25.75.5_fd_Rmin1.00_Rmax1.30_Nr26_InstRmax1.26_bf4_r3d_B_vfullcadence_chianti.ioneq_sun_coronal_1992_feldman_ext.abund_euvi.B_L171_DECON_gauss1_lin_Norm-median_singlStart',period=period,safety=.5,stepmax=8000,/unifgrid_v2,dlat=dlat,dlon=dlon,radstart=radstart
 ;trace_LDEM,field_awsom='sph_data_awsom_2208_1.85.sav',ldem_file='asd',period='probando_nuevamente_',safety=.5,stepmax=7500,/unifgrid_v2,radstart=1.025+0.04*findgen(6),awsom_file='awsom_2208_1.85_new'
+
 ;trace_LDEM,ldem_file='LDEM.v3_CR2208_l.50.20.20_h1_Rmin1.00_Rmax1.26_Nr26_InstRmax1.26_bf4_r3d_B_chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',pfss_data_file='pfss_data_awsom_2208_1.85_newprobando_nuevamente__radstart-1.025-1.225Rs.sav',radstart=1.025 + 0.04 *findgen(6),period='probando_cr2208_con_demt_',/unifgrid_v2
-;trace_LDEM,awsom_file='awsom_2208_1.85',pfss_data_file='pfss_data_awsom_2208_1.85_newprobando_nuevamente__radstart-1.025-1.225Rs.sav',radstart=1.025 + 0.04 *findgen(6),period='2208_con_awsomdata_',/unifgrid_v2
+;trace_LDEM,pfss_data_file='pfss_data_awsom_2208_1.85_newprobando_nuevamente__radstart-1.025-1.225Rs.sav',awsom_file='awsom_2208_1.85',radstart=1.025 + 0.04 *findgen(6),period='2208_con_awsomdata_',/unifgrid_v2
 ;trace_LDEM,pfss_data_file='pfss_data_cr2082_trazado5alturas.sav',awsom_file='awsom_2082_1.85_short',period='2082_con_awsomdata_',/unifgrid_v2,radstart=1.025 + 0.04 *findgen(6)
+
+;trace_LDEM,pfss_data_file='pfss_data_cr2082_trazado5alturas.sav',ldem_file='LDEM.v3_CR2082_l.35.2.3_h1_Rmin1.00_Rmax1.30_Nr26_InstRmax1.26_bf4_r3d_B_vfullcadence_chianti.ioneq_sun_coronal_1992_feldman_ext.abund_euvi.B_L171_DECON_gauss1_lin_Norm-median_singlStart',period='2082_hollow_demt_',safety=.5,stepmax=7500,/unifgrid_v2,radstart=1.025 + 0.04 *findgen(6)
 pro trace_LDEM,fdips_file=fdips_file,$
                ldem_file=ldem_file,$
                period=period,$

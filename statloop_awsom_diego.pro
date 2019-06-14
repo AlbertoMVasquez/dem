@@ -1,6 +1,6 @@
-;statloop_awsom_diego,file='traceLDEM_CR2082_test_DEMT_full_asd_diarrea_putrefacta2_radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat',alturas=6,/demt
 ;statloop_awsom_diego,file='traceLDEM_CR2082_test_ldem_6alturas_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav',alturas=6,/demt
 ;statloop_awsom_diego,file='traceLDEM_CR2208_demt_radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav',alturas=6,/demt
+statloop_awsom_diego,file='traceLDEM_CR2082_con_awsomdata__radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav',alturas=6
 pro statloop_awsom_diego,rmin=rmin,rmax=rmax,alturas=alturas,ajuste_alto=ajuste_alto,ajuste_bajo=ajuste_bajo,demt=demt,file=file,out_file=out_file
 ;    common trace_sampled,rad_v,lat_v,lon_v,s_v,Ne_v,Tm_v,WT_v,Er_v,scoreR_v,midcell_v,Npts_v,str_v,stth_v,stph_v,radstart,enrad_v,enlon_v,enlat_v,npar,DEMc_v,lambda_v,L,Tmin,Tmax
 ;  common B_sampled,B_v,Br_v,Bth_v,Bph_v
@@ -263,10 +263,12 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
         rrr0=findel(1.025,rad_l) ;se usa para evaluar Nebasal
         B_base (ileg) = B_l (rrr0)
 ;        scoreR (ileg) = scoreR_l
-;select usefull data                                                     
-        p = where ( rad_l ge rmin and rad_l le rmax and Ne_l ne -999. and scoreR_l lt 0.10)
+;select usefull data
+        if not keyword_set(demt) then  p = where ( rad_l ge rmin and rad_l le rmax and Ne_l ne -999.)
+        if keyword_set(demt) then  p = where ( rad_l ge rmin and rad_l le rmax and Ne_l ne -999. and scoreR_l lt 0.10)
 ;podria relajarse a 0.25??
 ;hacer estadistica de scoreR_l  !!!
+        
         if p(0) eq -1 then goto,skipnextloop_open
 
         Ne_l =  Ne_l (p)
@@ -558,8 +560,11 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
        B_base (ileg+1) = B_l2 (rrr02)
 
 
-  p1 = where ( rad_l1 ge rmin and rad_l1 le rmax and Ne_l1 ne -999. and scoreR_l1 lt 0.1 );and WT_l1 ge WTc*1.e6)
-  p2 = where ( rad_l2 ge rmin and rad_l2 le rmax and Ne_l2 ne -999. and scoreR_l2 lt 0.1 );and WT_l2 ge WTc*1.e6)
+       if keyword_set(demt) then  p1 = where ( rad_l1 ge rmin and rad_l1 le rmax and Ne_l1 ne -999. and scoreR_l1 lt 0.1 )
+       if keyword_set(demt) then  p2 = where ( rad_l2 ge rmin and rad_l2 le rmax and Ne_l2 ne -999. and scoreR_l2 lt 0.1 )
+
+       if not keyword_set(demt) then  p1 = where ( rad_l1 ge rmin and rad_l1 le rmax and Ne_l1 ne -999. )
+       if not keyword_set(demt) then  p2 = where ( rad_l2 ge rmin and rad_l2 le rmax and Ne_l2 ne -999. )
 
   if  p1(0) eq -1 || p2(0) eq -1 then goto,skipnextloop
 
