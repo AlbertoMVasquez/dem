@@ -2,10 +2,10 @@
 ;trace_LDEM,pfss_data_file='pfss_data_cr2082_trazado5alturas.sav',ldem_file='LDEM.v3_CR2082_l.25.75.5_fd_Rmin1.00_Rmax1.30_Nr26_InstRmax1.26_bf4_r3d_B_vfullcadence_chianti.ioneq_sun_coronal_1992_feldman_ext.abund_euvi.B_L171_DECON_gauss1_lin_Norm-median_singlStart',period=period,safety=.5,stepmax=8000,/unifgrid_v2,dlat=dlat,dlon=dlon,radstart=radstart
 ;trace_LDEM,field_awsom='sph_data_awsom_2208_1.85.sav',ldem_file='asd',period='probando_nuevamente_',safety=.5,stepmax=7500,/unifgrid_v2,radstart=1.025+0.04*findgen(6),awsom_file='awsom_2208_1.85_new'
 
+
 ;trace_LDEM,ldem_file='LDEM.v3_CR2208_l.50.20.20_h1_Rmin1.00_Rmax1.26_Nr26_InstRmax1.26_bf4_r3d_B_chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',pfss_data_file='pfss_data_awsom_2208_1.85_newprobando_nuevamente__radstart-1.025-1.225Rs.sav',radstart=1.025 + 0.04 *findgen(6),period='probando_cr2208_con_demt_',/unifgrid_v2
 ;trace_LDEM,pfss_data_file='pfss_data_awsom_2208_1.85_newprobando_nuevamente__radstart-1.025-1.225Rs.sav',awsom_file='awsom_2208_1.85',radstart=1.025 + 0.04 *findgen(6),period='2208_con_awsomdata_',/unifgrid_v2
-;trace_LDEM,pfss_data_file='pfss_data_cr2082_trazado5alturas.sav',awsom_file='awsom_2082_1.85_short',period='2082_con_awsomdata_',/unifgrid_v2,radstart=1.025 + 0.04 *findgen(6)
-
+;trace_LDEM,pfss_data_file='pfss_data_cr2082_trazado5alturas.sav',awsom_file='awsom_2082_1.85_short',period='2082_con_awsomdata_',/unifgrid_v2,radstart=1.025 + 0.04 *findgen(6),safety=.5,stepmax=10000
 ;trace_LDEM,pfss_data_file='pfss_data_cr2082_trazado5alturas.sav',ldem_file='LDEM.v3_CR2082_l.35.2.3_h1_Rmin1.00_Rmax1.30_Nr26_InstRmax1.26_bf4_r3d_B_vfullcadence_chianti.ioneq_sun_coronal_1992_feldman_ext.abund_euvi.B_L171_DECON_gauss1_lin_Norm-median_singlStart',period='2082_hollow_demt_',safety=.5,stepmax=7500,/unifgrid_v2,radstart=1.025 + 0.04 *findgen(6)
 pro trace_LDEM,fdips_file=fdips_file,$
                ldem_file=ldem_file,$
@@ -32,8 +32,12 @@ pro trace_LDEM,fdips_file=fdips_file,$
   common comunes,tm,wt,nband,demc,PHI,parametrizacion,Tmin,Tmax,nr,nth,np,rad,lat,lon,lambda,WTc
   common results_tomo,tfbe,sfbe,N_e
   common loss_rate,Er
-;  common structure ,sph_data
-;  common structure2,pfss_data 
+  common results_images,ima,sima,ra,pa,ya,za,em,npx
+  common fixed_width,sigma
+  common fixed_parameter_equalizer,xmax,sigma_v,demv
+;los commons pertenecen al read_ldem
+
+
 ;test
 ;+
 ; PURPOSE: 
@@ -206,7 +210,7 @@ if keyword_set (pfss_data_file) then restore,pfss_data_file
 ;  if     keyword_set(awsom)then      read_awsom,awsom_file
   
   if     keyword_set(awsom_file) then  begin
-     read_awsom_matrix,suff_file=awsom_file,nr=26,nt=90,np=180,/ne_out,n_e,/te_out,te;,/qrad_out,qrad,/nelasco_out,ne_lasco,/qheat_out,qheat,/qebyq_out,qebyq
+     read_awsom_matrix,suff_file=awsom_file,nr=26,nt=90,np=180,/ne_out,n_e,/te_out,te,/qrad_out,qrad;,/nelasco_out,ne_lasco,/qheat_out,qheat,/qebyq_out,qebyq
 ;     Nrad=500
 ;     nr=500
 ;las matrices fueron previamente interpoladas
@@ -228,11 +232,11 @@ if keyword_set (pfss_data_file) then restore,pfss_data_file
      WTc = -666.
      Tmin=500000.
      Tmax=3.50000e+06
-     qrad = N_e * 0. - 666.
+;     qrad = N_e * 0. - 666.
      Er = qrad                  ;solo un cambio de nombre
      Tm = Te
   endif
- 
+stop 
   dr_tom = rad(1)-rad(0)        ; grid radial bin size
   if     keyword_set(awsom_file) then Rmax_tom = rad(nr-3)
   if not keyword_set(awsom_file) then Rmax_tom = rad(nr-3) ; maximum height for which LDEM was computed
@@ -254,8 +258,8 @@ if keyword_set (pfss_data_file) then restore,pfss_data_file
 ; one data point per tomographic voxel crossed by line.
       Ne_v = fltarr(Nptmax_v,Nlin)
       Tm_v = fltarr(Nptmax_v,Nlin)
+      Er_v = fltarr(Nptmax_v,Nlin)
       if keyword_set(awsom_file)  then begin
-;         Er_v = fltarr(Nptmax_v,Nlin)
 ;         qheat_v = fltarr(Nptmax_v,Nlin)
 ;         qebyq_v = fltarr(Nptmax_v,Nlin)
 ;         ne_lasco_v = fltarr(Nptmax_v,Nlin) 
@@ -295,7 +299,7 @@ xxx=0
            s_l = fltarr(Np_l)      -666. 
           Ne_l = fltarr(Np_l)      -666. 
           Tm_l = fltarr(Np_l)      -666. 
- 
+          Er_l = fltarr(Np_l)      -666. 
           if keyword_set(ldem_file) then begin
              WT_l = fltarr(Np_l)      -666. 
              lambda_l = fltarr(Np_l,npar) -666. 
@@ -308,7 +312,6 @@ xxx=0
           B_l = fltarr(Np_l)      -666. 
           lab_l = fltarr(Np_l)      -666. 
           if keyword_set(awsom_file)  then begin
-;             Er_l = fltarr(Np_l)      -666. 
 ;             Ne_lasco_l = fltarr(Np_l)      -666.
  ;            qheat_l = fltarr(Np_l)      -666.
  ;            qebyq_l = fltarr(Np_l)      -666.
@@ -366,16 +369,16 @@ xxx=0L
         if  rad_l(ir) le Rmax_tom+dr_tom/2 then begin ;<--
            Ne_l(ir)   = N_e(irad,ilat,ilon)
            Tm_l(ir)   = Tm (irad,ilat,ilon)
+           Er_l(ir)   = Er (irad,ilat,ilon)
            if keyword_set(awsom_file) then begin
-  ;            Er_l(ir)   = Er (irad,ilat,ilon)
   ;            Ne_lasco_l(ir) = ne_lasco (irad,ilat,ilon)
   ;            qheat_l(ir) = qheat (irad,ilat,ilon)
   ;            qebyq_l(ir) = qebyq (irad,ilat,ilon)
            endif
            if keyword_set(ldem_file) then begin           
               WT_l(ir)   = WT (irad,ilat,ilon)
-              lambda_l(ir,*) = lambda(irad,ilat,ilon,*) ;<-- grabo cada componente
-              DEMc_l  (ir)   = DEMc  (irad,ilat,ilon)   ;<--
+              lambda_l(ir,*) = lambda(irad,ilat,ilon,*) 
+              DEMc_l  (ir)   = DEMc  (irad,ilat,ilon)   
               scoreR_l(ir)   = scoreR (irad,ilat,ilon) 
            endif
         endif                
@@ -415,9 +418,8 @@ xxx=0L
            ind = (median(index))(0)
                 Ne_v(ivox,il) =     Ne_l(ind)
                 Tm_v(ivox,il) =     Tm_l(ind)
-               
+                Er_v(ivox,il) =     Er_l(ind)
                 if keyword_set(awsom_file) then begin
-   ;                Er_v(ivox,il) =     Er_l(ind)
    ;                Ne_lasco_v(ivox,il) = ne_lasco_l (ind)
    ;                qheat_v(ivox,il) = qheat_l (ind)
    ;                qebyq_v(ivox,il) = qebyq_l (ind)
@@ -499,8 +501,8 @@ endfor                          ; closes lines loop
   
     Ne_v  = reform(     Ne_v(0:Npts_max-1,*) ) 
     Tm_v  = reform(     Tm_v(0:Npts_max-1,*) ) 
+    Er_v  = reform(     Er_v(0:Npts_max-1,*) )
     if keyword_set(awsom_file) then begin
-    ;   Er_v  = reform(     Er_v(0:Npts_max-1,*) )
     ;   Ne_lasco_v = reform( ne_lasco_v (0:Npts_max-1,*) )
     ;   qheat_v = reform( qheat_v (0:Npts_max-1,*) )
     ;   qebyq_v = reform( qebyq_v (0:Npts_max-1,*) )
@@ -523,13 +525,13 @@ endfor                          ; closes lines loop
 
    if keyword_set(ldem_file) then save,fieldtype,spacing,radstart,Rmax_tom,dr_tom,WTc,Nlin,Npts_max,rad_v,lat_v,lon_v,$
                                        s_v,npts_v,midcell_v,loopL,opcls,Ne_v,Tm_v,WT_v,scoreR_v,str_v,stth_v,stph_v,$
-                                       B_v,Br_v,Bth_v,Bph_v,Tmin,Tmax,npar,DEMc_v,lambda_v,enrad_v,enlat_v,enlon_v,FILENAME = output_file+'.sav'
+                                       B_v,Br_v,Bth_v,Bph_v,Tmin,Tmax,npar,DEMc_v,lambda_v,enrad_v,enlat_v,enlon_v,Er_v,FILENAME = output_file+'.sav'
 
    if keyword_set(awsom_file) then save,fieldtype,spacing,radstart,Rmax_tom,dr_tom,Nlin,Npts_max,rad_v,lat_v,lon_v,$
                                         s_v,npts_v,midcell_v,loopL,opcls,Ne_v,Tm_v,str_v,stth_v,stph_v,$
-                                        B_v,Br_v,Bth_v,Bph_v,enrad_v,enlat_v,enlon_v,Tmin,Tmax,FILENAME = output_file+'.sav'
+                                        B_v,Br_v,Bth_v,Bph_v,enrad_v,enlat_v,enlon_v,Tmin,Tmax,Er_v,FILENAME = output_file+'.sav'
 
-   ;stop
+   stop
    goto,final
    openw,1,output_file
       if keyword_set(ldem_file) then  writeu,1,fieldtype,spacing,radstart,Rmax_tom,dr_tom,WTc

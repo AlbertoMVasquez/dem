@@ -74,7 +74,12 @@
 ;leer_ldem_escribir_ascii,'LDEM.v3_CR2198_l.70.90.90_h1_reduced_Rmin1.00_Rmax1.26_Nr26_InstRmax1.26_bf4_r3d_B_chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',ne_out='Ne_CR2198_DEMT-AIA_H1-L.7.9.9_r3D_reduced'
 ;leer_ldem_escribir_ascii,'LDEM.v3_CR2198_l.50.35.45_h1_Rmin1.00_Rmax1.26_Nr26_InstRmax1.26_bf4_r3d_B_chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',ne_out='Ne_CR2198_DEMT-AIA_H1-L.5.35.45_r3D'
 ;------
-pro leer_ldem_escribir_ascii,file,ascii=ascii,ne_out=ne_out,tm_out=tm_out,R_out=R_out,i_out=i_out,tabla=tabla,aevs=aevs
+
+;----------- para freswed
+;leer_ldem_escribir_ascii,'LDEM.v3_CR2082_l.35.2.3_h1_Rmin1.00_Rmax1.30_Nr26_InstRmax1.26_bf4_r3d_B_vfullcadence_chianti.ioneq_sun_coronal_1992_feldman_ext.abund_euvi.B_L171_DECON_gauss1_lin_Norm-median_singlStart',Er_out='Er_CR2082_DEMT-EUVI_behind_H1-L.35.2.3_r3d'
+;----------
+
+pro leer_ldem_escribir_ascii,file,ascii=ascii,ne_out=ne_out,tm_out=tm_out,R_out=R_out,i_out=i_out,er_out=er_out,tabla=tabla,aevs=aevs
   common results_images,ima,sima,ra,pa,ya,za,em,npx
   common comunes,tm,wt,nband,demc,PHI,parametrizacion,Tmin,Tmax,nr,nth,np,rad,lat,lon,lambda,WTc
   common results_tomo,tfbe,sfbe,N_e
@@ -108,9 +113,10 @@ endif
   R195 (ZDA)   = -999.
   R284 (ZDA)   = -999.
 
-  N_e=float(N_e)
-  tm=float(tm)
-  R =float(R)
+  N_e = float(N_e)
+  tm  = float(tm)
+  R   = float(R)
+  Er  = float(Er)
   R171=float(R171)
   R195=float(R195)
   R284=float(R284)
@@ -171,7 +177,12 @@ endif
      writeu,4,R
      close,4
   endif
-
+  if keyword_set(Er_out) then begin
+     openw,5,Er_out
+     writeu,5,Er
+     close,5
+  endif
+  
   if keyword_set(i_out) then begin
      openw,4,'R171'+i_out
      writeu,4,R171
