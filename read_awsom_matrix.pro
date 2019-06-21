@@ -19,6 +19,7 @@ pro read_awsom_matrix,dir=dir,suff_file=suff_file,nr=nr,nt=nt,np=np,ne_out=ne_ou
      readu,1,qrad
      close,1
   endif
+
   if keyword_set(qheat_out) then begin
      qheat=fltarr(nr,nt,np)
      openr,1,dir+'qheat_'+suff_file

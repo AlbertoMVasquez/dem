@@ -208,9 +208,12 @@ if keyword_set (pfss_data_file) then restore,pfss_data_file
   if not keyword_set(dgfw) and not keyword_set(awsom_file) and keyword_set(ldem_file) then      read_ldem,ldem_file,/ldem,/gauss1
   if     keyword_set(dgfw) and not keyword_set(awsom_file) and keyword_set(ldem_file) then      read_ldem,ldem_file,/ldem,/dgfw
 ;  if     keyword_set(awsom)then      read_awsom,awsom_file
-  
+
   if     keyword_set(awsom_file) then  begin
-     read_awsom_matrix,suff_file=awsom_file,nr=26,nt=90,np=180,/ne_out,n_e,/te_out,te,/qrad_out,qrad;,/nelasco_out,ne_lasco,/qheat_out,qheat,/qebyq_out,qebyq
+     read_awsom_matrix,suff_file=awsom_file,nr=26,nt=90,np=180,/te_out,te,/ne_out,n_e,/qrad_out,qrad;,/nelasco_out,ne_lasco,/qheat_out,qheat,/qebyq_out,qebyq
+;OBS: las salidas te,n_e,qrad etc tienene que estar en el mismo orden
+;que figuran en el read_awsom_matrix sino aca cam,bian de nombre y s
+;epudre el rancho, viejo
 ;     Nrad=500
 ;     nr=500
 ;las matrices fueron previamente interpoladas
@@ -232,7 +235,6 @@ if keyword_set (pfss_data_file) then restore,pfss_data_file
      WTc = -666.
      Tmin=500000.
      Tmax=3.50000e+06
-;     qrad = N_e * 0. - 666.
      Er = qrad                  ;solo un cambio de nombre
      Tm = Te
   endif
