@@ -17,7 +17,9 @@
 pro estadistica_diego
   file1 = 'trace_vectors_LDEM_CR2082_hollow_demt__radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
   file2 = 'trace_vectors_LDEM_CR2082_con_awsomdata__radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
-  file2= 'trace_vectors_LDEM_CR2208_con_awsomdata__radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
+  file3 = 'trace_vector_2082_ceci_10alturas.sav'
+  file4 = 'trace_vectors_LDEM_CR2082_hollow_demt-data_pfss_radstart-1.035-1.215Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
+  
 ;restore del trzado.sav
 restore,file1
 ok = where(gradt ne -555. and opclstat eq 0. and r2n gt 0.7 and footlat gt 70)

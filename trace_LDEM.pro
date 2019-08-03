@@ -6,7 +6,12 @@
 ;trace_LDEM,ldem_file='LDEM.v3_CR2208_l.50.20.20_h1_Rmin1.00_Rmax1.26_Nr26_InstRmax1.26_bf4_r3d_B_chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',pfss_data_file='pfss_data_awsom_2208_1.85_newprobando_nuevamente__radstart-1.025-1.225Rs.sav',radstart=1.025 + 0.04 *findgen(6),period='probando_cr2208_con_demt_',/unifgrid_v2
 ;trace_LDEM,pfss_data_file='pfss_data_awsom_2208_1.85_newprobando_nuevamente__radstart-1.025-1.225Rs.sav',awsom_file='awsom_2208_1.85',radstart=1.025 + 0.04 *findgen(6),period='2208_con_awsomdata_',/unifgrid_v2
 ;trace_LDEM,pfss_data_file='pfss_data_cr2082_trazado5alturas.sav',awsom_file='awsom_2082_1.85_short',period='2082_con_awsomdata_',/unifgrid_v2,radstart=1.025 + 0.04 *findgen(6),safety=.5,stepmax=10000
-;trace_LDEM,pfss_data_file='pfss_data_cr2082_trazado5alturas.sav',ldem_file='LDEM.v3_CR2082_l.35.2.3_h1_Rmin1.00_Rmax1.30_Nr26_InstRmax1.26_bf4_r3d_B_vfullcadence_chianti.ioneq_sun_coronal_1992_feldman_ext.abund_euvi.B_L171_DECON_gauss1_lin_Norm-median_singlStart',period='2082_hollow_demt_',safety=.5,stepmax=7500,/unifgrid_v2,radstart=1.025 + 0.04 *findgen(6)
+
+;trace_LDEM,pfss_data_file='pfss_data_cr2082_trazado5alturas.sav',ldem_file='LDEM.v3_CR2082_l.35.2.3_h1_Rmin1.00_Rmax1.30_Nr26_InstRmax1.26_bf4_r3d_B_vfullcadence_chianti.ioneq_sun_coronal_1992_feldman_ext.abund_euvi.B_L171_DECON_gauss1_lin_Norm-median_singlStart',period='2082_hollow_demt_',safety=.5,stepmax=7500,/unifgrid_v2,radstart=1.025+ 0.04 *findgen(6)
+
+;trace_LDEM,fdips_file='fdips_field_150x180x360_synop_Mr_0.polfil.2082.ubdat',ldem_file='LDEM.v3_CR2082_l.35.2.3_h1_Rmin1.00_Rmax1.30_Nr26_InstRmax1.26_bf4_r3d_B_vfullcadence_chianti.ioneq_sun_coronal_1992_feldman_ext.abund_euvi.B_L171_DECON_gauss1_lin_Norm-median_singlStart',period='2082_hollow_demt-data_pfss',safety=.5,stepmax=3000,/unifgrid_v2,radstart=1.035 + 0.02 *findgen(10)
+
+;trace_LDEM,pfss_data_file='pfss_data_fdips2082_hollow_demt__radstart-1.035-1.215Rs.sav',awsom_file='awsom_2082_1.85_short',period='2082_awsom-data_pfss_10alturas',safety=.5,stepmax=3000,/unifgrid_v2;,radstart=1.035 + 0.02 *findgen(10)
 pro trace_LDEM,fdips_file=fdips_file,$
                ldem_file=ldem_file,$
                period=period,$
@@ -35,8 +40,10 @@ pro trace_LDEM,fdips_file=fdips_file,$
   common results_images,ima,sima,ra,pa,ya,za,em,npx
   common fixed_width,sigma
   common fixed_parameter_equalizer,xmax,sigma_v,demv
-;los commons pertenecen al read_ldem
+  common pfssm,rB,thB,phB,Br,Bth,Bph,B,nrB,nphB,nthB,Bint
+  common structure,sph_data
 
+;los commons pertenecen al read_ldem y al create_structure
 
 ;test
 ;+
@@ -149,7 +156,7 @@ if keyword_set(awsom_file) then file_flag = 1
 ; PFSSM_model='/data1/DATA/PFSSM/'+fdips_file
 if keyword_set(fdips_file) then PFSSM_model= fdips_file
 ; Read the FDIPS model and create a structure to serve as input to Marc's routines:
-  if not keyword_set(mhd) and not keyword_set(field_awsom)   then create_structure    ,    PFSSM_model
+  if keyword_set(fdips_file)                                 then create_structure    ,    PFSSM_model
   if     keyword_set(mhd)                                    then create_structure_MHD,    '/data1/DATA/MHD_SWMF/'+fdips_file
 ;  if     keyword_set(field_awsom)                            then create_structure_MHD_new,'/data1/DATA/MHD_SWMF/'+fdips_file
   if     keyword_set(field_awsom)                            then read_structure_MHD,'/data1/work/MHD/'+field_awsom,sph_data ;esto e sun simple restore!!!!
@@ -174,8 +181,9 @@ if keyword_set(fdips_file) then PFSSM_model= fdips_file
 ; And now, do trace the field lines:
 stop
 if not keyword_set (pfss_data_file) then  spherical_trace_field,pfss_data,linekind=linekind,linelengths=linelengths,safety=safety,stepmax=stepmax 
-stop
-if not keyword_set (pfss_data_file) then  save,pfss_data,linekind,linelengths,FILENAME = 'pfss_data_'+awsom_file+period+'.sav'
+
+if not keyword_set (pfss_data_file) and keyword_set(field_awsom) then  save,pfss_data,linekind,linelengths,FILENAME = 'pfss_data_'+awsom_file+period+'.sav'
+if not keyword_set (pfss_data_file) and keyword_set(fdips_file ) then  save,pfss_data,linekind,linelengths,FILENAME = 'pfss_data_fdips'+period+'.sav'
 salto_creacion_pfss:
 if keyword_set (pfss_data_file) then restore,pfss_data_file
 
@@ -210,9 +218,9 @@ if keyword_set (pfss_data_file) then restore,pfss_data_file
 ;  if     keyword_set(awsom)then      read_awsom,awsom_file
 
   if     keyword_set(awsom_file) then  begin
-     read_awsom_matrix,suff_file=awsom_file,nr=26,nt=90,np=180,/te_out,te,/ne_out,n_e,/qrad_out,qrad;,/nelasco_out,ne_lasco,/qheat_out,qheat,/qebyq_out,qebyq
-;OBS: las salidas te,n_e,qrad etc tienene que estar en el mismo orden
-;que figuran en el read_awsom_matrix sino aca cam,bian de nombre y s
+    read_awsom_matrix,suff_file=awsom_file,nr=26,nt=90,np=180,/te_out,te,/ne_out,n_e,/qrad_out,qrad ;,/nelasco_out,ne_lasco,/qheat_out,qheat,/qebyq_out,qebyq
+;OBS: las salidas te,n_e,qrad etc tienen que estar en el mismo orden
+;que figuran en el read_awsom_matrix sino aca cambian de nombre y s
 ;epudre el rancho, viejo
 ;     Nrad=500
 ;     nr=500
@@ -524,7 +532,7 @@ endfor                          ; closes lines loop
    Bth_v  = reform(    Bth_v(0:Npts_max-1,*) )
    Bph_v  = reform(    Bph_v(0:Npts_max-1,*) )  
 ; Save the sampled data:
-
+stop
    if keyword_set(ldem_file) then save,fieldtype,spacing,radstart,Rmax_tom,dr_tom,WTc,Nlin,Npts_max,rad_v,lat_v,lon_v,$
                                        s_v,npts_v,midcell_v,loopL,opcls,Ne_v,Tm_v,WT_v,scoreR_v,str_v,stth_v,stph_v,$
                                        B_v,Br_v,Bth_v,Bph_v,Tmin,Tmax,npar,DEMc_v,lambda_v,enrad_v,enlat_v,enlon_v,Er_v,FILENAME = output_file+'.sav'

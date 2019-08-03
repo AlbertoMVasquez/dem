@@ -38,7 +38,7 @@ pro histoplot,data1,data2=data2,min=min,max=max,label1=label1,label2=label2,nbin
      rojo = 200
 
 
-  plot,vbin1,f1,psym=10,charsize=2,xtitle=xtit,ytitle=ytit,title=tit,xstyle=1,thick=5,charthick=2,Font=0,color=azul
+  plot,vbin1,f1,psym=10,charsize=2,xtitle=xtit,ytitle=ytit,title=tit,xstyle=1,thick=5,charthick=2,Font=0;,color=azul
   if keyword_set(data2) then oplot,vbin2,f2,psym=10,th=5,color=rojo
 
 ;outputs

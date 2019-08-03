@@ -5,11 +5,12 @@
 ;statloop_awsom_diego,file='traceLDEM_CR2082_con_awsomdata__radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav',alturas=6
 
 ;statloop_awsom_diego,file='traceLDEM_CR2082_con_awsomdata__radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav',alturas=6,/ajuste_alto
-;statloop_awsom_diego,file='traceLDEM_CR2082_hollow_demt__radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav',alturas=6
+;statloop_awsom_diego,file='traceLDEM_CR2082_hollow_demt__radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav',/demt
+
+;statloop_awsom_diego,file='traceLDEM_CR2082_hollow_demt-data_pfss_radstart-1.035-1.215Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav',/demt
+;statloop_awsom_diego,file='traceLDEM_CR2082_hollow_demt_-data_awsom_radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav',/demt
+statloop_awsom_diego,file='traceLDEM_CR2082_awsom-data_pfss_10alturas_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav',/ajuste_alto
 pro statloop_awsom_diego,rmin=rmin,rmax=rmax,alturas=alturas,ajuste_alto=ajuste_alto,ajuste_bajo=ajuste_bajo,demt=demt,file=file,out_file=out_file
-;    common trace_sampled,rad_v,lat_v,lon_v,s_v,Ne_v,Tm_v,WT_v,Er_v,scoreR_v,midcell_v,Npts_v,str_v,stth_v,stph_v,radstart,enrad_v,enlon_v,enlat_v,npar,DEMc_v,lambda_v,L,Tmin,Tmax
-;  common B_sampled,B_v,Br_v,Bth_v,Bph_v
-;  common opclstatus,opcls,loopL,WTc
 
   longitud = strlen(file)-5-4 ;5 de la long de la palabra trace y 4 del .sav
   if not keyword_set(out_file) then file_out = strmid(file,5,longitud)
@@ -269,7 +270,7 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
 ;        scoreR (ileg) = scoreR_l
 ;select usefull data
         if not keyword_set(demt) then  p = where ( rad_l ge rmin and rad_l le rmax and Ne_l ne -999.)
-        if keyword_set(demt) then  p = where ( rad_l ge rmin and rad_l le rmax and Ne_l ne -999. and scoreR_l lt 0.10)
+        if     keyword_set(demt) then  p = where ( rad_l ge rmin and rad_l le rmax and Ne_l ne -999. and scoreR_l lt 0.10)
 ;podria relajarse a 0.25??
 ;hacer estadistica de scoreR_l  !!!
         
@@ -398,20 +399,20 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
     Ne0(ileg) = exp(A[0]+A[1])
     lambda_N(ileg) = 1./A[1]
     r2N(ileg) = r2
-    pearson_n(ileg) = correlate(xfit,alog(yfit))
-stop    
+    pearson_n(ileg) = correlate(xfit,alog(yfit),/double) 
     Tefit_ts(ileg) = bb* mu * mH * gsun * (lambda_N(ileg)*rsun) / kB
     Nebasal(ileg) = Ne0(ileg) * exp(-1/lambda_n(ileg)* (1. - 1./1.025))
     ;Estas 2 NO son necesarias, podria armarse luego.
     if keyword_set(demt) then begin
        franja_lineal,yfit,salidafit,min_r,max_r,error_ne(ileg),fraccion
        fne (ileg) = fraccion
+;deberia ser alog(yfit)?
     endif
     linear_fit,1/sfit,alog(yfit),min_s,max_s,A,r2,salidafit,/theilsen,/xinverted
     Ne0_s(ileg) = exp(A[0]+A[1])
     lambda_N_s(ileg) = 1./A[1]
     r2N_s(ileg) = r2
-    pearson_ns(ileg) = correlate(sfit,alog(yfit))
+    pearson_ns(ileg) = correlate(sfit,alog(yfit),/double)
     if keyword_set(demt) then begin
        franja_lineal,yfit,salidafit,min_s,max_s,error_ne(ileg),fraccion
        fne_s (ileg) = fraccion
@@ -426,7 +427,7 @@ stop
        franja_lineal,wfit,salidafit,min_r,max_r,error_t(ileg),fraccion
        ft (ileg) = fraccion
     endif
-    pearson_t(ileg) = correlate(xfit,wfit)
+    pearson_t(ileg) = correlate(xfit,wfit,/double)
     
     linear_fit,sfit,wfit,min_s,max_s,A,r2,salidafit,/theilsen
     Tm0_s(ileg)   = A[0]
@@ -436,7 +437,7 @@ stop
        franja_lineal,wfit,salidafit,min_s,max_s,error_t(ileg),fraccion
        ft_s (ileg) = fraccion
     endif
-    pearson_ts(ileg) = correlate(sfit,wfit)
+    pearson_ts(ileg) = correlate(sfit,wfit,/double)
 ;    if ft (ileg) le 0.1 or ft_s (ileg) le 0.1 then stop
     
     Te_base(ileg) = gradT(ileg) * 1.025 + Tm0(ileg)
@@ -834,7 +835,6 @@ stop
     lambda_N(ileg) = 1./A[1]
     r2N(ileg) = r2
     pearson_n(ileg) = correlate(xfit1,alog(yfit1))
-    
     Tefit_ts(ileg) = bb* mu * mH * gsun * (lambda_N(ileg)*rsun) / kB
     Nebasal(ileg) = Ne0(ileg) * exp(-1/lambda_n(ileg)* (1. - 1./1.025))
     if keyword_set(demt) then begin
@@ -858,7 +858,6 @@ stop
     lambda_N(ileg+1) = 1./A[1]
     r2N(ileg+1) = r2
     pearson_n(ileg+1) = correlate(xfit2,alog(yfit2))
-    
     Tefit_ts(ileg+1) = bb* mu * mH * gsun * (lambda_N(ileg+1)*rsun) / kB
     Nebasal(ileg+1) = Ne0(ileg+1) * exp(-1/lambda_n(ileg+1)* (1. - 1./1.025))
     if keyword_set(demt) then begin
@@ -921,7 +920,7 @@ stop
     endif
     pearson_ts(ileg+1) = correlate(sfit2,wfit2)
 
-;    if opcls(il) eq 2 and ft (ileg+1) le 0.1 then stop
+ ;   if opcls(il) eq 2 and ft (ileg+1) le 0.1 then stop
     
     Te_base(ileg+1) = gradT_s(ileg+1) * 1.025 + Tm0_s(ileg+1)
     betabase(ileg+1) = (kb/bb * nebasal(ileg+1) * te_base(ileg+1)) /(B_base(ileg+1)^2/(8*!pi))
@@ -991,7 +990,7 @@ endfor
        Ne0,lambda_N,r2N,Ne0_s,lambda_N_s,r2N_s,P0,lambda_P,r2P,gradT,Tm0,r2T,gradT_s,Tm0_s,r2t_s,$
        ft,ft_s,fne,fne_s,Tefit,Tefit_ts,Te_base,pearson_n,pearson_ns,pearson_t,pearson_ts,$
        betamean,betaapex,Br0,B_base,Nebasal,B_base,opclstat,indexloop,$
-       footrad,footlat,footlon,iso,iso_s,long_r,long_s,$
+       footrad,footlat,footlon,iso,iso_s,long_r,long_s,scoreR_v,npts_v,$
        Rp_base,Rp_medio,Rp_alto,FILENAME = 'trace_vectors_'+file_out+'.sav'
 
   print, 'vectores guardados en -->' +'trace_vectors_'+file_out+'.sav'
