@@ -262,7 +262,7 @@ print,'All your data has been processed.'
 return
 end
 
-function euvi_decon, image, psf
+FUNCTION euvi_decon, image, psf
 ; IDL code for deconvolution function, by P. SHEARER and A.M. VASQUEZ.
 ; input: psf, image
 ; output: image1 = deconned image
