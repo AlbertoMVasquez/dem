@@ -9,7 +9,7 @@
 
 ;statloop_awsom_diego,file='traceLDEM_CR2082_hollow_demt-data_pfss_radstart-1.035-1.215Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav',/demt
 ;statloop_awsom_diego,file='traceLDEM_CR2082_hollow_demt_-data_awsom_radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav',/demt
-statloop_awsom_diego,file='traceLDEM_CR2082_awsom-data_pfss_10alturas_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav',/ajuste_alto
+;statloop_awsom_diego,file='traceLDEM_CR2082_awsom-data_pfss_10alturas_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav',/ajuste_alto
 pro statloop_awsom_diego,rmin=rmin,rmax=rmax,alturas=alturas,ajuste_alto=ajuste_alto,ajuste_bajo=ajuste_bajo,demt=demt,file=file,out_file=out_file
 
   longitud = strlen(file)-5-4 ;5 de la long de la palabra trace y 4 del .sav
@@ -453,7 +453,7 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
     iso  (ileg)   = abs(gradT (ileg)    * long_r(ileg)) / (2 * error_t(ileg))
     iso_s(ileg)   = abs(gradT_s(ileg)   * long_s(ileg)) / (2 * error_t(ileg))
     
-
+stop
     skipfitloop_open:
     opclstat(ileg) = opcls(il)
     loop_length(ileg) = loopL(il)

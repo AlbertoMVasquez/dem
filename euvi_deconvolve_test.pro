@@ -102,6 +102,7 @@ if keyword_set(DNSEC)   then begin
 ; REMOVE /NORMAL_OFF if scale up to OPEN is desired here.
 ;if NOT keyword_set(despike) then begin
    secchi_prep,directory+filenames[i],hdr,image,/DN2P_OFF,/CALIMG_OFF,/NORMAL_OFF
+;   secchi_prep,directory+filenames[i],hdr,image,/rotate_on ;para nishtha
    print,'hdr:',hdr.crpix1,median(image),mean(image),stdev(image),hdr.exptime
    hdr0=hdr
 ;endif 
@@ -123,7 +124,8 @@ if keyword_set(PHOTONS) then begin
 ; This code makes array IMAGE2, where each pixel is in [PHOTONS].
  if NOT keyword_set(despike) then begin
    secchi_prep,directory+filenames(i),hdr,image,/EXPTIME_OFF,/CALIMG_OFF,/NORMAL_OFF
- endif
+;   secchi_prep,directory+filenames[i],hdr,image,/rotate_on ;para nishtha
+endif
  if keyword_set(despike) then begin
  ; TNV values as recommended by Jean Pierre Wulsen
    secchi_prep,directory+filenames(i),hdr,image,/DN2P_OFF,/CALIMG_OFF,/NORMAL_OFF,/EXPTIME_OFF

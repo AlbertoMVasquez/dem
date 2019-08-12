@@ -11,7 +11,7 @@ FUNCTION HIPOTESIS_CHI, Y, YFIT, error_y
 ; ---------------------------------------------------------
 ; Check arguments
 
-  n = N_ELEMENTS(x)
+  n = N_ELEMENTS(y)
   if (n le 3) then begin
       print,'** Insufficient data in LINCCORR'
       return, -1
@@ -34,17 +34,17 @@ FUNCTION HIPOTESIS_CHI, Y, YFIT, error_y
 ;como yfit=mx+b, definir m y b consume 2 grados de libertad
   df = n - 2
 
-  if (1.0 - r le 1.0E-7) then begin
+;  if (1.0 - r le 1.0E-7) then begin
 
-       p = 0.0
+ ;      p = 0.0
 
-  endif else begin
+ ; endif else begin
 
 ; calculate one-side 'tail area' probability 
 
         p =  (1.0 - CHISQR_PDF(chi, df))
 
-  endelse
+ ; endelse
 
 ; ---------------------------------------------------------
 ; Return to user

@@ -1,0 +1,45 @@
+.r linfit.pro
+.r ladfit.pro
+.r linear_fit.pro
+
+
+;test
+N_e usualmente yy= alog(y) xx = 1/x
+
+A = linfit(xx,yy,prob=prob1,/double)
+salidafit1 =  A[0]+A[1]*xx
+r21 = r2_fun(yy,salidafit1)
+
+
+pe = correlate(xx,alog(y),/double)
+
+err_y = yy * 0 + 5*1e6  ;para N_e
+B = linfit(xx,yy,prob=prob2,/double,measure_errors=err_y)
+salidafit2 =  B[0]+B[1]*xx
+r22 = r2_fun(yy,salidafit2)
+
+
+C = ladfit(xx,yy,absdev=absdev,/double)
+salidafit3 =  C[0]+C[1]*xx
+r23 = r2_fun(yy,salidafit3)
+
+
+D = theil_sen2(xx,yy)
+salidafit4 =  D[0]+D[1]*xx
+r24 = r2_fun(yy,salidafit4)
+
+
+
+en el ploteo de x e y 
+exp(A[0]+A[1])*exp( -A[1]*(1. - 1./xx) )
+
+
+
+sta1 = lincorr(xx,yy,/double,T_STAT=t1);tira r,p,t
+salidafit = B(0)+B(1)*xx
+sta2 = hipotesis_chi(yy,salidafit,err_y);tira p,chi
+
+
+err_y = yy * 0 + 7*1e4  ;para Te
+
+
