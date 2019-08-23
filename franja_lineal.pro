@@ -1,4 +1,4 @@
-pro franja_lineal,y,salidafit,rmin,rmax,error,fraccion
+pro franja_lineal,y,salidafit,error,fraccion
 ;+ 
 ;Chequea cuanto porcentaje de datos esta dentro de la franja
 ;dada entre la recta fiteada +- los errores

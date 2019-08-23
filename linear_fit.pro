@@ -1,16 +1,19 @@
-pro linear_fit,xx,yy,xmin,xmax,A,r2,salidafit,linfit=linfit,ladfit=ladfit,robustfit=robustfit,theilsen=theilsen,xinverted=xinverted,linfit_err=linfit_err,err_y=err_y
-  if keyword_set(xinverted) then begin ;sirve cuando de entrada se da 1/x, esto lo solemos usar en ajusto HS de densidad.
-     x_max = 1./xmin
-     x_min = 1./xmax
-  endif else begin
-     x_max = xmax
-     x_min = xmin
-  endelse
+pro linear_fit,xx,yy,A,r2,salidafit,xmin=xmin,xmax=xmax,linfit=linfit,ladfit=ladfit,robustfit=robustfit,theilsen=theilsen,xinverted=xinverted,linfit_err=linfit_err,err_y=err_y
+
+  if keyword_set(xmin) and keyword_set(xmax) then begin
+     if keyword_set(xinverted) then begin ;sirve cuando de entrada se da 1/x, esto lo solemos usar en ajusto HS de densidad.
+        x_max = 1./xmin
+        x_min = 1./xmax
+     endif else begin
+        x_max = xmax
+        x_min = xmin
+     endelse
+     p=where(xx ge x_min and xx le x_max)
+     xx=xx(p)
+     yy=yy(p)
+  endif
   prob1=0
   absdev=0
-  p=where(xx ge x_min and xx le x_max)
-  xx=xx(p)
-  yy=yy(p)
   if keyword_set (linfit)    then  A = linfit(xx,yy,prob=prob1,/double)
   if keyword_set (linfit_err)then  A = linfit(xx,yy,prob=prob1,/double,measure_errors=err_y)
   if keyword_set (ladfit)    then  A = ladfit(xx,yy,absdev=absdev,/double)

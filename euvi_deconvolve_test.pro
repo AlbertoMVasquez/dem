@@ -123,8 +123,9 @@ endif
 if keyword_set(PHOTONS) then begin
 ; This code makes array IMAGE2, where each pixel is in [PHOTONS].
  if NOT keyword_set(despike) then begin
-   secchi_prep,directory+filenames(i),hdr,image,/EXPTIME_OFF,/CALIMG_OFF,/NORMAL_OFF
-;   secchi_prep,directory+filenames[i],hdr,image,/rotate_on ;para nishtha
+;   secchi_prep,directory+filenames(i),hdr,image,/EXPTIME_OFF,/CALIMG_OFF,/NORMAL_OFF
+   secchi_prep,directory+filenames[i],hdr,image,/rotate_on ;para nishtha
+stop
 endif
  if keyword_set(despike) then begin
  ; TNV values as recommended by Jean Pierre Wulsen
@@ -257,14 +258,14 @@ endif else begin
  if flag eq  6 then reason='  +50% of pixels are missing data'
 printf,1,filenames(i),reason
 endelse
-;stop
+stop
 endfor ; next image
 close,1
 print,'All your data has been processed.'
 return
 end
 
-FUNCTION euvi_decon, image, psf
+FUNCTION EUVI_DECON, image, psf
 ; IDL code for deconvolution function, by P. SHEARER and A.M. VASQUEZ.
 ; input: psf, image
 ; output: image1 = deconned image

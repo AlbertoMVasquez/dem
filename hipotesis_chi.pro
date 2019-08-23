@@ -1,4 +1,4 @@
-FUNCTION HIPOTESIS_CHI, Y, YFIT, error_y
+FUNCTION HIPOTESIS_CHI, Y, YFIT, error_y=error_y
 ;-
 ; ----------------------------------------------------------
 

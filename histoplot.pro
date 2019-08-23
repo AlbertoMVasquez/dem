@@ -1,4 +1,4 @@
-pro histoplot,data1,data2=data2,min=min,max=max,label1=label1,label2=label2,nbins=nbins,xtit=xtit,ytit=ytit,tit=tit,filename=filename
+pro histoplot,data1,data2=data2,min=min,max=max,label1=label1,label2=label2,nbins=nbins,xtit=xtit,ytit=ytit,tit=tit,filename=filename,win=win
 ;Histograma convencional, se le da vectores de entrada en data1 y/o data2
   if not keyword_set(nbins) then nbins = 50
   if not keyword_set(ytit)  then ytit = 'Freq. Histogram' 
@@ -7,7 +7,7 @@ pro histoplot,data1,data2=data2,min=min,max=max,label1=label1,label2=label2,nbin
   if not keyword_set(xtit)  then xtit = ''
   if not keyword_set( tit)  then  tit = ''
   if not keyword_set(label1)then label1 = 'data1'
-
+  if not keyword_set(win)   then win = 1
   
   avg1        =   mean(data1) 
   med1        = median(data1,/even)
@@ -32,11 +32,10 @@ pro histoplot,data1,data2=data2,min=min,max=max,label1=label1,label2=label2,nbin
      ps1,'./newfigs/'+filename+sufijo+'.eps',0
      device,/inches,xsize=12,ysize=5
   endif
-     loadct,12
-
+  if not keyword_set(filename) then window,win
+  loadct,12
      azul = 100
      rojo = 200
-
 
   plot,vbin1,f1,psym=10,charsize=2,xtitle=xtit,ytitle=ytit,title=tit,xstyle=1,thick=5,charthick=2,Font=0;,color=azul
   if keyword_set(data2) then oplot,vbin2,f2,psym=10,th=5,color=rojo

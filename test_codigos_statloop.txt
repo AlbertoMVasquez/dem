@@ -1,0 +1,41 @@
+
+histoplot,r2n ,max=1,min=0.6,win=1
+histoplot,r2n_erry ,max=1,min=0.6,win=3
+histoplot,r2n_robust ,max=1,min=0.6,win=4
+histoplot,fne(where(r2n ge 0.8)),win=2
+
+histoplot,pearson_n(where(r2n ge 0.8)),max=-0.8,win=5
+histoplot,lincorr_pearson_n(where(r2n ge 0.8)),min=0.8,win=6
+histoplot,(-1)*lincorr_pearson_n(where(r2n ge 0.8)),min=-1,max=-0.8,win=7
+
+histoplot,lincorr_pvalue_n(where(r2n ge 0.8)),max=0.005,win=8
+histoplot,hip_chi_pv_n(where(r2n ge 0.8)),win=9
+histoplot,hip_chi_pv2_n(where(r2n ge 0.8)),win=1
+
+
+
+histoplot,r2t(where(r2t ne -555.)) ,min=-1,win=1
+histoplot,r2t_erry(where(r2t ne -555.)),min=-1 ,win=2
+histoplot,r2t_robust(where(r2t ne -555.)),min=-1 ,win=3
+histoplot,ft(where(r2t ne -555.)),win=2
+
+histoplot,pearson_t(where(r2n ne -555.)),win=5
+histoplot,lincorr_pearson_t(where(r2t ne -555.)),win=6
+
+histoplot,lincorr_pvalue_t(where(r2n ne -555.)),win=7,max=0.2
+histoplot,hip_chi_pv_t(where(r2n ne -555.)),win=8
+histoplot,hip_chi_pv2_t(where(r2n ne -555.)),win=9
+histoplot,hip_chi_pv_t(where(ft le 0.1 and ft ne -555.)),win=8
+
+
+histoplot,pearson_t(where(r2n ne -555. and lincorr_pvalue_t le 0.05)),win=5
+histoplot,pearson_t(where(r2n ne -555. and lincorr_pvalue_t ge 0.5)),win=5
+
+histoplot,hip_chi_pv2_t(where(r2n ne -555 and lincorr_pvalue_t le 0.05)),win=8
+histoplot,r2t_erry(where(r2n ne -555 and lincorr_pvalue_t le 0.05 and hip_chi_pv2_t ge 0.6)),win=7
+
+
+Ne0_erry
+lambda_N_erry
+Tm0_erry
+radT_erry

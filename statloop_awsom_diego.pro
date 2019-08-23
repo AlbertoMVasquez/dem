@@ -104,6 +104,36 @@ lambda_P = fltarr(Nlegs)-555.
    pearson_t  = fltarr(Nlegs)-555.
    pearson_ts = fltarr(Nlegs)-555.
 
+;nuevas estadisticas
+Ne0_erry  = fltarr(Nlegs)-555.
+lambda_N_erry  = fltarr(Nlegs)-555.
+r2N_erry   = fltarr(Nlegs)-555.
+Ne0_robust  = fltarr(Nlegs)-555.
+lambda_N_robust  = fltarr(Nlegs)-555.
+r2N_robust  = fltarr(Nlegs)-555.
+lincorr_pearson_n  = fltarr(Nlegs)-555.
+lincorr_pvalue_n  = fltarr(Nlegs)-555.
+lincorr_tstatistic_n  = fltarr(Nlegs)-555.
+hip_chi_pv_n  = fltarr(Nlegs)-555.
+hip_chi_ch_n  = fltarr(Nlegs)-555.
+hip_chi_pv2_n  = fltarr(Nlegs)-555.
+hip_chi_ch2_n  = fltarr(Nlegs)-555.
+Tm0_erry  = fltarr(Nlegs)-555.
+gradT_erry  = fltarr(Nlegs)-555.
+r2t_erry  = fltarr(Nlegs)-555.
+Tm0_robust  = fltarr(Nlegs)-555.
+gradT_robust  = fltarr(Nlegs)-555.
+r2t_robust  = fltarr(Nlegs)-555.
+lincorr_pearson_t  = fltarr(Nlegs)-555.
+lincorr_pvalue_t  = fltarr(Nlegs)-555.
+lincorr_tstatistic_t  = fltarr(Nlegs)-555.
+hip_chi_pv_t  = fltarr(Nlegs)-555.
+hip_chi_ch_t  = fltarr(Nlegs)-555.
+hip_chi_pv2_t  = fltarr(Nlegs)-555.
+hip_chi_ch2_t  = fltarr(Nlegs)-555.
+sigma_t = fltarr(Nlegs)-555.
+sigma_n = fltarr(Nlegs)-555.
+;----   
    scoreR = fltarr(Nlegs)-555.
 ;pedidos especiales por ceci
    dTmds = fltarr(Nlegs)-555.
@@ -150,6 +180,7 @@ footlat = fltarr(Nlegs)-555.
 footlon = fltarr(Nlegs)-555.
 ;Isotermalidad
 iso = fltarr(Nlegs)-555.
+iso_erry = fltarr(Nlegs)-555.
 iso_s = fltarr(Nlegs)-555.
 long_r = fltarr(Nlegs)-555.
 long_s = fltarr(Nlegs)-555.
@@ -231,7 +262,8 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
      stfs_f  = -45.
   endif
   
-
+  err_ne = 4.e6
+  err_tm = 7.e4
   
   for il=0L,Nloop-1 do begin
 
@@ -270,7 +302,7 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
 ;        scoreR (ileg) = scoreR_l
 ;select usefull data
         if not keyword_set(demt) then  p = where ( rad_l ge rmin and rad_l le rmax and Ne_l ne -999.)
-        if     keyword_set(demt) then  p = where ( rad_l ge rmin and rad_l le rmax and Ne_l ne -999. and scoreR_l lt 0.10)
+        if     keyword_set(demt) then  p = where ( rad_l ge rmin and rad_l le rmax and Ne_l ne -999. and scoreR_l lt 0.25);0.10) ;<---- nuevo cambio
 ;podria relajarse a 0.25??
 ;hacer estadistica de scoreR_l  !!!
         
@@ -347,7 +379,11 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
            error_t(ileg)  = ch_la_t
         endif
      endif
+;<--------- TESTEO --- FIJA LOS ERRORES
+     error_ne(ileg) = 5.e6
+     error_t(ileg) = 7.e4
 
+     
    ;Make HS-fit to Ne(r) for each open leg/loop                                                
    ;Como no le creemos a awsom por debajo                                        
    ;de 1.05 entonces partimos el ajuste en 2                           
@@ -395,65 +431,139 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
     endcase
 
 ;Fiteando Ne
-    linear_fit,1/xfit,alog(yfit),min_r,max_r,A,r2,salidafit,/theilsen,/xinverted
+    x_max = 1./min_r
+    x_min = 1./max_r
+    p1 = where(1./xfit ge x_min and 1./xfit le x_max)
+    xxfit = xfit(p1);renombro para no pisar
+    yyfit = yfit(p1)
+
+    sigma_n(ileg) = stddev(yyfit)
+    
+    linear_fit,1/xxfit,alog(yyfit),A,r2,salidafit,/theilsen
     Ne0(ileg) = exp(A[0]+A[1])
     lambda_N(ileg) = 1./A[1]
     r2N(ileg) = r2
-    pearson_n(ileg) = correlate(xfit,alog(yfit),/double) 
+;nuevo
+    linear_fit,1/xxfit,alog(yyfit),A,r2,salidafit2,/linfit_err,err_y=((xxfit*0)+alog(err_ne))
+    Ne0_erry     (ileg) = exp(A[0]+A[1])
+    lambda_N_erry(ileg) = 1./A[1]
+    r2N_erry     (ileg) = r2
+
+    linear_fit,1/xxfit,alog(yyfit),A,r2,salidafit3,/ladfit
+    Ne0_robust     (ileg) = exp(A[0]+A[1])
+    lambda_N_robust(ileg) = 1./A[1]
+    r2N_robust     (ileg) = r2
+    
+
+    sta1 = lincorr(1/xxfit,alog(yyfit),/double,T_STAT=t1)
+    lincorr_pearson_n   (ileg) = sta1(0) ;se calcula con 1/xfit
+    lincorr_pvalue_n    (ileg) = sta1(1)
+    lincorr_tstatistic_n(ileg) = sta1(2)
+
+    sta2 = hipotesis_chi(alog(yyfit),salidafit,error_y=(xxfit*0)+alog(err_ne))
+    hip_chi_pv_n (ileg) = sta2(0)
+    hip_chi_ch_n (ileg) = sta2(1)
+
+    sta3 = hipotesis_chi(alog(yyfit),salidafit2,error_y=(xxfit*0)+alog(err_ne))
+    hip_chi_pv2_n (ileg) = sta3(0)
+    hip_chi_ch2_n (ileg) = sta3(1)
+
+;nuevo
+    pearson_n(ileg) = correlate(xxfit,alog(yyfit),/double) 
     Tefit_ts(ileg) = bb* mu * mH * gsun * (lambda_N(ileg)*rsun) / kB
     Nebasal(ileg) = Ne0(ileg) * exp(-1/lambda_n(ileg)* (1. - 1./1.025))
     ;Estas 2 NO son necesarias, podria armarse luego.
     if keyword_set(demt) then begin
-       franja_lineal,yfit,salidafit,min_r,max_r,error_ne(ileg),fraccion
+       franja_lineal,alog(yyfit),salidafit,error_ne(ileg),fraccion
        fne (ileg) = fraccion
-;deberia ser alog(yfit)?
     endif
-    linear_fit,1/sfit,alog(yfit),min_s,max_s,A,r2,salidafit,/theilsen,/xinverted
+
+    s_max = 1./min_s
+    s_min = 1./max_s
+    p2 = where(1./sfit ge s_min and 1./sfit le s_max)
+    ssfit = sfit(p2)              ;renombro para no pisar
+    yyfit = yfit(p2);podria cambiar con respecto a yfit(p1)
+
+    linear_fit,1/ssfit,alog(yyfit),A,r2,salidafit,/theilsen
     Ne0_s(ileg) = exp(A[0]+A[1])
     lambda_N_s(ileg) = 1./A[1]
     r2N_s(ileg) = r2
-    pearson_ns(ileg) = correlate(sfit,alog(yfit),/double)
+    pearson_ns(ileg) = correlate(ssfit,alog(yyfit),/double)
     if keyword_set(demt) then begin
-       franja_lineal,yfit,salidafit,min_s,max_s,error_ne(ileg),fraccion
+       franja_lineal,alog(yyfit),salidafit,error_ne(ileg),fraccion
        fne_s (ileg) = fraccion
+       ;ver aca tmb si esto se calcula como debe
     endif
     
 ;Fiteando temperatura
-    linear_fit,xfit,wfit,min_r,max_r,A,r2,salidafit,/theilsen
+    p3 = where(xfit ge min_r and xfit le max_r)
+    xxfit = xfit(p3)            ;renombro para no pisar
+    wwfit = wfit(p3)
+
+    sigma_t(ileg) = stddev(wwfit)
+
+    linear_fit,xxfit,wwfit,A,r2,salidafit,/theilsen
     Tm0(ileg)   = A[0]
     gradT(ileg) = A[1]
     r2t (ileg)  = r2;si es isotermico va a dar bajo.  
+;nuevo
+    linear_fit,xxfit,wwfit,A,r2,salidafit2,/linfit_err,err_y=((xxfit*0)+err_tm)
+    Tm0_erry     (ileg) = A[0]
+    gradT_erry(ileg)    = A[1]
+    r2t_erry     (ileg) = r2
+
+    linear_fit,xxfit,wwfit,A,r2,salidafit3,/ladfit
+    Tm0_robust     (ileg) = A[0]
+    gradT_robust   (ileg) = A[1]
+    r2t_robust     (ileg) = r2
+
+    sta1 = lincorr(xxfit,wwfit,/double,T_STAT=t1)
+    lincorr_pearson_t   (ileg) = sta1(0) ;se calcula con/xfit
+    lincorr_pvalue_t    (ileg) = sta1(1)
+    lincorr_tstatistic_t(ileg) = sta1(2)
+
+    sta2 = hipotesis_chi(wwfit,salidafit,error_y=(xxfit*0)+err_tm)
+    hip_chi_pv_t (ileg) = sta2(0)
+    hip_chi_ch_t (ileg) = sta2(1)
+
+    sta3 = hipotesis_chi(wwfit,salidafit2,error_y=(xxfit*0)+err_tm)
+    hip_chi_pv2_t (ileg) = sta3(0)
+    hip_chi_ch2_t (ileg) = sta3(1)
+;nuevo
     if keyword_set(demt) then begin
-       franja_lineal,wfit,salidafit,min_r,max_r,error_t(ileg),fraccion
+       franja_lineal,wwfit,salidafit2,error_t(ileg),fraccion
        ft (ileg) = fraccion
     endif
-    pearson_t(ileg) = correlate(xfit,wfit,/double)
+    pearson_t(ileg) = correlate(xxfit,wwfit,/double)
+    if ft(ileg) le 0.1 and hip_chi_pv2_t (ileg) ge 0.95 and lincorr_pvalue_t(ileg) le 0.05 and abs(pearson_t(ileg)) ge 0.5 then stop
+
+    p4 = where(sfit ge min_s and sfit le max_s)
+    ssfit = sfit(p4)
+    wwfit = wfit(p4)
     
-    linear_fit,sfit,wfit,min_s,max_s,A,r2,salidafit,/theilsen
+    linear_fit,ssfit,wwfit,A,r2,salidafit,/theilsen
     Tm0_s(ileg)   = A[0]
     gradT_s(ileg) = A[1]
     r2t_s (ileg)  = r2
     if keyword_set(demt) then begin
-       franja_lineal,wfit,salidafit,min_s,max_s,error_t(ileg),fraccion
+       franja_lineal,wwfit,salidafit,error_t(ileg),fraccion
        ft_s (ileg) = fraccion
     endif
-    pearson_ts(ileg) = correlate(sfit,wfit,/double)
+    pearson_ts(ileg) = correlate(ssfit,wwfit,/double)
 ;    if ft (ileg) le 0.1 or ft_s (ileg) le 0.1 then stop
     
     Te_base(ileg) = gradT(ileg) * 1.025 + Tm0(ileg)
     betabase(ileg) = (kb/bb * nebasal(ileg) * te_base(ileg)) /(B_base(ileg)^2/(8*!pi))
-    ;Estas 2 NO son necesarias, podria armarse luego. Hacer lo mismo calcu
-    ;lando sobre el loop s!
     ;betabase puede ser negativo para los malos fiteos de temperatura
-
 ;    if not keyword_set(ajuste_bajo) && betabase(ileg) lt 0. && ft_s(ileg) ge 0.7 && r2N(ileg) ge 0.8 then stop
     
     long_r(ileg)  = max_r - min_r
     long_s(ileg)  = max_s - min_s
     iso  (ileg)   = abs(gradT (ileg)    * long_r(ileg)) / (2 * error_t(ileg))
+    iso_erry(ileg)= abs(gradT_erry (ileg)    * long_r(ileg)) / (2 * error_t(ileg))
     iso_s(ileg)   = abs(gradT_s(ileg)   * long_s(ileg)) / (2 * error_t(ileg))
     
-stop
+
     skipfitloop_open:
     opclstat(ileg) = opcls(il)
     loop_length(ileg) = loopL(il)
@@ -577,8 +687,8 @@ stop
        B_base (ileg+1) = B_l2 (rrr02)
 
 
-       if keyword_set(demt) then  p1 = where ( rad_l1 ge rmin and rad_l1 le rmax and Ne_l1 ne -999. and scoreR_l1 lt 0.1 )
-       if keyword_set(demt) then  p2 = where ( rad_l2 ge rmin and rad_l2 le rmax and Ne_l2 ne -999. and scoreR_l2 lt 0.1 )
+       if keyword_set(demt) then  p1 = where ( rad_l1 ge rmin and rad_l1 le rmax and Ne_l1 ne -999. and scoreR_l1 lt 0.25);0.1 );<------ parametro relajado
+       if keyword_set(demt) then  p2 = where ( rad_l2 ge rmin and rad_l2 le rmax and Ne_l2 ne -999. and scoreR_l2 lt 0.25);0.1 )
 
        if not keyword_set(demt) then  p1 = where ( rad_l1 ge rmin and rad_l1 le rmax and Ne_l1 ne -999. )
        if not keyword_set(demt) then  p2 = where ( rad_l2 ge rmin and rad_l2 le rmax and Ne_l2 ne -999. )
@@ -764,6 +874,14 @@ stop
                end
             endcase
          endif
+;<----------------- NUEVO, FIJE ERRORES. -----> ESTO ME SALVA DE LOS
+;                   ERRORES EN FT, CLARAMENTE HAY UN ERROR AL SETEAR
+;                   ERRORES EN LAS PIERNAS CERRADAS
+     error_ne(ileg) = 4.e6
+     error_t(ileg) = 7.e4
+     error_ne(ileg+1) = 4.e6
+     error_t(ileg+1) = 7.e4
+
          
         case 1 of
            keyword_set(ajuste_alto) eq 1: begin
@@ -830,92 +948,249 @@ stop
 
 ;Fiteando Ne 
 ; pata l1
-    linear_fit,1/xfit1,alog(yfit1),min_r1,max_r1,A,r2,salidafit,/theilsen,/xinverted
-    Ne0(ileg) = exp(A[0]+A[1])
-    lambda_N(ileg) = 1./A[1]
-    r2N(ileg) = r2
-    pearson_n(ileg) = correlate(xfit1,alog(yfit1))
-    Tefit_ts(ileg) = bb* mu * mH * gsun * (lambda_N(ileg)*rsun) / kB
-    Nebasal(ileg) = Ne0(ileg) * exp(-1/lambda_n(ileg)* (1. - 1./1.025))
+        x_max1 = 1./min_r1
+        x_min1 = 1./max_r1
+        p1 = where(1./xfit1 ge x_min1 and 1./xfit1 le x_max1)
+        xxfit1 = xfit1(p1)
+        yyfit1 = yfit1(p1)
+
+        sigma_n(ileg) = stddev(yyfit1)
+        
+        linear_fit,1/xxfit1,alog(yyfit1),A,r2,salidafit,/theilsen
+        Ne0(ileg) = exp(A[0]+A[1])
+        lambda_N(ileg) = 1./A[1]
+        r2N(ileg) = r2
+
+        linear_fit,1/xxfit1,alog(yyfit1),A,r2,salidafit2,/linfit_err,err_y=((xxfit1*0)+alog(err_ne))
+        Ne0_erry     (ileg) = exp(A[0]+A[1])
+        lambda_N_erry(ileg) = 1./A[1]
+        r2N_erry     (ileg) = r2
+
+        linear_fit,1/xxfit1,alog(yyfit1),A,r2,salidafit3,/ladfit
+        Ne0_robust     (ileg) = exp(A[0]+A[1])
+        lambda_N_robust(ileg) = 1./A[1]
+        r2N_robust     (ileg) = r2
+        
+        sta1 = lincorr(1/xxfit1,alog(yyfit1),/double,T_STAT=t1)
+        lincorr_pearson_n   (ileg) = sta1(0)                                            
+        lincorr_pvalue_n    (ileg) = sta1(1)
+        lincorr_tstatistic_n(ileg) = sta1(2)
+        
+        sta2 = hipotesis_chi(alog(yyfit1),salidafit,error_y=(xxfit1*0)+alog(err_ne))
+        hip_chi_pv_n (ileg) = sta2(0)
+        hip_chi_ch_n (ileg) = sta2(1)
+        
+        sta3 = hipotesis_chi(alog(yyfit1),salidafit2,error_y=(xxfit1*0)+alog(err_ne))
+        hip_chi_pv2_n (ileg) = sta3(0)
+        hip_chi_ch2_n (ileg) = sta3(1)
+
+        pearson_n(ileg) = correlate(xxfit1,alog(yyfit1))
+        Tefit_ts(ileg) = bb* mu * mH * gsun * (lambda_N(ileg)*rsun) / kB
+        Nebasal(ileg) = Ne0(ileg) * exp(-1/lambda_n(ileg)* (1. - 1./1.025))
+        if keyword_set(demt) then begin
+           franja_lineal,alog(yyfit1),salidafit,error_ne(ileg),fraccion
+           fne (ileg) = fraccion
+        endif
+;s
+        s_max1 = 1./min_s1
+        s_min1 = 1./max_s1
+        p2 = where(1./sfit1 ge s_min1 and 1./sfit1 le s_max1)
+        ssfit1 = sfit1(p2)                                                           
+        yyfit1 = yfit1(p2)
+        
+        linear_fit,1/ssfit1,alog(yyfit1),A,r2,salidafit,/theilsen
+        Ne0_s(ileg) = exp(A[0]+A[1])
+        lambda_N_s(ileg) = 1./A[1]
+        r2N_s(ileg) = r2
+        pearson_ns(ileg) = correlate(ssfit1,alog(yyfit1))
     if keyword_set(demt) then begin
-       franja_lineal,yfit1,salidafit,min_r1,max_r1,error_ne(ileg),fraccion
-       fne (ileg) = fraccion
-    endif
-;s    
-    linear_fit,1/sfit1,alog(yfit1),min_s1,max_s1,A,r2,salidafit,/theilsen,/xinverted
-    Ne0_s(ileg) = exp(A[0]+A[1])
-    lambda_N_s(ileg) = 1./A[1]
-    r2N_s(ileg) = r2
-    pearson_ns(ileg) = correlate(sfit1,alog(yfit1))
-    if keyword_set(demt) then begin
-       if n_elements(yfit1) ne n_elements(salidafit) then stop
-       franja_lineal,yfit1,salidafit,min_s1,max_s1,error_ne(ileg),fraccion
+       if n_elements(yyfit1) ne n_elements(salidafit) then stop
+       franja_lineal,alog(yyfit1),salidafit,error_ne(ileg),fraccion
        fne_s (ileg) = fraccion
     endif
 ;pata l2    
-    linear_fit,1/xfit2,alog(yfit2),min_r2,max_r2,A,r2,salidafit,/theilsen,/xinverted
+    x_max2 = 1./min_r2
+    x_min2 = 1./max_r2
+    p1 = where(1./xfit2 ge x_min2 and 1./xfit2 le x_max2)
+    xxfit2 = xfit2(p1)
+    yyfit2 = yfit2(p1)
+
+    sigma_n(ileg+1) = stddev(yyfit2)
+    
+    linear_fit,1/xxfit2,alog(yyfit2),A,r2,salidafit,/theilsen
     Ne0(ileg+1) = exp(A[0]+A[1])
     lambda_N(ileg+1) = 1./A[1]
     r2N(ileg+1) = r2
-    pearson_n(ileg+1) = correlate(xfit2,alog(yfit2))
+
+    linear_fit,1/xxfit2,alog(yyfit2),A,r2,salidafit2,/linfit_err,err_y=((xxfit2*0)+alog(err_ne))
+    Ne0_erry     (ileg+1) = exp(A[0]+A[1])
+    lambda_N_erry(ileg+1) = 1./A[1]
+    r2N_erry     (ileg+1) = r2
+
+    linear_fit,1/xxfit2,alog(yyfit2),A,r2,salidafit3,/ladfit
+    Ne0_robust     (ileg+1) = exp(A[0]+A[1])
+    lambda_N_robust(ileg+1) = 1./A[1]
+    r2N_robust     (ileg+1) = r2
+
+    sta1 = lincorr(1/xxfit2,alog(yyfit2),/double,T_STAT=t1)
+    lincorr_pearson_n   (ileg+1) = sta1(0)                                            
+    lincorr_pvalue_n    (ileg+1) = sta1(1)
+    lincorr_tstatistic_n(ileg+1) = sta1(2)
+
+    sta2 = hipotesis_chi(alog(yyfit2),salidafit,error_y=(xxfit2*0)+alog(err_ne))
+    hip_chi_pv_n (ileg+1) = sta2(0)
+    hip_chi_ch_n (ileg+1) = sta2(1)
+
+    sta3 = hipotesis_chi(alog(yyfit2),salidafit2,error_y=(xxfit2*0)+alog(err_ne))
+    hip_chi_pv2_n (ileg+1) = sta3(0)
+    hip_chi_ch2_n (ileg+1) = sta3(1)
+    
+    linear_fit,1/xxfit2,alog(yyfit2),A,r2,salidafit,/theilsen
+    Ne0(ileg+1) = exp(A[0]+A[1])
+    lambda_N(ileg+1) = 1./A[1]
+    r2N(ileg+1) = r2
+    pearson_n(ileg+1) = correlate(xxfit2,alog(yyfit2))
     Tefit_ts(ileg+1) = bb* mu * mH * gsun * (lambda_N(ileg+1)*rsun) / kB
     Nebasal(ileg+1) = Ne0(ileg+1) * exp(-1/lambda_n(ileg+1)* (1. - 1./1.025))
     if keyword_set(demt) then begin
-       franja_lineal,yfit2,salidafit,min_r2,max_r2,error_ne(ileg+1),fraccion
+       franja_lineal,alog(yyfit2),salidafit,error_ne(ileg+1),fraccion
        fne (ileg+1) = fraccion
     endif
-    linear_fit,1/sfit2,alog(yfit2),min_s2,max_s2,A,r2,salidafit,/theilsen,/xinverted
+;s
+    s_max2 = 1./min_s2
+    s_min2 = 1./max_s2
+    p2 = where(1./sfit2 ge s_min2 and 1./sfit2 le s_max2)
+    ssfit2 = sfit2(p2)                                                           
+    yyfit2 = yfit2(p2) 
+    linear_fit,1/ssfit2,alog(yyfit2),A,r2,salidafit,/theilsen
     Ne0_s(ileg+1) = exp(A[0]+A[1])
     lambda_N_s(ileg+1) = 1./A[1]
     r2N_s(ileg+1) = r2
-    pearson_ns(ileg+1) = correlate(sfit2,alog(yfit2))
+    pearson_ns(ileg+1) = correlate(ssfit2,alog(yyfit2))
     if keyword_set(demt) then begin
-       if n_elements(yfit2) ne n_elements(salidafit) then stop
-       franja_lineal,yfit2,salidafit,min_s2,max_s2,error_ne(ileg+1),fraccion
+       if n_elements(yyfit2) ne n_elements(salidafit) then stop
+       franja_lineal,alog(yyfit2),salidafit,error_ne(ileg+1),fraccion
        fne_s (ileg+1) = fraccion
     endif
     
 ;Fiteando temperatura          
 ;para l1
-    linear_fit,xfit1,wfit1,min_r1,max_r1,A,r2,salidafit,/theilsen
+    p3 = where(xfit1 ge min_r1 and xfit1 le max_r1)
+    xxfit1 = xfit1(p3)                                       
+    wwfit1 = wfit1(p3)
+
+    sigma_t(ileg) = stddev(wwfit1)
+    
+    linear_fit,xxfit1,wwfit1,A,r2,salidafit,/theilsen
     Tm0(ileg)   = A[0]
     gradT(ileg) = A[1]
     r2t (ileg)  = r2;si es isotermico va a dar bajo.      
-    pearson_t(ileg) = correlate(xfit1,wfit1)
+
+    linear_fit,xxfit1,wwfit1,A,r2,salidafit2,/linfit_err,err_y=((xxfit1*0)+err_tm)
+    Tm0_erry     (ileg) = A[0]
+    gradT_erry(ileg)    = A[1]
+    r2t_erry     (ileg) = r2
+
+    linear_fit,xxfit1,wwfit1,A,r2,salidafit3,/ladfit
+    Tm0_robust     (ileg) = A[0]
+    gradT_robust   (ileg) = A[1]
+    r2t_robust     (ileg) = r2
+
+    sta1 = lincorr(xxfit1,wwfit1,/double,T_STAT=t1)
+    lincorr_pearson_t   (ileg) = sta1(0)                                                         
+    lincorr_pvalue_t    (ileg) = sta1(1)
+    lincorr_tstatistic_t(ileg) = sta1(2)
+
+    sta2 = hipotesis_chi(wwfit1,salidafit,error_y=(xxfit1*0)+err_tm)
+    hip_chi_pv_t (ileg) = sta2(0)
+    hip_chi_ch_t (ileg) = sta2(1)
+
+    sta3 = hipotesis_chi(wwfit1,salidafit2,error_y=(xxfit1*0)+err_tm)
+    hip_chi_pv2_t (ileg) = sta3(0)
+    hip_chi_ch2_t (ileg) = sta3(1)
+
+    pearson_t(ileg) = correlate(xxfit1,wwfit1)
     if keyword_set(demt) then begin
-       franja_lineal,wfit1,salidafit,min_r1,max_r1,error_t(ileg),fraccion
+       franja_lineal,wwfit1,salidafit,error_t(ileg),fraccion
        ft (ileg) = fraccion
     endif
-    linear_fit,sfit1,wfit1,min_s1,max_s1,A,r2,salidafit,/theilsen
+;s
+    p4 = where(sfit1 ge min_s1 and sfit1 le max_s1)
+    ssfit1 = sfit1(p4)
+    wwfit1 = wfit1(p4)    
+
+    linear_fit,ssfit1,wwfit1,A,r2,salidafit,/theilsen
     Tm0_s(ileg)   = A[0]
     gradT_s(ileg) = A[1]
     r2t_s (ileg)  = r2
+
     if keyword_set(demt) then begin
-       franja_lineal,wfit1,salidafit,min_s1,max_s1,error_t(ileg),fraccion
+       franja_lineal,wwfit1,salidafit,error_t(ileg),fraccion
        ft_s  (ileg)  = fraccion
     endif
-    pearson_ts(ileg) = correlate(sfit1,wfit1)
+    pearson_ts(ileg) = correlate(ssfit1,wwfit1)
 
 ;    if opcls(il) eq 2 and ft (ileg) le 0.1  then stop
     
     Te_base(ileg) = gradT_s(ileg) * 1.025 + Tm0_s(ileg)
     betabase(ileg) = (kb/bb * nebasal(ileg) * te_base(ileg)) /(B_base(ileg)^2/(8*!pi))
 ;pata l2
-    linear_fit,xfit2,wfit2,min_r2,max_r2,A,r2,salidafit,/theilsen
+    p3 = where(xfit2 ge min_r2 and xfit2 le max_r2)
+    xxfit2 = xfit2(p3)                                       
+    wwfit2 = wfit2(p3)
+
+    sigma_t(ileg+1) = stddev(wwfit2)
+    
+    linear_fit,xxfit2,wwfit2,A,r2,salidafit,/theilsen
     Tm0(ileg+1)   = A[0]
     gradT(ileg+1) = A[1]
     r2t (ileg+1)  = r2
-    pearson_t(ileg+1) = correlate(xfit2,wfit2)
+
+    linear_fit,xxfit2,wwfit2,A,r2,salidafit2,/linfit_err,err_y=((xxfit2*0)+err_tm)
+    Tm0_erry     (ileg+1) = A[0]
+    gradT_erry(ileg+1)    = A[1]
+    r2t_erry     (ileg+1) = r2
+
+    linear_fit,xxfit2,wwfit2,A,r2,salidafit3,/ladfit
+    Tm0_robust     (ileg+1) = A[0]
+    gradT_robust   (ileg+1) = A[1]
+    r2t_robust     (ileg+1) = r2
+
+    sta1 = lincorr(xxfit2,wwfit2,/double,T_STAT=t1)
+    lincorr_pearson_t   (ileg+1) = sta1(0)                                                         
+    lincorr_pvalue_t    (ileg+1) = sta1(1)
+    lincorr_tstatistic_t(ileg+1) = sta1(2)
+
+    sta2 = hipotesis_chi(wwfit2,salidafit,error_y=(xxfit2*0)+err_tm)
+    hip_chi_pv_t (ileg+1) = sta2(0)
+    hip_chi_ch_t (ileg+1) = sta2(1)
+
+    sta3 = hipotesis_chi(wwfit2,salidafit2,error_y=(xxfit2*0)+err_tm)
+    hip_chi_pv2_t (ileg+1) = sta3(0)
+    hip_chi_ch2_t (ileg+1) = sta3(1)
+    
+    pearson_t(ileg+1) = correlate(xxfit2,wwfit2)
     if keyword_set(demt) then begin
-       franja_lineal,wfit2,salidafit,min_r2,max_r2,error_t(ileg+1),fraccion
+       franja_lineal,wwfit2,salidafit,error_t(ileg+1),fraccion
        ft (ileg+1) = fraccion
     endif
-    linear_fit,sfit2,wfit2,min_s2,max_s2,A,r2,salidafit,/theilsen
+
+    if ft(ileg) le 0.2 and hip_chi_pv2_t (ileg) ge 0.95 and lincorr_pvalue_t(ileg) le 0.05 and abs(pearson_t(ileg)) ge 0.5 then stop
+    if ft(ileg+1) le 0.2 and hip_chi_pv2_t (ileg+1) ge 0.95 and lincorr_pvalue_t(ileg+1) le 0.05 and abs(pearson_t(ileg+1)) ge 0.5 then stop
+
+
+;s
+    p4 = where(sfit2 ge min_s2 and sfit2 le max_s2)
+    ssfit2 = sfit2(p4)
+    wwfit2 = wfit2(p4)
+    
+    linear_fit,ssfit2,wwfit2,A,r2,salidafit,/theilsen
     Tm0_s(ileg+1)   = A[0]
     gradT_s(ileg+1) = A[1]
     r2t_s (ileg+1)  = r2
+
     if keyword_set(demt) then begin
-       franja_lineal,wfit2,salidafit,min_s2,max_s2,error_t(ileg+1),fraccion
+       franja_lineal,wwfit2,salidafit,error_t(ileg+1),fraccion
        ft_s  (ileg+1)  = fraccion
     endif
     pearson_ts(ileg+1) = correlate(sfit2,wfit2)
@@ -926,8 +1201,10 @@ stop
     betabase(ileg+1) = (kb/bb * nebasal(ileg+1) * te_base(ileg+1)) /(B_base(ileg+1)^2/(8*!pi))
 
     iso  (ileg)   = abs(gradT (ileg)    * abs(max_r1 - min_r1)) / (2 * error_t(ileg))
+    iso_erry(ileg) = abs(gradT_erry (ileg)    * long_r(ileg)) / (2 * error_t(ileg))
     iso_s(ileg)   = abs(gradT_s(ileg)   * abs(max_s1 - min_s1)) / (2 * error_t(ileg))
     iso  (ileg+1) = abs(gradT (ileg+1)   * abs(max_r2 - min_r2)) / (2 * error_t(ileg+1))
+    iso_erry(ileg+1 = abs(gradT_erry (ileg+1)    * long_r(ileg+1)) / (2 * error_t(ileg+1))
     iso_s(ileg+1) = abs(gradT_s(ileg+1)  * abs(max_s2 - min_s2)) / (2 * error_t(ileg+1))
 
 
@@ -935,7 +1212,7 @@ stop
     long_s (ileg)   = abs(max_s1 - min_s1)
     long_r (ileg+1) = abs(max_r2 - min_r2)
     long_s (ileg+1) = abs(max_s2 - min_s2)
-
+goto,preguntar_a_ceci
 ;fit s_l1_base = m1 * rad_l1_base + s0r1
   linear_fit,sfit1,wfit1,min(s_l1),max(s_l1),A,r2,salidafit,/theilsen
   S0r1 = A[0]
@@ -950,7 +1227,7 @@ stop
   r0 = 1.025
   s_r0_a(ileg  ) = m1 * r0 + s0r1
   s_r0_a(ileg+1) = m2 * r0 + s0r2
-    
+preguntar_a_ceci:
 ;FCb calculo
   b_l1_r0 = b_l1(0)
   b_l2_r0 = b_l2(0)  
@@ -990,7 +1267,10 @@ endfor
        Ne0,lambda_N,r2N,Ne0_s,lambda_N_s,r2N_s,P0,lambda_P,r2P,gradT,Tm0,r2T,gradT_s,Tm0_s,r2t_s,$
        ft,ft_s,fne,fne_s,Tefit,Tefit_ts,Te_base,pearson_n,pearson_ns,pearson_t,pearson_ts,$
        betamean,betaapex,Br0,B_base,Nebasal,B_base,opclstat,indexloop,$
-       footrad,footlat,footlon,iso,iso_s,long_r,long_s,scoreR_v,npts_v,$
+       footrad,footlat,footlon,iso,iso_s,iso_erry,long_r,long_s,scoreR_v,npts_v,$
+       pearson_n,lincorr_pearson_n,lincorr_pvalue_n,hip_chi_pv_n,hip_chi_pv2_n,r2n_erry,$
+       pearson_t,lincorr_pearson_t,lincorr_pvalue_t,hip_chi_pv_t,hip_chi_pv2_t,r2t_erry,$
+       sigma_n,sigma_t,Ne0_erry,lambda_N_erry,Tm0_erry,gradT_erry,$
        Rp_base,Rp_medio,Rp_alto,FILENAME = 'trace_vectors_'+file_out+'.sav'
 
   print, 'vectores guardados en -->' +'trace_vectors_'+file_out+'.sav'

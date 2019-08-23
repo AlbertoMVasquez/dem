@@ -1,4 +1,4 @@
-pro rpoint_map,data1,vec_color,rlon,rlat,data2=data2,data3=data3,data4=data4,data5=data5,data6=data6,data7=data7,data8=data8,data9=data9,filelabel=filelabel,title=title,box=box,thick=thick
+pro rpoint_map,data1,rlon,rlat,vec_color=vec_color,data2=data2,data3=data3,data4=data4,data5=data5,data6=data6,data7=data7,data8=data8,data9=data9,filelabel=filelabel,title=title,box=box,thick=thick
 ;data1,,,data9 son vectores con el where que seleccione lo que se
 ;quiere plotear
 ;vector_color es un vector con numeros 0:4 que indica el color a utilizar  
@@ -7,6 +7,7 @@ pro rpoint_map,data1,vec_color,rlon,rlat,data2=data2,data3=data3,data4=data4,dat
   if not keyword_set(box) then box = [0.,360.,-90.,+90.]
   if not keyword_set(thick) then thick = 3
   if n_elements(vec_color) eq 0. then vec_color = [0,1,1,2,2,3,3,4,4]
+
 ;el vector va desde el streamer ecuatoria hacia afuera  
   !P.CHARTHICK=6
   !p.charsize=2.5
@@ -36,7 +37,8 @@ pro rpoint_map,data1,vec_color,rlon,rlat,data2=data2,data3=data3,data4=data4,dat
      3: oplot,rlon(data3),rlat(data3),color=fun(vec_color(2)),th=2,psym=8
      2: oplot,rlon(data2),rlat(data2),color=fun(vec_color(1)),th=2,psym=8
      1: begin
-        oplot,rlon(data1),rlat(data1),color=fun(vec_color(0)),th=2,psym=8
+        color1 = fun(vec_color(0))
+        oplot,rlon(data1),rlat(data1),color=color1,th=2,psym=8
         break
         end
      ELSE: BEGIN
@@ -51,7 +53,7 @@ pro rpoint_map,data1,vec_color,rlon,rlat,data2=data2,data3=data3,data4=data4,dat
   return
 end
 
-function fun,x
+FUNCTION FUN,x
 ;al haber seleccionado los valores de colores para saca area segun el
 ;paper entonces los valores 0,1,2,3,4 se reflejan en los valores
 ;correspondientes al colo table 39
@@ -63,4 +65,4 @@ function fun,x
      4: y = 90
   endcase
   return,y
-end
+END

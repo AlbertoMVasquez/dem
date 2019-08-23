@@ -4,9 +4,11 @@ goto,salt
 euvi_deconvolve_test,directory='/data1/work/dem/github_dem/dem/nishtha/obsdata/',listfile='list_imagenes_2209.txt',nfiles=3,binfactor=2,/dnsec,/rebin
 euvi_deconvolve_test,directory='/data1/work/dem/github_dem/dem/nishtha/obsdata/',listfile='list_imagenes_2209.txt',nfiles=3,binfactor=2,/dnsec,/rebin,/decon,/despike
 euvi_deconvolve_test,directory='/data1/work/dem/github_dem/dem/nishtha/obsdata/',listfile='list_imagenes_2208.txt',nfiles=3,binfactor=2,/dnsec,/rebin
-euvi_deconvolve_test,directory='/data1/work/dem/github_dem/dem/nishtha/obsdata/',listfile='list_imagenes_2208.txt',nfiles=3,binfactor=2,/dnsec,/rebin,/decon,/despike
 
-euvi_deconvolve_test,directory='/data1/work/dem/github_dem/dem/nishtha/obsdata/',listfile='list_imagenes_2209.txt',nfiles=3,binfactor=2,/rebin
+euvi_deconvolve_test,directory='/data1/work/dem/github_dem/dem/nishtha/obsdata/',listfile='list_imagenes_2208.txt',nfiles=3,/dnsec,/decon
+euvi_deconvolve_test,directory='/data1/work/dem/github_dem/dem/nishtha/obsdata/',listfile='list_imagenes_2209.txt',nfiles=3,/dnsec,/decon
+
+
 ;.r /data1/tomography/SolarTom_idl/compute_image_grid.pro
 
 salt:
