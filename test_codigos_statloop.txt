@@ -34,8 +34,14 @@ histoplot,pearson_t(where(r2n ne -555. and lincorr_pvalue_t ge 0.5)),win=5
 histoplot,hip_chi_pv2_t(where(r2n ne -555 and lincorr_pvalue_t le 0.05)),win=8
 histoplot,r2t_erry(where(r2n ne -555 and lincorr_pvalue_t le 0.05 and hip_chi_pv2_t ge 0.6)),win=7
 
+lowlatR=30
+lowlatL=-27
+i_ok = where(gradT ne -555. AND opclstat eq 2. and r2N_erry gt 0.7 and footlat le lowlatR and footlat ge lowlatL  and ft gt 0.6  )
+histoplot,nebasal(i_ok),win=1
+rpoint_map,i_ok,footlon,footlat,vec_color=0
+i_ok2= where(gradT ne -555. AND opclstat eq 2. and r2N_erry gt 0.7 and footlat le lowlatR and footlat ge lowlatL  and abs(pearson_t) ge 0.4  and hip_chi_pv2_t ge 0.8)
 
-Ne0_erry
-lambda_N_erry
-Tm0_erry
-radT_erry
+
+
+
+

@@ -10,10 +10,10 @@
 ;statloop_awsom_diego,file='traceLDEM_CR2082_hollow_demt-data_pfss_radstart-1.035-1.215Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav',/demt
 ;statloop_awsom_diego,file='traceLDEM_CR2082_hollow_demt_-data_awsom_radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav',/demt
 ;statloop_awsom_diego,file='traceLDEM_CR2082_awsom-data_pfss_10alturas_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav',/ajuste_alto
-pro statloop_awsom_diego,rmin=rmin,rmax=rmax,alturas=alturas,ajuste_alto=ajuste_alto,ajuste_bajo=ajuste_bajo,demt=demt,file=file,out_file=out_file
+pro statloop_awsom_diego,rmin=rmin,rmax=rmax,alturas=alturas,ajuste_alto=ajuste_alto,ajuste_bajo=ajuste_bajo,demt=demt,file=file,ffile_out=ffile_out
 
   longitud = strlen(file)-5-4 ;5 de la long de la palabra trace y 4 del .sav
-  if not keyword_set(out_file) then file_out = strmid(file,5,longitud)
+  if not keyword_set(file_out) then file_out = strmid(file,5,longitud)
 
 ;si se usa un antiguo read_trace, es necesario usar commons, si se usa
 ;un restore, no es necesario.  
@@ -1193,7 +1193,7 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
        franja_lineal,wwfit2,salidafit,error_t(ileg+1),fraccion
        ft_s  (ileg+1)  = fraccion
     endif
-    pearson_ts(ileg+1) = correlate(sfit2,wfit2)
+   pearson_ts(ileg+1) = correlate(sfit2,wfit2)
 
  ;   if opcls(il) eq 2 and ft (ileg+1) le 0.1 then stop
     
@@ -1204,7 +1204,7 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
     iso_erry(ileg) = abs(gradT_erry (ileg)    * long_r(ileg)) / (2 * error_t(ileg))
     iso_s(ileg)   = abs(gradT_s(ileg)   * abs(max_s1 - min_s1)) / (2 * error_t(ileg))
     iso  (ileg+1) = abs(gradT (ileg+1)   * abs(max_r2 - min_r2)) / (2 * error_t(ileg+1))
-    iso_erry(ileg+1 = abs(gradT_erry (ileg+1)    * long_r(ileg+1)) / (2 * error_t(ileg+1))
+    iso_erry(ileg+1) = abs(gradT_erry (ileg+1)    * long_r(ileg+1)) / (2 * error_t(ileg+1))
     iso_s(ileg+1) = abs(gradT_s(ileg+1)  * abs(max_s2 - min_s2)) / (2 * error_t(ileg+1))
 
 
