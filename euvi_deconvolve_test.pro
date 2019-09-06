@@ -246,7 +246,7 @@ newfilename=newfilename+'.fts'
 hdr.filename=newfilename
 
 newfilename=outdir+newfilename
-
+stop
 print,newfilename
 
 MWRITEFITS, hdr,image, outfile=newfilename

@@ -26,7 +26,7 @@ pro rpoint_map,data1,rlon,rlat,vec_color=vec_color,data2=data2,data3=data3,data4
   plot,rlon,rlat,xr=[box[0],box[1]],yr=[box[2],box[3]],psym=8,$
        title=title,xtitle='Lon [deg]',ytitle='Lat [deg]',xthick=thick,ythick=thick,/nodata,xstyle=1,ystyle=1,font=0
   loadct,39
-
+stop
   SWITCH cant_elementos OF
      9: oplot,rlon(data9),rlat(data9),color=fun(vec_color(8)),th=2,psym=8
      8: oplot,rlon(data8),rlat(data8),color=fun(vec_color(7)),th=2,psym=8

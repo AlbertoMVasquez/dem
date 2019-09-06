@@ -37,9 +37,36 @@ histoplot,r2t_erry(where(r2n ne -555 and lincorr_pvalue_t le 0.05 and hip_chi_pv
 lowlatR=30
 lowlatL=-27
 i_ok = where(gradT ne -555. AND opclstat eq 2. and r2N_erry gt 0.7 and footlat le lowlatR and footlat ge lowlatL  and ft gt 0.6  )
-histoplot,nebasal(i_ok),win=1
+histoplot,nebasal(i_ok)/1.e8,win=1
 rpoint_map,i_ok,footlon,footlat,vec_color=0
 i_ok2= where(gradT ne -555. AND opclstat eq 2. and r2N_erry gt 0.7 and footlat le lowlatR and footlat ge lowlatL  and abs(pearson_t) ge 0.4  and hip_chi_pv2_t ge 0.8)
+
+
+gradt_erry(where(abs(pearson_t) lt 0.5 and opclstat gt 0. and hip_chi_pv2_t ge 0.7 and ft ne -555. and iso_erry le 1.))/1.e6
+gradt_erry(where(abs(pearson_t) ge 0.5 and opclstat gt 0. and hip_chi_pv2_t ge 0.7 and ft ne -555. and iso_erry gt 1.))/1.e6
+
+;--------------
+histoplot,awsom.pearson_n(where(awsom.r2n_erry ge 0.8)),max=-0.8,win=4
+histoplot,demt.pearson_n(where(demt.r2n_erry ge 0.8)),max=-0.8,win=5
+
+histoplot,demt.pearson_t(where(demt.r2n_erry ne -555. and demt.lincorr_pvalue_t le 0.05)),win=6
+histoplot,awsom.pearson_t(where(awsom.r2n_erry ne -555. and awsom.lincorr_pvalue_t ge 0.05)),win=7
+
+histoplot,demt.pearson_t(where(demt.r2n_erry ne -555. )),win=6
+histoplot,awsom.pearson_t(where(awsom.r2n_erry ne -555.)),win=7
+
+histoplot,demt.hip_chi_pv2_t(where(demt.r2n ne -555.)),win=8
+histoplot,awsom.hip_chi_pv2_t(where(awsom.r2n ne -555.)),win=9
+
+histoplot,demt.gradt_erry(where(abs(demt.pearson_t) gt 0.5 and demt.opclstat gt 0. and demt.hip_chi_pv2_t ge 0.7 and demt.ft ne -555. and demt.iso_erry gt 1.))/1.e6,win=1
+histoplot,demt.gradt_erry(where(abs(demt.pearson_t) le 0.5 and demt.opclstat gt 0. and demt.hip_chi_pv2_t ge 0.7 and demt.ft ne -555. and demt.iso_erry le 1.))/1.e6,win=2
+gradt_erry(where(abs(pearson_t) ge 0.5 and opclstat gt 0. and hip_chi_pv2_t ge 0.7 and ft ne -555. and iso_erry gt 1.))/1.e6
+
+
+
+
+
+
 
 
 

@@ -96,7 +96,29 @@ stop
 lowlatR=30
 lowlatL=-27
 lonmax=360
+
+lowlatR=30
+lowlatL=-27
+i_ok = where(gradT ne -555. AND opclstat eq 2. and r2N_erry gt 0.7 and footlat le lowlatR and footlat ge lowlatL  and ft gt 0.6  )
+histoplot,nebasal(i_ok),win=1
+rpoint_map,i_ok,footlon,footlat,vec_color=0
+i_ok2= where(gradT ne -555. AND opclstat eq 2. and r2N_erry gt 0.7 and footlat le lowlatR and footlat ge lowlatL  and abs(pearson_t) ge 0.4  and hip_chi_pv2_t ge 0.8)
+;chequeos globales
+histoplot,pearson_t    (where(pearson_t ne -555.)),win=0
+histoplot,pearson_n    (where(pearson_n ne -555.)),win=1
+histoplot,hip_chi_pv_t (where(r2n       ne -555.)),win=8
+histoplot,hip_chi_pv2_t(where(r2n       ne -555.)),win=8
+histoplot,iso_erry     (where(r2n       ne -555.)),win=8
+histoplot,r2t_erry     (where(r2n       ne -555.)),win=2,min=-1
+histoplot,ft           (where(r2n       ne -555.)),win=2
+
+histoplot,gradt_erry(where(abs(pearson_t) lt 0.5 and opclstat gt 0. and hip_chi_pv2_t ge 0.7 and ft ne -555. and iso_erry le 1.))/1.e6,win=1
+histoplot,gradt_erry(where(abs(pearson_t) ge 0.5 and opclstat gt 0. and hip_chi_pv2_t ge 0.7 and ft ne -555. and iso_erry gt 1.))/1.e6,win=2
+
 i_lowlat_gradneg = where(gradT ne -555. AND opclstat eq 2. and r2N gt r2crit_N and footlat le lowlatR and footlat ge lowlatL  and footlon le lonmax and r2T gt r2cr)
+
+
+
 final:
 
 return
