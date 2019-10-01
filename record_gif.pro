@@ -1,4 +1,4 @@
-pro record_gif,dir,filename,dev
+pro record_gif,dir,filename,dev,aia=aia
 
 ; set graph stuff
 if dev eq 'X'  then begin
@@ -7,7 +7,8 @@ device, true_color = 24
 device, decomposed = 0
 endif
 if dev eq 'Z' then begin
-Device, Decomposed=0, Set_Pixel_Depth=24, Set_Resolution=[1024,1024]
+   if not keyword_set(aia) then   Device, Decomposed=0, Set_Pixel_Depth=24, Set_Resolution=[1024,1024]
+   if     keyword_set(aia) then   Device, Decomposed=0, Set_Pixel_Depth=24, Set_Resolution=[4096,4096]
 endif
 
 image24 = TVRD(True=1)

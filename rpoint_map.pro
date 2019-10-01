@@ -1,4 +1,4 @@
-pro rpoint_map,data1,rlon,rlat,vec_color=vec_color,data2=data2,data3=data3,data4=data4,data5=data5,data6=data6,data7=data7,data8=data8,data9=data9,filelabel=filelabel,title=title,box=box,thick=thick
+pro rpoint_map,data1,rlon,rlat,vec_color=vec_color,data2=data2,data3=data3,data4=data4,data5=data5,data6=data6,data7=data7,data8=data8,data9=data9,filelabel=filelabel,title=title,box=box,thick=thick,win=win
 ;data1,,,data9 son vectores con el where que seleccione lo que se
 ;quiere plotear
 ;vector_color es un vector con numeros 0:4 que indica el color a utilizar  
@@ -7,7 +7,7 @@ pro rpoint_map,data1,rlon,rlat,vec_color=vec_color,data2=data2,data3=data3,data4
   if not keyword_set(box) then box = [0.,360.,-90.,+90.]
   if not keyword_set(thick) then thick = 3
   if n_elements(vec_color) eq 0. then vec_color = [0,1,1,2,2,3,3,4,4]
-
+  if not keyword_set(win) then win = 0
 ;el vector va desde el streamer ecuatoria hacia afuera  
   !P.CHARTHICK=6
   !p.charsize=2.5
@@ -23,6 +23,7 @@ pro rpoint_map,data1,rlon,rlat,vec_color=vec_color,data2=data2,data3=data3,data4
      ps1,'./newfigs/'+filelabel+'_Rpoint-map.eps',0
      DEVICE,/INCHES,YSIZE=5,XSIZE=10,SCALE_FACTOR=1
   endif
+  window,win
   plot,rlon,rlat,xr=[box[0],box[1]],yr=[box[2],box[3]],psym=8,$
        title=title,xtitle='Lon [deg]',ytitle='Lat [deg]',xthick=thick,ythick=thick,/nodata,xstyle=1,ystyle=1,font=0
   loadct,39

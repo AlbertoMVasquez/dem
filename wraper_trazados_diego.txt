@@ -1,0 +1,19 @@
+
+Te_awsom_2082_1.85_short
+Ne_awsom_2082_1.85_short
+
+pfss_data_file='pfss_data_cr2082_trazado5alturas.sav'
+trace_LDEM,pfss_data_file=pfss_data_file,ldem_file='LDEM.v3_CR2082_l.35.2.3_h1_Rmin1.00_Rmax1.30_Nr26_InstRmax1.26_bf4_r3d_B_vfullcadence_chianti.ioneq_sun_coronal_1992_feldman_ext.abund_euvi.B_L171_DECON_gauss1_lin_Norm-median_singlStart',period='2082_hollow_demt-data_field-awsom_6alt',safety=.5,stepmax=3000,/unifgrid_v2,radstart=1.025 + 0.04 *findgen(6)
+
+trace_LDEM,pfss_data_file=pfss_data_file,awsom_file='awsom_2082_1.85_short',period='2082_awsom-data_field-awsom_6alt',safety=.5,stepmax=3000,/unifgrid_v2,radstart=1.025 + 0.04 *findgen(6)
+
+
+2208
+pfss_data_file='pfss_data_awsom_2208_1.85_newprobando_nuevamente__radstart-1.025-1.225Rs.sav'
+trace_LDEM,pfss_data_file=pfss_data_file,ldem_file='LDEM.v3_CR2208_l.50.20.20_h1_Rmin1.00_Rmax1.26_Nr26_InstRmax1.26_bf4_r3d_B_chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',period='2208_hollow_demt-data_field-awsom_6alt',safety=.5,stepmax=3000,/unifgrid_v2,radstart=1.025 + 0.04 *findgen(6)
+
+trace_LDEM,pfss_data_file=pfss_data_file,awsom_file='awsom_2208_1.85_short',period='2208_awsom-data_field-awsom_6alt',safety=.5,stepmax=3000,/unifgrid_v2,radstart=1.025 + 0.04 *findgen(6)
+
+
+
+
