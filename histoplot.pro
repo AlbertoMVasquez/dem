@@ -37,20 +37,22 @@ pro histoplot,data1,data2=data2,min=min,max=max,label1=label1,label2=label2,nbin
      azul = 100
      rojo = 200
      if not keyword_set(data2) then  plot,vbin1,f1,psym=10,charsize=2,xtitle=xtit,ytitle=ytit,title=tit,xstyle=1,/nodata,charthick=2,Font=0
-     if keyword_set(data2) and max(f1) gt max(f2) then  plot,vbin1,f1,psym=10,charsize=2,xtitle=xtit,ytitle=ytit,title=tit,xstyle=1,/nodata,charthick=2,Font=0
-     if keyword_set(data2) and max(f2) gt max(f1) then  plot,vbin2,f2,psym=10,charsize=2,xtitle=xtit,ytitle=ytit,title=tit,xstyle=1,/nodata,charthick=2,Font=0
+     if keyword_set(data2) then begin
+        if max(f1) gt max(f2) then  plot,vbin1,f1,psym=10,charsize=2,xtitle=xtit,ytitle=ytit,title=tit,xstyle=1,/nodata,charthick=2,Font=0
+        if max(f2) gt max(f1) then  plot,vbin2,f2,psym=10,charsize=2,xtitle=xtit,ytitle=ytit,title=tit,xstyle=1,/nodata,charthick=2,Font=0
+     endif
      oplot,vbin1,f1,psym=10,thick=5,color=azul
      if keyword_set(data2) then oplot,vbin2,f2,psym=10,th=5,color=rojo
 
 ;outputs
 
   if not keyword_set(data2) then begin
-;     xyouts,0.8*[1,1,1,1],1-[0.18,0.25,0.32,0.38],['m='+strmid(string(med1),4,6),'!9m!3='+strmid(string(avg1),4,6),'!9s!3/!9m!3='+strmid(string(stdev1),4,6),'N='+strmid(string(cant1),6,7)],/normal,charthick=1,Font=0,charsize=2.2
+     xyouts,0.8*[1,1,1,1],1-[0.18,0.25,0.32,0.38],['m='+strmid(string(med1),4,6),'!9m!3='+strmid(string(avg1),4,6),'!9s!3/!9m!3='+strmid(string(stdev1),4,6),'N='+strmid(string(cant1),6,7)],/normal,charthick=1,Font=0,charsize=2.2
      xyouts,0.8*[1],1.-[0.1],[label1],/normal,color=[azul],charthick=3
   endif
 
   if keyword_set(data2) then begin
-;     xyouts,0.8*[1,1,1,1],1-[0.18,0.25,0.32,0.38],['m='+strmid(string(med1),4,6)+'&'+strmid(string(med2),4,6),'!9m!3='+strmid(string(avg1),4,6)+'&'+strmid(string(avg2),4,6),'!9s!3/!9m!3='+strmid(string(stdev1),4,6)+'&'+strmid(string(stdev2),4,6),'N='+strmid(string(cant1),6,7)+'&'+strmid(string(cant2),6,7)],/normal,charthick=1,Font=0,charsize=2.2
+     xyouts,0.8*[1,1,1,1],1-[0.18,0.25,0.32,0.38],['m='+strmid(string(med1),4,6)+'&'+strmid(string(med2),4,6),'!9m!3='+strmid(string(avg1),4,6)+'&'+strmid(string(avg2),4,6),'!9s!3/!9m!3='+strmid(string(stdev1),4,6)+'&'+strmid(string(stdev2),4,6),'N='+strmid(string(cant1),6,7)+'&'+strmid(string(cant2),6,7)],/normal,charthick=1,Font=0,charsize=2.2
      xyouts,0.8*[1,1],.9-[0.1,0.2],[label1,label2],/normal,color=[azul,rojo],charthick=3
   endif
 

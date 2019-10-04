@@ -298,7 +298,7 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
         lon_ini(ileg) = lon_l(0)
         Br0(ileg) =  Br_l(0)
        
-        rad_fin(ileg) = enrad_v(il) ;no seria il-1??
+        rad_fin(ileg) = enrad_v(il) 
         lat_fin(ileg) = enlat_v(il)
         lon_fin(ileg) = enlon_v(il)
         
@@ -493,9 +493,9 @@ no_para_awsom1:
     p2 = where(1./sfit ge s_min and 1./sfit le s_max)
     ssfit = sfit(p2)              ;renombro para no pisar
     yyfit = yfit(p2);podria cambiar con respecto a yfit(p1)
-
-    linear_fit,1/ssfit,alog(yyfit),A,r2,salidafit,/theilsen
-    Ne0_s(ileg) = exp(A[0]+A[1])
+;ajustes de Ne(s) = Ne_0 * exp(1s/lambda_s)
+    linear_fit,ssfit,alog(yyfit),A,r2,salidafit,/theilsen
+    Ne0_s(ileg) = exp(A[0])
     lambda_N_s(ileg) = 1./A[1]
     r2N_s(ileg) = r2
     pearson_ns(ileg) = correlate(ssfit,alog(yyfit),/double)
@@ -550,7 +550,7 @@ no_para_awsom1:
     p4 = where(sfit ge min_s and sfit le max_s)
     ssfit = sfit(p4)
     wwfit = wfit(p4)
-    
+;s    
     linear_fit,ssfit,wwfit,A,r2,salidafit,/theilsen
     Tm0_s(ileg)   = A[0]
     gradT_s(ileg) = A[1]
@@ -568,7 +568,7 @@ no_para_awsom1:
 ;    if not keyword_set(ajuste_bajo) && betabase(ileg) lt 0. && ft_s(ileg) ge 0.7 && r2N(ileg) ge 0.8 then stop
     
     long_r(ileg)  = max_r - min_r
-    long_s(ileg)  = max_s - min_s
+    long_s(ileg)  = max_s - min_s;long con datos tomograficos
     iso  (ileg)   = abs(gradT (ileg)         * long_r(ileg)) / (2 * error_t(ileg))
     iso_erry(ileg)= abs(gradT_erry (ileg)    * long_r(ileg)) / (2 * error_t(ileg))
     iso_s(ileg)   = abs(gradT_s(ileg)        * long_s(ileg)) / (2 * error_t(ileg))
@@ -625,6 +625,7 @@ no_para_awsom1:
        s_l2 = loopL(il) - reform(   s_v(ifirs_2:ilast_2,il))
        B_l1 = reform(   B_v(ifirs_1:ilast_1,il))
        B_l2 = reform(   B_v(ifirs_2:ilast_2,il))
+stop;quiero ver como son los vectores de s_l1 cuando rad_l1 <1.025
 ;quiero ver si rad_l2 y s_l2 hay que hacerles un reverse()  
 ;SI, ESTAN INVERTIDOS
        switching = 'no'
@@ -1008,12 +1009,12 @@ no_para_awsom1:
 ;s
         s_max1 = 1./min_s1
         s_min1 = 1./max_s1
-        p2 = where(1./sfit1 ge s_min1 and 1./sfit1 le s_max1)
+        p2 = where(sfit1 ge min_s1 and sfit1 le max_s1)
         ssfit1 = sfit1(p2)                                                           
         yyfit1 = yfit1(p2)
         
-        linear_fit,1/ssfit1,alog(yyfit1),A,r2,salidafit,/theilsen
-        Ne0_s(ileg) = exp(A[0]+A[1])
+        linear_fit,ssfit1,alog(yyfit1),A,r2,salidafit,/theilsen
+        Ne0_s(ileg) = exp(A[0])
         lambda_N_s(ileg) = 1./A[1]
         r2N_s(ileg) = r2
         pearson_ns(ileg) = correlate(ssfit1,alog(yyfit1))
@@ -1073,11 +1074,11 @@ no_para_awsom1:
 ;s
     s_max2 = 1./min_s2
     s_min2 = 1./max_s2
-    p2 = where(1./sfit2 ge s_min2 and 1./sfit2 le s_max2)
+    p2 = where(sfit2 ge min_s2 and sfit2 le max_s2)
     ssfit2 = sfit2(p2)                                                           
     yyfit2 = yfit2(p2) 
-    linear_fit,1/ssfit2,alog(yyfit2),A,r2,salidafit,/theilsen
-    Ne0_s(ileg+1) = exp(A[0]+A[1])
+    linear_fit,ssfit2,alog(yyfit2),A,r2,salidafit,/theilsen
+    Ne0_s(ileg+1) = exp(A[0])
     lambda_N_s(ileg+1) = 1./A[1]
     r2N_s(ileg+1) = r2
     pearson_ns(ileg+1) = correlate(ssfit2,alog(yyfit2))
@@ -1145,7 +1146,7 @@ no_para_awsom1:
     pearson_ts(ileg) = correlate(ssfit1,wwfit1)
 
 ;    if opcls(il) eq 2 and ft (ileg) le 0.1  then stop
-    
+stop    ;ver si te_base evaluado en 1.025 esta bien, xq eso es rsun!
     Te_base(ileg) = gradT_s(ileg) * 1.025 + Tm0_s(ileg)
     betabase(ileg) = (kb/bb * nebasal(ileg) * te_base(ileg)) /(B_base(ileg)^2/(8*!pi))
 ;pata l2
@@ -1244,14 +1245,23 @@ goto,preguntar_a_ceci
   s_r0_a(ileg+1) = m2 * r0 + s0r2
 preguntar_a_ceci:
 ;FCb calculo
-  b_l1_r0 = b_l1(0)
+  b_l1_r0 = b_l1(0);quiero saber a que altura en r y en s esta esto!
   b_l2_r0 = b_l2(0)  
-  Fc2_l1 = kappa*Te_base(ileg)^(5./2)*gradt_s(ileg)
-  Fc2_l2 = kappa*Te_base(ileg+1)^(5./2)*gradt_s(ileg+1)
-  Fcb(ileg  ) = Fc2_l1 * B_l2_r0/(B_l1_r0+B_l2_r0);b_l_0 depende y no es necesariamente en 1.025
+;Si en la base tomografica hay datos, quiero usar ese dato para
+;Te_base y sino, quiero usar el ajuste.
+  
+  Fc2_l1 = -1*kappa*Te_base(ileg  )^(5./2)*gradt_s(ileg)
+  Fc2_l2 = -1*kappa*Te_base(ileg+1)^(5./2)*gradt_s(ileg+1)
+
+  Fcb(ileg  ) = Fc2_l1 * B_l2_r0/(B_l1_r0+B_l2_r0) ;b_l_0 depende y no es necesariamente en r=1.025
   Fcb(ileg+1) = Fc2_l2 * B_l1_r0/(B_l1_r0+B_l2_r0)
-;ADEMAS PODRIA FITEARSE EL ER, VER!
-  skipfitloop:
+
+
+
+
+
+
+skipfitloop:
      opclstat(ileg)   =      opcls(il)
      opclstat(ileg+1) =      opcls(il)
   loop_length(ileg)   =      loopL(il)

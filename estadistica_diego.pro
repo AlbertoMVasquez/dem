@@ -61,6 +61,28 @@ pro estadistica_diego
   histoplot,demt2082.tmmean(ok_demt)/1.e6,data2=awsom2082.tmmean(ok_awsom)/1.e6,win=1,xtit='MK',tit='Temperatura promedio -CR2082',label1='DEMT',label2='AWSOM',filename='2082_temp_media'
   histoplot,demt2082.lambda_n(ok_demt),data2=awsom2082.lambda_n(ok_awsom),min=0.03,max=0.16,win=1,xtit='',tit='Escala de altura (Ne) -CR2082',label1='DEMT',label2='AWSOM',filename='2082_lambda_n'
 
+
+
+  ok_demt1  = where(abs(demt2082.pearson_t)  gt 0.5 and demt2082.opclstat  eq 1. and demt2082.hip_chi_pv2_t  ge 0.7 and demt2082.ft ne -555. and demt2082.iso_erry gt 1.)
+  ok_awsom1 = where(abs(awsom2082.pearson_t) gt 0.5 and awsom2082.opclstat eq 1. and awsom2082.hip_chi_pv2_t ge 0.7 ) ;cerrados grandes
+  
+  ok_demt1  = where(abs(demt2082.pearson_t)  gt 0.5 and demt2082.opclstat  eq 2. and demt2082.hip_chi_pv2_t  ge 0.7 and demt2082.ft ne -555. and demt2082.iso_erry gt 1.)
+  ok_awsom1 = where(abs(awsom2082.pearson_t) gt 0.5 and awsom2082.opclstat eq 2. and awsom2082.hip_chi_pv2_t ge 0.7 ) ;cerraodos chicos
+  
+  ok_demt1  = where(abs(demt2082.pearson_t)  gt 0.5 and demt2082.opclstat  eq 0. and demt2082.hip_chi_pv2_t  ge 0.7 and demt2082.ft ne -555. and demt2082.iso_erry gt 1.)
+  ok_awsom1 = where(abs(awsom2082.pearson_t) gt 0.5 and awsom2082.opclstat eq 0. and awsom2082.hip_chi_pv2_t ge 0.7 );abiertos                        
+
+  ok_demt1  = where(abs(demt2082.pearson_t)  gt 0.5 and demt2082.opclstat  eq 0. and demt2082.hip_chi_pv2_t  ge 0.7 and demt2082.ft ne -555. and demt2082.iso_erry gt 1. and (demt2082.footlat ge 70. or demt2082.footlat le -70))
+  ok_awsom1 = where(abs(awsom2082.pearson_t) gt 0.5 and awsom2082.opclstat eq 0. and awsom2082.hip_chi_pv2_t ge 0.7  and (demt2082.footlat ge 70. or demt2082.footlat le -70))
+
+  ne_demt  = (demt2082.nebasal) * exp(-1/(demt2082.lambda_n) * (1. - 1./1.025))
+  ne_awsom = (awsom2082.nebasal)* exp(-1/(awsom2082.lambda_n)* (1. - 1./1.025))
+;DISTINGUIR HEMISFERIOS EN LAS REGIONES ABIERTAS XQ PUEDEN NO SER SIMETRICOS!
+  histoplot, demt2082.tmmean(ok_demt1 )/1.e6,data2=awsom2082.tmmean(ok_awsom1)/1.e6,win=1
+  histoplot, demt2082.lambda_n(ok_demt1 ),data2=awsom2082.lambda_n(ok_awsom1),win=3,min=-0.05,max=0.2
+  histoplot,ne_demt(ok_demt1)/1.e8,data2=ne_awsom(ok_awsom1)/1.e8,win=2
+
+  
 ;doble histos 2208
   ok_demt2  = where(abs(demt2208.pearson_t)  gt 0.5 and demt2208.opclstat  gt 0. and demt2208.hip_chi_pv2_t  ge 0.7 and demt2208.ft ne -555. and demt2208.iso_erry gt 1.)
   ok_awsom2 = where(abs(awsom2208.pearson_t) gt 0.5 and awsom2208.opclstat gt 0. and awsom2208.hip_chi_pv2_t ge 0.7 )
