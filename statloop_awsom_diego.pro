@@ -142,18 +142,24 @@ hip_chi_pv2_t  = fltarr(Nlegs)-555.
 hip_chi_ch2_t  = fltarr(Nlegs)-555.
 sigma_t = fltarr(Nlegs)-555.
 sigma_n = fltarr(Nlegs)-555.
+er0_s = fltarr(Nlegs)-555.
+lambda_er_s = fltarr(Nlegs)-555.
+r2er_s = fltarr(Nlegs)-555.
+pearson_ers = fltarr(Nlegs)-555.
+s_base = fltarr(Nlegs)-555.
 ;----   
    scoreR = fltarr(Nlegs)-555.
 ;pedidos especiales por ceci
-   dTmds = fltarr(Nlegs)-555.
-      Eh = fltarr(Nlegs)-555.
-      Smaxxx = fltarr(Nlegs)-555. 
-      Sminnn = fltarr(Nlegs)-555.
-      Phir =fltarr(Nlegs)-555.; flujo radiativo 
-      Fcb=fltarr(Nlegs)-555.  ;flujo conductivo enla base
+      Eh      = fltarr(Nlegs)-555.
+      Smaxxx  = fltarr(Nlegs)-555. 
+      Sminnn  = fltarr(Nlegs)-555.
+      Phir    = fltarr(Nlegs)-555.; flujo radiativo 
+      Fcb     = fltarr(Nlegs)-555.  ;flujo conductivo enla base
       Phirfit = fltarr(Nlegs)-555. ; flujo radiativo fiteado
-      eplegT = fltarr(Nlegs)-555.
-      s_r0_a = fltarr(Nlegs)-555.
+      eplegT  = fltarr(Nlegs)-555.
+      fc_l1   = fltarr(Nlegs)-555.
+      fc_l2   = fltarr(Nlegs)-555.
+
 ;----------------------------
       
  deltaEh = fltarr(Nlegs)-555. ;??
@@ -308,6 +314,7 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
 
         rrr0=findel(1.025,rad_l) ;se usa para evaluar Nebasal
         B_base (ileg) = B_l (rrr0)
+        s_base (ileg) = s_l (rrr0)
 ;        scoreR (ileg) = scoreR_l
 ;select usefull data
         if not keyword_set(demt) then  p = where ( rad_l ge rmin and rad_l le rmax and Ne_l ne -999.)
@@ -405,6 +412,7 @@ no_para_awsom1:
           yfit =  Ne_l (where(rad_l ge corte_awsom))
           zfit =  p_l  (where(rad_l ge corte_awsom))
           wfit =  Tm_l (where(rad_l ge corte_awsom))
+          rfit =  Er_l (where(rad_l ge corte_awsom))
 ;          min_s = s_l(findel(corte_awsom,rad_l))
 ;          max_s = s_l(findel(1.2 ,rad_l))
 ;Usar definiciones como las de arriba pueden ocasionar errores cuando
@@ -432,6 +440,7 @@ no_para_awsom1:
           yfit = Ne_l
           zfit = p_l
           wfit = Tm_l
+          rfit = Er_l
           min_s = min(s_l)
           max_s = max(s_l)
           min_r = rad_l(findel(1.025,rad_l))
@@ -488,9 +497,8 @@ no_para_awsom1:
        fne (ileg) = fraccion
     endif
 
-    s_max = 1./min_s
-    s_min = 1./max_s
-    p2 = where(1./sfit ge s_min and 1./sfit le s_max)
+    ;s
+    p2 = where(sfit ge min_s and sfit le max_s)
     ssfit = sfit(p2)              ;renombro para no pisar
     yyfit = yfit(p2);podria cambiar con respecto a yfit(p1)
 ;ajustes de Ne(s) = Ne_0 * exp(1s/lambda_s)
@@ -504,6 +512,13 @@ no_para_awsom1:
        fne_s (ileg) = fraccion
        ;ver aca tmb si esto se calcula como debe
     endif
+
+    rrfit = rfit(p2)
+    linear_fit,ssfit,alog(rrfit),A,r2,salidafit,/theilsen
+    Er0_s(ileg) = exp(A[0])
+    lambda_er_s(ileg) = 1./A[1]
+    r2er_s(ileg) = r2
+    pearson_ers(ileg) = correlate(ssfit,alog(rrfit),/double)
     
 ;Fiteando temperatura
     p3 = where(xfit ge min_r and xfit le max_r)
@@ -561,14 +576,18 @@ no_para_awsom1:
     endif
     pearson_ts(ileg) = correlate(ssfit,wwfit,/double)
 ;    if ft (ileg) le 0.1 or ft_s (ileg) le 0.1 then stop
-    
+    stop ;como son los fiteos en s en relacion a la primera celda tomo=?
     Te_base(ileg) = gradT(ileg) * 1.025 + Tm0(ileg)
     betabase(ileg) = (kb/bb * nebasal(ileg) * te_base(ileg)) /(B_base(ileg)^2/(8*!pi))
     ;betabase puede ser negativo para los malos fiteos de temperatura
 ;    if not keyword_set(ajuste_bajo) && betabase(ileg) lt 0. && ft_s(ileg) ge 0.7 && r2N(ileg) ge 0.8 then stop
     
     long_r(ileg)  = max_r - min_r
-    long_s(ileg)  = max_s - min_s;long con datos tomograficos
+    long_s(ileg)  = max_s - min_s ;long con datos tomograficos
+                                ;quiero un long_s desde el minimo
+                                ;hasta el max del apice aunque no
+                                ;tenga datos tomos y aca los que
+                                ;excedan 1.225 debera extrapolarlos
     iso  (ileg)   = abs(gradT (ileg)         * long_r(ileg)) / (2 * error_t(ileg))
     iso_erry(ileg)= abs(gradT_erry (ileg)    * long_r(ileg)) / (2 * error_t(ileg))
     iso_s(ileg)   = abs(gradT_s(ileg)        * long_s(ileg)) / (2 * error_t(ileg))
@@ -683,7 +702,7 @@ stop;quiero ver como son los vectores de s_l1 cuando rad_l1 <1.025
        rrr02=findel(1.025,rad_l2)
        Rp_base.lat(ileg+1)  = lat_l2(rrr02)
        Rp_base.lon(ileg+1)  = lon_l2(rrr02)
-       
+
        rrr1=findel(1.075,rad_l2)
        Rp_medio.lat(ileg+1) = lat_l2(rrr1)
        Rp_medio.lon(ileg+1) = lon_l2(rrr1)
@@ -696,8 +715,9 @@ stop;quiero ver como son los vectores de s_l1 cuando rad_l1 <1.025
        rad_l2_orig = rad_l2
        B_base (ileg  ) = B_l1 (rrr01)
        B_base (ileg+1) = B_l2 (rrr02)
-
-
+       s_base (ileg)   = s_l1 (rrr01)
+       s_base (ileg+1) = s_l2 (rrr02)
+       
        if keyword_set(demt) then  p1 = where ( rad_l1 ge rmin and rad_l1 le rmax and Ne_l1 ne -999. and scoreR_l1 lt 0.25);0.1 );<------ parametro relajado
        if keyword_set(demt) then  p2 = where ( rad_l2 ge rmin and rad_l2 le rmax and Ne_l2 ne -999. and scoreR_l2 lt 0.25);0.1 )
 
@@ -903,6 +923,7 @@ stop;quiero ver como son los vectores de s_l1 cuando rad_l1 <1.025
               yfit1  = Ne_l1 (where(rad_l1 ge corte_awsom))
               zfit1  = p_l1  (where(rad_l1 ge corte_awsom))
               wfit1  = Tm_l1 (where(rad_l1 ge corte_awsom))
+              rfit1  = Er_l1 (where(rad_l1 ge corte_awsom))
               min_s1 = min(s_l1)
               max_s1 = max(s_l1) 
               min_r1 = rad_l1(findel(corte_awsom,rad_l1))
@@ -912,6 +933,7 @@ stop;quiero ver como son los vectores de s_l1 cuando rad_l1 <1.025
               yfit2  = Ne_l2 (where(rad_l2 ge corte_awsom))
               zfit2  = p_l2  (where(rad_l2 ge corte_awsom))
               wfit2  = Tm_l2 (where(rad_l2 ge corte_awsom))
+              rfit2  = Er_l2 (where(rad_l2 ge corte_awsom))
               min_s2 = min(s_l2)
               max_s2 = max(s_l2)
               min_r2 = rad_l2(findel(corte_awsom,rad_l2))
@@ -943,6 +965,7 @@ stop;quiero ver como son los vectores de s_l1 cuando rad_l1 <1.025
               yfit1 = Ne_l1
               zfit1 = p_l1
               wfit1 = Tm_l1
+              rfit1 = Er_l1
               min_s1 = min(s_l1)
               max_s1 = max(s_l1)
               min_r1 = rad_l1(findel(1.025,rad_l1))
@@ -952,6 +975,7 @@ stop;quiero ver como son los vectores de s_l1 cuando rad_l1 <1.025
               yfit2 = Ne_l2
               zfit2 = p_l2
               wfit2 = Tm_l2
+              rfit2 = Er_l2
               min_s2 = min(s_l2)
               max_s2 = max(s_l2)
               min_r2 = rad_l2(findel(1.025,rad_l2))
@@ -1007,8 +1031,6 @@ stop;quiero ver como son los vectores de s_l1 cuando rad_l1 <1.025
            fne (ileg) = fraccion
         endif
 ;s
-        s_max1 = 1./min_s1
-        s_min1 = 1./max_s1
         p2 = where(sfit1 ge min_s1 and sfit1 le max_s1)
         ssfit1 = sfit1(p2)                                                           
         yyfit1 = yfit1(p2)
@@ -1023,6 +1045,14 @@ stop;quiero ver como son los vectores de s_l1 cuando rad_l1 <1.025
        franja_lineal,alog(yyfit1),salidafit,error_ne(ileg),fraccion
        fne_s (ileg) = fraccion
     endif
+
+    rrfit1 = rfit1(p2)
+    linear_fit,ssfit1,alog(rrfit1),A,r2,salidafit,/theilsen
+    Er0_s(ileg) = exp(A[0])
+    lambda_er_s(ileg) = 1./A[1]
+    r2er_s(ileg) = r2
+    pearson_ers(ileg) = correlate(ssfit1,alog(rrfit1),/double)
+    
 ;pata l2    
     x_max2 = 1./min_r2
     x_min2 = 1./max_r2
@@ -1072,8 +1102,8 @@ stop;quiero ver como son los vectores de s_l1 cuando rad_l1 <1.025
        fne (ileg+1) = fraccion
     endif
 ;s
-    s_max2 = 1./min_s2
-    s_min2 = 1./max_s2
+;    s_max2 = 1./min_s2
+;    s_min2 = 1./max_s2
     p2 = where(sfit2 ge min_s2 and sfit2 le max_s2)
     ssfit2 = sfit2(p2)                                                           
     yyfit2 = yfit2(p2) 
@@ -1087,6 +1117,14 @@ stop;quiero ver como son los vectores de s_l1 cuando rad_l1 <1.025
        franja_lineal,alog(yyfit2),salidafit,error_ne(ileg+1),fraccion
        fne_s (ileg+1) = fraccion
     endif
+
+    rrfit2 = rfit2(p2)
+    linear_fit,ssfit2,alog(rrfit2),A,r2,salidafit,/theilsen
+    Er0_s(ileg+1) = exp(A[0])
+    lambda_er_s(ileg+1) = 1./A[1]
+    r2er_s(ileg+1) = r2
+    pearson_ers(ileg+1) = correlate(ssfit2,alog(rrfit2),/double)
+
     
 ;Fiteando temperatura          
 ;para l1
@@ -1213,6 +1251,7 @@ stop    ;ver si te_base evaluado en 1.025 esta bien, xq eso es rsun!
  ;   if opcls(il) eq 2 and ft (ileg+1) le 0.1 then stop
     
     Te_base(ileg+1) = gradT_s(ileg+1) * 1.025 + Tm0_s(ileg+1)
+stop ;que onda el te_base evaluado en r=1.025??
     betabase(ileg+1) = (kb/bb * nebasal(ileg+1) * te_base(ileg+1)) /(B_base(ileg+1)^2/(8*!pi))
 
     long_r (ileg)   = abs(max_r1 - min_r1)
@@ -1245,20 +1284,28 @@ goto,preguntar_a_ceci
   s_r0_a(ileg+1) = m2 * r0 + s0r2
 preguntar_a_ceci:
 ;FCb calculo
-  b_l1_r0 = b_l1(0);quiero saber a que altura en r y en s esta esto!
-  b_l2_r0 = b_l2(0)  
+
 ;Si en la base tomografica hay datos, quiero usar ese dato para
 ;Te_base y sino, quiero usar el ajuste.
   
-  Fc2_l1 = -1*kappa*Te_base(ileg  )^(5./2)*gradt_s(ileg)
-  Fc2_l2 = -1*kappa*Te_base(ileg+1)^(5./2)*gradt_s(ileg+1)
-
-  Fcb(ileg  ) = Fc2_l1 * B_l2_r0/(B_l1_r0+B_l2_r0) ;b_l_0 depende y no es necesariamente en r=1.025
-  Fcb(ileg+1) = Fc2_l2 * B_l1_r0/(B_l1_r0+B_l2_r0)
+  Fc_l1(ileg  ) = -1*kappa*(tm0_s(ileg  )+gradt_s(ileg  )*s_base(ileg  ))^(5./2)*gradt_s(ileg)
+  Fc_l2(ileg  ) = -1*kappa*(tm0_s(ileg+1)+gradt_s(ileg+1)*s_base(ileg+1))^(5./2)*gradt_s(ileg+1)
 
 
+  Fcb(ileg  ) = Fc2_l1 * B_base(ileg+1)/(B_base(ileg)+b_base(ileg+1)) ;b_l_0 depende y no es necesariamente en r=1.025
+  Fcb(ileg+1) = Fc2_l2 * B_base(ileg  )/(B_base(ileg)+b_base(ileg+1))
 
+  if opclstat(ileg) eq 2 then begin
+;cerrado chico
+;     y xtemp es e vector de s SIN cortar, ytemp es la expresion de Er(s) evaluada en xtemp dividida el campo B en s
+     phir_lin_l1 = int_tabulated(xtmp,ytmp,/sort)
+     
+  endif
 
+  if opclstat(ileg) eq 1 then begin
+;cerrado grande
+ ; aca hay que extrapolar la funcion hasta su apice.    
+  endif
 
 
 skipfitloop:
@@ -1307,7 +1354,7 @@ endfor
            pearson_n:pearson_n, lincorr_pearson_n:lincorr_pearson_n, lincorr_pvalue_n:lincorr_pvalue_n, hip_chi_pv_n:hip_chi_pv_n, hip_chi_pv2_n:hip_chi_pv2_n, r2n_erry:r2n_erry,$
            pearson_t:pearson_t, lincorr_pearson_t:lincorr_pearson_t, lincorr_pvalue_t:lincorr_pvalue_t, hip_chi_pv_t:hip_chi_pv_t, hip_chi_pv2_t:hip_chi_pv2_t, r2t_erry:r2t_erry,$
            sigma_n:sigma_n, sigma_t:sigma_t, Ne0_erry:Ne0_erry, lambda_N_erry:lambda_N_erry, Tm0_erry:Tm0_erry, gradT_erry:gradT_erry,$
-           Rp_base:Rp_base, Rp_medio:Rp_medio, Rp_alto:Rp_alto}
+           Rp_base:Rp_base, Rp_medio:Rp_medio, Rp_alto:Rp_alto, er0_s:er0_s, lambda_er_s:lambda_er_s, r2er_s:r2er_s, pearson_ers:pearson_ers, s_base:s_base, fcb:fcb}
   save, datos, FILENAME = 'trace_struct_'+ffile_out+'.sav'
 
   if keyword_set(ajuste_alto) then begin
@@ -1320,7 +1367,7 @@ endfor
            pearson_n:pearson_n, lincorr_pearson_n:lincorr_pearson_n, lincorr_pvalue_n:lincorr_pvalue_n, hip_chi_pv_n:hip_chi_pv_n, hip_chi_pv2_n:hip_chi_pv2_n, r2n_erry:r2n_erry,$
            pearson_t:pearson_t, lincorr_pearson_t:lincorr_pearson_t, lincorr_pvalue_t:lincorr_pvalue_t, hip_chi_pv_t:hip_chi_pv_t, hip_chi_pv2_t:hip_chi_pv2_t, r2t_erry:r2t_erry,$
            sigma_n:sigma_n, sigma_t:sigma_t, Ne0_erry:Ne0_erry, lambda_N_erry:lambda_N_erry, Tm0_erry:Tm0_erry, gradT_erry:gradT_erry,$
-           Rp_base:Rp_base, Rp_medio:Rp_medio, Rp_alto:Rp_alto}
+           Rp_base:Rp_base, Rp_medio:Rp_medio, Rp_alto:Rp_alto, er0_s:er0_s, lambda_er_s:lambda_er_s, r2er_s:r2er_s, pearson_ers:pearson_ers, s_base:s_base, fcb:fcb}
 
   save, datos, FILENAME = 'trace_struct_'+ffile_out+'.sav'
   endif
