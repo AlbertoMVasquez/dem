@@ -1,4 +1,4 @@
-pro rpoint_map,data1,rlon,rlat,vec_color=vec_color,data2=data2,data3=data3,data4=data4,data5=data5,data6=data6,data7=data7,data8=data8,data9=data9,filelabel=filelabel,title=title,box=box,thick=thick,win=win
+pro rpoint_map,data1,rlon,rlat,vec_color=vec_color,data2=data2,data3=data3,data4=data4,data5=data5,data6=data6,data7=data7,data8=data8,data9=data9,filename=filename,title=title,box=box,thick=thick,win=win
 ;data1,,,data9 son vectores con el where que seleccione lo que se
 ;quiere plotear
 ;vector_color es un vector con numeros 0:4 que indica el color a utilizar  
@@ -15,19 +15,19 @@ pro rpoint_map,data1,rlon,rlat,vec_color=vec_color,data2=data2,data3=data3,data4
 
   N=25
   A = FINDGEN(N) * (!PI*2/float(N-1))
-  f=15.
+  f=5.
   USERSYM, COS(A)/f, SIN(A)/f,/FILL
   cant_elementos = n_elements(vec_color)
 
-  if keyword_set(filelabel) then begin
-     ps1,'./newfigs/'+filelabel+'_Rpoint-map.eps',0
+  if keyword_set(filename) then begin
+     ps1,'./newfigs/'+filename+'_Rpoint-map.eps',0
      DEVICE,/INCHES,YSIZE=5,XSIZE=10,SCALE_FACTOR=1
   endif
-  window,win
+  if not keyword_set(filename) then window,win
   plot,rlon,rlat,xr=[box[0],box[1]],yr=[box[2],box[3]],psym=8,$
        title=title,xtitle='Lon [deg]',ytitle='Lat [deg]',xthick=thick,ythick=thick,/nodata,xstyle=1,ystyle=1,font=0
   loadct,39
-stop
+
   SWITCH cant_elementos OF
      9: oplot,rlon(data9),rlat(data9),color=fun(vec_color(8)),th=2,psym=8
      8: oplot,rlon(data8),rlat(data8),color=fun(vec_color(7)),th=2,psym=8
@@ -47,7 +47,7 @@ stop
          END
    ENDSWITCH
 
-  if keyword_set(filelabel) then ps2
+  if keyword_set(filename) then ps2
   !p.multi = 0
   !P.CHARTHICK=0
 
@@ -59,7 +59,7 @@ FUNCTION FUN,x
 ;paper entonces los valores 0,1,2,3,4 se reflejan en los valores
 ;correspondientes al colo table 39
   case x of
-     0: y = 200
+     0: y = 200;amarillo
      1: y = 28
      2: y = 245
      3: y = 150

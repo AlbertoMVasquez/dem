@@ -16,6 +16,7 @@
 ;---Nuevos trazados
 ;statloop_awsom_diego,file='traceLDEM_CR2082_hollow_demt-data_field-awsom_6alt_radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav',/demt
 ;statloop_awsom_diego,file='traceLDEM_CR2082_awsom-data_field-awsom_6alt_radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav',/ajuste_alto
+
 ;statloop_awsom_diego,file='traceLDEM_CR2208_hollow_demt-data_field-awsom_6alt_radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav',/demt
 ;statloop_awsom_diego,file='traceLDEM_CR2208_awsom-data_field-awsom_6alt_radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav',/ajuste_alto
 
@@ -147,19 +148,21 @@ lambda_er_s = fltarr(Nlegs)-555.
 r2er_s = fltarr(Nlegs)-555.
 pearson_ers = fltarr(Nlegs)-555.
 s_base = fltarr(Nlegs)-555.
+Tmmean_alto = fltarr(Nlegs)-555. ;corresponde a demt y debe EL comparado con tmmean de awsom.
 ;----   
    scoreR = fltarr(Nlegs)-555.
 ;pedidos especiales por ceci
       Eh      = fltarr(Nlegs)-555.
       Smaxxx  = fltarr(Nlegs)-555. 
       Sminnn  = fltarr(Nlegs)-555.
-      Phir    = fltarr(Nlegs)-555.; flujo radiativo 
+      Phi_r    = fltarr(Nlegs)-555.; flujo radiativo 
       Fcb     = fltarr(Nlegs)-555.  ;flujo conductivo enla base
       Phirfit = fltarr(Nlegs)-555. ; flujo radiativo fiteado
       eplegT  = fltarr(Nlegs)-555.
       fc_l1   = fltarr(Nlegs)-555.
       fc_l2   = fltarr(Nlegs)-555.
-
+      phi_r_total = fltarr(Nlegs)-555.
+      phi_c_total = fltarr(Nlegs)-555.
 ;----------------------------
       
  deltaEh = fltarr(Nlegs)-555. ;??
@@ -312,14 +315,27 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
         footlat(ileg) = lat_ini(ileg)
         footlon(ileg) = lon_ini(ileg)
 
-        rrr0=findel(1.025,rad_l) ;se usa para evaluar Nebasal
-        B_base (ileg) = B_l (rrr0)
-        s_base (ileg) = s_l (rrr0)
+        rrr01=findel(1.025,rad_l) ;se usa para evaluar Nebasal
+        B_base (ileg) = B_l (rrr01)
+        s_base (ileg) = s_l (rrr01)
 ;        scoreR (ileg) = scoreR_l
 ;select usefull data
+
+       Rp_base.lat(ileg)  = lat_l(rrr01)
+       Rp_base.lon(ileg)  = lon_l(rrr01)
+
+       rrr1=findel(1.075,rad_l)
+       Rp_medio.lat(ileg) = lat_l(rrr1)
+       Rp_medio.lon(ileg) = lon_l(rrr1)
+
+       rrr2=findel(1.105,rad_l)
+       Rp_alto.lat(ileg)  = lat_l(rrr2)
+       Rp_alto.lon(ileg)  = lon_l(rrr2)
+
+
         if not keyword_set(demt) then  p = where ( rad_l ge rmin and rad_l le rmax and Ne_l ne -999.)
         if     keyword_set(demt) then  p = where ( rad_l ge rmin and rad_l le rmax and Ne_l ne -999. and scoreR_l lt 0.25);0.10) ;<---- nuevo cambio
-;podria relajarse a 0.25??
+;se relajó a 0.25??
 ;hacer estadistica de scoreR_l  !!!
         
         if p(0) eq -1 then goto,skipnextloop_open
@@ -356,7 +372,10 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
            Ermean(ileg) =   mean(Er_l)
            Tmmean(ileg) =  mean(Tm_l)
         endelse
-        
+        if keyword_set(demt) then begin ;se calcula arriba de 1.055 para comparar con awsom.
+           if (where(rad_l ge corte_awsom))(0) ne -1 then Tmmean_alto(ileg) =  mean(Tm_l(where(rad_l ge corte_awsom)))
+           ;puede pasar que haya pocos valores y abajo de corte_awsom.
+        endif
 ;se guardan valores pero no hay fiteo si hay menos de 5 puntos.
         if n_elements(p) lt Ndata then goto,skipfitloop_open
 
@@ -566,7 +585,7 @@ no_para_awsom1:
     ssfit = sfit(p4)
     wwfit = wfit(p4)
 ;s    
-    linear_fit,ssfit,wwfit,A,r2,salidafit,/theilsen
+    linear_fit,ssfit,wwfit,A,r2,salidafit,/linfit_err,err_y=((ssfit*0)+err_tm)
     Tm0_s(ileg)   = A[0]
     gradT_s(ileg) = A[1]
     r2t_s (ileg)  = r2
@@ -576,8 +595,8 @@ no_para_awsom1:
     endif
     pearson_ts(ileg) = correlate(ssfit,wwfit,/double)
 ;    if ft (ileg) le 0.1 or ft_s (ileg) le 0.1 then stop
-    stop ;como son los fiteos en s en relacion a la primera celda tomo=?
-    Te_base(ileg) = gradT(ileg) * 1.025 + Tm0(ileg)
+
+    Te_base(ileg) = gradT_erry(ileg) * 1.025 + Tm0_erry(ileg)
     betabase(ileg) = (kb/bb * nebasal(ileg) * te_base(ileg)) /(B_base(ileg)^2/(8*!pi))
     ;betabase puede ser negativo para los malos fiteos de temperatura
 ;    if not keyword_set(ajuste_bajo) && betabase(ileg) lt 0. && ft_s(ileg) ge 0.7 && r2N(ileg) ge 0.8 then stop
@@ -644,7 +663,7 @@ no_para_awsom1:
        s_l2 = loopL(il) - reform(   s_v(ifirs_2:ilast_2,il))
        B_l1 = reform(   B_v(ifirs_1:ilast_1,il))
        B_l2 = reform(   B_v(ifirs_2:ilast_2,il))
-stop;quiero ver como son los vectores de s_l1 cuando rad_l1 <1.025
+
 ;quiero ver si rad_l2 y s_l2 hay que hacerles un reverse()  
 ;SI, ESTAN INVERTIDOS
        switching = 'no'
@@ -717,8 +736,12 @@ stop;quiero ver como son los vectores de s_l1 cuando rad_l1 <1.025
        B_base (ileg+1) = B_l2 (rrr02)
        s_base (ileg)   = s_l1 (rrr01)
        s_base (ileg+1) = s_l2 (rrr02)
-       
-       if keyword_set(demt) then  p1 = where ( rad_l1 ge rmin and rad_l1 le rmax and Ne_l1 ne -999. and scoreR_l1 lt 0.25);0.1 );<------ parametro relajado
+       s_l1_orig       = s_l1 ;estos dos vectores se guardan momentaneamente (se reescriben en cada loops) y seusan en la integral del phi radiativo.
+       s_l2_orig       = s_l2
+       B_l1_orig       = B_l1
+       B_l2_orig       = B_l2       
+
+       if keyword_set(demt) then  p1 = where ( rad_l1 ge rmin and rad_l1 le rmax and Ne_l1 ne -999. and scoreR_l1 lt 0.25) ;0.1 );<------ parametro relajado
        if keyword_set(demt) then  p2 = where ( rad_l2 ge rmin and rad_l2 le rmax and Ne_l2 ne -999. and scoreR_l2 lt 0.25);0.1 )
 
        if not keyword_set(demt) then  p1 = where ( rad_l1 ge rmin and rad_l1 le rmax and Ne_l1 ne -999. )
@@ -805,7 +828,10 @@ stop;quiero ver como son los vectores de s_l1 cuando rad_l1 <1.025
      Pmean(ileg)   = mean(p_l1)
      Pmean(ileg+1) = mean(p_l2)
   endelse
-  
+  if keyword_set(demt) then begin ;se calcula arriba de 1.055 para comparar con awsom
+     if (where(rad_l1 ge corte_awsom))(0) ne -1 then  Tmmean_alto(ileg)   =  mean(Tm_l1(where(rad_l1 ge corte_awsom)))
+     if (where(rad_l2 ge corte_awsom))(0) ne -1 then  Tmmean_alto(ileg+1) =  mean(Tm_l2(where(rad_l2 ge corte_awsom)))
+  endif  
   if n_elements(p1) lt Ndata || n_elements(p2) lt Ndata then goto,skipfitloop
 
   if     keyword_set(ajuste_alto) then goto,no_para_awsom
@@ -1172,7 +1198,7 @@ stop;quiero ver como son los vectores de s_l1 cuando rad_l1 <1.025
     ssfit1 = sfit1(p4)
     wwfit1 = wfit1(p4)    
 
-    linear_fit,ssfit1,wwfit1,A,r2,salidafit,/theilsen
+    linear_fit,ssfit1,wwfit1,A,r2,salidafit,/linfit_err,err_y=((ssfit1*0)+err_tm)
     Tm0_s(ileg)   = A[0]
     gradT_s(ileg) = A[1]
     r2t_s (ileg)  = r2
@@ -1184,8 +1210,7 @@ stop;quiero ver como son los vectores de s_l1 cuando rad_l1 <1.025
     pearson_ts(ileg) = correlate(ssfit1,wwfit1)
 
 ;    if opcls(il) eq 2 and ft (ileg) le 0.1  then stop
-stop    ;ver si te_base evaluado en 1.025 esta bien, xq eso es rsun!
-    Te_base(ileg) = gradT_s(ileg) * 1.025 + Tm0_s(ileg)
+    Te_base(ileg) = gradT_erry(ileg) * 1.025 + Tm0_erry(ileg)
     betabase(ileg) = (kb/bb * nebasal(ileg) * te_base(ileg)) /(B_base(ileg)^2/(8*!pi))
 ;pata l2
     p3 = where(xfit2 ge min_r2 and xfit2 le max_r2)
@@ -1237,7 +1262,7 @@ stop    ;ver si te_base evaluado en 1.025 esta bien, xq eso es rsun!
     ssfit2 = sfit2(p4)
     wwfit2 = wfit2(p4)
     
-    linear_fit,ssfit2,wwfit2,A,r2,salidafit,/theilsen
+    linear_fit,ssfit2,wwfit2,A,r2,salidafit,/linfit_err,err_y=((ssfit2*0)+err_tm)
     Tm0_s(ileg+1)   = A[0]
     gradT_s(ileg+1) = A[1]
     r2t_s (ileg+1)  = r2
@@ -1250,8 +1275,7 @@ stop    ;ver si te_base evaluado en 1.025 esta bien, xq eso es rsun!
 
  ;   if opcls(il) eq 2 and ft (ileg+1) le 0.1 then stop
     
-    Te_base(ileg+1) = gradT_s(ileg+1) * 1.025 + Tm0_s(ileg+1)
-stop ;que onda el te_base evaluado en r=1.025??
+    Te_base(ileg+1) = gradT_erry(ileg+1) * 1.025 + Tm0_erry(ileg+1)
     betabase(ileg+1) = (kb/bb * nebasal(ileg+1) * te_base(ileg+1)) /(B_base(ileg+1)^2/(8*!pi))
 
     long_r (ileg)   = abs(max_r1 - min_r1)
@@ -1292,16 +1316,28 @@ preguntar_a_ceci:
   Fc_l2(ileg  ) = -1*kappa*(tm0_s(ileg+1)+gradt_s(ileg+1)*s_base(ileg+1))^(5./2)*gradt_s(ileg+1)
 
 
-  Fcb(ileg  ) = Fc2_l1 * B_base(ileg+1)/(B_base(ileg)+b_base(ileg+1)) ;b_l_0 depende y no es necesariamente en r=1.025
-  Fcb(ileg+1) = Fc2_l2 * B_base(ileg  )/(B_base(ileg)+b_base(ileg+1))
+  Fcb(ileg  ) = Fc_l1(ileg  ) * B_base(ileg+1)/(B_base(ileg)+B_base(ileg+1)) ;b_l_0 depende y no es necesariamente en r=1.025
+  Fcb(ileg+1) = Fc_l2(ileg+1) * B_base(ileg  )/(B_base(ileg)+B_base(ileg+1))
 
-  if opclstat(ileg) eq 2 then begin
-;cerrado chico
+  phi_c_total(ileg  ) = - (Fcb(ileg  ) + Fcb(ileg+1) )
+  phi_c_total(ileg+1) = - (Fcb(ileg  ) + Fcb(ileg+1) );los guardo repetidos
+
 ;     y xtemp es e vector de s SIN cortar, ytemp es la expresion de Er(s) evaluada en xtemp dividida el campo B en s
+     ok = where(s_l1_orig ge s_base(ileg))
+     xtmp = s_l1_orig (ok)
+     ytmp = (Er0_s(ileg)*exp(lambda_er_s(ileg)*xtmp) )/B_l1_orig(xtmp)
      phir_lin_l1 = int_tabulated(xtmp,ytmp,/sort)
+     phi_r (ileg) = ( B_base(ileg)*B_base(ileg+1) / (B_base(ileg)+B_base(ileg+1)) ) * phir_lin_l1
      
-  endif
+     ok = where(s_l2_orig ge s_base(ileg+1))
+     xtmp = s_l2_orig (ok)
+     ytmp = (Er0_s(ileg+1)*exp(lambda_er_s(ileg+1)*xtmp) )/B_l2_orig(xtmp)
+     phir_lin_l2 = int_tabulated(xtmp,ytmp,/sort)
+     phi_r (ileg+1) = ( B_base(ileg)*B_base(ileg+1) / (B_base(ileg)+B_base(ileg+1)) ) * phir_lin_l2
 
+     phi_r_total(ileg  ) = phi_r (ileg) + phi_r (ileg+1)
+     phi_r_total(ileg+1) = phi_r (ileg) + phi_r (ileg+1)
+     
   if opclstat(ileg) eq 1 then begin
 ;cerrado grande
  ; aca hay que extrapolar la funcion hasta su apice.    
@@ -1334,7 +1370,7 @@ endfor
   stop
 ;ACA VA UN SAVE!!!  
   if not keyword_set(ffile_out) then stop
-  
+goto,esto_es_viejo  
   save,Nemean,Tmmean,Nestddev,Tmstddev,WTmean,WTstddev,Pmean,Ne2mean,Ermean,Bmean,$
        Ne0,lambda_N,r2N,Ne0_s,lambda_N_s,r2N_s,P0,lambda_P,r2P,gradT,Tm0,r2T,gradT_s,Tm0_s,r2t_s,$
        ft,ft_s,fne,fne_s,Tefit,Tefit_ts,Te_base,pearson_ns,pearson_ts,$
@@ -1344,7 +1380,8 @@ endfor
        pearson_t,lincorr_pearson_t,lincorr_pvalue_t,hip_chi_pv_t,hip_chi_pv2_t,r2t_erry,$
        sigma_n,sigma_t,Ne0_erry,lambda_N_erry,Tm0_erry,gradT_erry,$
        Rp_base,Rp_medio,Rp_alto,FILENAME = 'trace_vectors_'+ffile_out+'.sav'
-
+esto_es_viejo:
+  
   datos = {Nemean:Nemean, Tmmean:Tmmean, Nestddev:Nestddev, Tmstddev:Tmstddev, WTmean:WTmean, WTstddev:WTstddev,$
            Pmean:Pmean, Ne2mean:Ne2mean, Ermean:Ermean ,Bmean:Bmean ,$
            Ne0:Ne0 ,lambda_N:lambda_N, r2N:r2N ,Ne0_s:Ne0_s, lambda_N_s:lambda_N_s, r2N_s:r2N_s, P0:P0, lambda_P:lambda_P, r2P:r2P, gradT:gradT, Tm0:Tm0, r2T:r2T, gradT_s:gradT_s, Tm0_s:Tm0_s, r2t_s:r2t_s,$
@@ -1354,7 +1391,8 @@ endfor
            pearson_n:pearson_n, lincorr_pearson_n:lincorr_pearson_n, lincorr_pvalue_n:lincorr_pvalue_n, hip_chi_pv_n:hip_chi_pv_n, hip_chi_pv2_n:hip_chi_pv2_n, r2n_erry:r2n_erry,$
            pearson_t:pearson_t, lincorr_pearson_t:lincorr_pearson_t, lincorr_pvalue_t:lincorr_pvalue_t, hip_chi_pv_t:hip_chi_pv_t, hip_chi_pv2_t:hip_chi_pv2_t, r2t_erry:r2t_erry,$
            sigma_n:sigma_n, sigma_t:sigma_t, Ne0_erry:Ne0_erry, lambda_N_erry:lambda_N_erry, Tm0_erry:Tm0_erry, gradT_erry:gradT_erry,$
-           Rp_base:Rp_base, Rp_medio:Rp_medio, Rp_alto:Rp_alto, er0_s:er0_s, lambda_er_s:lambda_er_s, r2er_s:r2er_s, pearson_ers:pearson_ers, s_base:s_base, fcb:fcb}
+           Rp_base:Rp_base, Rp_medio:Rp_medio, Rp_alto:Rp_alto, er0_s:er0_s, lambda_er_s:lambda_er_s, r2er_s:r2er_s, pearson_ers:pearson_ers, s_base:s_base, fcb:fcb,phi_r_total:phi_r_total,$
+           phi_c_total:phi_c_total,Tmmean_alto:Tmmean_alto,phi_r:phi_r}
   save, datos, FILENAME = 'trace_struct_'+ffile_out+'.sav'
 
   if keyword_set(ajuste_alto) then begin
@@ -1367,7 +1405,8 @@ endfor
            pearson_n:pearson_n, lincorr_pearson_n:lincorr_pearson_n, lincorr_pvalue_n:lincorr_pvalue_n, hip_chi_pv_n:hip_chi_pv_n, hip_chi_pv2_n:hip_chi_pv2_n, r2n_erry:r2n_erry,$
            pearson_t:pearson_t, lincorr_pearson_t:lincorr_pearson_t, lincorr_pvalue_t:lincorr_pvalue_t, hip_chi_pv_t:hip_chi_pv_t, hip_chi_pv2_t:hip_chi_pv2_t, r2t_erry:r2t_erry,$
            sigma_n:sigma_n, sigma_t:sigma_t, Ne0_erry:Ne0_erry, lambda_N_erry:lambda_N_erry, Tm0_erry:Tm0_erry, gradT_erry:gradT_erry,$
-           Rp_base:Rp_base, Rp_medio:Rp_medio, Rp_alto:Rp_alto, er0_s:er0_s, lambda_er_s:lambda_er_s, r2er_s:r2er_s, pearson_ers:pearson_ers, s_base:s_base, fcb:fcb}
+           Rp_base:Rp_base, Rp_medio:Rp_medio, Rp_alto:Rp_alto, er0_s:er0_s, lambda_er_s:lambda_er_s, r2er_s:r2er_s, pearson_ers:pearson_ers, s_base:s_base, fcb:fcb,phi_r_total:phi_r_total,$
+           phi_c_total:phi_c_total,phi_r:phi_r}
 
   save, datos, FILENAME = 'trace_struct_'+ffile_out+'.sav'
   endif

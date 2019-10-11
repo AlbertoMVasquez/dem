@@ -52,8 +52,8 @@ pro histoplot,data1,data2=data2,min=min,max=max,label1=label1,label2=label2,nbin
   endif
 
   if keyword_set(data2) then begin
-     xyouts,0.8*[1,1,1,1],1-[0.18,0.25,0.32,0.38],['m='+strmid(string(med1),4,6)+'&'+strmid(string(med2),4,6),'!9m!3='+strmid(string(avg1),4,6)+'&'+strmid(string(avg2),4,6),'!9s!3/!9m!3='+strmid(string(stdev1),4,6)+'&'+strmid(string(stdev2),4,6),'N='+strmid(string(cant1),6,7)+'&'+strmid(string(cant2),6,7)],/normal,charthick=1,Font=0,charsize=2.2
-     xyouts,0.8*[1,1],.9-[0.1,0.2],[label1,label2],/normal,color=[azul,rojo],charthick=3
+     xyouts,0.78*[1,1,1,1],0.9-[0.18,0.25,0.32,0.38],['m='+strmid(string(med1),4,6)+' & '+strmid(string(med2),4,6),'!9m!3='+strmid(string(avg1),4,6)+' & '+strmid(string(avg2),4,6),'!9s!3/!9m!3='+strmid(string(stdev1),4,6)+' & '+strmid(string(stdev2),4,6),'N='+strmid(string(cant1),6,7)+' & '+strmid(string(cant2),6,7)],/normal,charthick=3,Font=0,charsize=1.2
+     xyouts,[.8,.85],.9-[0.1,0.1],[label1,label2],/normal,color=[azul,rojo],charthick=3,Font=0
   endif
 
   if keyword_set(filename) then ps2
