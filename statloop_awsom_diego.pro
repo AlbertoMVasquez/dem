@@ -159,8 +159,7 @@ Tmmean_alto = fltarr(Nlegs)-555. ;corresponde a demt y debe EL comparado con tmm
       Fcb     = fltarr(Nlegs)-555.  ;flujo conductivo enla base
       Phirfit = fltarr(Nlegs)-555. ; flujo radiativo fiteado
       eplegT  = fltarr(Nlegs)-555.
-      fc_l1   = fltarr(Nlegs)-555.
-      fc_l2   = fltarr(Nlegs)-555.
+      fc_l   = fltarr(Nlegs)-555.
       phi_r_total = fltarr(Nlegs)-555.
       phi_c_total = fltarr(Nlegs)-555.
 ;----------------------------
@@ -1312,12 +1311,12 @@ preguntar_a_ceci:
 ;Si en la base tomografica hay datos, quiero usar ese dato para
 ;Te_base y sino, quiero usar el ajuste.
   
-  Fc_l1(ileg  ) = -1*kappa*(tm0_s(ileg  )+gradt_s(ileg  )*s_base(ileg  ))^(5./2)*gradt_s(ileg)
-  Fc_l2(ileg  ) = -1*kappa*(tm0_s(ileg+1)+gradt_s(ileg+1)*s_base(ileg+1))^(5./2)*gradt_s(ileg+1)
+  Fc_l(ileg    ) = -1*kappa*(tm0_s(ileg  )+gradt_s(ileg  )*s_base(ileg  ))^(5./2)*(gradt_s(ileg)/rsun);cambio de unidades a cm
+  Fc_l(ileg+1  ) = -1*kappa*(tm0_s(ileg+1)+gradt_s(ileg+1)*s_base(ileg+1))^(5./2)*(gradt_s(ileg+1)/rsun)
 
 
-  Fcb(ileg  ) = Fc_l1(ileg  ) * B_base(ileg+1)/(B_base(ileg)+B_base(ileg+1)) ;b_l_0 depende y no es necesariamente en r=1.025
-  Fcb(ileg+1) = Fc_l2(ileg+1) * B_base(ileg  )/(B_base(ileg)+B_base(ileg+1))
+  Fcb(ileg  ) = Fc_l(ileg  ) * B_base(ileg+1)/(B_base(ileg)+B_base(ileg+1)) ;b_l_0 depende y no es necesariamente en r=1.025
+  Fcb(ileg+1) = Fc_l(ileg+1) * B_base(ileg  )/(B_base(ileg)+B_base(ileg+1))
 
   phi_c_total(ileg  ) = - (Fcb(ileg  ) + Fcb(ileg+1) )
   phi_c_total(ileg+1) = - (Fcb(ileg  ) + Fcb(ileg+1) );los guardo repetidos
@@ -1326,13 +1325,13 @@ preguntar_a_ceci:
      ok = where(s_l1_orig ge s_base(ileg))
      xtmp = s_l1_orig (ok)
      ytmp = (Er0_s(ileg)*exp(lambda_er_s(ileg)*xtmp) )/B_l1_orig(xtmp)
-     phir_lin_l1 = int_tabulated(xtmp,ytmp,/sort)
+     phir_lin_l1 = int_tabulated(xtmp*rsun,ytmp,/sort)
      phi_r (ileg) = ( B_base(ileg)*B_base(ileg+1) / (B_base(ileg)+B_base(ileg+1)) ) * phir_lin_l1
      
      ok = where(s_l2_orig ge s_base(ileg+1))
      xtmp = s_l2_orig (ok)
      ytmp = (Er0_s(ileg+1)*exp(lambda_er_s(ileg+1)*xtmp) )/B_l2_orig(xtmp)
-     phir_lin_l2 = int_tabulated(xtmp,ytmp,/sort)
+     phir_lin_l2 = int_tabulated(xtmp*rsun,ytmp,/sort);se hace un cambio de unidades de s en rsun a s en cm. pero no se cambia la exponencial xq esos valores son los posta.
      phi_r (ileg+1) = ( B_base(ileg)*B_base(ileg+1) / (B_base(ileg)+B_base(ileg+1)) ) * phir_lin_l2
 
      phi_r_total(ileg  ) = phi_r (ileg) + phi_r (ileg+1)
@@ -1381,7 +1380,7 @@ goto,esto_es_viejo
        sigma_n,sigma_t,Ne0_erry,lambda_N_erry,Tm0_erry,gradT_erry,$
        Rp_base,Rp_medio,Rp_alto,FILENAME = 'trace_vectors_'+ffile_out+'.sav'
 esto_es_viejo:
-  
+  if keyword_set(demt) then begin
   datos = {Nemean:Nemean, Tmmean:Tmmean, Nestddev:Nestddev, Tmstddev:Tmstddev, WTmean:WTmean, WTstddev:WTstddev,$
            Pmean:Pmean, Ne2mean:Ne2mean, Ermean:Ermean ,Bmean:Bmean ,$
            Ne0:Ne0 ,lambda_N:lambda_N, r2N:r2N ,Ne0_s:Ne0_s, lambda_N_s:lambda_N_s, r2N_s:r2N_s, P0:P0, lambda_P:lambda_P, r2P:r2P, gradT:gradT, Tm0:Tm0, r2T:r2T, gradT_s:gradT_s, Tm0_s:Tm0_s, r2t_s:r2t_s,$
@@ -1391,9 +1390,10 @@ esto_es_viejo:
            pearson_n:pearson_n, lincorr_pearson_n:lincorr_pearson_n, lincorr_pvalue_n:lincorr_pvalue_n, hip_chi_pv_n:hip_chi_pv_n, hip_chi_pv2_n:hip_chi_pv2_n, r2n_erry:r2n_erry,$
            pearson_t:pearson_t, lincorr_pearson_t:lincorr_pearson_t, lincorr_pvalue_t:lincorr_pvalue_t, hip_chi_pv_t:hip_chi_pv_t, hip_chi_pv2_t:hip_chi_pv2_t, r2t_erry:r2t_erry,$
            sigma_n:sigma_n, sigma_t:sigma_t, Ne0_erry:Ne0_erry, lambda_N_erry:lambda_N_erry, Tm0_erry:Tm0_erry, gradT_erry:gradT_erry,$
-           Rp_base:Rp_base, Rp_medio:Rp_medio, Rp_alto:Rp_alto, er0_s:er0_s, lambda_er_s:lambda_er_s, r2er_s:r2er_s, pearson_ers:pearson_ers, s_base:s_base, fcb:fcb,phi_r_total:phi_r_total,$
+           Rp_base:Rp_base, Rp_medio:Rp_medio, Rp_alto:Rp_alto, er0_s:er0_s, lambda_er_s:lambda_er_s, r2er_s:r2er_s, pearson_ers:pearson_ers, s_base:s_base, fc_l:fc_l,fcb:fcb,phi_r_total:phi_r_total,$
            phi_c_total:phi_c_total,Tmmean_alto:Tmmean_alto,phi_r:phi_r}
   save, datos, FILENAME = 'trace_struct_'+ffile_out+'.sav'
+  endif
 
   if keyword_set(ajuste_alto) then begin
   datos = {Nemean:Nemean, Tmmean:Tmmean, Nestddev:Nestddev, Tmstddev:Tmstddev, WTmean:WTmean, WTstddev:WTstddev,$
@@ -1405,9 +1405,8 @@ esto_es_viejo:
            pearson_n:pearson_n, lincorr_pearson_n:lincorr_pearson_n, lincorr_pvalue_n:lincorr_pvalue_n, hip_chi_pv_n:hip_chi_pv_n, hip_chi_pv2_n:hip_chi_pv2_n, r2n_erry:r2n_erry,$
            pearson_t:pearson_t, lincorr_pearson_t:lincorr_pearson_t, lincorr_pvalue_t:lincorr_pvalue_t, hip_chi_pv_t:hip_chi_pv_t, hip_chi_pv2_t:hip_chi_pv2_t, r2t_erry:r2t_erry,$
            sigma_n:sigma_n, sigma_t:sigma_t, Ne0_erry:Ne0_erry, lambda_N_erry:lambda_N_erry, Tm0_erry:Tm0_erry, gradT_erry:gradT_erry,$
-           Rp_base:Rp_base, Rp_medio:Rp_medio, Rp_alto:Rp_alto, er0_s:er0_s, lambda_er_s:lambda_er_s, r2er_s:r2er_s, pearson_ers:pearson_ers, s_base:s_base, fcb:fcb,phi_r_total:phi_r_total,$
+           Rp_base:Rp_base, Rp_medio:Rp_medio, Rp_alto:Rp_alto, er0_s:er0_s, lambda_er_s:lambda_er_s, r2er_s:r2er_s, pearson_ers:pearson_ers, s_base:s_base, fc_l:fc_l,fcb:fcb,phi_r_total:phi_r_total,$
            phi_c_total:phi_c_total,phi_r:phi_r}
-
   save, datos, FILENAME = 'trace_struct_'+ffile_out+'.sav'
   endif
   

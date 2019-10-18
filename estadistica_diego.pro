@@ -28,7 +28,7 @@ pro estadistica_diego
   demt2082 = datos
   restore,'trace_struct_LDEM_CR2082_awsom-data_field-awsom_6alt_radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
   awsom2082 = datos
-  restore,'trace_struct_LDEM_CR2208_hollow_demt-data_field-awsom_6alt_radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat'
+  restore,'trace_struct_LDEM_CR2208_hollow_demt-data_field-awsom_6alt_radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
   demt2208 = datos
   restore,'trace_struct_LDEM_CR2208_awsom-data_field-awsom_6alt_radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
   awsom2208 =datos
@@ -162,9 +162,61 @@ histoplot,demt2082.gradt_erry(where(abs(demt2082.pearson_t) lt 0.5 and demt2082.
   rpoint_map,ok_demt1,demt2208.rp_medio.lon,demt2208.rp_medio.lat,win=7,vec_color=[0],filename=suf1+'demt'
   rpoint_map,ok_awsom1,awsom2208.rp_medio.lon,awsom2208.rp_medio.lat,win=7,vec_color=[0],filename=suf1+'awsom'
 
+;proceeding
+
+  rpoint_map,where(demt2082.hip_chi_pv2_t ne -555. and demt2082.opclstat gt 0.),data2=where(demt2082.hip_chi_pv2_t ne -555. and demt2082.opclstat eq 0.),demt2082.rp_alto.lon,demt2082.rp_alto.lat,win=7,vec_color=[0,1],title='CR-2082 Localizacion fisica de arcos magneticos a R=1.105',filename='proceeding2019_1105_2082_demt'
+
+rpoint_map,where(demt2208.hip_chi_pv2_t ne -555. and demt2208.opclstat gt 0.),data2=where(demt2208.hip_chi_pv2_t ne -555. and demt2208.opclstat eq 0.),demt2208.rp_alto.lon,demt2208.rp_alto.lat,win=7,vec_color=[0,1],title='CR-2208 Localizacion fisica de arcos magneticos a R=1.105',filename='proceeding2019_1105_2208_demt'
+
+;CR-2082
+;abierto
+  ok_demt1  = where(abs(demt2082.pearson_t)  gt 0.5 and demt2082.opclstat  eq 0. and demt2082.hip_chi_pv2_t  ge 0.7 and demt2082.ft ne -555. and demt2082.iso_erry gt 1. and abs(demt2082.footlat) ge 65)
+  ok_awsom1 = where(abs(awsom2082.pearson_t) gt 0.5 and awsom2082.opclstat eq 0. and awsom2082.hip_chi_pv2_t ge 0.7                                                      and abs(awsom2082.footlat) ge 65)
+
+  ne_demt  = (demt2082.nebasal) * exp(-1/(demt2082.lambda_n) * (1. - 1./1.055))
+  ne_awsom = (awsom2082.nebasal)* exp(-1/(awsom2082.lambda_n)* (1. - 1./1.055))
+  suf='proceeding_2082_demt_awsom_CH_'
+  histoplot, demt2082.tmmean_alto(ok_demt1 )/1.e6,data2=awsom2082.tmmean(ok_awsom1)/1.e6,win=1,tit='Temp media ',xtit='[MK]'   ,filename=suf+'Tm',label1='demt',label2='awsom'
+  histoplot, demt2082.lambda_n(ok_demt1 ),data2=awsom2082.lambda_n(ok_awsom1)      ,win=2,min=-0.05,max=0.2,tit='lambda N',filename=suf+'lambda_n',label1='demt',label2='awsom'
+  histoplot,ne_demt(ok_demt1)/1.e8,data2=ne_awsom(ok_awsom1)/1.e8,win=4,tit='Ne 1.055',xtit='10^8 cm-3' ,filename=suf+'ne_1055',label1='demt',label2='awsom'
+
+;cerrados
+  ok_demt1  = where(abs(demt2082.pearson_t)  gt 0.5 and demt2082.opclstat  ge 1. and demt2082.hip_chi_pv2_t  ge 0.7 and demt2082.ft ne -555. and demt2082.iso_erry gt 1.)
+  ok_awsom1 = where(abs(awsom2082.pearson_t) gt 0.5 and awsom2082.opclstat ge 1. and awsom2082.hip_chi_pv2_t ge 0.7                                                     )
+
+  ne_demt  = (demt2082.nebasal) * exp(-1/(demt2082.lambda_n) * (1. - 1./1.055))
+  ne_awsom = (awsom2082.nebasal)* exp(-1/(awsom2082.lambda_n)* (1. - 1./1.055))
+  suf='proceeding_2082_demt_awsom_streamer_'
+  histoplot, demt2082.tmmean(ok_demt1 )/1.e6,data2=awsom2082.tmmean(ok_awsom1)/1.e6,win=1,tit='Temp media ',xtit='[MK]'   ,filename=suf+'Tm',label1='demt',label2='awsom'
+  histoplot, demt2082.lambda_n(ok_demt1 ),data2=awsom2082.lambda_n(ok_awsom1)      ,win=2,min=-0.05,max=0.2,tit='lambda N',filename=suf+'lambda_n',label1='demt',label2='awsom'
+  histoplot,ne_demt(ok_demt1)/1.e8,data2=ne_awsom(ok_awsom1)/1.e8,win=4,tit='Ne 1.055',xtit='10^8 cm-3' ,filename=suf+'ne_1055',label1='demt',label2='awsom'
+
+;CR2208
+;abiertos
+    ok_demt1  = where(abs(demt2208.pearson_t)  gt 0.5 and demt2208.opclstat  eq 0. and demt2208.hip_chi_pv2_t  ge 0.7 and demt2208.ft ne -555. and demt2208.iso_erry gt 1. and abs(demt2208.footlat) ge 65)
+  ok_awsom1 = where(abs(awsom2208.pearson_t) gt 0.5 and awsom2208.opclstat eq 0. and awsom2208.hip_chi_pv2_t ge 0.7                                                      and abs(awsom2208.footlat) ge 65)
+
+  ne_demt  = (demt2208.nebasal) * exp(-1/(demt2208.lambda_n) * (1. - 1./1.055))
+  ne_awsom = (awsom2208.nebasal)* exp(-1/(awsom2208.lambda_n)* (1. - 1./1.055))
+  suf='proceeding_2208_demt_awsom_CH_'
+  histoplot, demt2208.tmmean(ok_demt1 )/1.e6,data2=awsom2208.tmmean(ok_awsom1)/1.e6,win=1,tit='Temp media ',xtit='[MK]'   ,filename=suf+'Tm',label1='demt',label2='awsom'
+  histoplot, demt2208.lambda_n(ok_demt1 ),data2=awsom2208.lambda_n(ok_awsom1)      ,win=2,min=-0.05,max=0.2,tit='lambda N',filename=suf+'lambda_n',label1='demt',label2='awsom'
+  histoplot,ne_demt(ok_demt1)/1.e8,data2=ne_awsom(ok_awsom1)/1.e8,win=4,tit='Ne 1.055',xtit='10^8 cm-3' ,filename=suf+'ne_1055',label1='demt',label2='awsom'
+
+;cerrados, todo
+  ok_demt1  = where(abs(demt2208.pearson_t)  gt 0.5 and demt2208.opclstat  ge 1. and demt2208.hip_chi_pv2_t  ge 0.7 and demt2208.ft ne -555. and demt2208.iso_erry gt 1. );and abs(demt2208.footlat) gt 30)
+  ok_awsom1 = where(abs(awsom2208.pearson_t) gt 0.5 and awsom2208.opclstat ge 1. and awsom2208.hip_chi_pv2_t ge 0.7                                                      );and abs(awsom2208.footlat) gt 30)
+
+  ne_demt  = (demt2208.nebasal) * exp(-1/(demt2208.lambda_n) * (1. - 1./1.055))
+  ne_awsom = (awsom2208.nebasal)* exp(-1/(awsom2208.lambda_n)* (1. - 1./1.055))
+  suf='proceeding_2208_demt_awsom_streamer_'
+  histoplot, demt2208.tmmean(ok_demt1 )/1.e6,data2=awsom2208.tmmean(ok_awsom1)/1.e6,win=1,tit='Temp media ',xtit='[MK]'   ,filename=suf+'Tm',label1='demt',label2='awsom'
+  histoplot, demt2208.lambda_n(ok_demt1 ),data2=awsom2208.lambda_n(ok_awsom1)      ,win=2,min=-0.05,max=0.2,tit='lambda N',filename=suf+'lambda_n',label1='demt',label2='awsom'
+  histoplot,ne_demt(ok_demt1)/1.e8,data2=ne_awsom(ok_awsom1)/1.e8,win=4,tit='Ne 1.055',xtit='10^8 cm-3' ,filename=suf+'ne_1055',label1='demt',label2='awsom'
+
 
   
-  
+
   return
 end
 
