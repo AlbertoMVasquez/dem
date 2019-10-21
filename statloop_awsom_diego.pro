@@ -1324,13 +1324,13 @@ preguntar_a_ceci:
 ;     y xtemp es e vector de s SIN cortar, ytemp es la expresion de Er(s) evaluada en xtemp dividida el campo B en s
      ok = where(s_l1_orig ge s_base(ileg))
      xtmp = s_l1_orig (ok)
-     ytmp = (Er0_s(ileg)*exp(lambda_er_s(ileg)*xtmp) )/B_l1_orig(xtmp)
+     ytmp = (Er0_s(ileg)*exp(lambda_er_s(ileg)*xtmp) )/B_l1_orig(ok)
      phir_lin_l1 = int_tabulated(xtmp*rsun,ytmp,/sort)
      phi_r (ileg) = ( B_base(ileg)*B_base(ileg+1) / (B_base(ileg)+B_base(ileg+1)) ) * phir_lin_l1
      
      ok = where(s_l2_orig ge s_base(ileg+1))
      xtmp = s_l2_orig (ok)
-     ytmp = (Er0_s(ileg+1)*exp(lambda_er_s(ileg+1)*xtmp) )/B_l2_orig(xtmp)
+     ytmp = (Er0_s(ileg+1)*exp(lambda_er_s(ileg+1)*xtmp) )/B_l2_orig(ok)
      phir_lin_l2 = int_tabulated(xtmp*rsun,ytmp,/sort);se hace un cambio de unidades de s en rsun a s en cm. pero no se cambia la exponencial xq esos valores son los posta.
      phi_r (ileg+1) = ( B_base(ileg)*B_base(ileg+1) / (B_base(ileg)+B_base(ileg+1)) ) * phir_lin_l2
 

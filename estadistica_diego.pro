@@ -162,6 +162,27 @@ histoplot,demt2082.gradt_erry(where(abs(demt2082.pearson_t) lt 0.5 and demt2082.
   rpoint_map,ok_demt1,demt2208.rp_medio.lon,demt2208.rp_medio.lat,win=7,vec_color=[0],filename=suf1+'demt'
   rpoint_map,ok_awsom1,awsom2208.rp_medio.lon,awsom2208.rp_medio.lat,win=7,vec_color=[0],filename=suf1+'awsom'
 
+
+;Balance energetico
+ ;esta hecho por piernas, hay que pasarlo a loops.
+  histoplot,demt2082.phi_c_total(where(demt2082.phi_c_total ne -555 and demt2082.hip_chi_pv2_t ge 0.7 and demt2082.opclstat eq 2. and demt2082.iso_erry gt 1.))/1.e5,max=5,min=-1,win=4
+  histoplot,demt2082.phi_c_total(where(demt2082.phi_c_total ne -555 and demt2082.hip_chi_pv2_t ge 0.7 and demt2082.opclstat eq 1. and demt2082.iso_erry gt 1.))/1.e5,max=5,min=-1,win=3
+
+  histoplot,demt2082.phi_r_total(where(demt2082.phi_r_total ne -555 and demt2082.hip_chi_pv2_t ge 0.7 and demt2082.opclstat eq 2. and demt2082.iso_erry gt 1.))/1.e5,max=5,min=-1,win=1
+  histoplot,demt2082.phi_r_total(where(demt2082.phi_r_total ne -555 and demt2082.hip_chi_pv2_t ge 0.7 and demt2082.opclstat eq 1. and demt2082.iso_erry gt 1.))/1.e5,max=5,min=-1,win=2
+
+
+
+
+
+
+
+
+
+
+
+
+  
 ;proceeding
 
   rpoint_map,where(demt2082.hip_chi_pv2_t ne -555. and demt2082.opclstat gt 0.),data2=where(demt2082.hip_chi_pv2_t ne -555. and demt2082.opclstat eq 0.),demt2082.rp_alto.lon,demt2082.rp_alto.lat,win=7,vec_color=[0,1],title='CR-2082 Localizacion fisica de arcos magneticos a R=1.105',filename='proceeding2019_1105_2082_demt'
