@@ -9,7 +9,9 @@
 ;read_awsom,'CR2082_grid1X1_1.85_AWSOM_LASCO_3d.dat','awsom_2082_1.85_short',grilla_demt=1.26,/te_out,/ne_out,/interpol,N1=26
 ;read_awsom,'CR2082_grid1X1_1.85_AWSOM_LASCO_3d.dat','awsom_2082_1.85_short',grilla_demt=1.26,/qrad,/interpol,N1=26,/te_out,/ne_out
 ;read_awsom,'CR2208_grid1X1_ADAPT_GONG_AWSOM.dat','awsom_2208_1.85',grilla_demt=1.26,/qrad,/interpol,N1=25
-pro read_awsom,inputfile,file_out,dir_out=dir_out,grilla_demt=grilla_demt,te_out=te_out,ne_out=ne_out,qrad_out=qrad_out,qheat_out=qheat_out,qebyq_out=qebyq_out,ne_lasco_out=ne_lasco_out,B_sph_out=B_sph_out,interpol=interpol,N1=N1,sph_data=sph_data
+
+;read_awsom,'CR2082_grid1X1_1.85_AWSOM_LASCO_3d.dat','awsom_2082_1.85_extend',/interpol,N1=26,/B_out,/V_out
+pro read_awsom,inputfile,file_out,dir_out=dir_out,grilla_demt=grilla_demt,te_out=te_out,ne_out=ne_out,qrad_out=qrad_out,qheat_out=qheat_out,qebyq_out=qebyq_out,ne_lasco_out=ne_lasco_out,B_out=B_out,interpol=interpol,N1=N1,sph_data=sph_data,v_out=v_out
 ;  common grilla_chip,r_grilla,theta_grilla,phi_grilla,ne_awsom,te_awsom,rho_awsom,er_awsom,ti_awsom,ne_lasco
 
 ;file out es un string, nombre de archivo
@@ -17,7 +19,7 @@ pro read_awsom,inputfile,file_out,dir_out=dir_out,grilla_demt=grilla_demt,te_out
 ;grilla_demt es input  para recortar las matrices entre 2 radios
 ;grilla_demt se espera que sea un escalar si va de 1.025 hasta
 ;grilla_demt(0) o bien un vector de 2 dimensiones y en tal caso la
-;matriz ira de rilla_demt(0) a grilla_demt(1) en la parte radial
+;matriz ira de grilla_demt(0) a grilla_demt(1) en la parte radial
 ;sin modificar th y ph (90 y 180)
 
 ;te_out y ne_out keywords que se usan para guardar las matrices.
@@ -71,14 +73,14 @@ if not keyword_set(dir_out) then dir_out='/data1/work/MHD/'
   Bzz = fltarr(nr,nth,nph)
   B_cart_mod = fltarr(nr,nth,nph)
 
-  if keyword_set (B_sph_out) or keyword_set(sph_data) then begin
+  if keyword_set (B_out) or keyword_set(sph_data) then begin
      Br  = fltarr(nr,nth,nph)
      Bth = fltarr(nr,nth,nph)
      Bph = fltarr(nr,nth,nph)
      B_mod = fltarr(nr,nth,nph)
   endif
 
-  if keyword_set (V_field) then begin
+  if keyword_set (v_out) then begin
      Vr  = fltarr(nr,nth,nph)
      Vth = fltarr(nr,nth,nph)
      Vph = fltarr(nr,nth,nph)
@@ -95,8 +97,8 @@ if not keyword_set(dir_out) then dir_out='/data1/work/MHD/'
      for ith=0,Ntheta-1 do begin
         for ir =0, Nr-1 do begin
 ;           readf,1, x,y,z,vx,vy,vz,tp,te,bx,by,bz,i01,i02,qrad,qheat,qebyq,qparbyq,n_e,ne_lasco
-;           readf,1, x,y,z,rho,vx,vy,vz,te,tp,bx,by,bz,i01,i02,qrad,qheat,qebyq,n_e,ne_lasco
-           readf,1, x,y,z,rho,vx,vy,vz,te,tp,bx,by,bz,i01,i02,qrad,qheat,qebyq,n_e
+           readf,1, x,y,z,rho,vx,vy,vz,te,tp,bx,by,bz,i01,i02,qrad,qheat,qebyq,n_e,ne_lasco
+;           readf,1, x,y,z,rho,vx,vy,vz,te,tp,bx,by,bz,i01,i02,qrad,qheat,qebyq,n_e
            V=[x,y,z]
            cart_to_sphcoord,V,sphcoord
 
@@ -119,7 +121,7 @@ if not keyword_set(dir_out) then dir_out='/data1/work/MHD/'
            B_cart_mod(ir,ith,iph) = bx^2 + by^2 +bz^2
            if B_cart_mod(ir,ith,iph) le 0 then stop ;this should not happen
 
-           if keyword_set (B_sph_out) or keyword_set(sph_data) then begin
+           if keyword_set (B_out) or keyword_set(sph_data) then begin
               cord_th = sphcoord[1]*!dtor
               cord_ph = sphcoord[2]*!dtor
               transform_b_cart_to_sph,cord_th,cord_ph,[Bx,By,Bz],B_sph
@@ -130,7 +132,7 @@ if not keyword_set(dir_out) then dir_out='/data1/work/MHD/'
               if B_mod(ir,ith,iph) le 0 then stop
            endif
            
-           if keyword_set (Vfield) then begin
+           if keyword_set (v_out) then begin
               cord_th = sphcoord[1]*!dtor
               cord_ph = sphcoord[2]*!dtor
               transform_b_cart_to_sph,cord_th,cord_ph,[vx,vy,vz],V_sph
@@ -161,6 +163,7 @@ if not keyword_set(dir_out) then dir_out='/data1/work/MHD/'
      if not keyword_set(grilla_demt) then nrads = Nr
      nlat2 = 90
      nlon2 = 180
+goto,ahorano
      ne_awsom_interp       = fltarr(nrads,nlat2,nlon2)
      te_awsom_interp       = fltarr(nrads,nlat2,nlon2)
      rho_awsom_interp      = fltarr(nrads,nlat2,nlon2)
@@ -168,8 +171,20 @@ if not keyword_set(dir_out) then dir_out='/data1/work/MHD/'
      qheat_awsom_interp    = fltarr(nrads,nlat2,nlon2)
      qebyq_awsom_interp    = fltarr(nrads,nlat2,nlon2)
      ne_lasco_awsom_interp = fltarr(nrads,nlat2,nlon2)
+ahorano:
+     if keyword_set (B_out) then begin
+        Br_interp     = fltarr(nrads,nlat2,nlon2)
+        Bth_interp    = fltarr(nrads,nlat2,nlon2)
+        Bph_interp    = fltarr(nrads,nlat2,nlon2)
+     endif
+     if keyword_set (v_out) then begin
+        Vr_interp      = fltarr(nrads,nlat2,nlon2)
+        Vth_interp     = fltarr(nrads,nlat2,nlon2)
+        Vph_interp     = fltarr(nrads,nlat2,nlon2)
+     endif
 
      for ir=0,nrads-1 do begin
+goto,no1
         A1 = reform(ne_awsom(ir,*,*))
         B1 = reform(te_awsom(ir,*,*))
         C1 = reform(rho_awsom(ir,*,*))
@@ -191,6 +206,29 @@ if not keyword_set(dir_out) then dir_out='/data1/work/MHD/'
         qheat_awsom_interp[ir,*,*]    = E2   
         qebyq_awsom_interp[ir,*,*]    = F2   
         ne_lasco_awsom_interp[ir,*,*] = G2
+no1:
+        if keyword_set (B_out) then begin
+           H1 = reform(Br (ir,*,*))
+           I1 = reform(Bth(ir,*,*))
+           J1 = reform(Bph(ir,*,*))
+           inter,A1=H1,A2=H2,Nlat1=180,Nlon1=360,Nlat2=90,Nlon2=180
+           inter,A1=I1,A2=I2,Nlat1=180,Nlon1=360,Nlat2=90,Nlon2=180
+           inter,A1=J1,A2=J2,Nlat1=180,Nlon1=360,Nlat2=90,Nlon2=180
+           Br_interp  [ir,*,*]       = H2
+           Bth_interp [ir,*,*]       = I2
+           Bph_interp [ir,*,*]       = J2
+        endif
+        if keyword_set (v_out) then begin
+           K1 = reform(Vr  (ir,*,*))
+           L1 = reform(Vth (ir,*,*))
+           M1 = reform(Vph (ir,*,*))
+           inter,A1=K1,A2=K2,Nlat1=180,Nlon1=360,Nlat2=90,Nlon2=180
+           inter,A1=L1,A2=L2,Nlat1=180,Nlon1=360,Nlat2=90,Nlon2=180
+           inter,A1=M1,A2=M2,Nlat1=180,Nlon1=360,Nlat2=90,Nlon2=180
+           Vr_interp   [ir,*,*]       = K2  
+           Vth_interp  [ir,*,*]       = L2
+           Vph_interp  [ir,*,*]       = M2
+        endif
      endfor
   endif
 
@@ -232,18 +270,30 @@ stop
   endif
  
 
-  if keyword_set(B_sph_out) then begin
+  if keyword_set(B_out) then begin
      openw,4,dir_out+'Br_'+file_out
-     writeu,4,Br
+     writeu,4,Br_interp
      close,4
      openw,5,dir_out+'Bth_'+file_out
-     writeu,5,Bth
+     writeu,5,Bth_interp
      close,5
      openw,6,dir_out+'Bph_'+file_out
-     writeu,6,Bph
+     writeu,6,Bph_interp
      close,6
   endif
 
+  if keyword_set (v_out) then begin
+     openw,4,dir_out+'Vr_'+file_out
+     writeu,4,Vr_interp
+     close,4
+     openw,5,dir_out+'Vth_'+file_out
+     writeu,5,Vth_interp
+     close,5
+     openw,6,dir_out+'Vph_'+file_out
+     writeu,6,Vph_interp
+     close,6
+  endif
+  
 stop
   if keyword_set(sph_data) then begin
 
