@@ -15,5 +15,9 @@ trace_LDEM,pfss_data_file=pfss_data_file,ldem_file='LDEM.v3_CR2208_l.50.20.20_h1
 trace_LDEM,pfss_data_file=pfss_data_file,awsom_file='awsom_2208_1.85_short',period='2208_awsom-data_field-awsom_6alt',safety=.5,stepmax=3000,/unifgrid_v2,radstart=1.025 + 0.04 *findgen(6)
 
 
-
+;.............................................................................
+trazando hasta 6Rsun
+period='2082_TEST_TRAZADOS_BIEN_ALTO_'
+radstart = 5.995
+trace_LDEM,field_awsom='/data1/work/MHD/sph_data_awsom_2082_1.85_extended.sav',awsom_file='awsom_2082_1.85',period=period,safety=.5,stepmax=10000,/unifgrid_v2,radstart=radstart,dlon=4.,dlat=4.
 

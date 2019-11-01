@@ -10,19 +10,25 @@
 
 ;fileC='R_CR2082_DEMT-EUVI_behind_H1-L.35.2.3_r3d'
 ;filec='R_CR2208_DEMT-AIA_H1_L.5.2.2_r3d'
-;mapa_perfil,fileA,fileB=fileB,fileC=fileC,win=1,unit=1.e8,rads=[1.025,1.065,1.105,1.155,1.205]
+;mapa_perfil,fileA,fileB=fileB,fileC=fileC,win=1,unit=1.e8,rads=[1.105],lons=[100,300],filename='Ne_demt_awsom_2082',/mapoc,/cr2082,ytitle='Ne [1.e8]'
+;mapa_perfil,fileA,fileB=fileB,fileC=fileC,win=1,unit=1.e8,rads=[1.105],lons=[0,150],filename='Ne_demt_awsom_2208',/mapoc,/cr2208,ytitle='Ne [1.e8]'
+;mapa_perfil,fileA,fileC=fileC,win=1,unit=1.e8,rads=[1.025,1.065,1.105,1.155,1.205],filename='Ne_demt_2082'
+;mapa_perfil,fileA,fileC=fileC,win=1,unit=1.e8,rads=[1.025,1.065,1.105,1.155,1.205],filename='Ne_demt_2208'
 ;----------------------------------------
 ;experimentacion
 ;fileA='Vr_awsom_2082_1.85_extend'
+;fileA='Vr_awsom_2208_1.85_extend'
 ;--------------------------------------------
-;mapa_perfil,fileA,rmax=6,nr=500,win=1,rads=[5.],dirA='/data1/work/MHD/'
+;mapa_perfil,fileA,rmax=6,nr=500,win=1,rads=[3.005,4.005,5.005,5.995],dirA='/data1/work/MHD/',filename='Vr_2082',ytitle='Vr [m/s]',/cr2082
+;mapa_perfil,fileA,rmax=6,nr=500,win=1,rads=[3.005,4.005,5.005,5.995],dirA='/data1/work/MHD/',filename='Vr_2208',ytitle='Vr [m/s]',/cr2208
 
 ;Este codigo agarra un mapa (matriz de datos) y hace perfiles
 ;latitudinales a altura fija. En caso de awsom, usar solo una
 ;entrada. En caso de demt usar ademas fileB como la matris R,
 ;en el caso de querer overplot, usar las 3 entradas con A y B demt y
 ;la otra awsom.
-pro mapa_perfil,fileA,fileB=fileB,fileC=fileC,filename=filename,tit=tit,lats=lats,lons=lons,rads=rads,nrad=nrad,rmin=rmin,rmax=rmax,win=win,unit=unit,ytit=ytit,dirA=dirA,dirB=dirB
+pro mapa_perfil,fileA,fileB=fileB,fileC=fileC,filename=filename,tit=tit,lats=lats,lons=lons,rads=rads,nrad=nrad,rmin=rmin,rmax=rmax,win=win,unit=unit,ytit=ytit,dirA=dirA,dirB=dirB,$
+                cr2082=cr2082,cr2208=cr2208,mapoc=mapoc,ytitle=ytitle
   if not keyword_set(dirB)        then dirB         = '/data1/work/MHD/'
   if not keyword_set(dirA)        then dirA         = '/data1/work/dem/';'/data1/DATA/ldem_files/'
   if not keyword_set(lats)        then lats         =[-90,90]
@@ -30,10 +36,14 @@ pro mapa_perfil,fileA,fileB=fileB,fileC=fileC,filename=filename,tit=tit,lats=lat
   if not keyword_set(rads)        then rads         =[1.105]
   if not keyword_set(win )        then win          = 1
   if not keyword_set(unit)        then unit         = 1.
-  if not keyword_set(tit )        then tit          = 'Latitudinal Profile'
+  if     keyword_set(cr2082)      then aux          = 'CR2082 '
+  if     keyword_set(cr2208)      then aux          = 'CR2208 '
+  if not keyword_set(cr2082) and not keyword_set(cr2208) then aux          = ''
+  if not keyword_set(tit )        then tit          = aux+'Long Average'
   if not keyword_set(nrad)        then nrad         = 26
   if not keyword_set(rmin)        then rmin         = 1.
   if not keyword_set(rmax)        then rmax         = 1.26
+  if not keyword_set(ytitle)        then ytitle         = ''
   
 ;fileA es demt ya sea Ne o tm
 ; fileB es awsom ya sea ne o te
@@ -80,6 +90,7 @@ jj = 0 ;es un contador para las ventanas
   for irr=0,n_elements(rads)-1 do begin
      ir = where(rad eq rads(irr))
      if rads(irr) eq 1.065 then ir = 6;ME CAGO EN LA PUTA MADRE double(rad(6)))-double(1.065) NO DA CERO XQ A IDL SE LE CANTA EL ORTO.
+     if rads(irr) eq 1.205 then ir = 20
      map1_ir = reform(map1(ir,*,*))
      if keyword_set(map2) then map2_ir = reform(map2(ir,*,*)) 
      if keyword_set(mapC) then mapC_ir = reform(mapC(ir,*,*)) 
@@ -108,7 +119,7 @@ jj = 0 ;es un contador para las ventanas
      latitud=(findgen(90)-44.5)*2
      
      if keyword_set(filename) then begin
-        ps1,'./newfigs/Perfil_'+filename+'.eps',0
+        ps1,'./newfigs/Perfil_'+filename+'_'+strmid(rads(irr),6,5)+'.eps',0
         !p.charsize=1
         DEVICE,/INCH,YSIZE=5,XSIZE=10,SCALE_FACTOR=3
      endif
@@ -127,15 +138,36 @@ jj = 0 ;es un contador para las ventanas
         v_prom (1) = minn
      endif
      if keyword_set(map2) then $
-        plot,latitud,v_prom/unit ,psym=1,xtit='Latitude [deg]',thick=3,xstyle=1,ystyle=1,/nodata,charthick=2.25,Font=0,charsize=2.5,title=tit+' at'+strmid(rads(irr),5,6)+' Rsun'
+        plot,latitud,v_prom/unit ,psym=1,xtit='Latitude [deg]',thick=3,xstyle=1,ystyle=1,/nodata,charthick=2.,Font=0,charsize=2.,title=tit+' at'+strmid(rads(irr),5,6)+' Rsun',ytit=ytitle
      if not keyword_set(map2) then $
-        plot,latitud,v_prom_map1/unit ,psym=1,xtit='Latitude [deg]',thick=3,xstyle=1,ystyle=1,/nodata,charthick=2.25,Font=0,charsize=2.5,title=tit+' at'+strmid(rads(irr),5,6)+' Rsun'
-     oplot,latitud,v_prom_map1/unit,psym=10,color=azul ,LINESTYLE=0,th=5 
+        plot,latitud,v_prom_map1/unit ,psym=1,xtit='Latitude [deg]',thick=3,xstyle=1,ystyle=1,/nodata,charthick=2.,Font=0,charsize=2.,title=tit+' at'+strmid(rads(irr),5,6)+' Rsun',ytit=ytitle
+     oplot,latitud,v_prom_map1/unit,psym=10,color=azul ,LINESTYLE=0,th=5
+;     oplot,latitud,v_prom_map1/unit,psym=10,color=rojo ,LINESTYLE=0,th=5 
      if keyword_set(map2) then oplot,latitud,v_prom_map2/unit,psym=10,color=rojo ,LINESTYLE=0,th=5
-     if not keyword_set(map2) then  xyouts,.95-[.18],0.83*[1],['demt'],/normal,color=[azul] ,charthick=3,charsize=2.3,Font=0
-     if     keyword_set(map2) then  xyouts,.95-[.2,.2],0.83*[1,.85],['demt','awsom'],/normal,color=[azul,rojo] ,charthick=3,charsize=2.3,Font=0
-   
+;     if not keyword_set(map2) then  xyouts,.95-[.18],0.83*[1],['demt'],/normal,color=[azul] ,charthick=3,charsize=2.3,Font=0
+     if not keyword_set(map2) then  xyouts,.95-[.18],0.83*[1],['awsom'],/normal,color=[rojo] ,charthick=3,charsize=2.3,Font=0
+     if     keyword_set(map2) then  xyouts,.95-[.15,.15],0.83*[.9,.85],['demt','awsom'],/normal,color=[azul,rojo] ,charthick=3,charsize=2.3,Font=0
+
+;     mapoc  = 1
+;     cr2082 = 1
+     ;cr2208 = 1
+     if keyword_set(mapoc) then begin
+        if keyword_set(cr2082) then begin
+           restore,'/data1/work/dem/github_dem/dem/vec_mapoc_2082.sav'
+           lat_superior = median(latva(where(latva gt  30 and lonva ge lons(0) and lonva le lons(1))))
+           lat_inferior = median(latva(where(latva lt -30 and lonva ge lons(0) and lonva le lons(1))))
+        endif
+        if keyword_set(cr2208) then begin
+           restore,'/data1/work/dem/github_dem/dem/vec_mapoc_2208.sav'
+           lat_superior = median(latva(where(latva gt  30 and lonva ge lons(0) and lonva le lons(1))))
+           lat_inferior = median(latva(where(latva lt -30 and lonva ge lons(0) and lonva le lons(1))))
+        endif
+        oplot,[lat_superior,lat_superior],[minn,maxx]/1.e8,color=0,LINESTYLE=0,th=5
+        oplot,[lat_inferior,lat_inferior],[minn,maxx]/1.e8,color=0,LINESTYLE=0,th=5
+     endif
+     
      if keyword_set(filename) then ps2
+
      jj = jj+1
   endfor
   

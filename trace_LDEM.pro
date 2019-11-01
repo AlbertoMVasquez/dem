@@ -181,7 +181,7 @@ if keyword_set(fdips_file) then PFSSM_model= fdips_file
 ; And now, do trace the field lines:
 stop
 if not keyword_set (pfss_data_file) then  spherical_trace_field,pfss_data,linekind=linekind,linelengths=linelengths,safety=safety,stepmax=stepmax 
-
+stop
 if not keyword_set (pfss_data_file) and keyword_set(field_awsom) then  save,pfss_data,linekind,linelengths,FILENAME = 'pfss_data_'+awsom_file+period+'.sav'
 if not keyword_set (pfss_data_file) and keyword_set(fdips_file ) then  save,pfss_data,linekind,linelengths,FILENAME = 'pfss_data_fdips'+period+'.sav'
 salto_creacion_pfss:
