@@ -66,8 +66,8 @@ histoplot,demt2082.gradt_erry(where(abs(demt2082.pearson_t) lt 0.5 and demt2082.
 ;  ok_demt1  = where(demt2082.gradt ne -555. and demt2082.opclstat eq 2. and demt2082.r2n gt 0.7 and demt2082.footlat gt -30 and demt2082.footlat lt 30 and demt2082.ft ge 0.7 and demt2082.iso_erry gt 1.)
 
 ;  ok_demtcc  = where(demt2082.opclstat  eq 2. and demt2082.hip_chi_pv2_t  ge 0.7 and demt2082.ft ne -555. and demt2082.iso_erry gt 1. and abs(demt2082.footlat) le 30)
-  ok_demtcc  = where(demt2082.opclstat  eq 2. and demt2082.hip_chi_pv2_t  ge 0.7 and demt2082.gradt_erry ne -555. and abs(demt2082.footlat) le 30)
-  ok_awsomcc = where(awsom2082.opclstat eq 2. and awsom2082.hip_chi_pv2_t ge 0.7 and awsom2082.gradt_erry ne -555. and abs(awsom2082.footlat) le 30)
+  ok_demtcc  = where(demt2082.opclstat  eq 2. and demt2082.hip_chi_pv2_t  ge 0.1 and demt2082.gradt_erry ne -555. and abs(demt2082.footlat) le 30)
+  ok_awsomcc = where(awsom2082.opclstat eq 2. and awsom2082.hip_chi_pv2_t ge 0.1 and awsom2082.gradt_erry ne -555. and abs(awsom2082.footlat) le 30)
 
   ne_demt  = (demt2082.nebasal) * exp(-1/(demt2082.lambda_n) * (1. - 1./1.055))
   ne_awsom = (awsom2082.nebasal)* exp(-1/(awsom2082.lambda_n)* (1. - 1./1.055))

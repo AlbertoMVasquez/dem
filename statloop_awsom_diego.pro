@@ -141,6 +141,7 @@ hip_chi_pv_t  = fltarr(Nlegs)-555.
 hip_chi_ch_t  = fltarr(Nlegs)-555.
 hip_chi_pv2_t  = fltarr(Nlegs)-555.
 hip_chi_ch2_t  = fltarr(Nlegs)-555.
+prob_t   = fltarr(Nlegs)-555.
 sigma_t = fltarr(Nlegs)-555.
 sigma_n = fltarr(Nlegs)-555.
 er0_s = fltarr(Nlegs)-555.
@@ -416,7 +417,7 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
      endif
 ;<--------- TESTEO --- FIJA LOS ERRORES
      error_ne(ileg) = 5.e6
-     error_t(ileg) = 7.e4
+     error_t(ileg) = 7.e4 ;Me gustaria subir esto a aprox 10.e4
 no_para_awsom1:
      
    ;Make HS-fit to Ne(r) for each open leg/loop                                                
@@ -550,11 +551,12 @@ no_para_awsom1:
     gradT(ileg) = A[1]
     r2t (ileg)  = r2;si es isotermico va a dar bajo.  
 ;nuevo
-    linear_fit,xxfit,wwfit,A,r2,salidafit2,/linfit_err,err_y=((xxfit*0)+err_tm)
+    linear_fit,xxfit,wwfit,A,r2,salidafit2,/linfit_err,err_y=((xxfit*0)+err_tm),prob=prob
     Tm0_erry     (ileg) = A[0]
     gradT_erry(ileg)    = A[1]
     r2t_erry     (ileg) = r2
-
+    prob_t        (ileg)=prob
+    
     linear_fit,xxfit,wwfit,A,r2,salidafit3,/ladfit
     Tm0_robust     (ileg) = A[0]
     gradT_robust   (ileg) = A[1]
@@ -1164,11 +1166,12 @@ no_para_awsom1:
     gradT(ileg) = A[1]
     r2t (ileg)  = r2;si es isotermico va a dar bajo.      
 
-    linear_fit,xxfit1,wwfit1,A,r2,salidafit2,/linfit_err,err_y=((xxfit1*0)+err_tm)
+    linear_fit,xxfit1,wwfit1,A,r2,salidafit2,/linfit_err,err_y=((xxfit1*0)+err_tm),prob=prob
     Tm0_erry     (ileg) = A[0]
     gradT_erry(ileg)    = A[1]
     r2t_erry     (ileg) = r2
-
+    prob_t        (ileg)=prob 
+    
     linear_fit,xxfit1,wwfit1,A,r2,salidafit3,/ladfit
     Tm0_robust     (ileg) = A[0]
     gradT_robust   (ileg) = A[1]
@@ -1223,11 +1226,12 @@ no_para_awsom1:
     gradT(ileg+1) = A[1]
     r2t (ileg+1)  = r2
 
-    linear_fit,xxfit2,wwfit2,A,r2,salidafit2,/linfit_err,err_y=((xxfit2*0)+err_tm)
+    linear_fit,xxfit2,wwfit2,A,r2,salidafit2,/linfit_err,err_y=((xxfit2*0)+err_tm),prob=prob
     Tm0_erry     (ileg+1) = A[0]
     gradT_erry(ileg+1)    = A[1]
     r2t_erry     (ileg+1) = r2
-
+    prob_t        (ileg+1)=prob 
+    
     linear_fit,xxfit2,wwfit2,A,r2,salidafit3,/ladfit
     Tm0_robust     (ileg+1) = A[0]
     gradT_robust   (ileg+1) = A[1]
@@ -1388,8 +1392,8 @@ esto_es_viejo:
            betamean:betamean, betaapex:betaapex, Br0:Br0, B_base:B_base, Nebasal:Nebasal, opclstat:opclstat, indexloop:indexloop,$
            footrad:footrad, footlat:footlat, footlon:footlon, iso:iso, iso_s:iso_s, iso_erry:iso_erry, long_r:long_r, long_s:long_s, scoreR_v:scoreR_v, npts_v:npts_v,$
            pearson_n:pearson_n, lincorr_pearson_n:lincorr_pearson_n, lincorr_pvalue_n:lincorr_pvalue_n, hip_chi_pv_n:hip_chi_pv_n, hip_chi_pv2_n:hip_chi_pv2_n, r2n_erry:r2n_erry,$
-           pearson_t:pearson_t, lincorr_pearson_t:lincorr_pearson_t, lincorr_pvalue_t:lincorr_pvalue_t, hip_chi_pv_t:hip_chi_pv_t, hip_chi_pv2_t:hip_chi_pv2_t, r2t_erry:r2t_erry,$
-           sigma_n:sigma_n, sigma_t:sigma_t, Ne0_erry:Ne0_erry, lambda_N_erry:lambda_N_erry, Tm0_erry:Tm0_erry, gradT_erry:gradT_erry,$
+           pearson_t:pearson_t, lincorr_pearson_t:lincorr_pearson_t, lincorr_pvalue_t:lincorr_pvalue_t, hip_chi_pv_t:hip_chi_pv_t, hip_chi_pv2_t:hip_chi_pv2_t, r2t_erry:r2t_erry,lincorr_tstatistic_t:lincorr_tstatistic_t,$
+           sigma_n:sigma_n, sigma_t:sigma_t, Ne0_erry:Ne0_erry, lambda_N_erry:lambda_N_erry, Tm0_erry:Tm0_erry, gradT_erry:gradT_erry,prob_t:prob_t,$
            Rp_base:Rp_base, Rp_medio:Rp_medio, Rp_alto:Rp_alto, er0_s:er0_s, lambda_er_s:lambda_er_s, r2er_s:r2er_s, pearson_ers:pearson_ers, s_base:s_base, fc_l:fc_l,fcb:fcb,phi_r_total:phi_r_total,$
            phi_c_total:phi_c_total,Tmmean_alto:Tmmean_alto,phi_r:phi_r}
   save, datos, FILENAME = 'trace_struct_'+ffile_out+'.sav'
@@ -1403,8 +1407,8 @@ esto_es_viejo:
            betamean:betamean, betaapex:betaapex, Br0:Br0, B_base:B_base, Nebasal:Nebasal, opclstat:opclstat, indexloop:indexloop,$
            footrad:footrad, footlat:footlat, footlon:footlon, iso:iso, iso_s:iso_s, iso_erry:iso_erry, long_r:long_r, long_s:long_s,$
            pearson_n:pearson_n, lincorr_pearson_n:lincorr_pearson_n, lincorr_pvalue_n:lincorr_pvalue_n, hip_chi_pv_n:hip_chi_pv_n, hip_chi_pv2_n:hip_chi_pv2_n, r2n_erry:r2n_erry,$
-           pearson_t:pearson_t, lincorr_pearson_t:lincorr_pearson_t, lincorr_pvalue_t:lincorr_pvalue_t, hip_chi_pv_t:hip_chi_pv_t, hip_chi_pv2_t:hip_chi_pv2_t, r2t_erry:r2t_erry,$
-           sigma_n:sigma_n, sigma_t:sigma_t, Ne0_erry:Ne0_erry, lambda_N_erry:lambda_N_erry, Tm0_erry:Tm0_erry, gradT_erry:gradT_erry,$
+           pearson_t:pearson_t, lincorr_pearson_t:lincorr_pearson_t, lincorr_pvalue_t:lincorr_pvalue_t, hip_chi_pv_t:hip_chi_pv_t, hip_chi_pv2_t:hip_chi_pv2_t, r2t_erry:r2t_erry,lincorr_tstatistic_t:lincorr_tstatistic_t,$
+           sigma_n:sigma_n, sigma_t:sigma_t, Ne0_erry:Ne0_erry, lambda_N_erry:lambda_N_erry, Tm0_erry:Tm0_erry, gradT_erry:gradT_erry,prob_t:prob_t,$
            Rp_base:Rp_base, Rp_medio:Rp_medio, Rp_alto:Rp_alto, er0_s:er0_s, lambda_er_s:lambda_er_s, r2er_s:r2er_s, pearson_ers:pearson_ers, s_base:s_base, fc_l:fc_l,fcb:fcb,phi_r_total:phi_r_total,$
            phi_c_total:phi_c_total,phi_r:phi_r}
   save, datos, FILENAME = 'trace_struct_'+ffile_out+'.sav'
