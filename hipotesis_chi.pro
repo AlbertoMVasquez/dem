@@ -29,26 +29,26 @@ FUNCTION HIPOTESIS_CHI, Y, YFIT, error_y=error_y
 ; compute the statistic
 ;chi = sum [((y -mx-b)/sigma)^2]
   chi = total( ((Y-Yfit)/error_y)^2 )
+;  chi = total( ( (Y-Yfit)^2 )/yfit )
 
 ; compute the degrees of freedom
 ;como yfit=mx+b, definir m y b consume 2 grados de libertad
   df = n - 2
 
-;  if (1.0 - r le 1.0E-7) then begin
+  if (chi gt 500.) then begin
 
- ;      p = 0.0
+      p = 0.0
 
- ; endif else begin
+ endif else begin
 
 ; calculate one-side 'tail area' probability 
 
         p =  (1.0 - CHISQR_PDF(chi, df))
 
- ; endelse
+  endelse
 
 ; ---------------------------------------------------------
 ; Return to user
-
   return, [p,chi]
 
 END
