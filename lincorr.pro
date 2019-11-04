@@ -92,6 +92,7 @@ FUNCTION LINCORR, X, Y, DOUBLE=double, T_STAT=t_stat
 
   if (1.0 - r le 1.0E-7) then begin
 
+       t = 100.;deberia ser t = inf, pero la cuenta da p=0
        p = 0.0
 
   endif else begin
