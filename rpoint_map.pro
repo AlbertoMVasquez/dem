@@ -25,7 +25,7 @@ pro rpoint_map,data1,rlon,rlat,vec_color=vec_color,data2=data2,data3=data3,data4
   endif
   if not keyword_set(filename) then window,win
   plot,rlon,rlat,xr=[box[0],box[1]],yr=[box[2],box[3]],psym=8,$
-       title=title,xtitle='Lon [deg]',ytitle='Lat [deg]',xthick=thick,ythick=thick,/nodata,xstyle=1,ystyle=1,font=0
+       title=title,xtitle='Longitude [deg]',ytitle='Latitude [deg]',xthick=thick,ythick=thick,/nodata,xstyle=1,ystyle=1,font=0
   loadct,39
 
   SWITCH cant_elementos OF
@@ -59,9 +59,9 @@ FUNCTION FUN,x
 ;paper entonces los valores 0,1,2,3,4 se reflejan en los valores
 ;correspondientes al colo table 39
   case x of
-     0: y = 200;amarillo
-     1: y = 28
-     2: y = 245
+     0: y = 80;amarillo
+     1: y = 245
+     2: y = 150
      3: y = 150
      4: y = 90
   endcase
