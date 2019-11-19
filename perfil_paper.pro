@@ -1,7 +1,7 @@
 pro perfil_paper,v0,rad,v1=v1,v2=v2,v3=v3,v4=v4,v5=v5,v6=v6,mi=mi,ma=ma,label1=label1,label2=label2,filename=filename,sufijo=sufijo,xtit=xtit,ytit=ytit,tit=tit,win=win,units=units
   if not keyword_set(label1) then label1 = 'DEMT'
   if not keyword_set(label2) then label2 = 'AWSoM'
-  if not keyword_set(sufijo) then sufijo = 'perfil_paper_'
+  if not keyword_set(sufijo) then sufijo = 'perfil_paper'
   if not keyword_set(tit) then tit = 'Radial profile'
   if not keyword_set(xtit) then xtit = 'solar radii'
   if keyword_set(filename) then  begin
