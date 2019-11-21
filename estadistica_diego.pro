@@ -41,7 +41,7 @@ if keyword_set(paper) then begin ;PAPER
   ok_demtcc  = where(demt2082.opclstat  eq 2. and demt2082.lincorr_pvalue_t  le 0.05 and demt2082.gradt_erry  ne -555. );and demt2082.lincorr_pearson_t ge 0.5)
   ok_awsomcc = where(awsom2082.opclstat eq 2. and awsom2082.lincorr_pvalue_t le 0.05 and awsom2082.gradt_erry ne -555. )
   suf='_2082_demt_awsom_streamer_updown_'
-  suf1='rpoint_2082_streamer_'
+
   if keyword_set(up) then begin
   ok_demtcc  = where(demt2082.opclstat  eq 2. and demt2082.lincorr_pvalue_t  le 0.05 and demt2082.gradt_erry  ne -555. and demt2082.lincorr_pearson_t ge 0.5) 
   ok_awsomcc = where(awsom2082.opclstat eq 2. and awsom2082.lincorr_pvalue_t le 0.05 and awsom2082.gradt_erry ne -555. and awsom2082.lincorr_pearson_t ge 0.5)
@@ -58,23 +58,23 @@ if keyword_set(paper) then begin ;PAPER
   rpoint_map,ok_demtcc,demt2082.rp_medio.lon,demt2082.rp_medio.lat,win=7,vec_color=[0],filename='rpoint'+suf+'demt',title='Physical location of loop at R=1.075'
   rpoint_map,ok_awsomcc,awsom2082.rp_medio.lon,awsom2082.rp_medio.lat,win=7,vec_color=[0],filename='rpoint'+suf+'awsom',title='Physical location of loop at R=1.075'
 
-;cerrados grandes + chicos arriba de 30 lat
-  ok_demtcg  = where(demt2082.opclstat  eq 1. and demt2082.lincorr_pvalue_t  le 0.05 and demt2082.gradt_erry  ne -555.); and demt2082.lincorr_pearson_t ge 0.5)
-  ok_awsomcg = where(awsom2082.opclstat eq 1. and awsom2082.lincorr_pvalue_t le 0.05 and awsom2082.gradt_erry ne -555.)
+;cerrados grandes 
+  ok_demtcg  = where(demt2082.opclstat  eq 1. and demt2082.lincorr_pvalue_t  le 0.05 and demt2082.gradt_erry  ne -555. and abs(demt2082.footlat)   gt 30); and demt2082.lincorr_pearson_t ge 0.5)
+  ok_awsomcg = where(awsom2082.opclstat eq 1. and awsom2082.lincorr_pvalue_t le 0.05 and awsom2082.gradt_erry ne -555. and abs(awsom2082.footlat)  gt 30)
   suf='_2082_demt_awsom_bound_updown_'
-  suf1='rpoint_2082_bound_'
+
   if keyword_set(up) then begin
-  ok_demtcg  = where(demt2082.opclstat  eq 1. and demt2082.lincorr_pvalue_t  le 0.05 and demt2082.gradt_erry  ne -555. and demt2082.lincorr_pearson_t ge 0.5)   
-  ok_awsomcg = where(awsom2082.opclstat eq 1. and awsom2082.lincorr_pvalue_t le 0.05 and awsom2082.gradt_erry ne -555. and awsom2082.lincorr_pearson_t ge 0.5)   
+  ok_demtcg  = where(demt2082.opclstat  eq 1. and demt2082.lincorr_pvalue_t  le 0.05 and demt2082.gradt_erry  ne -555. and abs(demt2082.footlat)   gt 30 and demt2082.lincorr_pearson_t ge 0.5)   
+  ok_awsomcg = where(awsom2082.opclstat eq 1. and awsom2082.lincorr_pvalue_t le 0.05 and awsom2082.gradt_erry ne -555. and abs(awsom2082.footlat)  gt 30 and awsom2082.lincorr_pearson_t ge 0.5)   
   suf='_2082_demt_awsom_bound_up_'
   endif
      
   ne_demt  = (demt2082.nebasal) * exp(-1/(demt2082.lambda_n) * (1. - 1./1.055))
   ne_awsom = (awsom2082.nebasal)* exp(-1/(awsom2082.lambda_n)* (1. - 1./1.055))
-  histoplot, demt2082.tmmean(ok_demtcg )/1.e6,data2=awsom2082.tmmean(ok_awsomcg)/1.e6,win=1,tit='Temp media ',xtit='[MK]'   ,filename='histo'+suf+'Tm',label1='demt',label2='awsom'
-  histoplot, demt2082.lambda_n(ok_demtcg ),data2=awsom2082.lambda_n(ok_awsomcg)      ,win=2,min=-0.05,max=0.2,tit='lambda N',filename='histo'+suf+'lambda_n',label1='demt',label2='awsom'
-  histoplot,demt2082.nebasal(ok_demtcg)/1.e8,data2=awsom2082.nebasal(ok_awsomcg)/1.e8,win=3,tit='Ne Basal',xtit='Ne 1.025Rsun [10!U8!Ncm!U-3!N]' ,filename='histo'+suf+'ne_1025',label1='demt',label2='awsom'
-  histoplot,demt2082.nebasal(ok_demtcg)/1.e8,data2=awsom2082.nebasal(ok_awsomcg)/1.e8,win=4,tit='Ne 1.055',xtit='Ne 1.055Rsun [10!U8!Ncm!U-3!N]' ,filename='histo'+suf+'ne_1055',label1='demt',label2='awsom'
+  histoplot, demt2082.tmmean(ok_demtcg )/1.e6,data2=awsom2082.tmmean(ok_awsomcg)/1.e6,win=1,tit='CR2082 - Boundary',xtit='Mean Temperature [MK]'   ,filename='histo'+suf+'Tm',label1='demt',label2='awsom'
+  histoplot, demt2082.lambda_n(ok_demtcg ),data2=awsom2082.lambda_n(ok_awsomcg)      ,win=2,min=-0.05,max=0.2,tit='CR2082 - Boundary',xtit='lambda N',filename='histo'+suf+'lambda_n',label1='demt',label2='awsom'
+  histoplot,demt2082.nebasal(ok_demtcg)/1.e8,data2=awsom2082.nebasal(ok_awsomcg)/1.e8,win=3,tit='CR2082 - Boundary',xtit='Ne 1.025Rsun [10!U8!Ncm!U-3!N]' ,filename='histo'+suf+'ne_1025',label1='demt',label2='awsom'
+  histoplot,demt2082.nebasal(ok_demtcg)/1.e8,data2=awsom2082.nebasal(ok_awsomcg)/1.e8,win=4,tit='CR2082 - Boundary',xtit='Ne 1.055Rsun [10!U8!Ncm!U-3!N]' ,filename='histo'+suf+'ne_1055',label1='demt',label2='awsom'
 
   rpoint_map,ok_demtcg,demt2082.rp_medio.lon,demt2082.rp_medio.lat,win=7,vec_color=[0],filename='rpoint'+suf+'demt'
   rpoint_map,ok_awsomcg,awsom2082.rp_medio.lon,awsom2082.rp_medio.lat,win=7,vec_color=[0],filename='rpoint'+suf+'awsom'
@@ -82,8 +82,8 @@ if keyword_set(paper) then begin ;PAPER
 ;abiertos
   ok_demta  = where( demt2082.opclstat  eq 0. and demt2082.lincorr_pvalue_t   le 0.05 and demt2082.gradt_erry  ne -555. and abs(demt2082.footlat)  ge 60); and demt2082.lincorr_pearson_t ge 0.5)
   ok_awsoma = where( awsom2082.opclstat eq 0. and awsom2082.lincorr_pvalue_t  le 0.05 and awsom2082.gradt_erry ne -555. and abs(awsom2082.footlat) ge 60)
-  suf='_2082_demt_awsom_CH_updown'
-  suf1='rpoint_2082_CH_'
+  suf='_2082_demt_awsom_CH_updown_'
+
   if keyword_set(up) then begin
      ok_demta  = where( demt2082.opclstat  eq 0. and demt2082.lincorr_pvalue_t   le 0.05 and demt2082.gradt_erry  ne -555. and abs(demt2082.footlat)  ge 60 and demt2082.lincorr_pearson_t ge 0.5)
      ok_awsoma = where( awsom2082.opclstat eq 0. and awsom2082.lincorr_pvalue_t  le 0.05 and awsom2082.gradt_erry ne -555. and abs(awsom2082.footlat) ge 60 and awsom2082.lincorr_pearson_t ge 0.5)
@@ -92,20 +92,23 @@ if keyword_set(paper) then begin ;PAPER
   ne_demt  = (demt2082.nebasal) * exp(-1/(demt2082.lambda_n) * (1. - 1./1.055))
   ne_awsom = (awsom2082.nebasal)* exp(-1/(awsom2082.lambda_n)* (1. - 1./1.055))
  
-  histoplot, demt2082.tmmean(ok_demta )/1.e6,data2=awsom2082.tmmean(ok_awsoma)/1.e6,win=1,tit='Temp media ',xtit='[MK]'   ,filename='histo'+suf+'Tm',label1='demt',label2='awsom'
-  histoplot, demt2082.lambda_n(ok_demta ),data2=awsom2082.lambda_n(ok_awsoma)      ,win=2,min=-0.05,max=0.2,tit='lambda N',filename='histo'+suf+'lambda_n',label1='demt',label2='awsom'
-  histoplot,demt2082.nebasal(ok_demta)/1.e8,data2=awsom2082.nebasal(ok_awsoma)/1.e8,win=3,tit='Ne Basal',xtit='Ne 1.025Rsun [10!U8!Ncm!U-3!N]' ,filename='histo'+suf+'ne_1025',label1='demt',label2='awsom'
-  histoplot,demt2082.nebasal(ok_demta)/1.e8,data2=awsom2082.nebasal(ok_awsoma)/1.e8,win=4,tit='Ne 1.055',xtit='Ne 1.055Rsun [10!U8!Ncm!U-3!N]' ,filename='histo'+suf+'ne_1055',label1='demt',label2='awsom'
+  histoplot, demt2082.tmmean(ok_demta )/1.e6,data2=awsom2082.tmmean(ok_awsoma)/1.e6,win=1,tit='CR2082 - CH',xtit='Mean Temperature [MK]'   ,filename='histo'+suf+'Tm',label1='demt',label2='awsom'
+  histoplot, demt2082.lambda_n(ok_demta ),data2=awsom2082.lambda_n(ok_awsoma)      ,win=2,min=-0.05,max=0.2,tit='CR2082 - CH',xtit='lambda N',filename='histo'+suf+'lambda_n',label1='demt',label2='awsom'
+  histoplot,demt2082.nebasal(ok_demta)/1.e8,data2=awsom2082.nebasal(ok_awsoma)/1.e8,win=3,tit='CR2082 - CH',xtit='Ne 1.025Rsun [10!U8!Ncm!U-3!N]' ,filename='histo'+suf+'ne_1025',label1='demt',label2='awsom'
+  histoplot,demt2082.nebasal(ok_demta)/1.e8,data2=awsom2082.nebasal(ok_awsoma)/1.e8,win=4,tit='CR2082 - CH',xtit='Ne 1.055Rsun [10!U8!Ncm!U-3!N]' ,filename='histo'+suf+'ne_1055',label1='demt',label2='awsom'
 
   rpoint_map,ok_demta,demt2082.rp_medio.lon,demt2082.rp_medio.lat,win=7,vec_color=[0],filename='rpoint'+suf+'demt'
   rpoint_map,ok_awsoma,awsom2082.rp_medio.lon,awsom2082.rp_medio.lat,win=7,vec_color=[0],filename='rpoint'+suf+'awsom'
 
 ;-> triple midpointmap
-  rpoint_map,ok_demtcc,data2=ok_demtcg,data3=ok_demta,demt2082.rp_medio.lon,demt2082.rp_medio.lat,win=6,vec_color=[0,1,2],title='Physical location of loop at R=1.075',filename='Midpoint_2082_demt_paper'
-  rpoint_map,ok_awsomcc,data2=ok_awsomcg,data3=ok_awsoma,awsom2082.rp_medio.lon,awsom2082.rp_medio.lat,win=7,vec_color=[0,1,2],title='Physical location of loop at R=1.075',filename='Midpoint_2082_awsom_paper'
+  suf1='_cr2082_updown'
+  if keyword_set(up) then   suf1='_cr2082_up'
+
+rpoint_map,ok_demtcc,data2=ok_demtcg,data3=ok_demta,demt2082.rp_medio.lon,demt2082.rp_medio.lat,win=6,vec_color=[0,1,2],title='Physical location of loop at R=1.075',filename='Midpoint_2082_demt_paper'+suf1
+rpoint_map,ok_awsomcc,data2=ok_awsomcg,data3=ok_awsoma,awsom2082.rp_medio.lon,awsom2082.rp_medio.lat,win=7,vec_color=[0,1,2],title='Physical location of loop at R=1.075',filename='Midpoint_2082_awsom_paper'+suf1
   
-  rpoint_map,ok_demtcc,data2=ok_demtcg,data3=ok_demta,demt2082.rp_alto.lon,demt2082.rp_alto.lat,win=6,vec_color=[0,1,2],title='Physical location of loop at R=1.105',filename='Highpoint_2082_demt_paper'
-  rpoint_map,ok_awsomcc,data2=ok_awsomcg,data3=ok_awsoma,awsom2082.rp_alto.lon,awsom2082.rp_alto.lat,win=7,vec_color=[0,1,2],title='Physical location of loop at R=1.105',filename='Highpoint_2082_awsom_paper'
+rpoint_map,ok_demtcc,data2=ok_demtcg,data3=ok_demta,demt2082.rp_alto.lon,demt2082.rp_alto.lat,win=6,vec_color=[0,1,2],title='Physical location of loop at R=1.105',filename='Highpoint_2082_demt_paper'+suf1
+rpoint_map,ok_awsomcc,data2=ok_awsomcg,data3=ok_awsoma,awsom2082.rp_alto.lon,awsom2082.rp_alto.lat,win=7,vec_color=[0,1,2],title='Physical location of loop at R=1.105',filename='Highpoint_2082_awsom_paper'+suf1
 
 ;----------> Perfil radial promedio.
   vec_rad=1.025 + 0.02 *findgen(10)
@@ -122,14 +125,14 @@ if keyword_set(paper) then begin ;PAPER
   tm_awsomcg = median(awsom2082.tm0_erry(ok_awsomcg)) + median(awsom2082.gradt_erry(ok_awsomcg)) * vec_rad
   tm_demta   = median(demt2082.tm0_erry(ok_demta ))   + median(demt2082.gradt_erry(ok_demta ))   * vec_rad
   tm_awsoma  = median(awsom2082.tm0_erry(ok_awsoma )) + median(awsom2082.gradt_erry(ok_awsoma )) * vec_rad
-stop
-perfil_paper,ne_demtcc,vec_rad,v1=ne_awsomcc,v2=ne_demtcg,v3=ne_awsomcg,v4=ne_demta,v5=ne_awsoma,win=1,ytit='Ne [10!U8!Ncm!U-3!N]',units=1.e8,tit='CR2082 - Radial Profile',filename='_ne'+suf
 
-perfil_paper,tm_demtcc,vec_rad,v1=tm_awsomcc,v2=tm_demtcg,v3=tm_awsomcg,v4=tm_demta,v5=tm_awsoma,win=2,ytit='Te [MK]',tit='CR2082 - Radial Profile',units=1.e6,filename='_te'+suf
+perfil_paper,ne_demtcc,vec_rad,v1=ne_awsomcc,v2=ne_demtcg,v3=ne_awsomcg,v4=ne_demta,v5=ne_awsoma,win=1,ytit='Ne [10!U8!Ncm!U-3!N]',units=1.e8,tit='CR2082 - Radial Profile',filename='_ne'+suf1
+
+perfil_paper,tm_demtcc,vec_rad,v1=tm_awsomcc,v2=tm_demtcg,v3=tm_awsomcg,v4=tm_demta,v5=tm_awsoma,win=2,ytit='Te [MK]',tit='CR2082 - Radial Profile',units=1.e6,filename='_te'+suf1
 
   
   
-  
+stop  
   
 ;doble histos 2208
 ;cerrados chicos
@@ -137,21 +140,21 @@ perfil_paper,tm_demtcc,vec_rad,v1=tm_awsomcc,v2=tm_demtcg,v3=tm_awsomcg,v4=tm_de
 
   ok_demtcc  = where( demt2208.opclstat  eq 2. and demt2208.lincorr_pvalue_t   le 0.05 and demt2208.gradt_erry  ne -555. );and abs(demt2208.footlat)  le 30)
   ok_awsomcc = where( awsom2208.opclstat eq 2. and awsom2208.lincorr_pvalue_t  le 0.05 and awsom2208.gradt_erry ne -555. );and abs(awsom2208.footlat) le 30)
-  suf='histo_2208_demt_awsom_streamer_'
+  suf='_2208_demt_awsom_streamer_'
   suf1='rpoint_2208_streamer_'  
   if keyword_set(up) then begin
   ok_demtcc  = where(demt2208.opclstat  eq 2. and demt2208.lincorr_pvalue_t  le 0.05 and demt2208.gradt_erry  ne -555. and demt2208.lincorr_pearson_t ge 0.5)
   ok_awsomcc = where(awsom2208.opclstat eq 2. and awsom2208.lincorr_pvalue_t le 0.05 and awsom2208.gradt_erry ne -555. and awsom2208.lincorr_pearson_t ge 0.5)
-  suf='histo_2082_demt_awsom_streamer_up_'
+  suf='_2208_demt_awsom_streamer_up_'
   endif
   
   ne_demt  = (demt2208.nebasal) * exp(-1/(demt2208.lambda_n) * (1. - 1./1.055))
   ne_awsom = (awsom2208.nebasal)* exp(-1/(awsom2208.lambda_n)* (1. - 1./1.055))
 
-  histoplot, demt2208.tmmean(ok_demtcc )/1.e6,data2=awsom2208.tmmean(ok_awsomcc)/1.e6,win=1,tit='Temp media ',xtit='[MK]'   ,filename='histo'+suf+'Tm',label1='demt',label2='awsom'
-  histoplot, demt2208.lambda_n(ok_demtcc ),data2=awsom2208.lambda_n(ok_awsomcc)      ,win=2,min=-0.05,max=0.2,tit='lambda N',filename='histo'+suf+'lambda_n',label1='demt',label2='awsom'
-  histoplot,demt2208.nebasal(ok_demtcc)/1.e8,data2=awsom2208.nebasal(ok_awsomcc)/1.e8,win=3,tit='Ne Basal',xtit='10^8 cm-3' ,filename='histo'+suf+'ne_1025',label1='demt',label2='awsom'
-  histoplot,demt2208.nebasal(ok_demtcc)/1.e8,data2=awsom2208.nebasal(ok_awsomcc)/1.e8,win=4,tit='Ne 1.055',xtit='10^8 cm-3' ,filename='histo'+suf+'ne_1055',label1='demt',label2='awsom'
+  histoplot, demt2208.tmmean(ok_demtcc )/1.e6,data2=awsom2208.tmmean(ok_awsomcc)/1.e6,win=1,tit='CR2082 - Streamer',xtit='Mean Temperature [MK]'   ,filename='histo'+suf+'Tm',label1='demt',label2='awsom'
+  histoplot, demt2208.lambda_n(ok_demtcc ),data2=awsom2208.lambda_n(ok_awsomcc)      ,win=2,min=-0.05,max=0.2,tit='CR2082 - Streamer',xtit='lambda N',filename='histo'+suf+'lambda_n',label1='demt',label2='awsom'
+  histoplot,demt2208.nebasal(ok_demtcc)/1.e8,data2=awsom2208.nebasal(ok_awsomcc)/1.e8,win=3,tit='CR2082 - Streamer',xtit='Ne 1.025Rsun[10!U8!Ncm!U-3!N]' ,filename='histo'+suf+'ne_1025',label1='demt',label2='awsom'
+  histoplot,demt2208.nebasal(ok_demtcc)/1.e8,data2=awsom2208.nebasal(ok_awsomcc)/1.e8,win=4,tit='CR2082 - Streamer',xtit='Ne 1.055Rsun[10!U8!Ncm!U-3!N]' ,filename='histo'+suf+'ne_1055',label1='demt',label2='awsom'
 
   rpoint_map,ok_demtcc,demt2208.rp_medio.lon,demt2208.rp_medio.lat,win=7,vec_color=[0],filename='rpoint'+suf+'demt'
   rpoint_map,ok_awsomcc,awsom2208.rp_medio.lon,awsom2208.rp_medio.lat,win=7,vec_color=[0],filename='rpoint'+suf+'awsom'
@@ -160,21 +163,21 @@ perfil_paper,tm_demtcc,vec_rad,v1=tm_awsomcc,v2=tm_demtcg,v3=tm_awsomcg,v4=tm_de
 ;cerrados grandes + chicos arriba de 30 lat                                                                                                                                                                        
   ok_demtcg  = where( demt2208.opclstat  eq 1. and demt2208.lincorr_pvalue_t   le 0.05 and demt2208.gradt_erry  ne -555. and abs(demt2208.footlat)  gt 30)
   ok_awsomcg = where( awsom2208.opclstat eq 1. and awsom2208.lincorr_pvalue_t  le 0.05 and awsom2208.gradt_erry ne -555. and abs(awsom2208.footlat) gt 30)
-  suf='histo_2208_demt_awsom_bound_updown'
+  suf='_2208_demt_awsom_bound_updown_'
   suf1='rpoint_2208_bound_'
   if keyword_set(up) then begin
      ok_demtcg  = where( demt2208.opclstat  eq 1. and demt2208.lincorr_pvalue_t   le 0.05 and demt2208.gradt_erry  ne -555. and abs(demt2208.footlat)  gt 30 and demt2208.lincorr_pearson_t ge 0.5)
      ok_awsomcg = where( awsom2208.opclstat eq 1. and awsom2208.lincorr_pvalue_t  le 0.05 and awsom2208.gradt_erry ne -555. and abs(awsom2208.footlat) gt 30 and awsom2208.lincorr_pearson_t ge 0.5)
-     suf='histo_2208_demt_awsom_bound_up_'
+     suf='_2208_demt_awsom_bound_up_'
   endif
   
   ne_demt  = (demt2208.nebasal) * exp(-1/(demt2208.lambda_n) * (1. - 1./1.055))
   ne_awsom = (awsom2208.nebasal)* exp(-1/(awsom2208.lambda_n)* (1. - 1./1.055))
   
-  histoplot, demt2208.tmmean(ok_demtcg )/1.e6,data2=awsom2208.tmmean(ok_awsomcg)/1.e6,win=1,tit='Temp media ',xtit='[MK]'   ,filename='histo'+suf+'Tm',label1='demt',label2='awsom'
-  histoplot, demt2208.lambda_n(ok_demtcg ),data2=awsom2208.lambda_n(ok_awsomcg)      ,win=2,min=-0.05,max=0.2,tit='lambda N',filename='histo'+suf+'lambda_n',label1='demt',label2='awsom'
-  histoplot,demt2208.nebasal(ok_demtcg)/1.e8,data2=awsom2208.nebasal(ok_awsomcg)/1.e8,win=3,tit='Ne Basal',xtit='10^8 cm-3' ,filename='histo'+suf+'ne_1025',label1='demt',label2='awsom'
-  histoplot,demt2208.nebasal(ok_demtcg)/1.e8,data2=awsom2208.nebasal(ok_awsomcg)/1.e8,win=4,tit='Ne 1.055',xtit='10^8 cm-3' ,filename='histo'+suf+'ne_1055',label1='demt',label2='awsom'
+  histoplot, demt2208.tmmean(ok_demtcg )/1.e6,data2=awsom2208.tmmean(ok_awsomcg)/1.e6,win=1,tit='CR2082 - Boundary',xtit='[MK]',filename='histo'+suf+'Tm',label1='demt',label2='awsom'
+  histoplot, demt2208.lambda_n(ok_demtcg ),data2=awsom2208.lambda_n(ok_awsomcg)      ,win=2,min=-0.05,max=0.2,tit='CR2082 - Boundary',xtit='lambda N',filename='histo'+suf+'lambda_n',label1='demt',label2='awsom'
+  histoplot,demt2208.nebasal(ok_demtcg)/1.e8,data2=awsom2208.nebasal(ok_awsomcg)/1.e8,win=3,tit='CR2082 - Boundary',xtit='Ne 1.025Rsun[10!U8!Ncm!U-3!N]',filename='histo'+suf+'ne_1025',label1='demt',label2='awsom'
+  histoplot,demt2208.nebasal(ok_demtcg)/1.e8,data2=awsom2208.nebasal(ok_awsomcg)/1.e8,win=4,tit='CR2082 - Boundary',xtit='Ne 1.055Rsun[10!U8!Ncm!U-3!N]',filename='histo'+suf+'ne_1055',label1='demt',label2='awsom'
   
   rpoint_map,ok_demtcg,demt2208.rp_medio.lon,demt2208.rp_medio.lat,win=7,vec_color=[0],filename='rpoint'+suf+'demt'
   rpoint_map,ok_awsomcg,awsom2208.rp_medio.lon,awsom2208.rp_medio.lat,win=7,vec_color=[0],filename='rpoint'+suf+'awsom'
@@ -194,20 +197,23 @@ perfil_paper,tm_demtcc,vec_rad,v1=tm_awsomcc,v2=tm_demtcg,v3=tm_awsomcg,v4=tm_de
   ne_demt  = (demt2208.nebasal) * exp(-1/(demt2208.lambda_n) * (1. - 1./1.055))
   ne_awsom = (awsom2208.nebasal)* exp(-1/(awsom2208.lambda_n)* (1. - 1./1.055))
   
-  histoplot, demt2208.tmmean(ok_demta )/1.e6,data2=awsom2208.tmmean(ok_awsoma)/1.e6,win=1,tit='Temp media ',xtit='[MK]'   ,filename='histo'+suf+'Tm',label1='demt',label2='awsom'
-  histoplot, demt2208.lambda_n(ok_demta ),data2=awsom2208.lambda_n(ok_awsoma)      ,win=2,min=-0.05,max=0.2,tit='lambda N',filename='histo'+suf+'lambda_n',label1='demt',label2='awsom'
-  histoplot,demt2208.nebasal(ok_demta)/1.e8,data2=awsom2208.nebasal(ok_awsoma)/1.e8,win=3,tit='Ne Basal',xtit='10^8 cm-3' ,filename='histo'+suf+'ne_1025',label1='demt',label2='awsom'
-  histoplot,demt2208.nebasal(ok_demta)/1.e8,data2=awsom2208.nebasal(ok_awsoma)/1.e8,win=4,tit='Ne 1.055',xtit='10^8 cm-3' ,filename='histo'+suf+'ne_1055',label1='demt',label2='awsom'
+  histoplot, demt2208.tmmean(ok_demta )/1.e6,data2=awsom2208.tmmean(ok_awsoma)/1.e6,win=1,tit='CR2082 - CH',xtit='Mean Temperature [MK]'   ,filename='histo'+suf+'Tm',label1='demt',label2='awsom'
+  histoplot, demt2208.lambda_n(ok_demta ),data2=awsom2208.lambda_n(ok_awsoma)      ,win=2,min=-0.05,max=0.2,tit='CR2082 - CH',xtit='lambda N',filename='histo'+suf+'lambda_n',label1='demt',label2='awsom'
+  histoplot,demt2208.nebasal(ok_demta)/1.e8,data2=awsom2208.nebasal(ok_awsoma)/1.e8,win=3,tit='CR2082 - CH',xtit='Ne 1.025Rsun[10!U8!Ncm!U-3!N]',filename='histo'+suf+'ne_1025',label1='demt',label2='awsom'
+  histoplot,demt2208.nebasal(ok_demta)/1.e8,data2=awsom2208.nebasal(ok_awsoma)/1.e8,win=4,tit='CR2082 - CH',xtit='Ne 1.055Rsun[10!U8!Ncm!U-3!N]',filename='histo'+suf+'ne_1055',label1='demt',label2='awsom'
 
   rpoint_map,ok_demta,demt2208.rp_medio.lon,demt2208.rp_medio.lat,win=7,vec_color=[0],filename='rpoint'+suf+'demt'
   rpoint_map,ok_awsoma,awsom2208.rp_medio.lon,awsom2208.rp_medio.lat,win=7,vec_color=[0],filename='rpoint'+suf+'awsom'
 
 ;-> triple midpointmap                 
-  rpoint_map,ok_demtcc,data2=ok_demtcg,data3=ok_demta,demt2208.rp_medio.lon,demt2208.rp_medio.lat,win=6,vec_color=[0,1,2],title='Physical location of loop at R=1.075',filename='Midpoint_2208_demt_paper'
-  rpoint_map,ok_awsomcc,data2=ok_awsomcg,data3=ok_awsoma,awsom2208.rp_medio.lon,awsom2208.rp_medio.lat,win=7,vec_color=[0,1,2],title='Physical location of loop at R=1.075',filename='Midpoint_2208_awsom_paper'
+  suf1='_cr2208_updown'
+  if keyword_set(up) then   suf1='_cr2208_up'
 
-  rpoint_map,ok_demtcc,data2=ok_demtcg,data3=ok_demta,demt2208.rp_alto.lon,demt2208.rp_alto.lat,win=6,vec_color=[0,1,2],title='Physical location of loop at R=1.105',filename='Highpoint_2208_demt_paper'
-  rpoint_map,ok_awsomcc,data2=ok_awsomcg,data3=ok_awsoma,awsom2208.rp_alto.lon,awsom2208.rp_alto.lat,win=7,vec_color=[0,1,2],title='Physical location of loop at R=1.105',filename='Highpoint_2208_awsom_paper'
+rpoint_map,ok_demtcc,data2=ok_demtcg,data3=ok_demta,demt2208.rp_medio.lon,demt2208.rp_medio.lat,win=6,vec_color=[0,1,2],title='Physical location of loop at R=1.075',filename='Midpoint_2208_demt_paper'+suf1
+rpoint_map,ok_awsomcc,data2=ok_awsomcg,data3=ok_awsoma,awsom2208.rp_medio.lon,awsom2208.rp_medio.lat,win=7,vec_color=[0,1,2],title='Physical location of loop at R=1.075',filename='Midpoint_2208_awsom_paper'+suf1
+
+rpoint_map,ok_demtcc,data2=ok_demtcg,data3=ok_demta,demt2208.rp_alto.lon,demt2208.rp_alto.lat,win=6,vec_color=[0,1,2],title='Physical location of loop at R=1.105',filename='Highpoint_2208_demt_paper'+suf1
+rpoint_map,ok_awsomcc,data2=ok_awsomcg,data3=ok_awsoma,awsom2208.rp_alto.lon,awsom2208.rp_alto.lat,win=7,vec_color=[0,1,2],title='Physical location of loop at R=1.105',filename='Highpoint_2208_awsom_paper'+suf1
 ;--->
   vec_rad=1.025 + 0.02 *findgen(10)
   ne_demtcc  = median(demt2208.nebasal(ok_demtcc)) * exp(-1/median(demt2208.lambda_n(ok_demtcc)) * (1. - 1./vec_rad))
@@ -224,12 +230,12 @@ perfil_paper,tm_demtcc,vec_rad,v1=tm_awsomcc,v2=tm_demtcg,v3=tm_awsomcg,v4=tm_de
   tm_demta   = median(demt2208.tm0_erry(ok_demta ))   + median(demt2208.gradt_erry(ok_demta ))   * vec_rad
   tm_awsoma  = median(awsom2208.tm0_erry(ok_awsoma )) + median(awsom2208.gradt_erry(ok_awsoma )) * vec_rad
 
-perfil_paper,ne_demtcc,vec_rad,v1=ne_awsomcc,v2=ne_demtcg,v3=ne_awsomcg,v4=ne_demta,v5=ne_awsoma,win=1,ytit='Ne [10!U8!Ncm!U-3!N]',units=1.e8,tit='CR2208 - Radial Profile',filename='_ne'+suf
+perfil_paper,ne_demtcc,vec_rad,v1=ne_awsomcc,v2=ne_demtcg,v3=ne_awsomcg,v4=ne_demta,v5=ne_awsoma,win=1,ytit='Ne [10!U8!Ncm!U-3!N]',units=1.e8,tit='CR2208 - Radial Profile',filename='_ne'+suf1
 
-perfil_paper,tm_demtcc,vec_rad,v1=tm_awsomcc,v2=tm_demtcg,v3=tm_awsomcg,v4=tm_demta,v5=tm_awsoma,win=2,ytit='Te [MK]',tit='CR2208 - Radial Profile',units=1.e6,filename='_te'+suf
+perfil_paper,tm_demtcc,vec_rad,v1=tm_awsomcc,v2=tm_demtcg,v3=tm_awsomcg,v4=tm_demta,v5=tm_awsoma,win=2,ytit='Te [MK]',tit='CR2208 - Radial Profile',units=1.e6,filename='_te'+suf1
 
 stop
-  
+
 endif
 
 

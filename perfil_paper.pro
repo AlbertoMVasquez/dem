@@ -1,4 +1,8 @@
 pro perfil_paper,v0,rad,v1=v1,v2=v2,v3=v3,v4=v4,v5=v5,v6=v6,mi=mi,ma=ma,label1=label1,label2=label2,filename=filename,sufijo=sufijo,xtit=xtit,ytit=ytit,tit=tit,win=win,units=units
+; la idea es darle un vector de radio y 6 de tm o Ne que son ploteados
+; en un solo grafico para mostrar streamer, boundary y CH de awsom y
+; demt al mismo tiempo (una rotacion)
+
   if not keyword_set(label1) then label1 = 'DEMT'
   if not keyword_set(label2) then label2 = 'AWSoM'
   if not keyword_set(sufijo) then sufijo = 'perfil_paper'
@@ -25,21 +29,22 @@ pro perfil_paper,v0,rad,v1=v1,v2=v2,v3=v3,v4=v4,v5=v5,v6=v6,mi=mi,ma=ma,label1=l
   
   if not keyword_set(mi) then mi=min([min(v00),min(v11),min(v22),min(v33),min(v44),min(v55)])
   if not keyword_set(ma) then ma=max([max(v00),max(v11),max(v22),max(v33),max(v44),max(v55)])
-  vaux=v1
+  vaux=v00
   vaux(0)=mi
   vaux(1)=ma
   vaux = [ma,vaux]
   rad_aux = [1.01,rad]
   plot,rad_aux,vaux,psym=10,charsize=2,xtitle=xtit,ytitle=ytit,title=tit,xstyle=1,thick=5,charthick=2,Font=0,/nodata
+
   ;cerrados chicos
-  oplot,rad,v0,thick=5,color=azul,linestyle=0
-  oplot,rad,v1,thick=5,color=azul,linestyle=2
+  oplot,rad,v00,thick=5,color=azul,linestyle=0
+  oplot,rad,v11,thick=5,color=azul,linestyle=2
   ;cerrados grandes
-  oplot,rad,v2,thick=5,color=rojo,linestyle=0
-  oplot,rad,v3,thick=5,color=rojo,linestyle=2
+  oplot,rad,v22,thick=5,color=rojo,linestyle=0
+  oplot,rad,v33,thick=5,color=rojo,linestyle=2
   ;abiertos
-  oplot,rad,v4,thick=5,color=verde,linestyle=0
-  oplot,rad,v5,thick=5,color=verde,linestyle=2
+  oplot,rad,v44,thick=5,color=verde,linestyle=0
+  oplot,rad,v55,thick=5,color=verde,linestyle=2
   xyouts,0.7*[1,1],.97-[0.15,0.22],[label1,label2],/normal,color=[negro,negro],charthick=2.5,font=0
 ;  xyouts,0.9*[1,1],1.-[0.15,0.2],['----','----'],/normal,color=[negro,negro],charthick=3,font=0
   if keyword_set(filename) then ps2
