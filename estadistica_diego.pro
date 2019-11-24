@@ -22,7 +22,7 @@
 ;trace_struct_LDEM_CR2082_hollow_demt-data_field-awsom_6alt_radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav
 ;trace_struct_LDEM_CR2082_awsom-data_field-awsom_6alt_radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav
 
-pro estadistica_diego,proceeding=proceeding,paper=paper,up=up
+pro estadistica_diego,proceeding=proceeding,paper=paper,up=up,cr2082=cr2082,cr2208=cr2208
 
   restore,'trace_struct_LDEM_CR2082_hollow_demt-data_field-awsom_6alt_radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
   demt2082 = datos
@@ -35,6 +35,8 @@ pro estadistica_diego,proceeding=proceeding,paper=paper,up=up
 
   
 if keyword_set(paper) then begin ;PAPER
+   if keyword_set(cr2082)then begin
+;      CR - 2082
 ;cerrados chicos
 ;  ok_demt1  = where(demt2082.gradt ne -555. and demt2082.opclstat eq 2. and demt2082.r2n gt 0.7 and demt2082.footlat gt -30 and demt2082.footlat lt 30 and demt2082.ft ge 0.7 and demt2082.iso_erry gt 1.)
 ;  ok_demtcc  = where(demt2082.opclstat  eq 2. and demt2082.hip_chi_pv2_t  ge 0.7 and demt2082.ft ne -555. and demt2082.iso_erry gt 1. and abs(demt2082.footlat) le 30)
@@ -54,7 +56,8 @@ if keyword_set(paper) then begin ;PAPER
   histoplot, demt2082.lambda_n(ok_demtcc ),data2=awsom2082.lambda_n(ok_awsomcc)      ,win=2,min=-0.05,max=0.2,tit='CR2082 - Streamer',xtit='',filename='histo'+suf+'lambda_n',label1='demt',label2='awsom'
   histoplot,demt2082.nebasal(ok_demtcc)/1.e8,data2=awsom2082.nebasal(ok_awsomcc)/1.e8,win=3,tit='CR2082 - Streamer',xtit='Ne 1.025Rsun [10!U8!Ncm!U-3!N]' ,filename='histo'+suf+'ne_1025',label1='demt',label2='awsom'
   histoplot,ne_demt(ok_demtcc)/1.e8,data2=ne_awsom(ok_awsomcc)/1.e8,win=4,tit='CR2082 - Streamer',xtit='Ne 1.055Rsun [10!U8!Ncm!U-3!N]' ,filename='histo'+suf+'ne_1055',label1='demt',label2='awsom'
-
+  histoplot, demt2082.gradt_erry(ok_demtcc )/1.e6,data2=awsom2082.gradt_erry(ok_awsomcc)/1.e6,win=1,tit='CR2082 - Streamer',xtit='Temperature gradient [MK/Rsun]'   ,filename='histo'+suf+'gradt',label1='demt',label2='awsom',min=-10,max=10
+  
   rpoint_map,ok_demtcc,demt2082.rp_medio.lon,demt2082.rp_medio.lat,win=7,vec_color=[0],filename='rpoint'+suf+'demt',title='Physical location of loop at R=1.075'
   rpoint_map,ok_awsomcc,awsom2082.rp_medio.lon,awsom2082.rp_medio.lat,win=7,vec_color=[0],filename='rpoint'+suf+'awsom',title='Physical location of loop at R=1.075'
 
@@ -75,7 +78,8 @@ if keyword_set(paper) then begin ;PAPER
   histoplot, demt2082.lambda_n(ok_demtcg ),data2=awsom2082.lambda_n(ok_awsomcg)      ,win=2,min=-0.05,max=0.2,tit='CR2082 - Boundary',xtit='lambda N',filename='histo'+suf+'lambda_n',label1='demt',label2='awsom'
   histoplot,demt2082.nebasal(ok_demtcg)/1.e8,data2=awsom2082.nebasal(ok_awsomcg)/1.e8,win=3,tit='CR2082 - Boundary',xtit='Ne 1.025Rsun [10!U8!Ncm!U-3!N]' ,filename='histo'+suf+'ne_1025',label1='demt',label2='awsom'
   histoplot,demt2082.nebasal(ok_demtcg)/1.e8,data2=awsom2082.nebasal(ok_awsomcg)/1.e8,win=4,tit='CR2082 - Boundary',xtit='Ne 1.055Rsun [10!U8!Ncm!U-3!N]' ,filename='histo'+suf+'ne_1055',label1='demt',label2='awsom'
-
+  histoplot, demt2082.gradt_erry(ok_demtcg)/1.e6,data2=awsom2082.gradt_erry(ok_awsomcg)/1.e6,win=1,tit='CR2082 - Boundary',xtit='Temperature gradient [MK/Rsun]'   ,filename='histo'+suf+'gradt',label1='demt',label2='awsom',min=-10,max=10
+  
   rpoint_map,ok_demtcg,demt2082.rp_medio.lon,demt2082.rp_medio.lat,win=7,vec_color=[0],filename='rpoint'+suf+'demt'
   rpoint_map,ok_awsomcg,awsom2082.rp_medio.lon,awsom2082.rp_medio.lat,win=7,vec_color=[0],filename='rpoint'+suf+'awsom'
 
@@ -96,7 +100,8 @@ if keyword_set(paper) then begin ;PAPER
   histoplot, demt2082.lambda_n(ok_demta ),data2=awsom2082.lambda_n(ok_awsoma)      ,win=2,min=-0.05,max=0.2,tit='CR2082 - CH',xtit='lambda N',filename='histo'+suf+'lambda_n',label1='demt',label2='awsom'
   histoplot,demt2082.nebasal(ok_demta)/1.e8,data2=awsom2082.nebasal(ok_awsoma)/1.e8,win=3,tit='CR2082 - CH',xtit='Ne 1.025Rsun [10!U8!Ncm!U-3!N]' ,filename='histo'+suf+'ne_1025',label1='demt',label2='awsom'
   histoplot,demt2082.nebasal(ok_demta)/1.e8,data2=awsom2082.nebasal(ok_awsoma)/1.e8,win=4,tit='CR2082 - CH',xtit='Ne 1.055Rsun [10!U8!Ncm!U-3!N]' ,filename='histo'+suf+'ne_1055',label1='demt',label2='awsom'
-
+  histoplot, demt2082.gradt_erry(ok_demta)/1.e6,data2=awsom2082.gradt_erry(ok_awsoma)/1.e6,win=1,tit='CR2082 - CH',xtit='Temperature gradient [MK/Rsun]'   ,filename='histo'+suf+'gradt',label1='demt',label2='awsom',min=-10,max=10
+  
   rpoint_map,ok_demta,demt2082.rp_medio.lon,demt2082.rp_medio.lat,win=7,vec_color=[0],filename='rpoint'+suf+'demt'
   rpoint_map,ok_awsoma,awsom2082.rp_medio.lon,awsom2082.rp_medio.lat,win=7,vec_color=[0],filename='rpoint'+suf+'awsom'
 
@@ -129,15 +134,21 @@ rpoint_map,ok_awsomcc,data2=ok_awsomcg,data3=ok_awsoma,awsom2082.rp_alto.lon,aws
 perfil_paper,ne_demtcc,vec_rad,v1=ne_awsomcc,v2=ne_demtcg,v3=ne_awsomcg,v4=ne_demta,v5=ne_awsoma,win=1,ytit='Ne [10!U8!Ncm!U-3!N]',units=1.e8,tit='CR2082 - Radial Profile',filename='_ne'+suf1
 
 perfil_paper,tm_demtcc,vec_rad,v1=tm_awsomcc,v2=tm_demtcg,v3=tm_awsomcg,v4=tm_demta,v5=tm_awsoma,win=2,ytit='Te [MK]',tit='CR2082 - Radial Profile',units=1.e6,filename='_te'+suf1
-
+vec1=demt2082.gradt_erry(ok_demtcc)
+vec2=awsom2082.gradt_erry(ok_awsomcc)
+vec3=demt2082.gradt_erry(ok_demtcg)
+vec4=awsom2082.gradt_erry(ok_awsomcg)
+vec5=demt2082.gradt_erry(ok_demta)
+vec6=awsom2082.gradt_erry(ok_awsoma)
+histo_gradt_paper2,v1=vec1,v2=vec2,v3=vec3,v4=vec4,v5=vec5,v6=vec6,win=3,tit='CR2082',xtit='Temperature gradient [MK/Rsun]',label1='demt',label2='awsom',min=-10,max=10,filename='histo'+suf1+'triple_gradt'
   
-  
-stop  
+endif  
   
 ;doble histos 2208
 ;cerrados chicos
 
-
+   if keyword_set(cr2208) then begin
+;   CR - 2208     
   ok_demtcc  = where( demt2208.opclstat  eq 2. and demt2208.lincorr_pvalue_t   le 0.05 and demt2208.gradt_erry  ne -555. );and abs(demt2208.footlat)  le 30)
   ok_awsomcc = where( awsom2208.opclstat eq 2. and awsom2208.lincorr_pvalue_t  le 0.05 and awsom2208.gradt_erry ne -555. );and abs(awsom2208.footlat) le 30)
   suf='_2208_demt_awsom_streamer_'
@@ -155,7 +166,8 @@ stop
   histoplot, demt2208.lambda_n(ok_demtcc ),data2=awsom2208.lambda_n(ok_awsomcc)      ,win=2,min=-0.05,max=0.2,tit='CR2082 - Streamer',xtit='lambda N',filename='histo'+suf+'lambda_n',label1='demt',label2='awsom'
   histoplot,demt2208.nebasal(ok_demtcc)/1.e8,data2=awsom2208.nebasal(ok_awsomcc)/1.e8,win=3,tit='CR2082 - Streamer',xtit='Ne 1.025Rsun[10!U8!Ncm!U-3!N]' ,filename='histo'+suf+'ne_1025',label1='demt',label2='awsom'
   histoplot,demt2208.nebasal(ok_demtcc)/1.e8,data2=awsom2208.nebasal(ok_awsomcc)/1.e8,win=4,tit='CR2082 - Streamer',xtit='Ne 1.055Rsun[10!U8!Ncm!U-3!N]' ,filename='histo'+suf+'ne_1055',label1='demt',label2='awsom'
-
+  histoplot,demt2208.gradt_erry(ok_demtcc )/1.e6,data2=awsom2208.gradt_erry(ok_awsomcc)/1.e6,win=1,tit='CR2208 - Streamer',xtit='Temperature gradient [MK/Rsun]'   ,filename='histo'+suf+'gradt',label1='demt',label2='awsom',min=-10,max=10
+  
   rpoint_map,ok_demtcc,demt2208.rp_medio.lon,demt2208.rp_medio.lat,win=7,vec_color=[0],filename='rpoint'+suf+'demt'
   rpoint_map,ok_awsomcc,awsom2208.rp_medio.lon,awsom2208.rp_medio.lat,win=7,vec_color=[0],filename='rpoint'+suf+'awsom'
 
@@ -178,7 +190,8 @@ stop
   histoplot, demt2208.lambda_n(ok_demtcg ),data2=awsom2208.lambda_n(ok_awsomcg)      ,win=2,min=-0.05,max=0.2,tit='CR2082 - Boundary',xtit='lambda N',filename='histo'+suf+'lambda_n',label1='demt',label2='awsom'
   histoplot,demt2208.nebasal(ok_demtcg)/1.e8,data2=awsom2208.nebasal(ok_awsomcg)/1.e8,win=3,tit='CR2082 - Boundary',xtit='Ne 1.025Rsun[10!U8!Ncm!U-3!N]',filename='histo'+suf+'ne_1025',label1='demt',label2='awsom'
   histoplot,demt2208.nebasal(ok_demtcg)/1.e8,data2=awsom2208.nebasal(ok_awsomcg)/1.e8,win=4,tit='CR2082 - Boundary',xtit='Ne 1.055Rsun[10!U8!Ncm!U-3!N]',filename='histo'+suf+'ne_1055',label1='demt',label2='awsom'
-  
+  histoplot,demt2208.gradt_erry(ok_demtcg )/1.e6,data2=awsom2208.gradt_erry(ok_awsomcg)/1.e6,win=1,tit='CR2208 - Boundary',xtit='Temperature gradient [MK/Rsun]'   ,filename='histo'+suf+'gradt',label1='demt',label2='awsom',min=-10,max=10
+
   rpoint_map,ok_demtcg,demt2208.rp_medio.lon,demt2208.rp_medio.lat,win=7,vec_color=[0],filename='rpoint'+suf+'demt'
   rpoint_map,ok_awsomcg,awsom2208.rp_medio.lon,awsom2208.rp_medio.lat,win=7,vec_color=[0],filename='rpoint'+suf+'awsom'
 
@@ -201,7 +214,8 @@ stop
   histoplot, demt2208.lambda_n(ok_demta ),data2=awsom2208.lambda_n(ok_awsoma)      ,win=2,min=-0.05,max=0.2,tit='CR2082 - CH',xtit='lambda N',filename='histo'+suf+'lambda_n',label1='demt',label2='awsom'
   histoplot,demt2208.nebasal(ok_demta)/1.e8,data2=awsom2208.nebasal(ok_awsoma)/1.e8,win=3,tit='CR2082 - CH',xtit='Ne 1.025Rsun[10!U8!Ncm!U-3!N]',filename='histo'+suf+'ne_1025',label1='demt',label2='awsom'
   histoplot,demt2208.nebasal(ok_demta)/1.e8,data2=awsom2208.nebasal(ok_awsoma)/1.e8,win=4,tit='CR2082 - CH',xtit='Ne 1.055Rsun[10!U8!Ncm!U-3!N]',filename='histo'+suf+'ne_1055',label1='demt',label2='awsom'
-
+  histoplot,demt2208.gradt_erry(ok_demta )/1.e6,data2=awsom2208.gradt_erry(ok_awsoma)/1.e6,win=1,tit='CR2208 - CH',xtit='Temperature gradient [MK/Rsun]'   ,filename='histo'+suf+'gradt',label1='demt',label2='awsom',min=-10,max=10
+  
   rpoint_map,ok_demta,demt2208.rp_medio.lon,demt2208.rp_medio.lat,win=7,vec_color=[0],filename='rpoint'+suf+'demt'
   rpoint_map,ok_awsoma,awsom2208.rp_medio.lon,awsom2208.rp_medio.lat,win=7,vec_color=[0],filename='rpoint'+suf+'awsom'
 
@@ -234,6 +248,16 @@ perfil_paper,ne_demtcc,vec_rad,v1=ne_awsomcc,v2=ne_demtcg,v3=ne_awsomcg,v4=ne_de
 
 perfil_paper,tm_demtcc,vec_rad,v1=tm_awsomcc,v2=tm_demtcg,v3=tm_awsomcg,v4=tm_demta,v5=tm_awsoma,win=2,ytit='Te [MK]',tit='CR2208 - Radial Profile',units=1.e6,filename='_te'+suf1
 
+vec1=demt2208.gradt_erry(ok_demtcc)
+vec2=awsom2208.gradt_erry(ok_awsomcc)
+vec3=demt2208.gradt_erry(ok_demtcg)
+vec4=awsom2208.gradt_erry(ok_awsomcg)
+vec5=demt2208.gradt_erry(ok_demta)
+vec6=awsom2208.gradt_erry(ok_awsoma)
+histo_gradt_paper2,v1=vec1,v2=vec2,v3=vec3,v4=vec4,v5=vec5,v6=vec6,win=3,tit='CR2208',xtit='Temperature gradient [MK/Rsun]',label1='demt',label2='awsom',min=-10,max=10,filename='histo'+suf1+'triple_gradt'
+
+
+endif
 stop
 
 endif
