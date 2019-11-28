@@ -288,7 +288,14 @@ histoplot,ne_demt1(ok_demta1)/1.e8,data2=ne_demt2(ok_demta2)/1.e8,win=4,tit='CR2
       
    endif
 
+histoplot, demt2082.phi_r_total(ok_demtcc1)*2,min=2.e4,max=3.e5
 
+ histoplot, demt2082.phi_c_total(ok_demtcg1)*2/1.e5,win=3,min=-1,max=5   
+ histoplot, demt2082.phi_r_total(ok_demtcg1)*2/1.e5,win=3,min=-1,max=5
+
+
+
+ 
 
    stop
 
