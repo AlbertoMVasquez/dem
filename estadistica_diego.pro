@@ -287,15 +287,24 @@ histoplot,ne_demt1(ok_demta1)/1.e8,data2=ne_demt2(ok_demta2)/1.e8,win=4,tit='CR2
           
       
    endif
+   if keyword_set(energia) then begin
 
-histoplot, demt2082.phi_r_total(ok_demtcc1)*2,min=2.e4,max=3.e5
+      for i=0,n_elements(demt2082.opclstat)-1 do begin
+
+         if demt2082.opclstat(i) eq 0.
+
+         if demt2082.opclstat(i) eq 1. and demt2082.opclstat(i+1) eq 1.
+         
+         if demt2082.opclstat(i) eq 2. and demt2082.opclstat(i+1) eq 2.
+
+         histoplot, demt2082.phi_r_total(ok_demtcc1)*2,min=2.e4,max=3.e5
 
  histoplot, demt2082.phi_c_total(ok_demtcg1)*2/1.e5,win=3,min=-1,max=5   
  histoplot, demt2082.phi_r_total(ok_demtcg1)*2/1.e5,win=3,min=-1,max=5
 
 
 
- 
+endif
 
    stop
 
