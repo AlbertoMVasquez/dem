@@ -660,8 +660,9 @@ no_para_awsom1:
        lat_l2 = reform( lat_v(ifirs_2:ilast_2,il))
        lon_l1 = reform( lon_v(ifirs_1:ilast_1,il))
        lon_l2 = reform( lon_v(ifirs_2:ilast_2,il))
-       s_l1 = reform(   s_v(ifirs_1:ilast_1,il))
+       s_l1 = reform(   s_v(ifirs_1:ilast_1,il));OBS A VECES HAY UN ERROR ACA Y APARECEN VALORES >8. WTF!
        s_l2 = loopL(il) - reform(   s_v(ifirs_2:ilast_2,il))
+       
        B_l1 = reform(   B_v(ifirs_1:ilast_1,il))
        B_l2 = reform(   B_v(ifirs_2:ilast_2,il))
 
@@ -1321,7 +1322,8 @@ preguntar_a_ceci:
 
   Fcb(ileg  ) = Fc_l(ileg  ) * B_base(ileg+1)/(B_base(ileg)+B_base(ileg+1)) ;b_l_0 depende y no es necesariamente en r=1.025
   Fcb(ileg+1) = Fc_l(ileg+1) * B_base(ileg  )/(B_base(ileg)+B_base(ileg+1))
-
+;OBS: ESTO DE ABAJO VA SIN EL MENOS, PERO LO DEJO HASTA QUE TERMINE EL
+;PAPER ASI NO HAY CONFUCION!!!!
   phi_c_total(ileg  ) = - (Fcb(ileg  ) + Fcb(ileg+1) )
   phi_c_total(ileg+1) = - (Fcb(ileg  ) + Fcb(ileg+1) );los guardo repetidos
 
@@ -1341,12 +1343,7 @@ preguntar_a_ceci:
      phi_r_total(ileg  ) = phi_r (ileg) + phi_r (ileg+1)
      phi_r_total(ileg+1) = phi_r (ileg) + phi_r (ileg+1)
      
-  if opclstat(ileg) eq 1 then begin
-;cerrado grande
- ; aca hay que extrapolar la funcion hasta su apice.    
-  endif
-
-
+     if phi_r (ileg) lt 0. or phi_r (ileg+1) lt 0. then stop
 skipfitloop:
      opclstat(ileg)   =      opcls(il)
      opclstat(ileg+1) =      opcls(il)

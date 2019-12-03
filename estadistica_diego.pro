@@ -22,6 +22,10 @@
 ;trace_struct_LDEM_CR2082_hollow_demt-data_field-awsom_6alt_radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav
 ;trace_struct_LDEM_CR2082_awsom-data_field-awsom_6alt_radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav
 
+
+;para la parte energetica
+;estadistica_diego,/paper,/energia,/cr2208
+
 pro estadistica_diego,proceeding=proceeding,paper=paper,up=up,cr2082=cr2082,cr2208=cr2208,solo_demt=solo_demt,energia=energia
 
   restore,'trace_struct_LDEM_CR2082_hollow_demt-data_field-awsom_6alt_radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
@@ -35,7 +39,7 @@ pro estadistica_diego,proceeding=proceeding,paper=paper,up=up,cr2082=cr2082,cr22
 
   
 if keyword_set(paper) then begin ;PAPER
-   if keyword_set(cr2082)then begin
+   if keyword_set(cr2082) and not keyword_set(energia)then begin
 ;      CR - 2082
 
 ;cerrados chicos down
@@ -152,7 +156,7 @@ endif
 ;doble histos 2208
 ;cerrados chicos
 
-   if keyword_set(cr2208) then begin
+   if keyword_set(cr2208) and not keyword_set(energia) then begin
 ;   CR - 2208     
   ok_demtcc  = where( demt2208.opclstat  eq 2. and demt2208.lincorr_pvalue_t   le 0.05 and demt2208.gradt_erry  ne -555. );and abs(demt2208.footlat)  le 30)
   ok_awsomcc = where( awsom2208.opclstat eq 2. and awsom2208.lincorr_pvalue_t  le 0.05 and awsom2208.gradt_erry ne -555. );and abs(awsom2208.footlat) le 30)
@@ -333,6 +337,7 @@ endif
 
 
    if keyword_set(energia) then begin
+      if keyword_set(cr2082) then begin
       pos_cg = fltarr(n_elements(demt2082.opclstat)) -555.
       phic_cumulcc = 0
       phir_cumulcc = 0
@@ -342,29 +347,33 @@ endif
       indice_cc = 0
       for i=0L,n_elements(demt2082.opclstat)-1 do begin
 
-         if demt2082.opclstat(i) eq 0. then goto,abierto
+         if demt2082.opclstat(i) eq 0. then goto,sigue
 
          if keyword_set(up) then begin
             if demt2082.opclstat(i) eq 1. and demt2082.opclstat(i+1) eq 1. then begin ;ambos cerrados grandes
                if demt2082.lincorr_pvalue_t(i)   le 0.05 and demt2082.gradt_erry(i)   ne -555. and abs(demt2082.footlat(i))   gt 30 and demt2082.lincorr_pearson_t(i)   ge 0.5 and $
-                  demt2082.lincorr_pvalue_t(i+1) le 0.05 and demt2082.gradt_erry(i+1) ne -555. and abs(demt2082.footlat(i+1)) gt 30 and demt2082.lincorr_pearson_t(i+1) ge 0.5 then begin ;que un loop entero cumpla todo
+                  demt2082.lincorr_pvalue_t(i+1) le 0.05 and demt2082.gradt_erry(i+1) ne -555. and abs(demt2082.footlat(i+1)) gt 30 and demt2082.lincorr_pearson_t(i+1) ge 0.5 then begin;loop entero
                   phic_cumulcg = [phic_cumulcg,demt2082.phi_c_total(i)]
                   phir_cumulcg = [phir_cumulcg,demt2082.phi_r_total(i)]
                   indice_cg = [indice_cg,i,i+1]
                endif
+               i=i+1
+               goto,sigue
             endif
             
             if demt2082.opclstat(i) eq 2. and demt2082.opclstat(i+1) eq 2. then begin ;ambos cerrados chicos
-               if demt2082.lincorr_pvalue_t(i)   le 0.05 and demt2082.gradt_erry(i)   ne -555. and abs(demt2082.footlat(i))   gt 30 and demt2082.lincorr_pearson_t(i)   ge 0.5 and $
-                  demt2082.lincorr_pvalue_t(i+1) le 0.05 and demt2082.gradt_erry(i+1) ne -555. and abs(demt2082.footlat(i+1)) gt 30 and demt2082.lincorr_pearson_t(i+1) ge 0.5 then begin ;que un loop entero cumpla todo
+               if demt2082.lincorr_pvalue_t(i)   le 0.05 and demt2082.gradt_erry(i)   ne -555. and abs(demt2082.footlat(i))   le 30 and demt2082.lincorr_pearson_t(i)   ge 0.5 and $
+                  demt2082.lincorr_pvalue_t(i+1) le 0.05 and demt2082.gradt_erry(i+1) ne -555. and abs(demt2082.footlat(i+1)) le 30 and demt2082.lincorr_pearson_t(i+1) ge 0.5 then begin ;loop entero
                   phic_cumulcc = [phic_cumulcc,demt2082.phi_c_total(i)]
                   phir_cumulcc = [phir_cumulcc,demt2082.phi_r_total(i)]
                   indice_cc = [indice_cc,i,i+1]
                endif
             endif
+            i=i+1;salto xq estoy viendo de a pares
+            goto,sigue
          endif
 
-         if not keyword_set(up) then begin
+         if not keyword_set(up) then begin; up y down!
             if demt2082.opclstat(i) eq 1. and demt2082.opclstat(i+1) eq 1. then begin ;ambos cerrados grandes
                if demt2082.lincorr_pvalue_t(i)   le 0.05 and demt2082.gradt_erry(i)   ne -555. and abs(demt2082.footlat(i))   gt 30 and abs(demt2082.lincorr_pearson_t(i)  ) ge 0.5 and $
                   demt2082.lincorr_pvalue_t(i+1) le 0.05 and demt2082.gradt_erry(i+1) ne -555. and abs(demt2082.footlat(i+1)) gt 30 and abs(demt2082.lincorr_pearson_t(i+1)) ge 0.5 then begin 
@@ -372,37 +381,86 @@ endif
                   phir_cumulcg = [phir_cumulcg,demt2082.phi_r_total(i)]
                   indice_cg = [indice_cg,i,i+1]
                endif
+               i=i+1
+               goto,sigue
             endif
 
             if demt2082.opclstat(i) eq 2. and demt2082.opclstat(i+1) eq 2. then begin ;ambos cerrados chicos
-               if demt2082.lincorr_pvalue_t(i)   le 0.05 and demt2082.gradt_erry(i)   ne -555. and abs(demt2082.footlat(i))   gt 30 and abs(demt2082.lincorr_pearson_t(i)  ) ge 0.5 and $
-                  demt2082.lincorr_pvalue_t(i+1) le 0.05 and demt2082.gradt_erry(i+1) ne -555. and abs(demt2082.footlat(i+1)) gt 30 and abs(demt2082.lincorr_pearson_t(i+1)) ge 0.5 then begin 
+               if demt2082.lincorr_pvalue_t(i)   le 0.05 and demt2082.gradt_erry(i)   ne -555. and abs(demt2082.footlat(i))   le 30 and abs(demt2082.lincorr_pearson_t(i)  ) ge 0.5 and $
+                  demt2082.lincorr_pvalue_t(i+1) le 0.05 and demt2082.gradt_erry(i+1) ne -555. and abs(demt2082.footlat(i+1)) le 30 and abs(demt2082.lincorr_pearson_t(i+1)) ge 0.5 then begin 
                   phic_cumulcc = [phic_cumulcc,demt2082.phi_c_total(i)]
                   phir_cumulcc = [phir_cumulcc,demt2082.phi_r_total(i)]
                   indice_cc = [indice_cc,i,i+1]
                endif
+               i=i+1
+               goto,sigue
             endif
-
          endif
          
-         abierto:
+         sigue:
       endfor
 
-
+      phih_totalcc=-1.*phic_cumulcc/1.e5 +( phir_cumulcc/1.e5 >0)
+      phih_totalcg=-1.*phic_cumulcg/1.e5 +( phir_cumulcg/1.e5 >0)
       stop
-      histoplot, phic_cumulcc/1.e5,win=1,min=-1,max=3
-      histoplot, phic_cumulcg/1.e5,win=2,min=-1,max=3
+suf='cr2082_cc'
+histoplot,phir_cumulcc/1.e5>0,data2=-1.*phic_cumulcc/1.e5,data3=phih_totalcc,tit='CR2082 type0-1',xtit='[10!U5!Nerg cm!U-2!Nsec!U-1!N]',filename='histo'+suf+'energia',$
+          label1='phir',label2='phic',label3='phih',min=-1,max=3
+suf='cr2082_cg'
+histoplot,phir_cumulcg/1.e5>0,data2=-1.*phic_cumulcg/1.e5,data3=phih_totalcg,tit='CR2082 type2',xtit='[10!U5!Nerg cm!U-2!Nsec!U-1!N]',filename='histo'+suf+'energia',$
+          label1='phir',label2='phic',label3='phih',min=-1,max=3
+   endif
 
-      histoplot, phir_cumulcc/1.e5,win=3,min=-1,max=3
-      histoplot, phir_cumulcg/1.e5,win=4,min=-1,max=3
+      if keyword_set(cr2208) then begin
+         pos_cg = fltarr(n_elements(demt2208.opclstat)) -555.
+         phic_cumulcc = 0
+         phir_cumulcc = 0
+         phic_cumulcg = 0
+         phir_cumulcg = 0
+         indice_cg = 0
+         indice_cc = 0
+         for i=0L,n_elements(demt2082.opclstat)-1 do begin
 
-      histoplot, demt2082.phi_r_total(ok_demtcc1)*2,min=2.e4,max=3.e5
+         if demt2208.opclstat(i) eq 0. then goto,sigue2
+         if not keyword_set(up) then begin  ; up y down!
+            if demt2208.opclstat(i) eq 1. and demt2208.opclstat(i+1) eq 1. then begin ;ambos cerrados grandes
+               if demt2208.lincorr_pvalue_t(i)   le 0.05 and demt2208.gradt_erry(i)   ne -555. and abs(demt2208.footlat(i))   gt 30 and abs(demt2208.lincorr_pearson_t(i)  ) ge 0.5 and $
+                  demt2208.lincorr_pvalue_t(i+1) le 0.05 and demt2208.gradt_erry(i+1) ne -555. and abs(demt2208.footlat(i+1)) gt 30 and abs(demt2208.lincorr_pearson_t(i+1)) ge 0.5 then begin
+                  phic_cumulcg = [phic_cumulcg,demt2208.phi_c_total(i)]
+                  phir_cumulcg = [phir_cumulcg,demt2208.phi_r_total(i)]
+                  indice_cg = [indice_cg,i,i+1]
+               endif
+               i=i+1
+               goto,sigue2
+            endif
+
+            if demt2208.opclstat(i) eq 2. and demt2208.opclstat(i+1) eq 2. then begin ;ambos cerrados chicos
+               if demt2208.lincorr_pvalue_t(i)   le 0.05 and demt2208.gradt_erry(i)   ne -555. and abs(demt2208.footlat(i))   le 30 and abs(demt2208.lincorr_pearson_t(i)  ) ge 0.5 and $
+                  demt2208.lincorr_pvalue_t(i+1) le 0.05 and demt2208.gradt_erry(i+1) ne -555. and abs(demt2208.footlat(i+1)) le 30 and abs(demt2208.lincorr_pearson_t(i+1)) ge 0.5 then begin
+                  phic_cumulcc = [phic_cumulcc,demt2208.phi_c_total(i)]
+                  phir_cumulcc = [phir_cumulcc,demt2208.phi_r_total(i)]
+                  indice_cc = [indice_cc,i,i+1]
+               endif
+               i=i+1
+               goto,sigue2
+            endif
+         endif
+         sigue2:
+      endfor
       
-      histoplot, demt2082.phi_c_total(ok_demtcg1)*2/1.e5,win=3,min=-1,max=5   
-      histoplot, demt2082.phi_r_total(ok_demtcg1)*2/1.e5,win=3,min=-1,max=5
-
-
-endif
+      phih_totalcc=-1.*phic_cumulcc/1.e5 +( phir_cumulcc/1.e5 >0)
+      phih_totalcg=-1.*phic_cumulcg/1.e5 +( phir_cumulcg/1.e5 >0)
+      stop
+suf='cr2208_cc'
+histoplot,phir_cumulcc/1.e5>0,data2=-1.*phic_cumulcc/1.e5,data3=phih_totalcc,tit='CR2208 type0-1',xtit='[10!U5!Nerg cm!U-2!Nsec!U-1!N]',filename='histo'+suf+'energia',$
+          label1='phir',label2='phic',label3='phih',min=-1,max=3
+suf='cr2208_cg'
+histoplot,phir_cumulcg/1.e5>0,data2=-1.*phic_cumulcg/1.e5,data3=phih_totalcg,tit='CR2208 type2',xtit='[10!U5!Nerg cm!U-2!Nsec!U-1!N]',filename='histo'+suf+'energia',$
+          label1='phir',label2='phic',label3='phih',min=-1,max=3
+      endif
+         
+endif;termina /energia
+   
 
    stop
 
