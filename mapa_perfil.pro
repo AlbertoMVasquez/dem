@@ -1,17 +1,29 @@
-;fileB='Te_awsom_2082_1.85_short'
-;fileB='Ne_awsom_2082_1.85_short'
-;fileB='Te_awsom_2208_1.85_short'
-;fileB='Ne_awsom_2208_1.85_short'
+pro graficos_paper
+;Este e sun wrapper de los graficos del paper  
+fileA='Ne_CR2082_DEMT-EUVI_behind_H1-L.35.2.3_r3d'
+fileB='Ne_awsom_2082_1.85_short' 
+fileC='R_CR2082_DEMT-EUVI_behind_H1-L.35.2.3_r3d'
+mapa_perfil,fileA,fileB=fileB,fileC=fileC,win=1,unit=1.e8,rads=[1.105],lons=[100,300],filename='Ne_demt_awsom_2082',/mapoc,/cr2082,ytitle='Ne [10!U8!Ncm!U-3!N]'
 
-;fileA='Tm_CR2082_DEMT-EUVI_behind_H1-L.35.2.3_r3d'
-;fileA='Ne_CR2082_DEMT-EUVI_behind_H1-L.35.2.3_r3d'
-;fileA='Tm_CR2208_DEMT-AIA_H1_L.5.2.2_r3d'
-;fileA='Ne_CR2208_DEMT-AIA_H1_L.5.2.2_r3d'
+fileA='Ne_CR2208_DEMT-AIA_H1_L.5.2.2_r3d'
+fileB='Ne_awsom_2208_1.85_short'
+filec='R_CR2208_DEMT-AIA_H1_L.5.2.2_r3d'
+mapa_perfil,fileA,fileB=fileB,fileC=fileC,win=1,unit=1.e8,rads=[1.105],lons=[0,150],filename='Ne_demt_awsom_2208',/mapoc,/cr2208,ytitle='Ne [10!U8!Ncm!U-3!N]' 
 
-;fileC='R_CR2082_DEMT-EUVI_behind_H1-L.35.2.3_r3d'
-;filec='R_CR2208_DEMT-AIA_H1_L.5.2.2_r3d'
-;mapa_perfil,fileA,fileB=fileB,fileC=fileC,win=1,unit=1.e8,rads=[1.105],lons=[100,300],filename='Ne_demt_awsom_2082',/mapoc,/cr2082,ytitle='Ne [1.e8]'
-;mapa_perfil,fileA,fileB=fileB,fileC=fileC,win=1,unit=1.e8,rads=[1.105],lons=[0,150],filename='Ne_demt_awsom_2208',/mapoc,/cr2208,ytitle='Ne [1.e8]'
+fileA='Tm_CR2082_DEMT-EUVI_behind_H1-L.35.2.3_r3d' 
+fileB='Te_awsom_2082_1.85_short'
+fileC='R_CR2082_DEMT-EUVI_behind_H1-L.35.2.3_r3d'
+mapa_perfil,fileA,fileB=fileB,fileC=fileC,win=1,unit=1.e6,rads=[1.105],lons=[100,300],filename='Te_demt_awsom_2082',/mapoc,/cr2082,ytitle='Te [MK]'
+
+fileA='Tm_CR2208_DEMT-AIA_H1_L.5.2.2_r3d'
+fileB='Te_awsom_2208_1.85_short' 
+filec='R_CR2208_DEMT-AIA_H1_L.5.2.2_r3d'
+mapa_perfil,fileA,fileB=fileB,fileC=fileC,win=1,unit=1.e6,rads=[1.105],lons=[0,150],filename='Te_demt_awsom_2208',/mapoc,/cr2208,ytitle='Te [MK]'
+return
+end
+
+
+
 ;mapa_perfil,fileA,fileC=fileC,win=1,unit=1.e8,rads=[1.025,1.065,1.105,1.155,1.205],filename='Ne_demt_2082'
 ;mapa_perfil,fileA,fileC=fileC,win=1,unit=1.e8,rads=[1.025,1.065,1.105,1.155,1.205],filename='Ne_demt_2208'
 ;----------------------------------------
@@ -162,8 +174,8 @@ jj = 0 ;es un contador para las ventanas
            lat_superior = median(latva(where(latva gt  30 and lonva ge lons(0) and lonva le lons(1))))
            lat_inferior = median(latva(where(latva lt -30 and lonva ge lons(0) and lonva le lons(1))))
         endif
-        oplot,[lat_superior,lat_superior],[minn,maxx]/1.e8,color=0,LINESTYLE=0,th=5
-        oplot,[lat_inferior,lat_inferior],[minn,maxx]/1.e8,color=0,LINESTYLE=0,th=5
+        oplot,[lat_superior,lat_superior],[minn,maxx]/unit,color=0,LINESTYLE=0,th=5
+        oplot,[lat_inferior,lat_inferior],[minn,maxx]/unit,color=0,LINESTYLE=0,th=5
      endif
      
      if keyword_set(filename) then ps2

@@ -62,7 +62,8 @@ pro histoplot,data1,data2=data2,min=min,max=max,label1=label1,label2=label2,nbin
      ;xyouts,0.7*[1],0.9-[0.18],['m='+strmid(string(med1),4,6)+' & '+strmid(string(med2),4,6)],/normal,charthick=2.5,Font=0,charsize=2
      ;xyouts,[.72,.83],.9-[0.1,0.1],[label1,label2],/normal,color=[azul,rojo],charthick=3,Font=0,charsize=2.5
 
-     xyouts,[.71,.68],.9-[0.1,0.2],[label1,label2],/normal,color=[azul,rojo],charthick=3,Font=0,charsize=2.5
+;     xyouts,[.69,.66],.9-[0.1,0.2],[label1,label2],/normal,color=[azul,rojo],charthick=3,Font=0,charsize=2.5
+     xyouts,[.66,.66],.9-[0.1,0.2],[label1,label2],/normal,color=[azul,rojo],charthick=3,Font=0,charsize=2.5
      xyouts,0.79*[1,1],0.9-[0.1,0.2],['m='+strmid(string(med1),4,6),'m='+strmid(string(med2),4,6)],/normal,charthick=3.,Font=0,charsize=2.5
 
   endif

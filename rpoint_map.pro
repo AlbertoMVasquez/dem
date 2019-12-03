@@ -62,7 +62,7 @@ FUNCTION FUN,x
      0: y = 80;amarillo
      1: y = 245
      2: y = 150
-     3: y = 150
+     3: y = 110
      4: y = 90
   endcase
   return,y
