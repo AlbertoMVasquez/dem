@@ -150,7 +150,7 @@ vec4=awsom2082.gradt_erry(ok_awsomcg)
 vec5=demt2082.gradt_erry(ok_demta)
 vec6=awsom2082.gradt_erry(ok_awsoma)
 histo_gradt_paper2,v1=vec1,v2=vec2,v3=vec3,v4=vec4,v5=vec5,v6=vec6,win=3,tit='CR2082',xtit='Temperature gradient [MK/Rsun]',label1='demt',label2='awsom',min=-10,max=10,filename='histo'+suf1+'triple_gradt'
-  
+stop  
 endif  
   
 ;doble histos 2208
@@ -264,7 +264,7 @@ vec4=awsom2208.gradt_erry(ok_awsomcg)
 vec5=demt2208.gradt_erry(ok_demta)
 vec6=awsom2208.gradt_erry(ok_awsoma)
 histo_gradt_paper2,v1=vec1,v2=vec2,v3=vec3,v4=vec4,v5=vec5,v6=vec6,win=3,tit='CR2208',xtit='Temperature gradient [MK/Rsun]',label1='demt',label2='awsom',min=-10,max=10,filename='histo'+suf1+'triple_gradt'
-
+stop
 endif
 
    if keyword_set(solo_demt) then begin
@@ -319,14 +319,14 @@ vec1=demt2082.gradt_erry(ok_demtccd1)
 vec2=demt2082.gradt_erry(ok_demtcc1)
 vec3=demt2082.gradt_erry(ok_demtcg1)
 vec4=demt2082.gradt_erry(ok_demta1)
-histo_gradt_paper2,v1=vec1,v2=vec2,v3=vec3,v4=vec4,win=3,tit='CR2082',xtit='Temperature gradient [MK/Rsun]',label1='demt',label2='',min=-10,max=10,filename='histo'+suf1+'triple_gradt'
+histo_gradt_paper2,v1=vec1,v2=vec2,v3=vec3,v4=vec4,win=3,tit='CR2082',xtit='Temperature gradient [MK/Rsun]',label1='demt',label2='',min=-10,max=10,filename='histo'+suf1+'triple_gradt',/normalizado
 
 suf1='_cr2208_full'
 vec1=demt2208.gradt_erry(ok_demtccd2)
 vec2=demt2208.gradt_erry(ok_demtcc2)
 vec3=demt2208.gradt_erry(ok_demtcg2)
 vec4=demt2208.gradt_erry(ok_demta2)
-histo_gradt_paper2,v1=vec1,v2=vec2,v3=vec3,v4=vec4,win=3,tit='CR2208',xtit='Temperature gradient [MK/Rsun]',label1='demt',label2='',min=-10,max=10,filename='histo'+suf1+'triple_gradt'
+histo_gradt_paper2,v1=vec1,v2=vec2,v3=vec3,v4=vec4,win=3,tit='CR2208',xtit='Temperature gradient [MK/Rsun]',label1='demt',label2='',min=-10,max=10,filename='histo'+suf1+'triple_gradt',/normalizado
 stop
 
 
