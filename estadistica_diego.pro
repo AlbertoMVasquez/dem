@@ -341,10 +341,13 @@ endif
       pos_cg = fltarr(n_elements(demt2082.opclstat)) -555.
       phic_cumulcc = 0
       phir_cumulcc = 0
+      phic_cumulccd = 0
+      phir_cumulccd = 0
       phic_cumulcg = 0
       phir_cumulcg = 0
       indice_cg = 0
       indice_cc = 0
+      indice_ccd = 0
       for i=0L,n_elements(demt2082.opclstat)-1 do begin
 
          if demt2082.opclstat(i) eq 0. then goto,sigue
@@ -373,10 +376,10 @@ endif
             goto,sigue
          endif
 
-         if not keyword_set(up) then begin; up y down!
-            if demt2082.opclstat(i) eq 1. and demt2082.opclstat(i+1) eq 1. then begin ;ambos cerrados grandes
-               if demt2082.lincorr_pvalue_t(i)   le 0.05 and demt2082.gradt_erry(i)   ne -555. and abs(demt2082.footlat(i))   gt 30 and abs(demt2082.lincorr_pearson_t(i)  ) ge 0.5 and $
-                  demt2082.lincorr_pvalue_t(i+1) le 0.05 and demt2082.gradt_erry(i+1) ne -555. and abs(demt2082.footlat(i+1)) gt 30 and abs(demt2082.lincorr_pearson_t(i+1)) ge 0.5 then begin 
+         if not keyword_set(up) then begin; como el paper
+            if demt2082.opclstat(i) eq 1. and demt2082.opclstat(i+1) eq 1. then begin ;ambos cerrados grandes, tipo2
+               if demt2082.lincorr_pvalue_t(i)   le 0.05 and demt2082.gradt_erry(i)   ne -555. and abs(demt2082.footlat(i))   gt 30 and demt2082.lincorr_pearson_t(i)   ge 0.5 and $
+                  demt2082.lincorr_pvalue_t(i+1) le 0.05 and demt2082.gradt_erry(i+1) ne -555. and abs(demt2082.footlat(i+1)) gt 30 and demt2082.lincorr_pearson_t(i+1) ge 0.5 then begin 
                   phic_cumulcg = [phic_cumulcg,demt2082.phi_c_total(i)]
                   phir_cumulcg = [phir_cumulcg,demt2082.phi_r_total(i)]
                   indice_cg = [indice_cg,i,i+1]
@@ -386,12 +389,20 @@ endif
             endif
 
             if demt2082.opclstat(i) eq 2. and demt2082.opclstat(i+1) eq 2. then begin ;ambos cerrados chicos
-               if demt2082.lincorr_pvalue_t(i)   le 0.05 and demt2082.gradt_erry(i)   ne -555. and abs(demt2082.footlat(i))   le 30 and abs(demt2082.lincorr_pearson_t(i)  ) ge 0.5 and $
-                  demt2082.lincorr_pvalue_t(i+1) le 0.05 and demt2082.gradt_erry(i+1) ne -555. and abs(demt2082.footlat(i+1)) le 30 and abs(demt2082.lincorr_pearson_t(i+1)) ge 0.5 then begin 
+               ;tipo 0
+               if demt2082.lincorr_pvalue_t(i)   le 0.05 and demt2082.gradt_erry(i)   ne -555. and abs(demt2082.footlat(i))   le 30 and demt2082.lincorr_pearson_t(i)   le -0.5 and $
+                  demt2082.lincorr_pvalue_t(i+1) le 0.05 and demt2082.gradt_erry(i+1) ne -555. and abs(demt2082.footlat(i+1)) le 30 and demt2082.lincorr_pearson_t(i+1) le -0.5 then begin 
+                  phic_cumulccd = [phic_cumulccd,demt2082.phi_c_total(i)]
+                  phir_cumulccd = [phir_cumulccd,demt2082.phi_r_total(i)]
+                  indice_ccd = [indice_cc,i,i+1]
+               endif
+               ;tipo 1
+               if demt2082.lincorr_pvalue_t(i)   le 0.05 and demt2082.gradt_erry(i)   ne -555. and demt2082.lincorr_pearson_t(i)   ge 0.5 and $
+                  demt2082.lincorr_pvalue_t(i+1) le 0.05 and demt2082.gradt_erry(i+1) ne -555. and demt2082.lincorr_pearson_t(i+1) ge 0.5 then begin
                   phic_cumulcc = [phic_cumulcc,demt2082.phi_c_total(i)]
                   phir_cumulcc = [phir_cumulcc,demt2082.phi_r_total(i)]
                   indice_cc = [indice_cc,i,i+1]
-               endif
+               endif              
                i=i+1
                goto,sigue
             endif
@@ -399,15 +410,20 @@ endif
          
          sigue:
       endfor
-
-      phih_totalcc=-1.*phic_cumulcc/1.e5 +( phir_cumulcc/1.e5 >0)
-      phih_totalcg=-1.*phic_cumulcg/1.e5 +( phir_cumulcg/1.e5 >0)
+;aca pongo >0 xq hay errores a solucionar en el statloop en phi_r que
+;dan valores neagtivos.
+      phih_totalcc=phic_cumulcc/1.e5 +( phir_cumulcc/1.e5 >0)
+      phih_totalccd=phic_cumulccd/1.e5 +( phir_cumulccd/1.e5 >0)
+      phih_totalcg=phic_cumulcg/1.e5 +( phir_cumulcg/1.e5 >0)
       stop
+suf='cr2082_ccdown'
+histoplot,phir_cumulccd/1.e5>0,data2=phic_cumulccd/1.e5,data3=phih_totalccd,tit='CR2082 type0',xtit='[10!U5!Nerg cm!U-2!Nsec!U-1!N]',filename='histo'+suf+'energia',$
+          label1='phir',label2='phic',label3='phih',min=-1,max=3
 suf='cr2082_cc'
-histoplot,phir_cumulcc/1.e5>0,data2=-1.*phic_cumulcc/1.e5,data3=phih_totalcc,tit='CR2082 type0-1',xtit='[10!U5!Nerg cm!U-2!Nsec!U-1!N]',filename='histo'+suf+'energia',$
+histoplot,phir_cumulcc/1.e5>0,data2=phic_cumulcc/1.e5,data3=phih_totalcc,tit='CR2082 type1',xtit='[10!U5!Nerg cm!U-2!Nsec!U-1!N]',filename='histo'+suf+'energia',$
           label1='phir',label2='phic',label3='phih',min=-1,max=3
 suf='cr2082_cg'
-histoplot,phir_cumulcg/1.e5>0,data2=-1.*phic_cumulcg/1.e5,data3=phih_totalcg,tit='CR2082 type2',xtit='[10!U5!Nerg cm!U-2!Nsec!U-1!N]',filename='histo'+suf+'energia',$
+histoplot,phir_cumulcg/1.e5>0,data2=phic_cumulcg/1.e5,data3=phih_totalcg,tit='CR2082 type2',xtit='[10!U5!Nerg cm!U-2!Nsec!U-1!N]',filename='histo'+suf+'energia',$
           label1='phir',label2='phic',label3='phih',min=-1,max=3
    endif
 
@@ -415,17 +431,20 @@ histoplot,phir_cumulcg/1.e5>0,data2=-1.*phic_cumulcg/1.e5,data3=phih_totalcg,tit
          pos_cg = fltarr(n_elements(demt2208.opclstat)) -555.
          phic_cumulcc = 0
          phir_cumulcc = 0
+         phir_cumulccd = 0
+         phic_cumulccd = 0
          phic_cumulcg = 0
          phir_cumulcg = 0
          indice_cg = 0
          indice_cc = 0
+         indice_ccd = 0
          for i=0L,n_elements(demt2082.opclstat)-1 do begin
 
          if demt2208.opclstat(i) eq 0. then goto,sigue2
-         if not keyword_set(up) then begin  ; up y down!
+         if not keyword_set(up) then begin  ; up 
             if demt2208.opclstat(i) eq 1. and demt2208.opclstat(i+1) eq 1. then begin ;ambos cerrados grandes
-               if demt2208.lincorr_pvalue_t(i)   le 0.05 and demt2208.gradt_erry(i)   ne -555. and abs(demt2208.footlat(i))   gt 30 and abs(demt2208.lincorr_pearson_t(i)  ) ge 0.5 and $
-                  demt2208.lincorr_pvalue_t(i+1) le 0.05 and demt2208.gradt_erry(i+1) ne -555. and abs(demt2208.footlat(i+1)) gt 30 and abs(demt2208.lincorr_pearson_t(i+1)) ge 0.5 then begin
+               if demt2208.lincorr_pvalue_t(i)   le 0.05 and demt2208.gradt_erry(i)   ne -555. and abs(demt2208.footlat(i))   ge 30 and demt2208.lincorr_pearson_t(i)   ge 0.5 and $
+                  demt2208.lincorr_pvalue_t(i+1) le 0.05 and demt2208.gradt_erry(i+1) ne -555. and abs(demt2208.footlat(i+1)) ge 30 and demt2208.lincorr_pearson_t(i+1) ge 0.5 then begin
                   phic_cumulcg = [phic_cumulcg,demt2208.phi_c_total(i)]
                   phir_cumulcg = [phir_cumulcg,demt2208.phi_r_total(i)]
                   indice_cg = [indice_cg,i,i+1]
@@ -435,12 +454,20 @@ histoplot,phir_cumulcg/1.e5>0,data2=-1.*phic_cumulcg/1.e5,data3=phih_totalcg,tit
             endif
 
             if demt2208.opclstat(i) eq 2. and demt2208.opclstat(i+1) eq 2. then begin ;ambos cerrados chicos
-               if demt2208.lincorr_pvalue_t(i)   le 0.05 and demt2208.gradt_erry(i)   ne -555. and abs(demt2208.footlat(i))   le 30 and abs(demt2208.lincorr_pearson_t(i)  ) ge 0.5 and $
-                  demt2208.lincorr_pvalue_t(i+1) le 0.05 and demt2208.gradt_erry(i+1) ne -555. and abs(demt2208.footlat(i+1)) le 30 and abs(demt2208.lincorr_pearson_t(i+1)) ge 0.5 then begin
+               ;tipo 0
+               if demt2208.lincorr_pvalue_t(i)   le 0.05 and demt2208.gradt_erry(i)   ne -555. and abs(demt2208.footlat(i))   le 30 and demt2208.lincorr_pearson_t(i)   le -0.5 and $
+                  demt2208.lincorr_pvalue_t(i+1) le 0.05 and demt2208.gradt_erry(i+1) ne -555. and abs(demt2208.footlat(i+1)) le 30 and demt2208.lincorr_pearson_t(i+1) le -0.5 then begin
+                  phic_cumulccd = [phic_cumulccd,demt2208.phi_c_total(i)]
+                  phir_cumulccd = [phir_cumulccd,demt2208.phi_r_total(i)]
+                  indice_ccd = [indice_ccd,i,i+1]
+               endif
+               if demt2208.lincorr_pvalue_t(i)   le 0.05 and demt2208.gradt_erry(i)   ne -555. and demt2208.lincorr_pearson_t(i)   ge 0.5 and $
+                  demt2208.lincorr_pvalue_t(i+1) le 0.05 and demt2208.gradt_erry(i+1) ne -555. and demt2208.lincorr_pearson_t(i+1) ge 0.5 then begin
                   phic_cumulcc = [phic_cumulcc,demt2208.phi_c_total(i)]
                   phir_cumulcc = [phir_cumulcc,demt2208.phi_r_total(i)]
-                  indice_cc = [indice_cc,i,i+1]
+                  indice_ccd = [indice_ccd,i,i+1]
                endif
+
                i=i+1
                goto,sigue2
             endif
@@ -448,14 +475,20 @@ histoplot,phir_cumulcg/1.e5>0,data2=-1.*phic_cumulcg/1.e5,data3=phih_totalcg,tit
          sigue2:
       endfor
       
-      phih_totalcc=-1.*phic_cumulcc/1.e5 +( phir_cumulcc/1.e5 >0)
-      phih_totalcg=-1.*phic_cumulcg/1.e5 +( phir_cumulcg/1.e5 >0)
+      phih_totalccd=phic_cumulccd/1.e5 +( phir_cumulccd/1.e5 >0)
+      phih_totalcc=phic_cumulcc/1.e5 +( phir_cumulcc/1.e5 >0)
+      phih_totalcg=phic_cumulcg/1.e5 +( phir_cumulcg/1.e5 >0)
       stop
-suf='cr2208_cc'
-histoplot,phir_cumulcc/1.e5>0,data2=-1.*phic_cumulcc/1.e5,data3=phih_totalcc,tit='CR2208 type0-1',xtit='[10!U5!Nerg cm!U-2!Nsec!U-1!N]',filename='histo'+suf+'energia',$
+suf='cr2208_ccdown'
+histoplot,phir_cumulccd/1.e5>0,data2=phic_cumulccd/1.e5,data3=phih_totalccd,tit='CR2208 type0',xtit='[10!U5!Nerg cm!U-2!Nsec!U-1!N]',filename='histo'+suf+'energia',$
           label1='phir',label2='phic',label3='phih',min=-1,max=3
+
+suf='cr2208_cc'
+histoplot,phir_cumulcc/1.e5>0,data2=phic_cumulcc/1.e5,data3=phih_totalcc,tit='CR2208 type1',xtit='[10!U5!Nerg cm!U-2!Nsec!U-1!N]',filename='histo'+suf+'energia',$
+          label1='phir',label2='phic',label3='phih',min=-1,max=3
+
 suf='cr2208_cg'
-histoplot,phir_cumulcg/1.e5>0,data2=-1.*phic_cumulcg/1.e5,data3=phih_totalcg,tit='CR2208 type2',xtit='[10!U5!Nerg cm!U-2!Nsec!U-1!N]',filename='histo'+suf+'energia',$
+histoplot,phir_cumulcg/1.e5>0,data2=phic_cumulcg/1.e5,data3=phih_totalcg,tit='CR2208 type2',xtit='[10!U5!Nerg cm!U-2!Nsec!U-1!N]',filename='histo'+suf+'energia',$
           label1='phir',label2='phic',label3='phih',min=-1,max=3
       endif
          
