@@ -27,12 +27,15 @@
 ;estadistica_diego,/paper,/energia,/cr2208
 
 pro estadistica_diego,proceeding=proceeding,paper=paper,up=up,cr2082=cr2082,cr2208=cr2208,solo_demt=solo_demt,energia=energia
-
-  restore,'trace_struct_LDEM_CR2082_hollow_demt-data_field-awsom_6alt_radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
+;OBS: os que dice sin_bugs refieren a un error corregido al calcular phi_r
+  
+;  restore,'trace_struct_LDEM_CR2082_hollow_demt-data_field-awsom_6alt_radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
+  restore,'trace_struct_LDEM_CR2082_hollow_demt-data_field-awsom_6alt_radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat_sin_bugs.sav'
   demt2082 = datos
   restore,'trace_struct_LDEM_CR2082_awsom-data_field-awsom_6alt_radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
   awsom2082 = datos
-  restore,'trace_struct_LDEM_CR2208_hollow_demt-data_field-awsom_6alt_radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
+;  restore,'trace_struct_LDEM_CR2208_hollow_demt-data_field-awsom_6alt_radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
+  restore, 'trace_struct_LDEM_CR2208_hollow_demt-data_field-awsom_6alt_radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat_sin_bugs.sav'
   demt2208 = datos
   restore,'trace_struct_LDEM_CR2208_awsom-data_field-awsom_6alt_radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
   awsom2208 =datos
@@ -394,7 +397,7 @@ endif
                   demt2082.lincorr_pvalue_t(i+1) le 0.05 and demt2082.gradt_erry(i+1) ne -555. and abs(demt2082.footlat(i+1)) le 30 and demt2082.lincorr_pearson_t(i+1) le -0.5 then begin 
                   phic_cumulccd = [phic_cumulccd,demt2082.phi_c_total(i)]
                   phir_cumulccd = [phir_cumulccd,demt2082.phi_r_total(i)]
-                  indice_ccd = [indice_cc,i,i+1]
+                  indice_ccd = [indice_ccd,i,i+1]
                endif
                ;tipo 1
                if demt2082.lincorr_pvalue_t(i)   le 0.05 and demt2082.gradt_erry(i)   ne -555. and demt2082.lincorr_pearson_t(i)   ge 0.5 and $
@@ -412,20 +415,35 @@ endif
       endfor
 ;aca pongo >0 xq hay errores a solucionar en el statloop en phi_r que
 ;dan valores neagtivos.
-      phih_totalcc=phic_cumulcc/1.e5 +( phir_cumulcc/1.e5 >0)
-      phih_totalccd=phic_cumulccd/1.e5 +( phir_cumulccd/1.e5 >0)
-      phih_totalcg=phic_cumulcg/1.e5 +( phir_cumulcg/1.e5 >0)
+      phih_totalcc=phic_cumulcc/1.e5 + phir_cumulcc/1.e5 
+      phih_totalccd=phic_cumulccd/1.e5 + phir_cumulccd/1.e5 
+      phih_totalcg=phic_cumulcg/1.e5 + phir_cumulcg/1.e5 
       stop
 suf='cr2082_ccdown'
 histoplot,phir_cumulccd/1.e5>0,data2=phic_cumulccd/1.e5,data3=phih_totalccd,tit='CR2082 type0',xtit='[10!U5!Nerg cm!U-2!Nsec!U-1!N]',filename='histo'+suf+'energia',$
           label1='phir',label2='phic',label3='phih',min=-1,max=3
+
+histoplot, demt2082.bmean(indice_ccd),tit='CR2082 type0',xtit='B_medio',filename='histo'+suf+'B_mean'
+histoplot, demt2082.long_s(indice_ccd),min=0,tit='CR2082 type0',xtit='longitud piernas',filename='histo'+suf+'long_s'
+histoplot, (demt2082.ermean(indice_ccd)/demt2082.bmean(indice_ccd))/1.e-5,min=0,tit='CR2082 type0',xtit='<Er>/<B> [10!U-5!N]',filename='histo'+suf+'er_bmean'
+
 suf='cr2082_cc'
 histoplot,phir_cumulcc/1.e5>0,data2=phic_cumulcc/1.e5,data3=phih_totalcc,tit='CR2082 type1',xtit='[10!U5!Nerg cm!U-2!Nsec!U-1!N]',filename='histo'+suf+'energia',$
           label1='phir',label2='phic',label3='phih',min=-1,max=3
+
+histoplot, demt2082.bmean(indice_cc),tit='CR2082 type1',xtit='B_medio',filename='histo'+suf+'B_mean'
+histoplot, demt2082.long_s(indice_cc),min=0,tit='CR2082 type1',xtit='longitud piernas',filename='histo'+suf+'long_s'
+histoplot, (demt2082.ermean(indice_cc)/demt2082.bmean(indice_cc))/1.e-5,min=0,tit='CR2082 type1',xtit='<Er>/<B> [10!U-5!N]',filename='histo'+suf+'er_bmean'
+
 suf='cr2082_cg'
 histoplot,phir_cumulcg/1.e5>0,data2=phic_cumulcg/1.e5,data3=phih_totalcg,tit='CR2082 type2',xtit='[10!U5!Nerg cm!U-2!Nsec!U-1!N]',filename='histo'+suf+'energia',$
           label1='phir',label2='phic',label3='phih',min=-1,max=3
-   endif
+
+histoplot, demt2082.bmean(indice_cg),tit='CR2082 type2',xtit='B_medio',filename='histo'+suf+'B_mean'
+histoplot, demt2082.long_s(indice_cg),min=0,tit='CR2082 type2',xtit='longitud piernas',filename='histo'+suf+'long_s'
+histoplot, (demt2082.ermean(indice_cg)/demt2082.bmean(indice_cg))/1.e-5,min=0,tit='CR2082 type2',xtit='<Er>/<B> [10!U-5!N]',filename='histo'+suf+'er_bmean'
+
+endif
 
       if keyword_set(cr2208) then begin
          pos_cg = fltarr(n_elements(demt2208.opclstat)) -555.
@@ -465,7 +483,7 @@ histoplot,phir_cumulcg/1.e5>0,data2=phic_cumulcg/1.e5,data3=phih_totalcg,tit='CR
                   demt2208.lincorr_pvalue_t(i+1) le 0.05 and demt2208.gradt_erry(i+1) ne -555. and demt2208.lincorr_pearson_t(i+1) ge 0.5 then begin
                   phic_cumulcc = [phic_cumulcc,demt2208.phi_c_total(i)]
                   phir_cumulcc = [phir_cumulcc,demt2208.phi_r_total(i)]
-                  indice_ccd = [indice_ccd,i,i+1]
+                  indice_cc = [indice_cc,i,i+1]
                endif
 
                i=i+1
@@ -475,22 +493,39 @@ histoplot,phir_cumulcg/1.e5>0,data2=phic_cumulcg/1.e5,data3=phih_totalcg,tit='CR
          sigue2:
       endfor
       
-      phih_totalccd=phic_cumulccd/1.e5 +( phir_cumulccd/1.e5 >0)
-      phih_totalcc=phic_cumulcc/1.e5 +( phir_cumulcc/1.e5 >0)
-      phih_totalcg=phic_cumulcg/1.e5 +( phir_cumulcg/1.e5 >0)
+      phih_totalccd=phic_cumulccd/1.e5 + phir_cumulccd/1.e5 
+      phih_totalcc=phic_cumulcc/1.e5 + phir_cumulcc/1.e5
+      phih_totalcg=phic_cumulcg/1.e5 + phir_cumulcg/1.e5
       stop
 suf='cr2208_ccdown'
 histoplot,phir_cumulccd/1.e5>0,data2=phic_cumulccd/1.e5,data3=phih_totalccd,tit='CR2208 type0',xtit='[10!U5!Nerg cm!U-2!Nsec!U-1!N]',filename='histo'+suf+'energia',$
           label1='phir',label2='phic',label3='phih',min=-1,max=3
 
+
+histoplot, demt2208.bmean(indice_ccd),tit='CR2208 type0',xtit='B_medio',filename='histo'+suf+'B_mean'
+histoplot, demt2208.long_s(indice_ccd),min=0,tit='CR2208 type0',xtit='longitud piernas',filename='histo'+suf+'long_s'
+histoplot, (demt2208.ermean(indice_ccd)/demt2208.bmean(indice_ccd))/1.e-5,min=0,tit='CR2208 type0',xtit='<Er>/<B> [10!U-5!N]',filename='histo'+suf+'er_bmean'
+
+
 suf='cr2208_cc'
 histoplot,phir_cumulcc/1.e5>0,data2=phic_cumulcc/1.e5,data3=phih_totalcc,tit='CR2208 type1',xtit='[10!U5!Nerg cm!U-2!Nsec!U-1!N]',filename='histo'+suf+'energia',$
           label1='phir',label2='phic',label3='phih',min=-1,max=3
 
+histoplot, demt2208.bmean(indice_cc),tit='CR2208 type1',xtit='B_medio',filename='histo'+suf+'B_mean'
+histoplot, demt2208.long_s(indice_cc),min=0,tit='CR2208 type1',xtit='longitud piernas',filename='histo'+suf+'long_s'
+histoplot, (demt2208.ermean(indice_cc)/demt2208.bmean(indice_cc))/1.e-5,min=0,tit='CR2208 type1',xtit='<Er>/<B> [10!U-5!N]',filename='histo'+suf+'er_bmean'
+
 suf='cr2208_cg'
 histoplot,phir_cumulcg/1.e5>0,data2=phic_cumulcg/1.e5,data3=phih_totalcg,tit='CR2208 type2',xtit='[10!U5!Nerg cm!U-2!Nsec!U-1!N]',filename='histo'+suf+'energia',$
           label1='phir',label2='phic',label3='phih',min=-1,max=3
-      endif
+
+histoplot, demt2208.bmean(indice_cg),tit='CR2208 type1',xtit='B_medio',filename='histo'+suf+'B_mean'
+histoplot, demt2208.long_s(indice_cg),min=0,tit='CR2208 type1',xtit='longitud piernas',filename='histo'+suf+'long_s'
+histoplot, (demt2208.ermean(indice_cg)/demt2208.bmean(indice_cg))/1.e-5,min=0,tit='CR2208 type1',xtit='<Er>/<B> [10!U-5!N]',filename='histo'+suf+'er_bmean'
+
+stop
+
+endif
          
 endif;termina /energia
    

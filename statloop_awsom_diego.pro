@@ -1328,16 +1328,18 @@ preguntar_a_ceci:
   phi_c_total(ileg+1) = - (Fcb(ileg  ) + Fcb(ileg+1) );los guardo repetidos
 
 ;     y xtemp es e vector de s SIN cortar, ytemp es la expresion de Er(s) evaluada en xtemp dividida el campo B en s
-     ok = where(s_l1_orig ge s_base(ileg))
+     ok = where(s_l1_orig ge s_base(ileg) and s_l1_orig le 1.0);esto ultimo limita un error que viene desde s_v donde a veces los ultimos valores de s_l1 dan muy grandes y arruinan la integral
      xtmp = s_l1_orig (ok)
      ytmp = (Er0_s(ileg)*exp((1./lambda_er_s(ileg))*xtmp) )/B_l1_orig(ok)
      phir_lin_l1 = int_tabulated(xtmp*rsun,ytmp,/sort)
+     if phir_lin_l1 le 0. then stop
      phi_r (ileg) = ( B_base(ileg)*B_base(ileg+1) / (B_base(ileg)+B_base(ileg+1)) ) * phir_lin_l1
      
-     ok = where(s_l2_orig ge s_base(ileg+1))
+     ok = where(s_l2_orig ge s_base(ileg+1) and s_l2_orig le 1.);para salvar la integral de errores en S_v
      xtmp = s_l2_orig (ok)
      ytmp = (Er0_s(ileg+1)*exp((1./lambda_er_s(ileg+1))*xtmp) )/B_l2_orig(ok)
      phir_lin_l2 = int_tabulated(xtmp*rsun,ytmp,/sort);se hace un cambio de unidades de s en rsun a s en cm. pero no se cambia la exponencial xq esos valores son los posta.
+     if phir_lin_l2 le 0. then stop
      phi_r (ileg+1) = ( B_base(ileg)*B_base(ileg+1) / (B_base(ileg)+B_base(ileg+1)) ) * phir_lin_l2
 
      phi_r_total(ileg  ) = phi_r (ileg) + phi_r (ileg+1)
