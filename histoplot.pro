@@ -38,7 +38,7 @@ pro histoplot,data1,data2=data2,min=min,max=max,label1=label1,label2=label2,labe
   azul = 100
   rojo = 200
 ;  rojo = 170
-  verde= 50
+  verde= 40
   negro =0
   cyan = 80
 
@@ -47,7 +47,7 @@ pro histoplot,data1,data2=data2,min=min,max=max,label1=label1,label2=label2,labe
         if max(f1) gt max(f2) then  plot,vbin1,f1,psym=10,charsize=2.5,xtitle=xtit,ytitle=ytit,title=tit,xstyle=1,/nodata,charthick=2.4,Font=0
         if max(f2) gt max(f1) then  plot,vbin2,f2,psym=10,charsize=2.5,xtitle=xtit,ytitle=ytit,title=tit,xstyle=1,/nodata,charthick=2.4,Font=0
      endif
-     oplot,vbin1,f1,psym=10,thick=5,color=azul
+     oplot,vbin1,f1,psym=10,thick=7,color=azul
      if keyword_set(data2) then oplot,vbin2,f2,psym=10,th=5,color=rojo
 
      if keyword_set(data3) then begin
