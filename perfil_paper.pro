@@ -1,4 +1,4 @@
-pro perfil_paper,v0,rad,v1=v1,v2=v2,v3=v3,v4=v4,v5=v5,v6=v6,mi=mi,ma=ma,label1=label1,label2=label2,filename=filename,sufijo=sufijo,xtit=xtit,ytit=ytit,tit=tit,win=win,units=units
+pro perfil_paper,v0,rad,v1=v1,v2=v2,v3=v3,v4=v4,v5=v5,v6=v6,mi=mi,ma=ma,label1=label1,label2=label2,filename=filename,sufijo=sufijo,xtit=xtit,ytit=ytit,tit=tit,win=win,units=units,yr1=yr1,yr2=yr2
 ; la idea es darle un vector de radio y 6 de tm o Ne que son ploteados
 ; en un solo grafico para mostrar streamer, boundary y CH de awsom y
 ; demt al mismo tiempo (una rotacion)
@@ -8,6 +8,7 @@ pro perfil_paper,v0,rad,v1=v1,v2=v2,v3=v3,v4=v4,v5=v5,v6=v6,mi=mi,ma=ma,label1=l
   if not keyword_set(sufijo) then sufijo = 'perfil_paper'
   if not keyword_set(tit) then tit = 'Radial profile'
   if not keyword_set(xtit) then xtit = 'solar radii'
+
   if keyword_set(filename) then  begin
      ps1,'./newfigs/'+sufijo+filename+'.eps',0
      device,/inches,xsize=12,ysize=5
@@ -33,13 +34,16 @@ pro perfil_paper,v0,rad,v1=v1,v2=v2,v3=v3,v4=v4,v5=v5,v6=v6,mi=mi,ma=ma,label1=l
   vaux(0)=mi
   vaux(1)=ma
   vaux = [ma,vaux]
+  if not keyword_set (yr1) then yr1 = mi
+  if not keyword_set (yr2) then yr2 = ma
+
   rad_aux = [1.01,rad]
 ;para awsom se recorta arriba de 1.055, que son los v impares
   v11a = v11(where(rad ge 1.055))
   v33a = v33(where(rad ge 1.055))
   v55a = v55(where(rad ge 1.055))
   rad_corto = rad(where(rad ge 1.055))
-  plot,rad_aux,vaux,psym=10,charsize=2,xtitle=xtit,ytitle=ytit,title=tit,xstyle=1,thick=5,charthick=2,Font=0,/nodata
+  plot,rad_aux,vaux,psym=10,charsize=2,xtitle=xtit,ytitle=ytit,title=tit,xstyle=1,thick=5,charthick=2,Font=0,/nodata,yr=[yr1,yr2],ystyle=1
 
   ;cerrados chicos
   oplot,rad,v00,thick=5,color=azul,linestyle=0
