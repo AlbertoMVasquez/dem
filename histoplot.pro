@@ -28,6 +28,13 @@ pro histoplot,data1,data2=data2,min=min,max=max,label1=label1,label2=label2,labe
 ;f1 se define aca por si min y max cambian segun data2 exista o no. 
   f1 = histogram(data1,min=min,max=max,nbins=nbins,locations=vbin1) & f1 = float(f1) / float(total(f1))
 
+     if keyword_set(data3) then begin
+        f3 = histogram(data3,min=min,max=max,nbins=nbins,locations=vbin3) & f3 = float(f3) / float(total(f3))
+        med3        = median(data3,/even)
+     endif
+
+
+  
 ;se activa si quiero guardar algo, sino solo muestra en pantalla
   if keyword_set(filename) then begin
      ps1,'./newfigs/'+filename+'.eps',0
@@ -38,22 +45,29 @@ pro histoplot,data1,data2=data2,min=min,max=max,label1=label1,label2=label2,labe
   azul = 100
   rojo = 200
 ;  rojo = 170
-  verde= 40
+  verde= 20
   negro =0
   cyan = 80
-
+  violeta = 110
+  
      if not keyword_set(data2) then  plot,vbin1,f1,psym=10,charsize=2,xtitle=xtit,ytitle=ytit,title=tit,xstyle=1,/nodata,charthick=2.4,Font=0
-     if keyword_set(data2) then begin
-        if max(f1) gt max(f2) then  plot,vbin1,f1,psym=10,charsize=2.5,xtitle=xtit,ytitle=ytit,title=tit,xstyle=1,/nodata,charthick=2.4,Font=0
-        if max(f2) gt max(f1) then  plot,vbin2,f2,psym=10,charsize=2.5,xtitle=xtit,ytitle=ytit,title=tit,xstyle=1,/nodata,charthick=2.4,Font=0
+     if keyword_set(data2) and not keyword_set(data3) then begin
+        if max(abs(f1)) gt max(abs(f2)) then  plot,vbin1,f1,psym=10,charsize=2.5,xtitle=xtit,ytitle=ytit,title=tit,xstyle=1,/nodata,charthick=2.4,Font=0
+        if max(abs(f2)) gt max(abs(f1)) then  plot,vbin2,f2,psym=10,charsize=2.5,xtitle=xtit,ytitle=ytit,title=tit,xstyle=1,/nodata,charthick=2.4,Font=0
+     endif
+     if keyword_set(data3) then begin
+        if max(abs(f3)) gt max(abs(f1)) and max(abs(f3)) gt max(abs(f2)) then  begin
+           plot,vbin3,f3,psym=10,charsize=2.5,xtitle=xtit,ytitle=ytit,title=tit,xstyle=1,/nodata,charthick=2.4,Font=0
+        endif else begin
+           if max(abs(f1)) gt max(abs(f2)) then  plot,vbin1,f1,psym=10,charsize=2.5,xtitle=xtit,ytitle=ytit,title=tit,xstyle=1,/nodata,charthick=2.4,Font=0
+           if max(abs(f2)) gt max(abs(f1)) then  plot,vbin2,f2,psym=10,charsize=2.5,xtitle=xtit,ytitle=ytit,title=tit,xstyle=1,/nodata,charthick=2.4,Font=0
+        endelse
      endif
      oplot,vbin1,f1,psym=10,thick=7,color=azul
      if keyword_set(data2) then oplot,vbin2,f2,psym=10,th=5,color=rojo
 
      if keyword_set(data3) then begin
-        f3 = histogram(data3,min=min,max=max,nbins=nbins,locations=vbin3) & f3 = float(f3) / float(total(f3))
         oplot,vbin3,f3,psym=10,thick=5,color=verde
-        med3        = median(data3,/even)
      endif
      
 ;outputs

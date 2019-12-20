@@ -26,8 +26,8 @@ pro rpoint_map,data1,rlon,rlat,vec_color=vec_color,data2=data2,data3=data3,data4
   if not keyword_set(filename) then window,win
   plot,rlon,rlat,xr=[box[0],box[1]],yr=[box[2],box[3]],psym=8,$
        title=title,xtitle='Longitude [deg]',ytitle='Latitude [deg]',xthick=thick,ythick=thick,/nodata,xstyle=1,ystyle=1,font=0
-  loadct,39
-
+;  loadct,39
+  loadct,12
   SWITCH cant_elementos OF
      9: oplot,rlon(data9),rlat(data9),color=fun(vec_color(8)),th=2,psym=8
      8: oplot,rlon(data8),rlat(data8),color=fun(vec_color(7)),th=2,psym=8
@@ -59,11 +59,17 @@ FUNCTION FUN,x
 ;paper entonces los valores 0,1,2,3,4 se reflejan en los valores
 ;correspondientes al colo table 39
   case x of
-     0: y = 80;amarillo
-     1: y = 245
-     2: y = 150
-     3: y = 110
+;     0: y = 80
+;     1: y = 245
+;     2: y = 150
+;     3: y = 110
+;     4: y = 90   
+     0: y = 100 ;azul
+     1: y = 200;rojo
+     2: y = 120;violeta
+     3: y = 20;verde
      4: y = 90
+     
   endcase
   return,y
 END

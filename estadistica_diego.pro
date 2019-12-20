@@ -26,6 +26,7 @@
 ;para la parte energetica
 ;estadistica_diego,/paper,/energia,/cr2208
 ;estadistica_diego,/paper,/up,/cr2082
+;estadistica_diego,/solo_demt
 ;estadistica_diego,treshold=1.4
 
 pro estadistica_diego,proceeding=proceeding,paper=paper,up=up,cr2082=cr2082,cr2208=cr2208,solo_demt=solo_demt,energia=energia,treshold=treshold
@@ -64,7 +65,7 @@ pro estadistica_diego,proceeding=proceeding,paper=paper,up=up,cr2082=cr2082,cr22
 
   endif
 
-  tresh_2082_demt  = 1.3
+  tresh_2082_demt  = 1.45
   tresh_2082_awsom = 1.3 ;este no esta cortando nada xq es muy alto en comparacion a la Ne de awsom en esta rotacion.
   
 if keyword_set(paper) then begin ;PAPER
@@ -141,11 +142,11 @@ histoplot,ne_demt(ok_demtcg)/1.e8,data2=ne_awsom(ok_awsomcg)/1.e8             ,w
   suf1='_cr2082_updown'
   if keyword_set(up) then   suf1='_cr2082_up'
 
-rpoint_map,ok_demtcc,data2=ok_demtcg,data3=ok_demta,demt2082.rp_medio.lon,demt2082.rp_medio.lat,win=6,vec_color=[0,1,2],title='CR2082 Physical location of loop',filename='Midpoint_2082_demt_paper'+suf1
-rpoint_map,ok_awsomcc,data2=ok_awsomcg,data3=ok_awsoma,awsom2082.rp_medio.lon,awsom2082.rp_medio.lat,win=7,vec_color=[0,1,2],title='CR2082 Physical location of loop',filename='Midpoint_2082_awsom_paper'+suf1
+rpoint_map,ok_demtcc,data2=ok_demtcg,data3=ok_demta,demt2082.rp_medio.lon,demt2082.rp_medio.lat,win=6,vec_color=[1,2,3],title='CR2082 Physical location of leg',filename='Midpoint_2082_demt_paper'+suf1
+rpoint_map,ok_awsomcc,data2=ok_awsomcg,data3=ok_awsoma,awsom2082.rp_medio.lon,awsom2082.rp_medio.lat,win=7,vec_color=[1,2,3],title='CR2082 Physical location of leg',filename='Midpoint_2082_awsom_paper'+suf1
   
-rpoint_map,ok_demtcc,data2=ok_demtcg,data3=ok_demta,demt2082.rp_alto.lon,demt2082.rp_alto.lat,win=6,vec_color=[0,1,2],title='CR2082 Physical location of loop',filename='Highpoint_2082_demt_paper'+suf1
-rpoint_map,ok_awsomcc,data2=ok_awsomcg,data3=ok_awsoma,awsom2082.rp_alto.lon,awsom2082.rp_alto.lat,win=7,vec_color=[0,1,2],title='CR2082 Physical location of loop',filename='Highpoint_2082_awsom_paper'+suf1
+rpoint_map,ok_demtcc,data2=ok_demtcg,data3=ok_demta,demt2082.rp_alto.lon,demt2082.rp_alto.lat,win=6,vec_color=[1,2,3],title='CR2082 Physical location of leg',filename='Highpoint_2082_demt_paper'+suf1
+rpoint_map,ok_awsomcc,data2=ok_awsomcg,data3=ok_awsoma,awsom2082.rp_alto.lon,awsom2082.rp_alto.lat,win=7,vec_color=[1,2,3],title='CR2082 Physical location of leg',filename='Highpoint_2082_awsom_paper'+suf1
 
 ;----------> Perfil radial promedio.
   vec_rad=1.025 + 0.02 *findgen(10)
@@ -261,11 +262,11 @@ ok_awsoma = where( awsom2208.opclstat eq 0. and awsom2208.lincorr_pvalue_t le 0.
   suf1='_cr2208_updown'
   if keyword_set(up) then   suf1='_cr2208_up'
 
-rpoint_map,ok_demtcc,data2=ok_demtcg,data3=ok_demta,demt2208.rp_medio.lon,demt2208.rp_medio.lat,win=6,vec_color=[0,1,2],title='CR2208 Physical location of loop',filename='Midpoint_2208_demt_paper'+suf1
-rpoint_map,ok_awsomcc,data2=ok_awsomcg,data3=ok_awsoma,awsom2208.rp_medio.lon,awsom2208.rp_medio.lat,win=7,vec_color=[0,1,2],title='CR2208 Physical location of loop',filename='Midpoint_2208_awsom_paper'+suf1
+rpoint_map,ok_demtcc,data2=ok_demtcg,data3=ok_demta,demt2208.rp_medio.lon,demt2208.rp_medio.lat,win=6,vec_color=[1,2,3],title='CR2208 Physical location of leg',filename='Midpoint_2208_demt_paper'+suf1
+rpoint_map,ok_awsomcc,data2=ok_awsomcg,data3=ok_awsoma,awsom2208.rp_medio.lon,awsom2208.rp_medio.lat,win=7,vec_color=[1,2,3],title='CR2208 Physical location of leg',filename='Midpoint_2208_awsom_paper'+suf1
 
-rpoint_map,ok_demtcc,data2=ok_demtcg,data3=ok_demta,demt2208.rp_alto.lon,demt2208.rp_alto.lat,win=6,vec_color=[0,1,2],title='CR2208 Physical location of loop',filename='Highpoint_2208_demt_paper'+suf1
-rpoint_map,ok_awsomcc,data2=ok_awsomcg,data3=ok_awsoma,awsom2208.rp_alto.lon,awsom2208.rp_alto.lat,win=7,vec_color=[0,1,2],title='CR 2208 Physical location of loop',filename='Highpoint_2208_awsom_paper'+suf1
+rpoint_map,ok_demtcc,data2=ok_demtcg,data3=ok_demta,demt2208.rp_alto.lon,demt2208.rp_alto.lat,win=6,vec_color=[1,2,3],title='CR2208 Physical location of leg',filename='Highpoint_2208_demt_paper'+suf1
+rpoint_map,ok_awsomcc,data2=ok_awsomcg,data3=ok_awsoma,awsom2208.rp_alto.lon,awsom2208.rp_alto.lat,win=7,vec_color=[1,2,3],title='CR 2208 Physical location of leg',filename='Highpoint_2208_awsom_paper'+suf1
 ;--->
   vec_rad=1.025 + 0.02 *findgen(10)
   ne_demtcc  = median(demt2208.ne0(ok_demtcc)) * exp(-1/median(demt2208.lambda_n(ok_demtcc)) * (1. - 1./vec_rad))
@@ -342,9 +343,9 @@ histoplot,ne_demt1(ok_demta1)/1.e8,data2=ne_demt2(ok_demta2)/1.e8,win=4,tit='DEM
 
 
 suf1='_cr2082_full'
-rpoint_map,ok_demtcc1,data2=ok_demtcg1,data3=ok_demta1,data4=ok_demtccd1,demt2082.rp_alto.lon,demt2082.rp_alto.lat,win=6,vec_color=[0,1,2,3],title='CR2082 Physical location of loop',filename='Highpoint_2082_demt_paper'+suf1
+rpoint_map,ok_demtcc1,data2=ok_demtcg1,data3=ok_demta1,data4=ok_demtccd1,demt2082.rp_alto.lon,demt2082.rp_alto.lat,win=6,vec_color=[1,2,3,0],title='CR2082 Physical location of leg',filename='Highpoint_2082_demt_paper'+suf1
 suf1='_cr2208_full'
-rpoint_map,ok_demtcc2,data2=ok_demtcg2,data3=ok_demta2,data4=ok_demtccd2,demt2208.rp_alto.lon,demt2208.rp_alto.lat,win=6,vec_color=[0,1,2,3],title='CR2208 Physical location of loop',filename='Highpoint_2208_demt_paper'+suf1
+rpoint_map,ok_demtcc2,data2=ok_demtcg2,data3=ok_demta2,data4=ok_demtccd2,demt2208.rp_alto.lon,demt2208.rp_alto.lat,win=6,vec_color=[1,2,3,0],title='CR2208 Physical location of leg',filename='Highpoint_2208_demt_paper'+suf1
 
 
 
@@ -366,6 +367,7 @@ stop
 
 
 endif
+   
    
 
 
@@ -459,7 +461,7 @@ endif
       stop
 suf='cr2082_ccdown'
 histoplot,phir_cumulccd/1.e5,data3=phic_cumulccd/1.e5,data2=phih_totalccd,tit='CR2082 Type 0',xtit='[10!U5!Nerg cm!U-2!Nsec!U-1!N]',filename='histo'+suf+'energia',$
-          label1='phir',label3='phic',label2='phih',min=-1,max=3
+          label1='phir',label3='phic',label2='phih',min=-2,max=5
 histoplot, demt2082.bmean(indice_ccd),tit='CR2082 Type 0',xtit='B_medio',filename='histo'+suf+'B_mean'
 histoplot, demt2082.long_s(indice_ccd),min=0,tit='CR2082 Type 0',xtit='longitud piernas',filename='histo'+suf+'long_s'
 histoplot, (demt2082.ermean(indice_ccd)/demt2082.bmean(indice_ccd))/1.e-5,min=0,tit='CR2082 Type 0',xtit='<Er>/<B> [10!U-5!N]',filename='histo'+suf+'er_bmean'
@@ -540,7 +542,7 @@ endif
       stop
 suf='cr2208_ccdown'
 histoplot,phir_cumulccd/1.e5,data3=phic_cumulccd/1.e5,data2=phih_totalccd,tit='CR2208 Type 0',xtit='[10!U5!Nerg cm!U-2!Nsec!U-1!N]',filename='histo'+suf+'energia',$
-          label1='phir',label3='phic',label2='phih',min=-1,max=3
+          label1='phir',label3='phic',label2='phih',min=-2,max=5
 histoplot, demt2208.bmean(indice_ccd),tit='CR2208 Type 0',xtit='B_medio',filename='histo'+suf+'B_mean'
 histoplot, demt2208.long_s(indice_ccd),min=0,tit='CR2208 Type 0',xtit='longitud piernas',filename='histo'+suf+'long_s'
 histoplot, (demt2208.ermean(indice_ccd)/demt2208.bmean(indice_ccd))/1.e-5,min=0,tit='CR2208 Type 0',xtit='<Er>/<B> [10!U-5!N]',filename='histo'+suf+'er_bmean'
