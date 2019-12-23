@@ -1,9 +1,12 @@
-pro rpoint_map,data1,rlon,rlat,vec_color=vec_color,data2=data2,data3=data3,data4=data4,data5=data5,data6=data6,data7=data7,data8=data8,data9=data9,filename=filename,title=title,box=box,thick=thick,win=win
+pro rpoint_map,data1,rlon,rlat,vec_color=vec_color,data2=data2,data3=data3,data4=data4,data5=data5,data6=data6,data7=data7,data8=data8,data9=data9,filename=filename,title=title,box=box,thick=thick,win=win,gris=gris
+  common colores,colgris
+  if not keyword_set(gris) then colgris =0
+  if keyword_set(gris) then colgris =1
 ;data1,,,data9 son vectores con el where que seleccione lo que se
 ;quiere plotear
 ;vector_color es un vector con numeros 0:4 que indica el color a utilizar  
 ;rlon y rlat podrian ser footlat y footlon o bien rmidpoints
-  if not keyword_set(title) then title = 'Physical location of loop at R=1.025'
+  if not keyword_set(title) then title = 'Physical location of legs at R=1.025'
   if not keyword_set(box) then box = [0.,360.,-90.,+90.]
   if not keyword_set(thick) then thick = 3
   if n_elements(vec_color) eq 0. then vec_color = [0,1,1,2,2,3,3,4,4]
@@ -28,6 +31,7 @@ pro rpoint_map,data1,rlon,rlat,vec_color=vec_color,data2=data2,data3=data3,data4
        title=title,xtitle='Longitude [deg]',ytitle='Latitude [deg]',xthick=thick,ythick=thick,/nodata,xstyle=1,ystyle=1,font=0
 ;  loadct,39
   loadct,12
+if keyword_set(gris) then loadct,0
   SWITCH cant_elementos OF
      9: oplot,rlon(data9),rlat(data9),color=fun(vec_color(8)),th=2,psym=8
      8: oplot,rlon(data8),rlat(data8),color=fun(vec_color(7)),th=2,psym=8
@@ -55,21 +59,32 @@ pro rpoint_map,data1,rlon,rlat,vec_color=vec_color,data2=data2,data3=data3,data4
 end
 
 FUNCTION FUN,x
+common colores,colgris
 ;al haber seleccionado los valores de colores para saca area segun el
 ;paper entonces los valores 0,1,2,3,4 se reflejan en los valores
 ;correspondientes al colo table 39
-  case x of
+
+if colgris eq 0 then begin
+   case x of
 ;     0: y = 80
 ;     1: y = 245
 ;     2: y = 150
 ;     3: y = 110
 ;     4: y = 90   
-     0: y = 100 ;azul
-     1: y = 200;rojo
-     2: y = 120;violeta
-     3: y = 20;verde
-     4: y = 90
-     
-  endcase
-  return,y
+      0: y = 100                ;azul
+      1: y = 200                ;rojo
+      2: y = 120                ;violeta
+      3: y = 20                 ;verde
+      4: y = 90
+      
+   endcase
+endif
+
+if  colgris eq 1 then begin
+   case x of
+      0: y = 0                  ;negro
+      1: y = 150                ;gris 
+   endcase
+endif
+   return,y
 END
