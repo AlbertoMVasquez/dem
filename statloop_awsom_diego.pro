@@ -612,7 +612,9 @@ no_para_awsom1:
     iso_erry(ileg)= abs(gradT_erry (ileg)    * long_r(ileg)) / (2 * error_t(ileg))
     iso_s(ileg)   = abs(gradT_s(ileg)        * long_s(ileg)) / (2 * error_t(ileg))
     
+    if hip_chi_pv2_t(ileg) lt 0.1 or ft(ileg) lt 0.4 and abs(lincorr_pearson_t(ileg)) ge 0.5 then stop
 
+    
     skipfitloop_open:
     opclstat(ileg) = opcls(il)
     loop_length(ileg) = loopL(il)

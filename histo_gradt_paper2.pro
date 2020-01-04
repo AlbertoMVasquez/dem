@@ -11,7 +11,9 @@ pro histo_gradt_paper2,v1=v1,v2=v2,v3=v3,v4=v4,v5=v5,v6=v6,min=min,max=max,label
   if not keyword_set(win)   then win = 1
   if not keyword_set(units) then units = 1.e6
 ;usar /normalizado hara los histos normalizados al numero total
-  
+  !P.CHARTHICK=6
+  !p.charsize=2.5
+  thick=3
   if keyword_set(v6) then begin
      if not keyword_set(min)   then min = min([v1,v2,v3,v4,v5,v6])
      if not keyword_set(max)   then max = max([v1,v2,v3,v4,v5,v6])
@@ -42,7 +44,7 @@ endif
 ;se activa si quiero guardar algo, sino solo muestra en pantalla
   if keyword_set(filename) then begin
      ps1,'./newfigs/'+filename+'.eps',0
-     device,/inches,xsize=12,ysize=5
+     device,/inches,xsize=10,ysize=5,/helvetica,SCALE_FACTOR=1
   endif
   if not keyword_set(filename) then window,win
   loadct,12
@@ -65,7 +67,7 @@ endif
   faux(0)=min2
   faux(1)=max2
 
-  plot,vbin1,faux,psym=10,charsize=2.5,xtitle=xtit,ytitle=ytit,title=tit,xstyle=1,/nodata,charthick=2.4,Font=0
+  plot,vbin1,faux,psym=10,xtitle=xtit,ytitle=ytit,title=tit,xstyle=1,/nodata,font=0,xthick=thick,ythick=thick,ystyle=1
   if keyword_set(v6) then begin
      oplot,vbin1,f1,psym=10,thick=5,color=azul,linestyle=0
      oplot,vbin2,f2,psym=10,thick=5,color=azul,linestyle=2

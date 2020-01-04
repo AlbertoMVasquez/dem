@@ -1,4 +1,4 @@
-;load_mapoc,'CR2082_90x180blines_r_',1.065,/mhd,mapoc,file='CR2082_90X180blines_r_1.105_open-close-map_MHD.dat'
+z;load_mapoc,'CR2082_90x180blines_r_',1.065,/mhd,mapoc,file='CR2082_90X180blines_r_1.105_open-close-map_MHD.dat'
 
 pro load_mapoc,filesuffix,rc,mdi=mdi,gng=gng,mhd=mhd,mapoc,dir=dir,file=file
  
