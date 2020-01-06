@@ -51,7 +51,8 @@ endif
   verde= 20
   negro =0
   violeta = 120
-  cyan = 80
+  fucsia = 130
+  cyan = 90
   if keyword_set(v6) then begin
      min2 = min([f1,f2,f3,f4,f5,f6])
      max2 = max([f1,f2,f3,f4,f5,f6])
@@ -78,8 +79,8 @@ endif
   if not keyword_set(v6) then begin
      oplot,vbin1,f1,psym=10,thick=7,color=azul,linestyle=0
      oplot,vbin2,f2,psym=10,thick=7,color=rojo,linestyle=0
-     oplot,vbin3,f3,psym=10,thick=7,color=violeta,linestyle=0
-     oplot,vbin4,f4,psym=10,thick=7,color=verde,linestyle=0
+     oplot,vbin3,f3,psym=10,thick=7,color=fucsia,linestyle=0
+     oplot,vbin4,f4,psym=10,thick=7,color=cyan,linestyle=0
 ;el orden deberia ser cerrado down, cerrado up, cerrado grande, abierto
 
   endif

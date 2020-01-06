@@ -9,7 +9,7 @@ pro histoplot,data1,data2=data2,min=min,max=max,label1=label1,label2=label2,labe
   if not keyword_set(label1)then label1 = 'data1'
   if not keyword_set(label2)then label2 = ''
   if not keyword_set(label3)then label3 = ''
-  if not keyword_set(win)   then win = 1
+  if not keyword_set(win)   then win = 0
   if not keyword_set(xsize) then xsize=9 
   avg1        =   mean(data1) 
   med1        = median(data1,/even)
@@ -41,7 +41,7 @@ ysize=xsize*aspect_ratio
   if keyword_set(filename) then begin
      ps1,'./newfigs/'+filename+'.eps',0
 ;     device,/inches,xsize=12,ysize=8;5
-device,xsize=xsize, ysize=ysize, /helvetica
+device,/inches,xsize=xsize, ysize=ysize, /helvetica,SCALE_FACTOR=1
 
   endif
   if not keyword_set(filename) then window,win
@@ -53,29 +53,30 @@ device,xsize=xsize, ysize=ysize, /helvetica
   negro =0
   cyan = 80
   violeta = 110
+  !P.CHARTHICK=6
+  !p.charsize=2.5
+  thick=3
 
-
-
-     if not keyword_set(data2) then  plot,vbin1,f1,psym=10,xtitle=xtit,ytitle=ytit,title=tit,/nodata,charthick=2.5
+     if not keyword_set(data2) then  plot,vbin1,f1,psym=10,xtitle=xtit,ytitle=ytit,title=tit,/nodata,font=0,xthick=thick,ythick=thick,ystyle=1,xstyle=1
      if keyword_set(data2) and not keyword_set(data3) then begin
-        if max(abs(f1)) gt max(abs(f2)) then  plot,vbin1,f1,xtitle=xtit,ytitle=ytit,title=tit,/nodata,charthick=2.5;,Font=0,ythick=4,ystyle=1
-        if max(abs(f2)) gt max(abs(f1)) then  plot,vbin2,f2,xtitle=xtit,ytitle=ytit,title=tit,/nodata,charthick=2.5;,Font=0,ythick=4,ystyle=1
+        if max(abs(f1)) gt max(abs(f2)) then  plot,vbin1,f1,xtitle=xtit,ytitle=ytit,title=tit,/nodata,font=0,xthick=thick,ythick=thick,ystyle=1,xstyle=1
+        if max(abs(f2)) gt max(abs(f1)) then  plot,vbin2,f2,xtitle=xtit,ytitle=ytit,title=tit,/nodata,font=0,xthick=thick,ythick=thick,ystyle=1,xstyle=1
      endif
 
 ;stop
      if keyword_set(data3) then begin
         if max(abs(f3)) gt max(abs(f1)) and max(abs(f3)) gt max(abs(f2)) then  begin
-           plot,vbin3,f3,xtitle=xtit,ytitle=ytit,title=tit,/nodata,charthick=2;,charthick=4,Font=0,ythick=4;,ystyle=1
+           plot,vbin3,f3,xtitle=xtit,ytitle=ytit,title=tit,/nodata,font=0,xthick=thick,ythick=thick,ystyle=1,xstyle=1
         endif else begin
-           if max(abs(f1)) gt max(abs(f2)) then  plot,vbin1,f1,xtitle=xtit,ytitle=ytit,title=tit,/nodata,charthick=2.5;,xstyle=1,charthick=4,Font=0,ythick=4;,ystyle=1
-           if max(abs(f2)) gt max(abs(f1)) then  plot,vbin2,f2,xtitle=xtit,ytitle=ytit,title=tit,/nodata,charthick=2.5;,xstyle=1,charthick=4,Font=0,ythick=4;,ystyle=1
+           if max(abs(f1)) gt max(abs(f2)) then  plot,vbin1,f1,xtitle=xtit,ytitle=ytit,title=tit,/nodata,font=0,xthick=thick,ythick=thick,ystyle=1,xstyle=1
+           if max(abs(f2)) gt max(abs(f1)) then  plot,vbin2,f2,xtitle=xtit,ytitle=ytit,title=tit,/nodata,font=0,xthick=thick,ythick=thick,ystyle=1,xstyle=1
         endelse
      endif
-     oplot,vbin1,f1,thick=2,color=azul,psym=10
-     if keyword_set(data2) then oplot,vbin2,f2,thick=2,color=rojo,psym=10
+     oplot,vbin1,f1,thick=5,color=azul,psym=10
+     if keyword_set(data2) then oplot,vbin2,f2,thick=5,color=rojo,psym=10
 
      if keyword_set(data3) then begin
-        oplot,vbin3,f3,thick=2,color=verde,psym=10
+        oplot,vbin3,f3,thick=5,color=verde,psym=10
      endif
      
 ;outputs
@@ -115,8 +116,7 @@ if med1 gt 0.4 then xyouts,0.74*[1,1],0.9-[0.1,0.2],['m='+strmid(string(med1),6,
         if i gt 0 then aux1=[aux_aux,aux1]
      endfor
 
-     xyouts,0.71*[1,1,1],0.9-[0.1,0.2,0.3],['m='+aux1(0),'m='+aux1(1),'m='+aux1(2)],/normal,charthick=2.5
-     
+     xyouts,0.71*[1,1,1],0.9-[0.1,0.2,0.3],['m='+aux1(0),'m='+aux1(1),'m='+aux1(2)],/normal,charthick=2.5    
 ;     xyouts,0.71*[1,1,1],0.9-[0.1,0.2,0.3],['m='+strmid(string(med1),4,6),'m='+strmid(string(med3),4,5),'m='+strmid(string(med2),4,5)],/normal,charthick=2;.,Font=0,charsize=2.5
      xyouts,0.66*[1,1,1],.9-[0.1,0.2,0.3],[label1,label3,label2],/normal,color=[azul,verde,rojo],charthick=2.5;,Font=0,charsize=2.5
   endif

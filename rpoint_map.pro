@@ -18,13 +18,13 @@ pro rpoint_map,data1,rlon,rlat,vec_color=vec_color,data2=data2,data3=data3,data4
 
   N=25
   A = FINDGEN(N) * (!PI*2/float(N-1))
-  f=5.
-  USERSYM, COS(A)/f, SIN(A)/f,/FILL
+  f=0.4
+  USERSYM, f*COS(A), f*SIN(A),/FILL
   cant_elementos = n_elements(vec_color)
 
   if keyword_set(filename) then begin
      ps1,'./newfigs/'+filename+'_Rpoint-map.eps',0
-     DEVICE,/INCHES,YSIZE=5,XSIZE=10,SCALE_FACTOR=1
+     DEVICE,/INCHES,YSIZE=5,XSIZE=10,SCALE_FACTOR=1,/helvetica
   endif
   if not keyword_set(filename) then window,win
   plot,rlon,rlat,xr=[box[0],box[1]],yr=[box[2],box[3]],psym=8,$
@@ -74,9 +74,9 @@ if colgris eq 0 then begin
       0: y = 100                ;azul
       1: y = 200                ;rojo
       2: y = 120                ;violeta
-      3: y = 20                 ;verde
-      4: y = 90
-      
+      3: y =  20                ;verde
+      4: y =  90                ;cyan
+      5: y = 130                ;fuccia
    endcase
 endif
 

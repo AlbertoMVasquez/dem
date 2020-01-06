@@ -7,12 +7,16 @@ pro perfil_paper,v0,rad,v1=v1,v2=v2,v3=v3,v4=v4,v5=v5,v6=v6,mi=mi,ma=ma,label1=l
   if not keyword_set(label2) then label2 = 'AWSoM'
   if not keyword_set(sufijo) then sufijo = 'perfil_paper'
   if not keyword_set(tit) then tit = 'Radial profile'
-  if not keyword_set(xtit) then xtit = 'solar radii'
+  if not keyword_set(xtit) then xtit = 'r [Rsun]'
 
   if keyword_set(filename) then  begin
      ps1,'./newfigs/'+sufijo+filename+'.eps',0
-     device,/inches,xsize=12,ysize=5
+     device,/inches,xsize=10,ysize=5, /helvetica,SCALE_FACTOR=1
   endif
+  !P.CHARTHICK=6
+  !p.charsize=2.5
+  thick=3
+  
   if not keyword_set(filename) then window=win
   loadct,12
   azul = 100
@@ -46,7 +50,7 @@ pro perfil_paper,v0,rad,v1=v1,v2=v2,v3=v3,v4=v4,v5=v5,v6=v6,mi=mi,ma=ma,label1=l
   v33a = v33(where(rad ge 1.055))
   v55a = v55(where(rad ge 1.055))
   rad_corto = rad(where(rad ge 1.055))
-  plot,rad_aux,vaux,psym=10,charsize=2,xtitle=xtit,ytitle=ytit,title=tit,xstyle=1,thick=5,charthick=2,Font=0,/nodata,yr=[yr1,yr2],ystyle=1
+  plot,rad_aux,vaux,psym=10,xtitle=xtit,ytitle=ytit,title=tit,xstyle=1,xthick=thick,ythick=thick,font=0,/nodata,yr=[yr1,yr2],ystyle=1
 
   ;cerrados chicos
   oplot,rad,v00,thick=5,color=rojo,linestyle=0
@@ -57,7 +61,7 @@ pro perfil_paper,v0,rad,v1=v1,v2=v2,v3=v3,v4=v4,v5=v5,v6=v6,mi=mi,ma=ma,label1=l
   ;abiertos
   oplot,rad,v44,thick=5,color=verde,linestyle=0
   oplot,rad_corto,v55a,thick=5,color=verde,linestyle=2
-  xyouts,0.7*[1,1],.97-[0.15,0.22],[label1,label2],/normal,color=[negro,negro],charthick=2.5,font=0
+  xyouts,0.7*[1,1],.97-[0.15,0.22],[label1,label2],/normal,color=[negro,negro],charthick=2.5;,font=0
 ;  xyouts,0.9*[1,1],1.-[0.15,0.2],['----','----'],/normal,color=[negro,negro],charthick=3,font=0
   if keyword_set(filename) then ps2
 
