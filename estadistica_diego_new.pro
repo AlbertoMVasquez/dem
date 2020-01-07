@@ -29,7 +29,7 @@
 ;estadistica_diego,/solo_demt,/paper
 ;estadistica_diego,treshold=1.4
 
-pro estadistica_diego,proceeding=proceeding,paper=paper,up=up,cr2082=cr2082,cr2208=cr2208,solo_demt=solo_demt,energia=energia,treshold=treshold
+pro estadistica_diego_new,proceeding=proceeding,paper=paper,up=up,cr2082=cr2082,cr2208=cr2208,solo_demt=solo_demt,energia=energia,treshold=treshold
 ;OBS: os que dice sin_bugs refieren a un error corregido al calcular phi_r
   
 ;  restore,'trace_struct_LDEM_CR2082_hollow_demt-data_field-awsom_6alt_radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
@@ -99,15 +99,16 @@ if keyword_set(paper) then begin ;PAPER
 
 ;cerrados chicos UP
 
-  ok_demtcc  = where(demt2082.opclstat  eq 2. and demt2082.lincorr_pvalue_t  le 0.05 and demt2082.gradt_erry  ne -555. );and demt2082.lincorr_pearson_t ge 0.5)
-  ok_awsomcc = where(awsom2082.opclstat eq 2. and awsom2082.lincorr_pvalue_t le 0.05 and awsom2082.gradt_erry ne -555. )
-  suf='_2082_demt_awsom_streamer_updown_'
+  Ls_d_2082 = 0.25
+  Ll_d_2082 = 0.25
+  Ls_a_2082 = 0.26
+  Ll_a_2082 = 0.26
 
   if keyword_set(up) then begin
-     ok_demtcc  = where(demt2082.opclstat  eq 2. and demt2082.lincorr_pvalue_t  le 0.05 and demt2082.gradt_erry  ne -555. and demt2082.lincorr_pearson_t  ge 0.5 $
-                        and ne_tresh_2082_demt/1.e8  le tresh_2082_demt and demt2082.hip_chi_pv2_t ge 0.1) 
-     ok_awsomcc = where(awsom2082.opclstat eq 2. and awsom2082.lincorr_pvalue_t le 0.05 and awsom2082.gradt_erry ne -555. and awsom2082.lincorr_pearson_t ge 0.5 $
-                        and ne_tresh_2082_awsom/1.e8 le tresh_2082_awsom and awsom2082.hip_chi_pv2_t ge 0.1)
+     ok_demtcc  = where(demt2082.opclstat ne 0. and demt2082.long_s le Ls_d_2082  and demt2082.gradt_erry  ne -555. and demt2082.lincorr_pearson_t  ge 0.5 $
+                        and ne_tresh_2082_demt/1.e8  le tresh_2082_demt and abs(demt2082.rp_base.lat) lt 50 and demt2082.hip_chi_pv2_t ge 0.1) 
+     ok_awsomcc = where(awsom2082.opclstat ne 0. and awsom2082.long_s le Ls_a_2082 and awsom2082.gradt_erry ne -555. and awsom2082.lincorr_pearson_t ge 0.5 $
+                        and ne_tresh_2082_awsom/1.e8 le tresh_2082_awsom and abs(awsom2082.rp_base.lat) lt 50 and awsom2082.hip_chi_pv2_t ge 0.1)
   suf='_2082_demt_awsom_streamer_up_'
   endif
   
@@ -124,15 +125,12 @@ if keyword_set(paper) then begin ;PAPER
   rpoint_map,ok_awsomcc,awsom2082.rp_medio.lon,awsom2082.rp_medio.lat,win=7,vec_color=[0],filename='rpoint'+suf+'awsom',title='Physical location of loop at R=1.075'
 
 ;cerrados grandes 
-  ok_demtcg  = where(demt2082.opclstat  eq 1. and demt2082.lincorr_pvalue_t  le 0.05 and demt2082.gradt_erry  ne -555. and abs(demt2082.footlat)   gt 30); and demt2082.lincorr_pearson_t ge 0.5)
-  ok_awsomcg = where(awsom2082.opclstat eq 1. and awsom2082.lincorr_pvalue_t le 0.05 and awsom2082.gradt_erry ne -555. and abs(awsom2082.footlat)  gt 30)
-  suf='_2082_demt_awsom_bound_updown_'
 
   if keyword_set(up) then begin
-     ok_demtcg  = where(demt2082.opclstat  eq 1. and demt2082.lincorr_pvalue_t  le 0.05 and demt2082.gradt_erry  ne -555. and abs(demt2082.footlat)   gt 30 and demt2082.lincorr_pearson_t ge 0.5 $
-                        and ne_tresh_2082_demt/1.e8  le tresh_2082_demt and demt2082.hip_chi_pv2_t ge 0.1)   
-     ok_awsomcg = where(awsom2082.opclstat eq 1. and awsom2082.lincorr_pvalue_t le 0.05 and awsom2082.gradt_erry ne -555. and abs(awsom2082.footlat)  gt 30 and awsom2082.lincorr_pearson_t ge 0.5 $
-                        and ne_tresh_2082_awsom/1.e8 le tresh_2082_awsom and awsom2082.hip_chi_pv2_t ge 0.1)   
+     ok_demtcg  = where(demt2082.opclstat ne 0. and demt2082.long_s gt Ll_d_2082 and demt2082.gradt_erry  ne -555. and abs(demt2082.footlat) gt 40 and demt2082.lincorr_pearson_t ge 0.5 $
+                        and ne_tresh_2082_demt/1.e8  le tresh_2082_demt )   
+     ok_awsomcg = where(awsom2082.opclstat ne 0. and awsom2082.long_s gt Ll_a_2082 and awsom2082.gradt_erry ne -555. and abs(awsom2082.footlat)  gt 40 and awsom2082.lincorr_pearson_t ge 0.5 $
+                        and ne_tresh_2082_awsom/1.e8 le tresh_2082_awsom )   
   suf='_2082_demt_awsom_bound_up_'
   endif
      
@@ -149,15 +147,12 @@ if keyword_set(paper) then begin ;PAPER
   rpoint_map,ok_awsomcg,awsom2082.rp_medio.lon,awsom2082.rp_medio.lat,win=7,vec_color=[0],filename='rpoint'+suf+'awsom'
 
 ;abiertos
-  ok_demta  = where( demt2082.opclstat  eq 0. and demt2082.lincorr_pvalue_t   le 0.05 and demt2082.gradt_erry  ne -555. and abs(demt2082.footlat)  ge 60); and demt2082.lincorr_pearson_t ge 0.5)
-  ok_awsoma = where( awsom2082.opclstat eq 0. and awsom2082.lincorr_pvalue_t  le 0.05 and awsom2082.gradt_erry ne -555. and abs(awsom2082.footlat) ge 60)
-  suf='_2082_demt_awsom_CH_updown_'
 
   if keyword_set(up) then begin
-     ok_demta  = where( demt2082.opclstat  eq 0. and demt2082.lincorr_pvalue_t   le 0.05 and demt2082.gradt_erry  ne -555. and abs(demt2082.footlat)  ge 60 and demt2082.lincorr_pearson_t ge 0.5 $
-                        and ne_tresh_2082_demt/1.e8 le tresh_2082_demt and demt2082.hip_chi_pv2_t ge 0.1)
-     ok_awsoma = where( awsom2082.opclstat eq 0. and awsom2082.lincorr_pvalue_t  le 0.05 and awsom2082.gradt_erry ne -555. and abs(awsom2082.footlat) ge 60 and awsom2082.lincorr_pearson_t ge 0.5 $
-                        and ne_tresh_2082_awsom/1.e8 le tresh_2082_awsom and awsom2082.hip_chi_pv2_t ge 0.1)
+     ok_demta  = where( demt2082.opclstat  eq 0. and demt2082.gradt_erry  ne -555. and abs(demt2082.footlat)  gt 60 and demt2082.lincorr_pearson_t ge 0.5 $
+                        and ne_tresh_2082_demt/1.e8 le tresh_2082_demt )
+     ok_awsoma = where( awsom2082.opclstat eq 0. and awsom2082.gradt_erry ne -555. and abs(awsom2082.footlat) gt 60 and awsom2082.lincorr_pearson_t ge 0.5 $
+                        and ne_tresh_2082_awsom/1.e8 le tresh_2082_awsom )
      suf='_2082_demt_awsom_CH_up_'
   endif
  
@@ -177,11 +172,11 @@ if keyword_set(paper) then begin ;PAPER
   suf1='_cr2082_updown'
   if keyword_set(up) then   suf1='_cr2082_up'
 
-rpoint_map,ok_demtcc,data2=ok_demtcg,data3=ok_demta,demt2082.rp_medio.lon,demt2082.rp_medio.lat,win=6,vec_color=[1,2,3],title='CR-2082 Physical location of legs',filename='Midpoint_2082_demt_paper'+suf1
-rpoint_map,ok_awsomcc,data2=ok_awsomcg,data3=ok_awsoma,awsom2082.rp_medio.lon,awsom2082.rp_medio.lat,win=7,vec_color=[1,2,3],title='CR-2082 Physical location of legs',filename='Midpoint_2082_awsom_paper'+suf1
+;rpoint_map,ok_demtcc,data2=ok_demtcg,data3=ok_demta,demt2082.rp_medio.lon,demt2082.rp_medio.lat,win=6,vec_color=[1,2,3],title='CR-2082 Physical location of legs',filename='Midpoint_2082_demt_paper'+suf1
+;rpoint_map,ok_awsomcc,data2=ok_awsomcg,data3=ok_awsoma,awsom2082.rp_medio.lon,awsom2082.rp_medio.lat,win=7,vec_color=[1,2,3],title='CR-2082 Physical location of legs',filename='Midpoint_2082_awsom_paper'+suf1
   
-rpoint_map,ok_demtcc,data2=ok_demtcg,data3=ok_demta,demt2082.rp_alto.lon,demt2082.rp_alto.lat,win=6,vec_color=[1,2,3],title='CR-2082 Physical location of legs',filename='Highpoint_2082_demt_paper'+suf1
-rpoint_map,ok_awsomcc,data2=ok_awsomcg,data3=ok_awsoma,awsom2082.rp_alto.lon,awsom2082.rp_alto.lat,win=7,vec_color=[1,2,3],title='CR-2082 Physical location of legs',filename='Highpoint_2082_awsom_paper'+suf1
+rpoint_map,ok_demtcc,data2=ok_demtcg,data3=ok_demta,demt2082.rp_alto.lon,demt2082.rp_alto.lat,win=6,vec_color=[1,5,4],title='CR-2082 Physical location of legs',filename='Highpoint_2082_demt_paper'+suf1
+rpoint_map,ok_awsomcc,data2=ok_awsomcg,data3=ok_awsoma,awsom2082.rp_alto.lon,awsom2082.rp_alto.lat,win=7,vec_color=[1,5,4],title='CR-2082 Physical location of legs',filename='Highpoint_2082_awsom_paper'+suf1
 
 ;----------> Perfil radial promedio.
   vec_rad=1.025 + 0.02 *findgen(10)
@@ -210,6 +205,20 @@ vec5=demt2082.gradt_erry(ok_demta)
 vec6=awsom2082.gradt_erry(ok_awsoma)
 histo_gradt_paper2,v1=vec1,v2=vec2,v3=vec3,v4=vec4,v5=vec5,v6=vec6,win=3,tit='CR2082',xtit='Temperature gradient [MK/Rsun]',label1='demt',label2='awsom',min=-10,max=10,filename='histo'+suf1+'triple_gradt'
 stop  
+
+
+     ok_awsomcc = where(awsom2082.opclstat ne 0. and awsom2082.long_s le Ls_a_2082 and awsom2082.gradt_erry ne -555. and awsom2082.lincorr_pearson_t ge 0.5 $
+                        and ne_tresh_2082_awsom/1.e8 le tresh_2082_awsom and abs(awsom2082.rp_base.lat) lt 50)
+     ok_awsomcg = where(awsom2082.opclstat ne 0. and awsom2082.long_s gt Ll_a_2082 and awsom2082.gradt_erry ne -555. and abs(awsom2082.footlat)  gt 40 and awsom2082.lincorr_pearson_t ge 0.5 $
+                        and ne_tresh_2082_awsom/1.e8 le tresh_2082_awsom )
+     ok_awsoma = where( awsom2082.opclstat eq 0. and awsom2082.gradt_erry ne -555. and abs(awsom2082.footlat) gt 60 and awsom2082.lincorr_pearson_t ge 0.5 $
+                        and ne_tresh_2082_awsom/1.e8 le tresh_2082_awsom )
+
+
+suf1='_cr2082_up_sinfiltro'
+rpoint_map,ok_awsomcc,data2=ok_awsomcg,data3=ok_awsoma,awsom2082.rp_alto.lon,awsom2082.rp_alto.lat,win=7,vec_color=[1,5,4],title='CR-2082 Physical location of legs',filename='Highpoint_2082_awsom_paper'+suf1
+
+
 endif  
   
 ;doble histos 2208
@@ -223,15 +232,17 @@ endif
   ne_tresh_2208_demt  = (demt2208.ne0) * exp(-1/(demt2208.lambda_n) * (1. - 1./1.065))
   ne_tresh_2208_awsom = (awsom2208.ne0)* exp(-1/(awsom2208.lambda_n)* (1. - 1./1.065))
 
-  ok_demtcc  = where( demt2208.opclstat  eq 2. and demt2208.lincorr_pvalue_t   le 0.05 and demt2208.gradt_erry  ne -555. ) ;and abs(demt2208.footlat)  le 30)
-  ok_awsomcc = where( awsom2208.opclstat eq 2. and awsom2208.lincorr_pvalue_t  le 0.05 and awsom2208.gradt_erry ne -555. );and abs(awsom2208.footlat) le 30)
-  suf='_2208_demt_awsom_streamer_'
-  suf1='rpoint_2208_streamer_'  
+  Ls_d_2208 = 0.23
+  Ll_d_2208 = 0.23
+  Ls_a_2208 = 0.25
+  Ll_a_2208 = 0.25
+
+  
   if keyword_set(up) then begin
-     ok_demtcc  = where(demt2208.opclstat  eq 2. and demt2208.lincorr_pvalue_t  le 0.05 and demt2208.gradt_erry  ne -555. and demt2208.lincorr_pearson_t  ge 0.5 and ne_tresh_2208_demt/1.e8 le tresh_2208_demt $
-                        and demt2208.hip_chi_pv2_t ge 0.1)
-     ok_awsomcc=where(awsom2208.opclstat eq 2. and awsom2208.lincorr_pvalue_t le 0.05 and awsom2208.gradt_erry ne -555. and awsom2208.lincorr_pearson_t ge 0.5 and ne_tresh_2208_awsom/1.e8 le tresh_2208_awsom $
-                      and awsom2208.hip_chi_pv2_t ge 0.1)
+     ok_demtcc  = where(demt2208.opclstat ne 0. and demt2208.long_s lt Ll_d_2208 and demt2208.gradt_erry  ne -555. and demt2208.lincorr_pearson_t  ge 0.5 and ne_tresh_2208_demt/1.e8 le tresh_2208_demt $
+                        and abs(demt2208.footlat) lt 50)
+     ok_awsomcc = where(awsom2208.opclstat ne 0. and awsom2208.long_s lt Ll_a_2208 and awsom2208.gradt_erry ne -555. and awsom2208.lincorr_pearson_t ge 0.5 and ne_tresh_2208_awsom/1.e8 le tresh_2208_awsom $
+                        and abs(awsom2208.footlat) lt 50)
   suf='_2208_demt_awsom_streamer_up_'
   endif
   
@@ -258,27 +269,23 @@ endif
 
 
 ;cerrados grandes + chicos arriba de 30 lat                                                              
-  ok_demtcg  = where( demt2208.opclstat  eq 1. and demt2208.lincorr_pvalue_t   le 0.05 and demt2208.gradt_erry  ne -555. and abs(demt2208.footlat)  gt 30)
-  ok_awsomcg = where( awsom2208.opclstat eq 1. and awsom2208.lincorr_pvalue_t  le 0.05 and awsom2208.gradt_erry ne -555. and abs(awsom2208.footlat) gt 30)
-  suf='_2208_demt_awsom_bound_updown_'
-  suf1='rpoint_2208_bound_'
   if keyword_set(up) then begin
-     ok_demtcg  = where( demt2208.opclstat  eq 1. and demt2208.lincorr_pvalue_t   le 0.05 and demt2208.gradt_erry  ne -555. and abs(demt2208.footlat)  gt 30 and demt2208.lincorr_pearson_t ge 0.5 $
-                         and ne_tresh_2208_demt/1.e8 le tresh_2208_demt and demt2208.hip_chi_pv2_t ge 0.1)
-     ok_awsomcg = where( awsom2208.opclstat eq 1. and awsom2208.lincorr_pvalue_t  le 0.05 and awsom2208.gradt_erry ne -555. and abs(awsom2208.footlat) gt 30 and awsom2208.lincorr_pearson_t ge 0.5 $
-                         and ne_tresh_2208_awsom/1.e8 le tresh_2208_awsom and awsom2208.hip_chi_pv2_t ge 0.1)
+     ok_demtcg  = where( demt2208.opclstat  ne 0. and demt2208.gradt_erry  ne -555. and abs(demt2208.footlat) gt 40 and demt2208.lincorr_pearson_t ge 0.5 $
+                         and ne_tresh_2208_demt/1.e8 le tresh_2208_demt and demt2208.long_s gt Ls_d_2208)
+     ok_awsomcg = where( awsom2208.opclstat ne 0. and awsom2208.gradt_erry ne -555. and abs(awsom2208.footlat) gt 40 and awsom2208.lincorr_pearson_t ge 0.5 $
+                         and ne_tresh_2208_awsom/1.e8 le tresh_2208_awsom and awsom2208.long_s gt Ls_a_2208)
      suf='_2208_demt_awsom_bound_up_'
   endif
   
 ;  ne_demt  = (demt2208.ne0) * exp(-1/(demt2208.lambda_n) * (1. - 1./1.055))
 ;  ne_awsom = (awsom2208.ne0)* exp(-1/(awsom2208.lambda_n)* (1. - 1./1.055))
   
-  histoplot, demt2208.tmmean(ok_demtcg )/1.e6,data2=awsom2208.tmmean(ok_awsomcg)/1.e6,win=1,tit='CR2208 - type2',xtit=temp_m,filename='histo'+suf+'Tm',$
+  histoplot, demt2208.tmmean(ok_demtcg )/1.e6,data2=awsom2208.tmmean(ok_awsomcg)/1.e6,win=1,tit='CR2208 - Type II',xtit=temp_m,filename='histo'+suf+'Tm',$
              label1='DEMT',label2='AWSoM',min=.5,max=2.
-  histoplot, demt2208.lambda_n(ok_demtcg ),data2=awsom2208.lambda_n(ok_awsomcg)      ,win=2,tit='CR2208 - type2',xtit=lambda ,filename='histo'+suf+'lambda_n',$
+  histoplot, demt2208.lambda_n(ok_demtcg ),data2=awsom2208.lambda_n(ok_awsomcg)      ,win=2,tit='CR2208 - Type II',xtit=lambda ,filename='histo'+suf+'lambda_n',$
              label1='DEMT',label2='AWSoM',min=.02,max=0.2
 ;  histoplot,demt2208.ne0(ok_demtcg)/1.e8,data2=awsom2208.ne0(ok_awsomcg)/1.e8,win=3,tit='CR2208 - Boundary',xtit='Ne 1.025Rsun[10!U8!Ncm!U-3!N]',filename='histo'+suf+'ne_1025',label1='demt',label2='awsom'
-  histoplot,ne_demt(ok_demtcg)/1.e8,data2=ne_awsom(ok_awsomcg)/1.e8                  ,win=4,tit='CR2208 - type2',xtit=Ncb,filename='histo'+suf+'ne_1055',$
+  histoplot,ne_demt(ok_demtcg)/1.e8,data2=ne_awsom(ok_awsomcg)/1.e8                  ,win=4,tit='CR2208 - Type II',xtit=Ncb,filename='histo'+suf+'ne_1055',$
             label1='DEMT',label2='AWSoM',min=.2,max=1.8
 ;  histoplot,demt2208.gradt_erry(ok_demtcg )/1.e6,data2=awsom2208.gradt_erry(ok_awsomcg)/1.e6,win=1,tit='CR2208 - Boundary',xtit='Temperature gradient [MK/Rsun]'   ,filename='histo'+suf+'gradt',label1='demt',label2='awsom',min=-10,max=10
 
@@ -287,15 +294,11 @@ endif
 
 
 ;abiertos                                                                                                                                                                                                          
-  ok_demta  = where( demt2208.opclstat  eq 0. and demt2208.lincorr_pvalue_t   le 0.05 and demt2208.gradt_erry  ne -555. and abs(demt2208.footlat)  ge 60)
-  ok_awsoma = where( awsom2208.opclstat eq 0. and awsom2208.lincorr_pvalue_t  le 0.05 and awsom2208.gradt_erry ne -555. and abs(awsom2208.footlat) ge 60)
-  suf='_2208_demt_awsom_CH_updown_'
-  suf1='rpoint_2208_CH_'  
   if keyword_set(up) then begin
-     ok_demta  = where( demt2208.opclstat  eq 0. and demt2208.lincorr_pvalue_t  le 0.05 and demt2208.gradt_erry  ne -555. and abs(demt2208.footlat)  ge 60 and demt2208.lincorr_pearson_t ge 0.5 $
-                        and ne_tresh_2208_demt/1.e8 le tresh_2208_demt and demt2208.hip_chi_pv2_t ge 0.1)
-     ok_awsoma = where( awsom2208.opclstat eq 0. and awsom2208.lincorr_pvalue_t le 0.05 and awsom2208.gradt_erry ne -555. and abs(awsom2208.footlat) ge 60 and awsom2208.lincorr_pearson_t ge 0.5 $
-                        and ne_tresh_2208_awsom/1.e8 le tresh_2208_awsom and awsom2208.hip_chi_pv2_t ge 0.1)
+     ok_demta  = where( demt2208.opclstat  eq 0. and demt2208.gradt_erry  ne -555. and abs(demt2208.footlat)  ge 60 and demt2208.lincorr_pearson_t ge 0.5 $
+                        and ne_tresh_2208_demt/1.e8 le tresh_2208_demt )
+     ok_awsoma = where( awsom2208.opclstat eq 0. and awsom2208.gradt_erry ne -555. and abs(awsom2208.footlat) ge 60 and awsom2208.lincorr_pearson_t ge 0.5 $
+                        and ne_tresh_2208_awsom/1.e8 le tresh_2208_awsom )
      suf='_2208_demt_awsom_CH_up_'
   endif
   
@@ -318,11 +321,11 @@ endif
   suf1='_cr2208_updown'
   if keyword_set(up) then   suf1='_cr2208_up'
 
-rpoint_map,ok_demtcc,data2=ok_demtcg,data3=ok_demta,demt2208.rp_medio.lon,demt2208.rp_medio.lat,win=6,vec_color=[1,2,3],title='CR-2208 Physical location of leg',filename='Midpoint_2208_demt_paper'+suf1
-rpoint_map,ok_awsomcc,data2=ok_awsomcg,data3=ok_awsoma,awsom2208.rp_medio.lon,awsom2208.rp_medio.lat,win=7,vec_color=[1,2,3],title='CR-2208 Physical location of leg',filename='Midpoint_2208_awsom_paper'+suf1
+;rpoint_map,ok_demtcc,data2=ok_demtcg,data3=ok_demta,demt2208.rp_medio.lon,demt2208.rp_medio.lat,win=6,vec_color=[1,2,3],title='CR-2208 Physical location of leg',filename='Midpoint_2208_demt_paper'+suf1
+;rpoint_map,ok_awsomcc,data2=ok_awsomcg,data3=ok_awsoma,awsom2208.rp_medio.lon,awsom2208.rp_medio.lat,win=7,vec_color=[1,2,3],title='CR-2208 Physical location of leg',filename='Midpoint_2208_awsom_paper'+suf1
 
-rpoint_map,ok_demtcc,data2=ok_demtcg,data3=ok_demta,demt2208.rp_alto.lon,demt2208.rp_alto.lat,win=6,vec_color=[1,2,3],title='CR-2208 Physical location of leg',filename='Highpoint_2208_demt_paper'+suf1
-rpoint_map,ok_awsomcc,data2=ok_awsomcg,data3=ok_awsoma,awsom2208.rp_alto.lon,awsom2208.rp_alto.lat,win=7,vec_color=[1,2,3],title='CR-2208 Physical location of leg',filename='Highpoint_2208_awsom_paper'+suf1
+rpoint_map,ok_demtcc,data2=ok_demtcg,data3=ok_demta,demt2208.rp_alto.lon,demt2208.rp_alto.lat,win=6,vec_color=[1,5,4],title='CR-2208 Physical location of leg',filename='Highpoint_2208_demt_paper'+suf1
+rpoint_map,ok_awsomcc,data2=ok_awsomcg,data3=ok_awsoma,awsom2208.rp_alto.lon,awsom2208.rp_alto.lat,win=7,vec_color=[1,5,4],title='CR-2208 Physical location of leg',filename='Highpoint_2208_awsom_paper'+suf1
 ;--->
   vec_rad=1.025 + 0.02 *findgen(10)
   ne_demtcc  = median(demt2208.ne0(ok_demtcc)) * exp(-1/median(demt2208.lambda_n(ok_demtcc)) * (1. - 1./vec_rad))
@@ -350,6 +353,17 @@ vec5=demt2208.gradt_erry(ok_demta)
 vec6=awsom2208.gradt_erry(ok_awsoma)
 histo_gradt_paper2,v1=vec1,v2=vec2,v3=vec3,v4=vec4,v5=vec5,v6=vec6,win=3,tit='CR2208',xtit='Temperature gradient [MK/Rsun]',label1='demt',label2='awsom',min=-10,max=10,filename='histo'+suf1+'triple_gradt'
 stop
+
+     ok_awsomcc = where(awsom2208.opclstat ne 0. and awsom2208.long_s lt Ll_a_2208 and awsom2208.gradt_erry ne -555. and awsom2208.lincorr_pearson_t ge 0.5 and ne_tresh_2208_awsom/1.e8 le tresh_2208_awsom $
+                        and abs(awsom2208.footlat) lt 50)
+     ok_awsomcg = where( awsom2208.opclstat ne 0. and awsom2208.gradt_erry ne -555. and abs(awsom2208.footlat) gt 40 and awsom2208.lincorr_pearson_t ge 0.5 $
+                         and ne_tresh_2208_awsom/1.e8 le tresh_2208_awsom and awsom2208.long_s gt Ls_a_2208)
+     ok_awsoma = where( awsom2208.opclstat eq 0. and awsom2208.gradt_erry ne -555. and abs(awsom2208.footlat) ge 60 and awsom2208.lincorr_pearson_t ge 0.5 $
+                        and ne_tresh_2208_awsom/1.e8 le tresh_2208_awsom )
+
+suf1='_cr2208_up_sinfiltro'
+rpoint_map,ok_awsomcc,data2=ok_awsomcg,data3=ok_awsoma,awsom2208.rp_alto.lon,awsom2208.rp_alto.lat,win=7,vec_color=[1,5,4],title='CR-2208 Physical location of leg',filename='Highpoint_2208_awsom_paper'+suf1
+
 endif
 
 
@@ -374,13 +388,16 @@ endif
        lambda =  '!9' + 'l'+ '!X'+'!DN!N'     
       Ncb    = 'N!DCB!N [10!U8!Ncm!U-3!N]'
       temp_m = '<T!Dm!N> [MK]'
-      
+      Ls_2082 = 0.25
+      Ll_2082 = 0.25
+      Ls_2208 = 0.23
+      Ll_2208 = 0.23
       
 suf='_2082_2208_fulldemt_streamer_down_'
-ok_demtccd1  = where(demt2082.opclstat  eq 2. and demt2082.lincorr_pvalue_t  le 0.05 and demt2082.gradt_erry  ne -555. and demt2082.lincorr_pearson_t le -0.5 and abs(demt2082.footlat) le 30. and ne_tresh1/1.e8 le tresh_demt_2082 $
-                    and demt2082.hip_chi_pv2_t ge 0.1)
-ok_demtccd2  = where(demt2208.opclstat  eq 2. and demt2208.lincorr_pvalue_t  le 0.05 and demt2208.gradt_erry  ne -555. and demt2208.lincorr_pearson_t le -0.5 and abs(demt2208.footlat) le 30. and ne_tresh2/1.e8 le tresh_demt_2208 $
-                    and demt2208.hip_chi_pv2_t ge 0.1)
+ok_demtccd1  = where(demt2082.opclstat  ne 0. and demt2082.gradt_erry  ne -555. and demt2082.lincorr_pearson_t le -0.5  and ne_tresh1/1.e8 le tresh_demt_2082 $
+                    and demt2082.long_s lt Ls_2082 and abs(demt2082.rp_base.lat) lt 50 )
+ok_demtccd2  = where(demt2208.opclstat  ne 0. and demt2208.gradt_erry  ne -555. and demt2208.lincorr_pearson_t le -0.5  and ne_tresh2/1.e8 le tresh_demt_2208 $
+                    and demt2208.long_s lt Ls_2208 and abs(demt2208.rp_base.lat) lt 50 )
 
 histoplot,demt2082.tmmean(ok_demtccd1)/1.e6,data2=demt2208.tmmean(ok_demtccd2)/1.e6,win=1,tit='DEMT - Type 0',xtit=temp_m ,filename='histo'+suf+'Tm',$
           label1='CR2082',label2='CR2208',min=.5,max=2.,xsize=8
@@ -391,10 +408,11 @@ histoplot,ne_demt1(ok_demtccd1)/1.e8,data2=ne_demt2(ok_demtccd2)/1.e8,win=4,tit=
 
 
 suf='_2082_2208_fulldemt_streamer_up_'      
-ok_demtcc1  = where(demt2082.opclstat  eq 2. and demt2082.lincorr_pvalue_t  le 0.05 and demt2082.gradt_erry  ne -555. and demt2082.lincorr_pearson_t ge 0.5 and ne_tresh1/1.e8 le tresh_demt_2082 $
-                    and demt2082.hip_chi_pv2_t ge 0.1)
-ok_demtcc2  = where(demt2208.opclstat  eq 2. and demt2208.lincorr_pvalue_t  le 0.05 and demt2208.gradt_erry  ne -555. and demt2208.lincorr_pearson_t ge 0.5 and ne_tresh2/1.e8 le tresh_demt_2208 $
-                    and demt2208.hip_chi_pv2_t ge 0.1)
+ok_demtcc1  = where(demt2082.opclstat  ne 0. and demt2082.gradt_erry  ne -555. and demt2082.lincorr_pearson_t ge 0.5  and ne_tresh1/1.e8 le tresh_demt_2082 $
+                    and demt2082.long_s lt Ls_2082 and abs(demt2082.rp_base.lat) lt 50 )
+ok_demtcc2  = where(demt2208.opclstat  ne 0. and demt2208.gradt_erry  ne -555. and demt2208.lincorr_pearson_t ge 0.5  and ne_tresh2/1.e8 le tresh_demt_2208 $
+                    and demt2208.long_s lt Ls_2208 and abs(demt2208.rp_base.lat) lt 50 )
+
 
 histoplot,demt2082.tmmean(ok_demtcc1)/1.e6,data2=demt2208.tmmean(ok_demtcc2)/1.e6,win=1,tit='DEMT - Type I',xtit=temp_m ,filename='histo'+suf+'Tm',$
           label1='CR2082',label2='CR2208',min=.5,max=2.,xsize=8
@@ -404,11 +422,12 @@ histoplot,ne_demt1(ok_demtcc1)/1.e8,data2=ne_demt2(ok_demtcc2)/1.e8,win=4,tit='D
           label1='CR2082',label2='CR2208',min=.2,max=1.8,xsize=8
  
 suf='_2082_2208_fulldemt_bound_up_'
-ok_demtcg1  = where(demt2082.opclstat  eq 1. and demt2082.lincorr_pvalue_t  le 0.05 and demt2082.gradt_erry  ne -555. and abs(demt2082.footlat)   gt 30 and demt2082.lincorr_pearson_t ge 0.5 and ne_tresh1/1.e8 le tresh_demt_2082 $
-                    and demt2082.hip_chi_pv2_t ge 0.1)
-ok_demtcg2  = where(demt2208.opclstat  eq 1. and demt2208.lincorr_pvalue_t  le 0.05 and demt2208.gradt_erry  ne -555. and abs(demt2208.footlat)   gt 30 and demt2208.lincorr_pearson_t ge 0.5 and ne_tresh2/1.e8 le tresh_demt_2208 $
-                    and demt2208.hip_chi_pv2_t ge 0.1)
- 
+ok_demtcg1  = where(demt2082.opclstat  ne 0. and demt2082.gradt_erry  ne -555. and demt2082.lincorr_pearson_t ge 0.5  and ne_tresh1/1.e8 le tresh_demt_2082 $
+                    and demt2082.long_s gt Ll_2082 and abs(demt2082.rp_base.lat) gt 40 )
+ok_demtcg2  = where(demt2208.opclstat  ne 0. and demt2208.gradt_erry  ne -555. and demt2208.lincorr_pearson_t ge 0.5  and ne_tresh2/1.e8 le tresh_demt_2208 $
+                    and demt2208.long_s gt Ll_2208 and abs(demt2208.rp_base.lat) gt 40 )
+
+
 histoplot,demt2082.tmmean(ok_demtcg1 )/1.e6,data2=demt2208.tmmean(ok_demtcg2)/1.e6,win=1,tit='DEMT - Type II',xtit=temp_m ,filename='histo'+suf+'Tm',$
           label1='CR2082',label2='CR2208',min=.5,max=2.,xsize=8
 histoplot,demt2082.lambda_n(ok_demtcg1),data2=demt2208.lambda_n(ok_demtcg2),win=2,tit='DEMT - Type II',xtit=lambda,filename='histo'+suf+'lambda_n',$
@@ -417,10 +436,10 @@ histoplot,ne_demt1(ok_demtcg1)/1.e8,data2=ne_demt2(ok_demtcg2)/1.e8,win=4,tit='D
           label1='CR2082',label2='CR2208',min=.2,max=1.8,xsize=8
       
 suf='_2082_2208_fulldemt_CH_up_'
-ok_demta1  = where( demt2082.opclstat  eq 0. and demt2082.lincorr_pvalue_t   le 0.05 and demt2082.gradt_erry  ne -555. and abs(demt2082.footlat)  ge 60 and demt2082.lincorr_pearson_t ge 0.5 and ne_tresh1/1.e8 le tresh_demt_2082 $
-                    and demt2082.hip_chi_pv2_t ge 0.1)
-ok_demta2  = where( demt2208.opclstat  eq 0. and demt2208.lincorr_pvalue_t   le 0.05 and demt2208.gradt_erry  ne -555. and abs(demt2208.footlat)  ge 60 and demt2208.lincorr_pearson_t ge 0.5 and ne_tresh2/1.e8 le tresh_demt_2208 $
-                    and demt2208.hip_chi_pv2_t ge 0.1)
+ok_demta1  = where( demt2082.opclstat  eq 0. and demt2082.gradt_erry  ne -555. and abs(demt2082.footlat)  ge 60 and ne_tresh1/1.e8 le tresh_demt_2082 $
+                    and demt2082.lincorr_pearson_t ge 0.5 )
+ok_demta2  = where( demt2208.opclstat  eq 0. and demt2208.gradt_erry  ne -555. and abs(demt2208.footlat)  ge 60 and ne_tresh2/1.e8 le tresh_demt_2208 $
+                    and demt2208.lincorr_pearson_t ge 0.5 )
       
 histoplot, demt2082.tmmean(ok_demta1 )/1.e6,data2=demt2208.tmmean(ok_demta2)/1.e6,win=1,tit='DEMT - Type III',xtit=temp_m,filename='histo'+suf+'Tm',$
            label1='CR2082',label2='CR2208',min=.5,max=2.,xsize=8
@@ -429,11 +448,10 @@ histoplot, demt2082.lambda_n(ok_demta1 ),data2=demt2208.lambda_n(ok_demta2),win=
 histoplot,ne_demt1(ok_demta1)/1.e8,data2=ne_demt2(ok_demta2)/1.e8,win=4,tit='DEMT - Type III',xtit=Ncb ,filename='histo'+suf+'ne_1055',$
           label1='CR2082',label2='CR2208',min=.2,max=1.8,xsize=8
 
-
 suf1='_cr2082_full'
-rpoint_map,ok_demtcc1,data2=ok_demtcg1,data3=ok_demta1,data4=ok_demtccd1,demt2082.rp_alto.lon,demt2082.rp_alto.lat,win=6,vec_color=[1,2,3,0],title='CR-2082 Physical location of leg',filename='Highpoint_2082_demt_paper'+suf1
+rpoint_map,ok_demtcc1,data2=ok_demtcg1,data3=ok_demta1,data4=ok_demtccd1,demt2082.rp_alto.lon,demt2082.rp_alto.lat,win=6,vec_color=[1,5,4,0],title='CR-2082 Physical location of leg',filename='Highpoint_2082_demt_paper'+suf1
 suf1='_cr2208_full'
-rpoint_map,ok_demtcc2,data2=ok_demtcg2,data3=ok_demta2,data4=ok_demtccd2,demt2208.rp_alto.lon,demt2208.rp_alto.lat,win=6,vec_color=[1,2,3,0],title='CR-2208 Physical location of leg',filename='Highpoint_2208_demt_paper'+suf1
+rpoint_map,ok_demtcc2,data2=ok_demtcg2,data3=ok_demta2,data4=ok_demtccd2,demt2208.rp_alto.lon,demt2208.rp_alto.lat,win=6,vec_color=[1,5,4,0],title='CR-2208 Physical location of leg',filename='Highpoint_2208_demt_paper'+suf1
 
 
 
@@ -452,6 +470,30 @@ vec4=demt2208.gradt_erry(ok_demta2)
 histo_gradt_paper2,v1=vec1,v2=vec2,v3=vec3,v4=vec4,win=3,tit='CR-2208',xtit='Temperature gradient [MK/Rsun]',label1='demt',label2='',min=-10,max=10,filename='histo'+suf1+'triple_gradt',/normalizado
 stop
 
+ok_demtccd1  = where(demt2082.opclstat  ne 0. and demt2082.gradt_erry  ne -555. and demt2082.lincorr_pearson_t le -0.5  and ne_tresh1/1.e8 le tresh_demt_2082 $
+                    and demt2082.long_s lt Ls_2082 and abs(demt2082.rp_base.lat) lt 50 )
+ok_demtccd2  = where(demt2208.opclstat  ne 0. and demt2208.gradt_erry  ne -555. and demt2208.lincorr_pearson_t le -0.5  and ne_tresh2/1.e8 le tresh_demt_2208 $
+                    and demt2208.long_s lt Ls_2208 and abs(demt2208.rp_base.lat) lt 50 )
+
+ok_demtcc1  = where(demt2082.opclstat  ne 0. and demt2082.gradt_erry  ne -555. and demt2082.lincorr_pearson_t ge 0.5  and ne_tresh1/1.e8 le tresh_demt_2082 $
+                    and demt2082.long_s lt Ls_2082 and abs(demt2082.rp_base.lat) lt 50 )
+ok_demtcc2  = where(demt2208.opclstat  ne 0. and demt2208.gradt_erry  ne -555. and demt2208.lincorr_pearson_t ge 0.5  and ne_tresh2/1.e8 le tresh_demt_2208 $
+                    and demt2208.long_s lt Ls_2208 and abs(demt2208.rp_base.lat) lt 50 )
+
+ok_demtcg1  = where(demt2082.opclstat  ne 0. and demt2082.gradt_erry  ne -555. and demt2082.lincorr_pearson_t ge 0.5  and ne_tresh1/1.e8 le tresh_demt_2082 $
+                    and demt2082.long_s gt Ll_2082 and abs(demt2082.rp_base.lat) gt 40 )
+ok_demtcg2  = where(demt2208.opclstat  ne 0. and demt2208.gradt_erry  ne -555. and demt2208.lincorr_pearson_t ge 0.5  and ne_tresh2/1.e8 le tresh_demt_2208 $
+                    and demt2208.long_s gt Ll_2208 and abs(demt2208.rp_base.lat) gt 40 )
+
+ok_demta1  = where( demt2082.opclstat  eq 0. and demt2082.gradt_erry  ne -555. and abs(demt2082.footlat)  ge 60 and ne_tresh1/1.e8 le tresh_demt_2082 $
+                    and demt2082.lincorr_pearson_t ge 0.5 )
+ok_demta2  = where( demt2208.opclstat  eq 0. and demt2208.gradt_erry  ne -555. and abs(demt2208.footlat)  ge 60 and ne_tresh2/1.e8 le tresh_demt_2208 $
+                    and demt2208.lincorr_pearson_t ge 0.5 )
+
+suf1='_cr2082_full_sinfiltro'
+rpoint_map,ok_demtcc1,data2=ok_demtcg1,data3=ok_demta1,data4=ok_demtccd1,demt2082.rp_alto.lon,demt2082.rp_alto.lat,win=6,vec_color=[1,5,4,0],title='CR-2082 Physical location of leg',filename='Highpoint_2082_demt_paper'+suf1
+suf1='_cr2208_full_sinfiltro'
+rpoint_map,ok_demtcc2,data2=ok_demtcg2,data3=ok_demta2,data4=ok_demtccd2,demt2208.rp_alto.lon,demt2208.rp_alto.lat,win=6,vec_color=[1,5,4,0],title='CR-2208 Physical location of leg',filename='Highpoint_2208_demt_paper'+suf1
 
 
 endif
@@ -472,41 +514,20 @@ endif
       indice_cg = 0
       indice_cc = 0
       indice_ccd = 0
+
+      Ls_2082 = 0.25
+      Ll_2082 = Ls_2082
+
       for i=0L,n_elements(demt2082.opclstat)-1 do begin
 
          if demt2082.opclstat(i) eq 0. then goto,sigue
 
-         if keyword_set(up) then begin
-            if demt2082.opclstat(i) eq 1. and demt2082.opclstat(i+1) eq 1. then begin ;ambos cerrados grandes
-               if demt2082.lincorr_pvalue_t(i)   le 0.05 and demt2082.gradt_erry(i)   ne -555. and abs(demt2082.footlat(i))   gt 30 and demt2082.lincorr_pearson_t(i)   ge 0.5 and $
-                  demt2082.lincorr_pvalue_t(i+1) le 0.05 and demt2082.gradt_erry(i+1) ne -555. and abs(demt2082.footlat(i+1)) gt 30 and demt2082.lincorr_pearson_t(i+1) ge 0.5 $
-                    and demt2082.hip_chi_pv2_t(i) ge 0.1 and demt2082.hip_chi_pv2_t(i+1) ge 0.1 then begin;loop entero
-                  phic_cumulcg = [phic_cumulcg,demt2082.phi_c_total(i)]
-                  phir_cumulcg = [phir_cumulcg,demt2082.phi_r_total(i)]
-                  indice_cg = [indice_cg,i,i+1]
-               endif
-               i=i+1
-               goto,sigue
-            endif
-            
-            if demt2082.opclstat(i) eq 2. and demt2082.opclstat(i+1) eq 2. then begin ;ambos cerrados chicos
-               if demt2082.lincorr_pvalue_t(i)   le 0.05 and demt2082.gradt_erry(i)   ne -555. and abs(demt2082.footlat(i))   le 30 and demt2082.lincorr_pearson_t(i)   ge 0.5 and $
-                  demt2082.lincorr_pvalue_t(i+1) le 0.05 and demt2082.gradt_erry(i+1) ne -555. and abs(demt2082.footlat(i+1)) le 30 and demt2082.lincorr_pearson_t(i+1) ge 0.5 $
-                    and demt2082.hip_chi_pv2_t(i) ge 0.1 and demt2082.hip_chi_pv2_t(i+1) ge 0.1 then begin ;loop entero
-                  phic_cumulcc = [phic_cumulcc,demt2082.phi_c_total(i)]
-                  phir_cumulcc = [phir_cumulcc,demt2082.phi_r_total(i)]
-                  indice_cc = [indice_cc,i,i+1]
-               endif
-            endif
-            i=i+1;salto xq estoy viendo de a pares
-            goto,sigue
-         endif
-
          if not keyword_set(up) then begin; como el paper
-            if demt2082.opclstat(i) ne 0. and demt2082.opclstat(i+1) ne 0. and demt2082.long_s(i) gt 0.25 and demt2082.long_s(i+1) gt 0.25 then begin ;ambos cerrados grandes, tipo2
+;            if demt2082.opclstat(i) eq 1. and demt2082.opclstat(i+1) eq 1. then begin ;ambos cerrados grandes, tipo2
+            if demt2082.long_s(i) gt Ll_2082 and demt2082.long_s(i+1) gt Ll_2082 then begin 
                if demt2082.lincorr_pvalue_t(i)   le 0.05 and demt2082.gradt_erry(i)   ne -555. and abs(demt2082.footlat(i))   gt 40 and demt2082.lincorr_pearson_t(i)   ge 0.5 and $
-                  demt2082.lincorr_pvalue_t(i+1) le 0.05 and demt2082.gradt_erry(i+1) ne -555. and abs(demt2082.footlat(i+1)) gt 40 and demt2082.lincorr_pearson_t(i+1) ge 0.5 then begin 
-                                ;and demt2082.hip_chi_pv2_t(i) ge 0.1 and demt2082.hip_chi_pv2_t(i+1) ge 0.1 then begin
+                  demt2082.lincorr_pvalue_t(i+1) le 0.05 and demt2082.gradt_erry(i+1) ne -555. and abs(demt2082.footlat(i+1)) gt 40 and demt2082.lincorr_pearson_t(i+1) ge 0.5 then begin
+;                    and demt2082.hip_chi_pv2_t(i) ge 0.1 and demt2082.hip_chi_pv2_t(i+1) ge 0.1 then begin 
                   phic_cumulcg = [phic_cumulcg,demt2082.phi_c_total(i)]
                   phir_cumulcg = [phir_cumulcg,demt2082.phi_r_total(i)]
                   indice_cg = [indice_cg,i,i+1]
@@ -515,19 +536,20 @@ endif
                goto,sigue
             endif
 
-            if demt2082.opclstat(i) ne 0. and demt2082.opclstat(i+1) ne 0. and demt2082.long_s(i) lt 0.25 and demt2082.long_s(i+1) lt 0.25 then begin
-            ;tipo 0
-               if demt2082.gradt_erry(i)   ne -555. and abs(demt2082.footlat(i))   le 50 and demt2082.lincorr_pearson_t(i)   le -0.5 and $
-                  demt2082.gradt_erry(i+1) ne -555. and abs(demt2082.footlat(i+1)) le 50 and demt2082.lincorr_pearson_t(i+1) le -0.5 then begin
-;                  and demt2082.hip_chi_pv2_t(i) ge 0.1 and demt2082.hip_chi_pv2_t(i+1) ge 0.1 then begin 
+            ;if demt2082.opclstat(i) eq 2. and demt2082.opclstat(i+1) eq 2. then begin ;ambos cerrados chicos
+            if demt2082.long_s(i) lt Ls_2082 and demt2082.long_s(i+1) lt Ls_2082 then begin ;ambos cerrados chicos  
+               ;tipo 0
+               if demt2082.lincorr_pvalue_t(i)   le 0.05 and demt2082.gradt_erry(i)   ne -555. and abs(demt2082.footlat(i))   le 50 and demt2082.lincorr_pearson_t(i)   le -0.5 and $
+                  demt2082.lincorr_pvalue_t(i+1) le 0.05 and demt2082.gradt_erry(i+1) ne -555. and abs(demt2082.footlat(i+1)) le 50 and demt2082.lincorr_pearson_t(i+1) le -0.5 then begin
+;                    and demt2082.hip_chi_pv2_t(i) ge 0.1 and demt2082.hip_chi_pv2_t(i+1) ge 0.1 then begin 
                   phic_cumulccd = [phic_cumulccd,demt2082.phi_c_total(i)]
                   phir_cumulccd = [phir_cumulccd,demt2082.phi_r_total(i)]
                   indice_ccd = [indice_ccd,i,i+1]
                endif
                ;tipo 1
-               if demt2082.gradt_erry(i)   ne -555. and abs(demt2082.footlat(i))   le 50 and demt2082.lincorr_pearson_t(i)   ge 0.5 and $
-                  demt2082.gradt_erry(i+1) ne -555. and abs(demt2082.footlat(i+1)) le 50 and demt2082.lincorr_pearson_t(i+1) ge 0.5 then begin
-                  ;and demt2082.hip_chi_pv2_t(i) ge 0.1 and demt2082.hip_chi_pv2_t(i+1) ge 0.1 then begin
+               if demt2082.lincorr_pvalue_t(i)   le 0.05 and demt2082.gradt_erry(i)   ne -555. and abs(demt2082.footlat(i))   le 50 and demt2082.lincorr_pearson_t(i)   ge 0.5 and $
+                  demt2082.lincorr_pvalue_t(i+1) le 0.05 and demt2082.gradt_erry(i+1) ne -555. and abs(demt2082.footlat(i+1)) le 50 and demt2082.lincorr_pearson_t(i+1) ge 0.5 then begin
+;                    and demt2082.hip_chi_pv2_t(i) ge 0.1 and demt2082.hip_chi_pv2_t(i+1) ge 0.1 then begin
                   phic_cumulcc = [phic_cumulcc,demt2082.phi_c_total(i)]
                   phir_cumulcc = [phir_cumulcc,demt2082.phi_r_total(i)]
                   indice_cc = [indice_cc,i,i+1]
@@ -593,14 +615,17 @@ endif
          indice_cg = 0
          indice_cc = 0
          indice_ccd = 0
+
+          Ls_2208 = 0.25
+          Ll_2208 = 0.25
          for i=0L,n_elements(demt2082.opclstat)-1 do begin
 
          if demt2208.opclstat(i) eq 0. then goto,sigue2
          if not keyword_set(up) then begin  ; up 
 ;            if demt2208.opclstat(i) eq 1. and demt2208.opclstat(i+1) eq 1. then begin ;ambos cerrados grandes
-            if demt2082.opclstat(i) ne 0. and demt2082.opclstat(i+1) ne 0. and demt2082.long_s(i) gt 0.23 and demt2208.long_s(i+1) gt 0.23 then begin ;ambos cerrados grandes, tipo2
-               if demt2208.gradt_erry(i)   ne -555. and abs(demt2208.footlat(i))   ge 40 and demt2208.lincorr_pearson_t(i)   ge 0.5 and $
-                  demt2208.gradt_erry(i+1) ne -555. and abs(demt2208.footlat(i+1)) ge 40 and demt2208.lincorr_pearson_t(i+1) ge 0.5 then begin
+            if demt2208.long_s(i) gt Ll_2208 and demt2208.long_s(i+1) gt Ll_2208 then begin 
+               if demt2208.lincorr_pvalue_t(i)   le 0.05 and demt2208.gradt_erry(i)   ne -555. and abs(demt2208.footlat(i))   ge 30 and demt2208.lincorr_pearson_t(i)   ge 0.5 and $
+                  demt2208.lincorr_pvalue_t(i+1) le 0.05 and demt2208.gradt_erry(i+1) ne -555. and abs(demt2208.footlat(i+1)) ge 30 and demt2208.lincorr_pearson_t(i+1) ge 0.5 then begin
 ;                    and demt2208.hip_chi_pv2_t(i) ge 0.1 and demt2208.hip_chi_pv2_t(i+1) ge 0.1 then begin
                   phic_cumulcg = [phic_cumulcg,demt2208.phi_c_total(i)]
                   phir_cumulcg = [phir_cumulcg,demt2208.phi_r_total(i)]
@@ -610,19 +635,19 @@ endif
                goto,sigue2
             endif
 
-;if demt2208.opclstat(i) eq 2. and demt2208.opclstat(i+1) eq 2. then begin ;ambos cerrados chicos
-               ;tipo 0
-            if demt2208.opclstat(i) ne 0. and demt2208.opclstat(i+1) ne 0. and demt2208.long_s(i) lt 0.23 and demt2208.long_s(i+1) lt 0.23 then begin
-               if demt2208.gradt_erry(i)   ne -555. and abs(demt2208.footlat(i))   le 50 and demt2208.lincorr_pearson_t(i)   le -0.5 and $
-                  demt2208.gradt_erry(i+1) ne -555. and abs(demt2208.footlat(i+1)) le 50 and demt2208.lincorr_pearson_t(i+1) le -0.5 then begin
+          ;  if demt2208.opclstat(i) eq 2. and demt2208.opclstat(i+1) eq 2. then begin ;ambos cerrados chicos
+            if demt2208.long_s(i) lt Ls_2208 and demt2208.long_s(i+1) lt Ls_2208 then begin 
+                                ;tipo 0
+               if demt2208.lincorr_pvalue_t(i)   le 0.05 and demt2208.gradt_erry(i)   ne -555. and abs(demt2208.footlat(i))   le 30 and demt2208.lincorr_pearson_t(i)   le -0.5 and $
+                  demt2208.lincorr_pvalue_t(i+1) le 0.05 and demt2208.gradt_erry(i+1) ne -555. and abs(demt2208.footlat(i+1)) le 30 and demt2208.lincorr_pearson_t(i+1) le -0.5 then begin
 ;                    and demt2208.hip_chi_pv2_t(i) ge 0.1 and demt2208.hip_chi_pv2_t(i+1) ge 0.1 then begin
                   phic_cumulccd = [phic_cumulccd,demt2208.phi_c_total(i)]
                   phir_cumulccd = [phir_cumulccd,demt2208.phi_r_total(i)]
                   indice_ccd = [indice_ccd,i,i+1]
                endif
-               if demt2208.gradt_erry(i)   ne -555. and abs(demt2208.footlat(i))   le 50 and demt2208.lincorr_pearson_t(i)   ge 0.5 and $
-                  demt2208.gradt_erry(i+1) ne -555. and abs(demt2208.footlat(i+1)) le 50 and demt2208.lincorr_pearson_t(i+1) ge 0.5 then begin
-                  ;and demt2208.hip_chi_pv2_t(i) ge 0.1 and demt2208.hip_chi_pv2_t(i+1) ge 0.1 then begin
+               if demt2208.lincorr_pvalue_t(i)   le 0.05 and demt2208.gradt_erry(i)   ne -555. and demt2208.lincorr_pearson_t(i)   ge 0.5 and $
+                  demt2208.lincorr_pvalue_t(i+1) le 0.05 and demt2208.gradt_erry(i+1) ne -555. and demt2208.lincorr_pearson_t(i+1) ge 0.5 then begin
+;                    and demt2208.hip_chi_pv2_t(i) ge 0.1 and demt2208.hip_chi_pv2_t(i+1) ge 0.1 then begin
                   phic_cumulcc = [phic_cumulcc,demt2208.phi_c_total(i)]
                   phir_cumulcc = [phir_cumulcc,demt2208.phi_r_total(i)]
                   indice_cc = [indice_cc,i,i+1]

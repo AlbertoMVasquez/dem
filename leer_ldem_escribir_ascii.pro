@@ -79,6 +79,12 @@
 ;leer_ldem_escribir_ascii,'LDEM.v3_CR2082_l.35.2.3_h1_Rmin1.00_Rmax1.30_Nr26_InstRmax1.26_bf4_r3d_B_vfullcadence_chianti.ioneq_sun_coronal_1992_feldman_ext.abund_euvi.B_L171_DECON_gauss1_lin_Norm-median_singlStart',Er_out='Er_CR2082_DEMT-EUVI_behind_H1-L.35.2.3_r3d'
 ;----------
 
+;---Para testeos paper                                                                                                                                                                                                                        
+;leer_ldem_escribir_ascii,'LDEM.v3_CR2082_l.35.2.3_h1_Rmin1.00_Rmax1.30_Nr26_InstRmax1.26_bf4_r3d_B_vfullcadence_chianti.ioneq_sun_coronal_1992_feldman_ext.abund_euvi.B_L171_DECON_gauss1_lin_Norm-median_singlStart',/R_parcial,i_out='_CR2082_DEMT-EUVI_behind_H1-L.35.2.3_r3d'                                                                                                                                                                                                       
+;leer_ldem_escribir_ascii,'LDEM.v3_CR2208_l.50.20.20_h1_Rmin1.00_Rmax1.26_Nr26_InstRmax1.26_bf4_r3d_B_chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',/R_parcial,i_out='_CR2208_DEMT-EUVI_behind_H1-L.50.20.20_r3d'                                                                                                                                                                                                                           
+
+    
+
 pro leer_ldem_escribir_ascii,file,ascii=ascii,ne_out=ne_out,tm_out=tm_out,R_out=R_out,i_out=i_out,er_out=er_out,tabla=tabla,aevs=aevs
   common results_images,ima,sima,ra,pa,ya,za,em,npx
   common comunes,tm,wt,nband,demc,PHI,parametrizacion,Tmin,Tmax,nr,nth,np,rad,lat,lon,lambda,WTc

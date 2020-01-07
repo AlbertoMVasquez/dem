@@ -1223,7 +1223,7 @@ goto,skipsocotroco
 skipsocotroco:
 
   unnormalize,fbe,qkl,nband
-
+ 
   skipvoxelanalysis:
 
 ;Compute LDEM-moments and Radiative Loss rate:
@@ -1701,7 +1701,7 @@ return
 end
 
 ;----------------------------------------------------------------------
-pro read_loss,filename,temp,loss
+pro read_loss,filename,temp,loss<
 ; para generar el archivo.out con la loss function utilizar el archivo loss_rate.pro
 x=''
 N_temp=0
