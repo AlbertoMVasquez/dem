@@ -11,6 +11,7 @@ pro histo_gradt_paper2,v1=v1,v2=v2,v3=v3,v4=v4,v5=v5,v6=v6,min=min,max=max,label
   if not keyword_set(win)   then win = 1
   if not keyword_set(units) then units = 1.e6
 ;usar /normalizado hara los histos normalizados al numero total
+  th = 8
   
   if keyword_set(v6) then begin
      if not keyword_set(min)   then min = min([v1,v2,v3,v4,v5,v6])
@@ -68,12 +69,12 @@ endif
 
   plot,vbin1,faux,psym=10,charsize=2.5,xtitle=xtit,ytitle=ytit,title=tit,xstyle=1,/nodata,charthick=2.4,Font=0
   if keyword_set(v6) then begin
-     oplot,vbin1,f1,psym=10,thick=5,color=azul,linestyle=0
-     oplot,vbin2,f2,psym=10,thick=5,color=azul,linestyle=2
-     oplot,vbin3,f3,psym=10,thick=5,color=rojo,linestyle=0
-     oplot,vbin4,f4,psym=10,thick=5,color=rojo,linestyle=2
-     if keyword_set(v5) then oplot,vbin5,f5,psym=10,thick=5,color=verde,linestyle=0
-     if keyword_set(v6) then oplot,vbin6,f6,psym=10,thick=5,color=verde,linestyle=2
+     oplot,vbin1,f1,psym=10,thick=th,color=azul,linestyle=0
+     oplot,vbin2,f2,psym=10,thick=th,color=azul,linestyle=2
+     oplot,vbin3,f3,psym=10,thick=th,color=rojo,linestyle=0
+     oplot,vbin4,f4,psym=10,thick=th,color=rojo,linestyle=2
+     if keyword_set(v5) then oplot,vbin5,f5,psym=10,thick=th,color=verde,linestyle=0
+     if keyword_set(v6) then oplot,vbin6,f6,psym=10,thick=th,color=verde,linestyle=2
   endif
 
   if not keyword_set(v6) then begin
