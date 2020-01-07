@@ -11,7 +11,7 @@ pro perfil_paper,v0,rad,v1=v1,v2=v2,v3=v3,v4=v4,v5=v5,v6=v6,mi=mi,ma=ma,label1=l
 
   if keyword_set(filename) then  begin
      ps1,'./newfigs/'+sufijo+filename+'.eps',0
-     device,/inches,xsize=10,ysize=5, /helvetica,SCALE_FACTOR=1
+     device,/inches,xsize=10,ysize=7, /helvetica,SCALE_FACTOR=1
   endif
   !P.CHARTHICK=6
   !p.charsize=2.5
@@ -63,7 +63,7 @@ pro perfil_paper,v0,rad,v1=v1,v2=v2,v3=v3,v4=v4,v5=v5,v6=v6,mi=mi,ma=ma,label1=l
   ;abiertos
   oplot,rad,v44,thick=th,color=cyan,linestyle=0
   oplot,rad_corto,v55a,thick=th,color=cyan,linestyle=2
-  xyouts,0.7*[1,1],.97-[0.15,0.22],[label1,label2],/normal,color=[negro,negro],charthick=2.5;,font=0
+  xyouts,0.6*[1,1],.9-[0.15,0.22],['Solid: DEMT','Dashed: AWSoM'],/normal,color=[negro,negro],charthick=2.5,font=0
 ;  xyouts,0.9*[1,1],1.-[0.15,0.2],['----','----'],/normal,color=[negro,negro],charthick=3,font=0
   if keyword_set(filename) then ps2
 
