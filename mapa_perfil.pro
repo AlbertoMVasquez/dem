@@ -3,22 +3,22 @@ pro graficos_paper
 fileA='Ne_CR2082_DEMT-EUVI_behind_H1-L.35.2.3_r3d'
 fileB='Ne_awsom_2082_1.85_short' 
 fileC='R_CR2082_DEMT-EUVI_behind_H1-L.35.2.3_r3d'
-mapa_perfil,fileA,fileB=fileB,fileC=fileC,win=1,unit=1.e8,rads=[1.105],lons=[100,300],filename='Ne_demt_awsom_2082',/mapoc,/cr2082,ytitle='Ne [10!U8!Ncm!U-3!N]'
+mapa_perfil,fileA,fileB=fileB,fileC=fileC,win=1,unit=1.e8,rads=[1.105],lons=[100,300],filename='Ne_demt_awsom_2082',/mapoc,/cr2082,ytitle='Ne [10!U8!Ncm!U-3!N]',linestyle=[0,2],color=[0,0]
 
 fileA='Ne_CR2208_DEMT-AIA_H1_L.5.2.2_r3d'
 fileB='Ne_awsom_2208_1.85_short'
 filec='R_CR2208_DEMT-AIA_H1_L.5.2.2_r3d'
-mapa_perfil,fileA,fileB=fileB,fileC=fileC,win=1,unit=1.e8,rads=[1.105],lons=[0,150],filename='Ne_demt_awsom_2208',/mapoc,/cr2208,ytitle='Ne [10!U8!Ncm!U-3!N]' 
+mapa_perfil,fileA,fileB=fileB,fileC=fileC,win=1,unit=1.e8,rads=[1.105],lons=[0,150],filename='Ne_demt_awsom_2208',/mapoc,/cr2208,ytitle='Ne [10!U8!Ncm!U-3!N]',linestyle=[0,2],color=[1,1] 
 
 fileA='Tm_CR2082_DEMT-EUVI_behind_H1-L.35.2.3_r3d' 
 fileB='Te_awsom_2082_1.85_short'
 fileC='R_CR2082_DEMT-EUVI_behind_H1-L.35.2.3_r3d'
-mapa_perfil,fileA,fileB=fileB,fileC=fileC,win=1,unit=1.e6,rads=[1.105],lons=[100,300],filename='Te_demt_awsom_2082',/mapoc,/cr2082,ytitle='Te [MK]'
+mapa_perfil,fileA,fileB=fileB,fileC=fileC,win=1,unit=1.e6,rads=[1.105],lons=[100,300],filename='Te_demt_awsom_2082',/mapoc,/cr2082,ytitle='Te [MK]',linestyle=[0,2],color=[0,0]
 
 fileA='Tm_CR2208_DEMT-AIA_H1_L.5.2.2_r3d'
 fileB='Te_awsom_2208_1.85_short' 
 filec='R_CR2208_DEMT-AIA_H1_L.5.2.2_r3d'
-mapa_perfil,fileA,fileB=fileB,fileC=fileC,win=1,unit=1.e6,rads=[1.105],lons=[0,150],filename='Te_demt_awsom_2208',/mapoc,/cr2208,ytitle='Te [MK]'
+mapa_perfil,fileA,fileB=fileB,fileC=fileC,win=1,unit=1.e6,rads=[1.105],lons=[0,150],filename='Te_demt_awsom_2208',/mapoc,/cr2208,ytitle='Te [MK]',linestyle=[0,2],color=[1,1]
 return
 end
 
@@ -40,7 +40,7 @@ end
 ;en el caso de querer overplot, usar las 3 entradas con A y B demt y
 ;la otra awsom.
 pro mapa_perfil,fileA,fileB=fileB,fileC=fileC,filename=filename,tit=tit,lats=lats,lons=lons,rads=rads,nrad=nrad,rmin=rmin,rmax=rmax,win=win,unit=unit,ytit=ytit,dirA=dirA,dirB=dirB,$
-                cr2082=cr2082,cr2208=cr2208,mapoc=mapoc,ytitle=ytitle
+                cr2082=cr2082,cr2208=cr2208,mapoc=mapoc,ytitle=ytitle,linestyle=linestyle,color=color
   if not keyword_set(dirB)        then dirB         = '/data1/work/MHD/'
   if not keyword_set(dirA)        then dirA         = '/data1/work/dem/';'/data1/DATA/ldem_files/'
   if not keyword_set(lats)        then lats         =[-90,90]
@@ -56,6 +56,14 @@ pro mapa_perfil,fileA,fileB=fileB,fileC=fileC,filename=filename,tit=tit,lats=lat
   if not keyword_set(rmin)        then rmin         = 1.
   if not keyword_set(rmax)        then rmax         = 1.26
   if not keyword_set(ytitle)        then ytitle         = ''
+  if keyword_set (fileB) and not keyword_set(linestyle) then begin
+     linestyle =[0,0]
+     color = [0,1]
+  endif
+  if not keyword_set (fileB) and not keyword_set(linestyle) then begin
+     linestyle =[0]
+     color = [0]
+  endif
   
 ;fileA es demt ya sea Ne o tm
 ; fileB es awsom ya sea ne o te
@@ -132,16 +140,22 @@ jj = 0 ;es un contador para las ventanas
      
      if keyword_set(filename) then begin
         ps1,'./newfigs/Perfil_'+filename+'_'+strmid(rads(irr),6,5)+'.eps',0
-        !p.charsize=1
-        DEVICE,/INCH,YSIZE=5,XSIZE=10,SCALE_FACTOR=3
+;        !p.charsize=1
+;        DEVICE,/INCH,YSIZE=5,XSIZE=10,SCALE_FACTOR=3
+        device,/inches,xsize=10,ysize=5, /helvetica,SCALE_FACTOR=1
      endif
      if not keyword_set(filename) then window,win+jj
-     thick=3
      loadct,12
-     verde = 25
-     azul  =100
-     rojo  =200
+     azul = 100
+     rojo = 200
+     verde= 20
      negro =0
+     cyan = 80
+     violeta = 110
+     !P.CHARTHICK=6
+     !p.charsize=2.5
+     thick=3
+
      if keyword_set(map2) then begin
         maxx = max([max(v_prom_map1),max(v_prom_map2)])
         minn = min([min(v_prom_map1),min(v_prom_map2)])
@@ -150,16 +164,27 @@ jj = 0 ;es un contador para las ventanas
         v_prom (1) = minn
      endif
      if keyword_set(map2) then $
-        plot,latitud,v_prom/unit ,psym=1,xtit='Latitude [deg]',thick=3,xstyle=1,ystyle=1,/nodata,charthick=2.,Font=0,charsize=2.,title=tit+' at'+strmid(rads(irr),5,6)+' Rsun',ytit=ytitle
+        plot,latitud,v_prom/unit ,psym=10,xtit='Latitude [deg]',thick=thick,ythick=thick,xstyle=1,ystyle=1,/nodata,Font=0,title=tit+' at'+strmid(rads(irr),5,6)+' Rsun',ytit=ytitle
      if not keyword_set(map2) then $
-        plot,latitud,v_prom_map1/unit ,psym=1,xtit='Latitude [deg]',thick=3,xstyle=1,ystyle=1,/nodata,charthick=2.,Font=0,charsize=2.,title=tit+' at'+strmid(rads(irr),5,6)+' Rsun',ytit=ytitle
-     oplot,latitud,v_prom_map1/unit,psym=10,color=azul ,LINESTYLE=0,th=5
+        plot,latitud,v_prom_map1/unit ,psym=10,xtit='Latitude [deg]',thick=thick,ythick=thick,xstyle=1,ystyle=1,/nodata,Font=0,title=tit+' at'+strmid(rads(irr),5,6)+' Rsun',ytit=ytitle
+     oplot,latitud,v_prom_map1/unit,psym=10 ,LINESTYLE=linestyle(0),th=8,color=fun(color(0))
 ;     oplot,latitud,v_prom_map1/unit,psym=10,color=rojo ,LINESTYLE=0,th=5 
-     if keyword_set(map2) then oplot,latitud,v_prom_map2/unit,psym=10,color=rojo ,LINESTYLE=0,th=5
+     if keyword_set(map2) then oplot,latitud,v_prom_map2/unit,psym=10 ,LINESTYLE=linestyle(1),th=8,color=fun(color(1))
 ;     if not keyword_set(map2) then  xyouts,.95-[.18],0.83*[1],['demt'],/normal,color=[azul] ,charthick=3,charsize=2.3,Font=0
      if not keyword_set(map2) then  xyouts,.95-[.18],0.83*[1],['awsom'],/normal,color=[rojo] ,charthick=3,charsize=2.3,Font=0
-     if     keyword_set(map2) then  xyouts,.95-[.15,.15],0.83*[.9,.85],['demt','awsom'],/normal,color=[azul,rojo] ,charthick=3,charsize=2.3,Font=0
 
+     if     keyword_set(map2) then begin
+        dx=(180)/20.
+        t1=  -90 + (180.)/2 *1.1
+        t2 = t1+dx/2. *2
+        y0=maxx /unit
+        drel=((maxx - minn)/unit )/10.
+        stop
+        oplot,[t1,t2],y0*[1,1]-drel*7.5,linestyle=linestyle(0),th=8,color=fun(color(0))
+        oplot,[t1,t2],y0*[1,1]-drel*9.2,linestyle=linestyle(1),th=8,color=fun(color(1))
+        xyouts,.8-[.15,.15],1.-[.6,.7],['DEMT','AWSoM'],/normal,color=[fun(color(0)),fun(color(1))] ,charthick=2,charsize=2.,Font=0
+     endif
+     
 ;     mapoc  = 1
 ;     cr2082 = 1
      ;cr2208 = 1
@@ -174,8 +199,8 @@ jj = 0 ;es un contador para las ventanas
            lat_superior = median(latva(where(latva gt  30 and lonva ge lons(0) and lonva le lons(1))))
            lat_inferior = median(latva(where(latva lt -30 and lonva ge lons(0) and lonva le lons(1))))
         endif
-        oplot,[lat_superior,lat_superior],[minn,maxx]/unit,color=0,LINESTYLE=0,th=5
-        oplot,[lat_inferior,lat_inferior],[minn,maxx]/unit,color=0,LINESTYLE=0,th=5
+        oplot,[lat_superior,lat_superior],[minn,maxx]/unit,color=0,LINESTYLE=0,th=8
+        oplot,[lat_inferior,lat_inferior],[minn,maxx]/unit,color=0,LINESTYLE=0,th=8
      endif
      
      if keyword_set(filename) then ps2

@@ -59,7 +59,6 @@ device,/inches,xsize=xsize, ysize=ysize, /helvetica,SCALE_FACTOR=1
   loadct,12
   azul = 100
   rojo = 200
-;  rojo = 170
   verde= 20
   negro =0
   cyan = 80
