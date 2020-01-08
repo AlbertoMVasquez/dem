@@ -53,9 +53,11 @@ ysize=xsize*aspect_ratio
      ps1,'./newfigs/'+filename+'.eps',0
 ;     device,/inches,xsize=12,ysize=8;5
 device,/inches,xsize=xsize, ysize=ysize, /helvetica,SCALE_FACTOR=1
-
   endif
-  if not keyword_set(filename) then window,win
+  if not keyword_set(filename) then begin
+     window,win,xsize=700,ysize=500
+     ;device,scale_factor=2
+  endif
   loadct,12
   azul = 100
   rojo = 200

@@ -947,13 +947,13 @@ if keyword_set(ldem) then begin
   Dilon=1
   ;--------------------------
   ;for testing-purposes only:
-goto,skiptesting
+;goto,skiptesting
   irad1 = 7                     ;ir=7 > 1.075 Rsun
   irad2 = irad1
   Dir   = 1
-  goto,skiptesting
-  ilat1 = 44                    ;0
-  ilat2 = 45                    ;nth-1
+;goto,skiptesting
+  ilat1 = 2                    ;0
+  ilat2 = 2                    ;nth-1
   Dilat = 1                     ;1
   ilon1 = 0
   ilon2 = np-1
@@ -1300,7 +1300,7 @@ if keyword_set(dem) then begin
 endif
 
 ;CELDA
-goto,skipcelda
+;goto,skipcelda
 window,1
  plot,x,qkl(1,*)/max(qkl),/nodata,ystyle=1,xstyle=1,xtitle='X',yr=[0,max([fdem(x,out),1.])]
 for ib=0,nband-1 do oplot,x,qkl(ib,*)/max(qkl);,psym=1

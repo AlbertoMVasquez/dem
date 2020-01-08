@@ -278,12 +278,12 @@ endif
 ;  ne_demt  = (demt2208.ne0) * exp(-1/(demt2208.lambda_n) * (1. - 1./1.055))
 ;  ne_awsom = (awsom2208.ne0)* exp(-1/(awsom2208.lambda_n)* (1. - 1./1.055))
   
-  histoplot, demt2208.tmmean(ok_demtcg )/1.e6,data2=awsom2208.tmmean(ok_awsomcg)/1.e6,win=1,tit='CR2208 - Type II',xtit=temp_m,filename='histo'+suf+'Tm',$
+  histoplot, demt2208.tmmean(ok_demtcg )/1.e6,data2=awsom2208.tmmean(ok_awsomcg)/1.e6,win=1,tit='CR-2208 - Type II',xtit=temp_m,filename='histo'+suf+'Tm',$
              label1='DEMT',label2='AWSoM',min=.5,max=2.,color=[1,1],linestyle=[0,2]
-  histoplot, demt2208.lambda_n(ok_demtcg ),data2=awsom2208.lambda_n(ok_awsomcg)      ,win=2,tit='CR2208 - Type II',xtit=lambda ,filename='histo'+suf+'lambda_n',$
+  histoplot, demt2208.lambda_n(ok_demtcg ),data2=awsom2208.lambda_n(ok_awsomcg)      ,win=2,tit='CR-2208 - Type II',xtit=lambda ,filename='histo'+suf+'lambda_n',$
              label1='DEMT',label2='AWSoM',min=.02,max=0.2,color=[1,1],linestyle=[0,2]
 ;  histoplot,demt2208.ne0(ok_demtcg)/1.e8,data2=awsom2208.ne0(ok_awsomcg)/1.e8,win=3,tit='CR2208 - Boundary',xtit='Ne 1.025Rsun[10!U8!Ncm!U-3!N]',filename='histo'+suf+'ne_1025',label1='demt',label2='awsom'
-  histoplot,ne_demt(ok_demtcg)/1.e8,data2=ne_awsom(ok_awsomcg)/1.e8                  ,win=4,tit='CR2208 - Type II',xtit=Ncb,filename='histo'+suf+'ne_1055',$
+  histoplot,ne_demt(ok_demtcg)/1.e8,data2=ne_awsom(ok_awsomcg)/1.e8                  ,win=4,tit='CR-2208 - Type II',xtit=Ncb,filename='histo'+suf+'ne_1055',$
             label1='DEMT',label2='AWSoM',min=.2,max=1.8,color=[1,1],linestyle=[0,2]
 ;  histoplot,demt2208.gradt_erry(ok_demtcg )/1.e6,data2=awsom2208.gradt_erry(ok_awsomcg)/1.e6,win=1,tit='CR2208 - Boundary',xtit='Temperature gradient [MK/Rsun]'   ,filename='histo'+suf+'gradt',label1='demt',label2='awsom',min=-10,max=10
 
