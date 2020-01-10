@@ -31,8 +31,8 @@ end
 ;fileA='Vr_awsom_2082_1.85_extend'
 ;fileA='Vr_awsom_2208_1.85_extend'
 ;--------------------------------------------
-;mapa_perfil,fileA,rmax=6,nr=500,win=1,rads=[3.005,4.005,5.005,5.995],dirA='/data1/work/MHD/',filename='Vr_2082',ytitle='Vr [m/s]',/cr2082
-;mapa_perfil,fileA,rmax=6,nr=500,win=1,rads=[3.005,4.005,5.005,5.995],dirA='/data1/work/MHD/',filename='Vr_2208',ytitle='Vr [m/s]',/cr2208
+;mapa_perfil,fileA,rmax=6,nr=500,win=1,rads=[3.005,4.005,5.005,5.995],dirA='/data1/work/MHD/',filename='Vr_2082',ytitle='Vr [m/s]',/cr2082,linestyle=[2],color=[0]
+;mapa_perfil,fileA,rmax=6,nr=500,win=1,rads=[3.005,4.005,5.005,5.995],dirA='/data1/work/MHD/',filename='Vr_2208',ytitle='Vr [m/s]',/cr2208,linestyle=[2],color=[1]
 
 ;Este codigo agarra un mapa (matriz de datos) y hace perfiles
 ;latitudinales a altura fija. En caso de awsom, usar solo una
@@ -171,7 +171,7 @@ jj = 0 ;es un contador para las ventanas
 ;     oplot,latitud,v_prom_map1/unit,psym=10,color=rojo ,LINESTYLE=0,th=5 
      if keyword_set(map2) then oplot,latitud,v_prom_map2/unit,psym=10 ,LINESTYLE=linestyle(1),th=8,color=fun(color(1))
 ;     if not keyword_set(map2) then  xyouts,.95-[.18],0.83*[1],['demt'],/normal,color=[azul] ,charthick=3,charsize=2.3,Font=0
-     if not keyword_set(map2) then  xyouts,.95-[.18],0.83*[1],['awsom'],/normal,color=[rojo] ,charthick=3,charsize=2.3,Font=0
+;     if not keyword_set(map2) then  xyouts,.95-[.18],0.83*[1],['awsom'],/normal,color=[rojo] ,charthick=3,charsize=2.3,Font=0
 
      if     keyword_set(map2) then begin
         dx=(180)/20.

@@ -92,7 +92,7 @@ if keyword_set(paper) then begin ;PAPER
   ne_demt  = (demt2082.ne0) * exp(-1/(demt2082.lambda_n) * (1. - 1./1.055))
   ne_awsom = (awsom2082.ne0)* exp(-1/(awsom2082.lambda_n)* (1. - 1./1.055))
 
-  lambda =  '!9' + 'l'+ '!X'+'!DN!N'+' [10!U-2!N]'
+  lambda =  '!9' + 'l'+ '!X'+'!DN!N'+' [10!U-2!N r!Dsun!N]'
   Ncb    = 'N!DCB!N [10!U8!Ncm!U-3!N]'
   temp_m = '<T!Dm!N> [MK]'
 
@@ -248,7 +248,7 @@ endif
   ne_demt  = (demt2208.ne0) * exp(-1/(demt2208.lambda_n) * (1. - 1./1.055))
   ne_awsom = (awsom2208.ne0)* exp(-1/(awsom2208.lambda_n)* (1. - 1./1.055))
 
-  lambda =  '!9' + 'l'+ '!X'+'!DN!N'+' [10!U-2!N]'
+  lambda =  '!9' + 'l'+ '!X'+'!DN!N'+' [10!U-2!N r!Dsun!N]'
   Ncb    = 'N!DCB!N [10!U8!Ncm!U-3!N]'
   temp_m = '<T!Dm!N> [MK]'
 
@@ -305,19 +305,19 @@ endif
 stop  
   histoplot, demt2208.tmmean(ok_demta )/1.e6,data2=awsom2208.tmmean(ok_awsoma)/1.e6,win=1,tit='CR-2208 - Type III',xtit=temp_m ,filename='histo'+suf+'Tm',$
              label1='DEMT',label2='AWSoM',min=.5,max=2.,color=[1,1],linestyle=[0,2]
-  histoplot, demt2208.lambda_n(ok_demta ),data2=awsom2208.lambda_n(ok_awsoma)      ,win=2,tit='CR-2208 - Type III',xtit=lambda ,filename='histo'+suf+'lambda_n',$
+  histoplot, demt2208.lambda_n(ok_demta ),data2=awsom2208.lambda_n(ok_awsoma)      ,win=2,tit='CR-2208 - Type III',xtit=lambda,filename='histo'+suf+'lambda_n',$
              label1='DEMT',label2='AWSoM',min=.02,max=0.2,color=[1,1],linestyle=[0,2]
 ;  histoplot,demt2208.ne0(ok_demta)/1.e8,data2=awsom2208.ne0(ok_awsoma)/1.e8,win=3,tit='CR2208 - CH',xtit='Ne 1.025Rsun[10!U8!Ncm!U-3!N]',filename='histo'+suf+'ne_1025',label1='demt',label2='awsom'
   histoplot,ne_demt(ok_demta)/1.e8,data2=ne_awsom(ok_awsoma)/1.e8                  ,win=4,tit='CR-2208 - Type III',xtit=Ncb,filename='histo'+suf+'ne_1055',$
             label1='DEMT',label2='AWSoM',min=.2,max=1.8,color=[1,1],linestyle=[0,2]
 ;  histoplot,demt2208.gradt_erry(ok_demta )/1.e6,data2=awsom2208.gradt_erry(ok_awsoma)/1.e6,win=1,tit='CR2208 - CH',xtit='Temperature gradient [MK/Rsun]'   ,filename='histo'+suf+'gradt',label1='demt',label2='awsom',min=-10,max=10
-  
+stop  
   rpoint_map,ok_demta,demt2208.rp_medio.lon,demt2208.rp_medio.lat,win=7,vec_color=[0],filename='rpoint'+suf+'demt'
   rpoint_map,ok_awsoma,awsom2208.rp_medio.lon,awsom2208.rp_medio.lat,win=7,vec_color=[0],filename='rpoint'+suf+'awsom'
 
 ;-> triple midpointmap                 
   suf1='_cr2208_updown'
-  if keyword_set(up) then   suf1='_cr2208_up'
+ if keyword_set(up) then   suf1='_cr2208_up'
 
 ;rpoint_map,ok_demtcc,data2=ok_demtcg,data3=ok_demta,demt2208.rp_medio.lon,demt2208.rp_medio.lat,win=6,vec_color=[1,2,3],title='CR-2208 Physical location of leg',filename='Midpoint_2208_demt_paper'+suf1
 ;rpoint_map,ok_awsomcc,data2=ok_awsomcg,data3=ok_awsoma,awsom2208.rp_medio.lon,awsom2208.rp_medio.lat,win=7,vec_color=[1,2,3],title='CR-2208 Physical location of leg',filename='Midpoint_2208_awsom_paper'+suf1
@@ -383,7 +383,7 @@ endif
 ;"
 ;pero es mas facil poner la letra que le corresponde con la font
 ;helvetica, es decir:
-       lambda =  '!9' + 'l'+ '!X'+'!DN!N'+' [10!U-2!N]'
+      lambda =  '!9' + 'l'+ '!X'+'!DN!N'+' [10!U-2!N r!Dsun!N]'
        Ncb    = 'N!DCB!N [10!U8!Ncm!U-3!N]'
       temp_m = '<T!Dm!N> [MK]'
       Ls_2082 = 0.25
