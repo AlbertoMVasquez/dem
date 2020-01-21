@@ -74,18 +74,37 @@
 ;leer_ldem_escribir_ascii,'LDEM.v3_CR2198_l.70.90.90_h1_reduced_Rmin1.00_Rmax1.26_Nr26_InstRmax1.26_bf4_r3d_B_chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',ne_out='Ne_CR2198_DEMT-AIA_H1-L.7.9.9_r3D_reduced'
 ;leer_ldem_escribir_ascii,'LDEM.v3_CR2198_l.50.35.45_h1_Rmin1.00_Rmax1.26_Nr26_InstRmax1.26_bf4_r3d_B_chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',ne_out='Ne_CR2198_DEMT-AIA_H1-L.5.35.45_r3D'
 ;------
+;leer_ldem_escribir_ascii,'LDEM.v3_CR2208_l.25.30.25_fd_Rmin1.00_Rmax1.26_Nr26_InstRmax1.26_bf4_r3d_B_chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',/tm_out,/ne_out,/r_out
+;leer_ldem_escribir_ascii,'LDEM.v3_CR2208_l.50.20.20_h1_Rmin1.00_Rmax1.26_Nr26_InstRmax1.26_bf4_r3d_B_chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',/tm_out,/ne_out,/r_out
 
-;----------- para freswed
-;leer_ldem_escribir_ascii,'LDEM.v3_CR2082_l.35.2.3_h1_Rmin1.00_Rmax1.30_Nr26_InstRmax1.26_bf4_r3d_B_vfullcadence_chianti.ioneq_sun_coronal_1992_feldman_ext.abund_euvi.B_L171_DECON_gauss1_lin_Norm-median_singlStart',Er_out='Er_CR2082_DEMT-EUVI_behind_H1-L.35.2.3_r3d'
-;----------
+;leer_ldem_escribir_ascii,'LDEM.v3_CR2208_l1.0.60.90_h1_13imag_reject1.09_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_bf4_r3d_chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',i_out='_CR2208_DEMT-AIA_H1-L1.0.6.9_r3D_reduced',/ne_out
+;leer_ldem_escribir_ascii,'LDEM.v3_CR2208_l1.0.60.90_h1_13imag_reject1.09_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_bf4_r3d_chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',i_out='_CR2208_DEMT-AIA_H1-L1.0.6.9_r3D_reduced',/R_out
 
-;---Para testeos paper                                                                                                                                                                                                                        
-;leer_ldem_escribir_ascii,'LDEM.v3_CR2082_l.35.2.3_h1_Rmin1.00_Rmax1.30_Nr26_InstRmax1.26_bf4_r3d_B_vfullcadence_chianti.ioneq_sun_coronal_1992_feldman_ext.abund_euvi.B_L171_DECON_gauss1_lin_Norm-median_singlStart',/R_parcial,i_out='_CR2082_DEMT-EUVI_behind_H1-L.35.2.3_r3d'                                                                                                                                                                                                       
-;leer_ldem_escribir_ascii,'LDEM.v3_CR2208_l.50.20.20_h1_Rmin1.00_Rmax1.26_Nr26_InstRmax1.26_bf4_r3d_B_chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',/R_parcial,i_out='_CR2208_DEMT-EUVI_behind_H1-L.50.20.20_r3d'                                                                                                                                                                                                                           
+;----------- para freswed                                           
+;leer_ldem_escribir_ascii,'LDEM.v3_CR2082_l.35.2.3_h1_Rmin1.00_Rmax1.30_Nr26_InstRmax1.26_bf4_r3d_B_vfullcadence_chianti.ioneq_sun_coronal_1992_feldman_ext.abund_euvi.B_L171_DECON_gauss1_lin_Norm-median_singlStart',/Er_out,i_out='_CR2082_DEMT-EUVI_behind_H1-L.35.2.3_r3d'
+;leer_ldem_escribir_ascii,'LDEM.v3_CR2208_l.50.20.20_h1_Rmin1.00_Rmax1.26_Nr26_InstRmax1.26_bf4_r3d_B_chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',/Er_out,i_out='_CR2208_DEMT-EUVI_behind_H1-L.50.20.20_r3d'
+;--------
 
-    
+;---Para testeos paper
+;leer_ldem_escribir_ascii,'LDEM.v3_CR2082_l.35.2.3_h1_Rmin1.00_Rmax1.30_Nr26_InstRmax1.26_bf4_r3d_B_vfullcadence_chianti.ioneq_sun_coronal_1992_feldman_ext.abund_euvi.B_L171_DECON_gauss1_lin_Norm-median_singlStart',/R_parcial,i_out='_CR2082_DEMT-EUVI_behind_H1-L.35.2.3_r3d'
+;leer_ldem_escribir_ascii,'LDEM.v3_CR2208_l.50.20.20_h1_Rmin1.00_Rmax1.26_Nr26_InstRmax1.26_bf4_r3d_B_chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',/R_parcial,i_out='_CR2208_DEMT-EUVI_behind_H1-L.50.20.20_r3d'
 
-pro leer_ldem_escribir_ascii,file,ascii=ascii,ne_out=ne_out,tm_out=tm_out,R_out=R_out,i_out=i_out,er_out=er_out,tabla=tabla,aevs=aevs
+;... TEST PARA FEDE
+
+;leer_ldem_escribir_ascii,'LDEM.CR2208.AIA3.G3.out',/R_parcial,i_out='Test_fede_aia3_g3'
+;leer_ldem_escribir_ascii,'LDEM.CR2208.AIA3.G3.out' ,,/tm_out,i_out='Test_fede_aia3_g3_temp'
+;da mal!
+
+;leer_ldem_escribir_ascii,'LDEM.CR2208.AIA2B.G1.out',/R_parcial,i_out='Test_fede_aia2b_g1'
+;leer_ldem_escribir_ascii,'LDEM.CR2208.AIA2B.G1.out',/tm_out,i_out='test_fede'
+;temp fea,rbueno
+;leer_ldem_escribir_ascii,'LDEM.CR2208.AIA2A.G1.out',/R_parcial,i_out='Test_fede_aia2a_g1'
+;leer_ldem_escribir_ascii,'LDEM.CR2208.AIA2A.G1.out',/tm_out,i_out='test_fede_2a'
+;temp fea,rbueno
+
+;leer_ldem_escribir_ascii,'LDEM.v2_cr2208_chianti.ioneq_sun_coronal_1992_feldman_ext.abund_AIA3_1.065Rsun_171_gauss1_lin_Norm-median_multiStart',/tm_out,/R_parcial,i_out='fede_multistart_'
+
+pro leer_ldem_escribir_ascii,file,ne_out=ne_out,tm_out=tm_out,R_out=R_out,Er_out=Er_out,i_out=i_out,tabla=tabla,aevs=aevs,r_crit=r_crit,R_parcial=R_parcial,dir=dir
   common results_images,ima,sima,ra,pa,ya,za,em,npx
   common comunes,tm,wt,nband,demc,PHI,parametrizacion,Tmin,Tmax,nr,nth,np,rad,lat,lon,lambda,WTc
   common results_tomo,tfbe,sfbe,N_e
@@ -96,36 +115,44 @@ pro leer_ldem_escribir_ascii,file,ascii=ascii,ne_out=ne_out,tm_out=tm_out,R_out=
 ;i_out es la salida de los R individuales.
 ;R_out es la salida del R global.
 ;ascii es la flag para hacer la tabla. 
-  read_ldem_albert,file,/ldem,/gauss1 
+
+  if not keyword_set(i_out)  then i_out = strmid(string(file),7,21)
+  if not keyword_set(r_crit) then r_crit = 0.25
+  if not keyword_set(dir)    then dir ='/data1/work/dem/'
+   
+;  read_ldem_albert,file,/ldem,/gauss1
+  read_ldem_fede,file,/ldem,/gauss1
+;  read_ldem_fede,file,/ldem,/equalizer
   ratio=sfbe/tfbe
   R=total( abs(1.-ratio), 4 ) / float(nband)
   ZDA = where(demc eq -999.)
 
 
-R171=abs(1.-(sfbe(*,*,*,0)/tfbe(*,*,*,0)) )
-R195=abs(1.-(sfbe(*,*,*,1)/tfbe(*,*,*,1)) )
-R284=abs(1.-(sfbe(*,*,*,2)/tfbe(*,*,*,2)) )
-
-if not keyword_set(aevs) then begin
-  AEV = where(demc ne -999. AND (R      gt 0.25  ))
-  tm  (AEV) = -666.
-  N_e (AEV) = -666.
-endif
-
+  R171=abs(1.-(sfbe(*,*,*,0)/tfbe(*,*,*,0)) )
+  R195=abs(1.-(sfbe(*,*,*,1)/tfbe(*,*,*,1)) )
+;  R284=abs(1.-(sfbe(*,*,*,2)/tfbe(*,*,*,2)) )
+  
+  if not keyword_set(aevs) then begin
+     AEV = where(demc ne -999. AND (R      gt r_crit  ))
+     tm  (AEV) = -666.
+     N_e (AEV) = -666.
+     Er  (AEV) = -666.
+  endif
+  
   R (ZDA)   = -999.
   R171 (ZDA)   = -999.
 ;  sint171(ZDA)=-999.
 ;  tomo171(ZDA) =-999.
   R195 (ZDA)   = -999.
-  R284 (ZDA)   = -999.
-
-  N_e = float(N_e)
-  tm  = float(tm)
-  R   = float(R)
-  Er  = float(Er)
+;  R284 (ZDA)   = -999.
+  
+  N_e=float(N_e)
+  tm=float(tm)
+  R =float(R)
+  Er=float(Er)
   R171=float(R171)
   R195=float(R195)
-  R284=float(R284)
+;  R284=float(R284)
   if not keyword_set(aevs) then begin
      hdr1='r          lat       long     Te      Ne'
      hdr2='[Rsun]     [deg]     [deg]    [K]   [cm-3]'
@@ -164,32 +191,36 @@ endif
      close,1
      print, ' tabla generada: ' + tabla
   endif
-  
-;sint171=float(sint171)
-;tomo171=float(tomo171)
-;  stop
+
+
   if keyword_set(ne_out) then begin
-     openw,2,ne_out
+     openw,2,dir+'Ne'+i_out
      writeu,2,N_e
      close,2
-  endif
-  if keyword_set(tm_out) then begin
-     openw,3,tm_out
-     writeu,3,tm
-     close,3
-  endif
-  if keyword_set(R_out) then begin
-     openw,4,R_out
-     writeu,4,R
-     close,4
-  endif
-  if keyword_set(Er_out) then begin
-     openw,5,Er_out
-     writeu,5,Er
-     close,5
+     print, 'Archivo  generado: ' +dir+'Ne'+i_out
   endif
   
-  if keyword_set(i_out) then begin
+  if keyword_set(tm_out) then begin
+     openw,3,dir+'Tm'+i_out
+     writeu,3,tm
+     close,3
+     print, 'Archivo  generado: ' +dir+'Tm'+i_out
+  endif
+stop
+  if keyword_set(R_out) then begin
+     openw,4,dir+'R'+i_out
+     writeu,4,R
+     close,4
+     print, 'Archivo  generado: ' +dir+'R'+i_out
+  endif
+  if keyword_set(Er_out) then begin
+     openw,5,dir+'Er'+i_out
+     writeu,5,Er
+     close,5
+     print, 'Archivo  generado: ' +dir+'Er'+i_out
+  endif
+  stop
+  if keyword_set(R_parcial) then begin
      openw,4,'R171'+i_out
      writeu,4,R171
      close,4
@@ -197,12 +228,12 @@ endif
      openw,5,'R195'+i_out
      writeu,5,R195
      close,5
-     
+stop     
      openw,6,'R284'+i_out
-    writeu,6,R284
-    close,6
+     writeu,6,R284
+     close,6
+     print, 'Archivo  generado: ' +'R???'+i_out
   endif
-  
   return
 end
 

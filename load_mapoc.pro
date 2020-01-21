@@ -1,6 +1,5 @@
-z;load_mapoc,'CR2082_90x180blines_r_',1.065,/mhd,mapoc,file='CR2082_90X180blines_r_1.105_open-close-map_MHD.dat'
-
-pro load_mapoc,filesuffix,rc,mdi=mdi,gng=gng,mhd=mhd,mapoc,dir=dir,file=file
+;load_mapoc,'CR2082_90x180blines_r_',1.065,/mhd,mapoc,file='CR2082_90X180blines_r_1.105_open-close-map_MHD.dat'
+pro load_mapoc,suffix,rc,mdi=mdi,gng=gng,mhd=mhd,mapoc,dir=dir,file=file
  
 
   if not keyword_set(dir) then dir ='/data1/work/MHD/'
@@ -16,7 +15,7 @@ pro load_mapoc,filesuffix,rc,mdi=mdi,gng=gng,mhd=mhd,mapoc,dir=dir,file=file
 
 
   stringheight=strmid(string(rc),6,5)
-  openclosefile=filesuffix+stringheight+'_open-close-map'+postsuffix
+  openclosefile=suffix+stringheight+'_open-close-map'+postsuffix
   if keyword_set(file) then openclosefile=file
   print,'-----> O/C: '+openclosefile
   openr,1,dir+openclosefile

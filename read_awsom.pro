@@ -14,6 +14,7 @@
 ;read_awsom,'CR2208_grid1X1_ADAPT_GONG_AWSOM.dat','awsom_2208_1.85_extend',/interpol,N1=25,/B_out,/V_out
 ;-----
 ;read_awsom,'CR2082_grid1X1_1.85_AWSOM_LASCO_3d.dat','awsom_2082_1.85_extended',/sph_data
+;read_awsom,'CR2082_grid1X1_1.85_AWSOM_LASCO_3d.dat','awsom_2082_1.85_extended',/B_out
 pro read_awsom,inputfile,file_out,dir_out=dir_out,grilla_demt=grilla_demt,te_out=te_out,ne_out=ne_out,qrad_out=qrad_out,qheat_out=qheat_out,qebyq_out=qebyq_out,ne_lasco_out=ne_lasco_out,B_out=B_out,interpol=interpol,N1=N1,sph_data=sph_data,v_out=v_out
 ;  common grilla_chip,r_grilla,theta_grilla,phi_grilla,ne_awsom,te_awsom,rho_awsom,er_awsom,ti_awsom,ne_lasco
 
@@ -149,7 +150,7 @@ if not keyword_set(dir_out) then dir_out='/data1/work/MHD/'
      endfor
   endfor
   close,1
-
+stop
   if keyword_set(grilla_demt) then begin
      if n_elements(grilla_demt) eq 1 then begin
         ok= where(r_grilla[*,0,0] le grilla_demt)

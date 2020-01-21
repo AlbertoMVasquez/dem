@@ -33,14 +33,21 @@ end
 ;--------------------------------------------
 ;mapa_perfil,fileA,rmax=6,nr=500,win=1,rads=[3.005,4.005,5.005,5.995],dirA='/data1/work/MHD/',filename='Vr_2082',ytitle='Vr [m/s]',/cr2082,linestyle=[2],color=[0]
 ;mapa_perfil,fileA,rmax=6,nr=500,win=1,rads=[3.005,4.005,5.005,5.995],dirA='/data1/work/MHD/',filename='Vr_2208',ytitle='Vr [m/s]',/cr2208,linestyle=[2],color=[1]
-
+;------------------------------------------
+;fileA='Br_awsom_2082_1.85_extend'
+;fileA='Br_awsom_2208_1.85_extend'
+;mapa_perfil,fileA,rmax=6,nr=500,win=1,rads=[1.005],dirA='/data1/work/MHD/',filename='Br_2082',ytitle='Br [G]',/cr2082,linestyle=[2],color=[0],minn=-8.,maxx=6.
+;mapa_perfil,fileA,rmax=6,nr=500,win=1,rads=[1.005],dirA='/data1/work/MHD/',filename='Br_2208',ytitle='Br [G]',/cr2208,linestyle=[2],color=[1],minn=-8.,maxx=6.
+;
+;
+;
 ;Este codigo agarra un mapa (matriz de datos) y hace perfiles
 ;latitudinales a altura fija. En caso de awsom, usar solo una
 ;entrada. En caso de demt usar ademas fileB como la matris R,
 ;en el caso de querer overplot, usar las 3 entradas con A y B demt y
 ;la otra awsom.
 pro mapa_perfil,fileA,fileB=fileB,fileC=fileC,filename=filename,tit=tit,lats=lats,lons=lons,rads=rads,nrad=nrad,rmin=rmin,rmax=rmax,win=win,unit=unit,ytit=ytit,dirA=dirA,dirB=dirB,$
-                cr2082=cr2082,cr2208=cr2208,mapoc=mapoc,ytitle=ytitle,linestyle=linestyle,color=color
+                cr2082=cr2082,cr2208=cr2208,mapoc=mapoc,ytitle=ytitle,linestyle=linestyle,color=color,maxx=maxx,minn=minn
   if not keyword_set(dirB)        then dirB         = '/data1/work/MHD/'
   if not keyword_set(dirA)        then dirA         = '/data1/work/dem/';'/data1/DATA/ldem_files/'
   if not keyword_set(lats)        then lats         =[-90,90]
@@ -126,6 +133,19 @@ jj = 0 ;es un contador para las ventanas
      for lati= 0,89 do begin
         if keyword_set(mapC)     then  ok = where (map1_ir(lati,*) ne -999. and mapC_ir(lati,*) le 0.25 and lon2d(lati,*) ge lons(0) and lon2d(lati,*) le lons(1) )
         if not keyword_set(mapC) then  ok = where (map1_ir(lati,*) ne -999. and lon2d(lati,*) ge lons(0) and lon2d(lati,*) le lons(1) )
+                                ;para br paper se deja de lado las  sig long
+                                ;CR-2082: [ 30, 60] [120,140] [340,360]
+                                ;CR-2208: [120,150] [170,220] [280,360]
+;        ok1 = where (map1_ir(lati,*) ne -999. and lon2d(lati,*) ge 0   and lon2d(lati,*) le 30  )
+;        ok2 = where (map1_ir(lati,*) ne -999. and lon2d(lati,*) ge 60  and lon2d(lati,*) le 120 )
+;        ok3 = where (map1_ir(lati,*) ne -999. and lon2d(lati,*) ge 140 and lon2d(lati,*) le 340 )
+        
+;        ok1 = where (map1_ir(lati,*) ne -999. and lon2d(lati,*) ge 0   and lon2d(lati,*) le 120  )
+;        ok2 = where (map1_ir(lati,*) ne -999. and lon2d(lati,*) ge 150 and lon2d(lati,*) le 170 )
+;        ok3 = where (map1_ir(lati,*) ne -999. and lon2d(lati,*) ge 220 and lon2d(lati,*) le 280 )
+;        ok = [ok1,ok2,ok3]
+        
+        
         if  ok(0) eq -1 then v_prom_map1(lati) = 0
         if  ok(0) ne -1 then v_prom_map1(lati) = median(map1_ir(lati,ok))        
 
@@ -157,8 +177,15 @@ jj = 0 ;es un contador para las ventanas
      thick=3
 
      if keyword_set(map2) then begin
-        maxx = max([max(v_prom_map1),max(v_prom_map2)])
-        minn = min([min(v_prom_map1),min(v_prom_map2)])
+        if not keyword_set (maxx) then maxx = max([max(v_prom_map1),max(v_prom_map2)])
+        if not keyword_set (minn) then minn = min([min(v_prom_map1),min(v_prom_map2)])
+        v_prom = v_prom_map1
+        v_prom (0) = maxx
+        v_prom (1) = minn
+     endif
+     if not keyword_set(map2) then begin
+        if not keyword_set (maxx) then maxx = max([max(v_prom_map1)])
+        if not keyword_set (minn) then minn = min([min(v_prom_map1)])
         v_prom = v_prom_map1
         v_prom (0) = maxx
         v_prom (1) = minn
@@ -166,7 +193,7 @@ jj = 0 ;es un contador para las ventanas
      if keyword_set(map2) then $
         plot,latitud,v_prom/unit ,psym=10,xtit='Latitude [deg]',thick=thick,ythick=thick,xstyle=1,ystyle=1,/nodata,Font=0,title=tit+' at'+strmid(rads(irr),5,6)+' Rsun',ytit=ytitle
      if not keyword_set(map2) then $
-        plot,latitud,v_prom_map1/unit ,psym=10,xtit='Latitude [deg]',thick=thick,ythick=thick,xstyle=1,ystyle=1,/nodata,Font=0,title=tit+' at'+strmid(rads(irr),5,6)+' Rsun',ytit=ytitle
+        plot,latitud,v_prom/unit ,psym=10,xtit='Latitude [deg]',thick=thick,ythick=thick,xstyle=1,ystyle=1,/nodata,Font=0,title=tit+' at'+strmid(rads(irr),5,6)+' Rsun',ytit=ytitle
      oplot,latitud,v_prom_map1/unit,psym=10 ,LINESTYLE=linestyle(0),th=8,color=fun(color(0))
 ;     oplot,latitud,v_prom_map1/unit,psym=10,color=rojo ,LINESTYLE=0,th=5 
      if keyword_set(map2) then oplot,latitud,v_prom_map2/unit,psym=10 ,LINESTYLE=linestyle(1),th=8,color=fun(color(1))
@@ -179,7 +206,6 @@ jj = 0 ;es un contador para las ventanas
         t2 = t1+dx/2. *2
         y0=maxx /unit
         drel=((maxx - minn)/unit )/10.
-        stop
         oplot,[t1,t2],y0*[1,1]-drel*7.5,linestyle=linestyle(0),th=8,color=fun(color(0))
         oplot,[t1,t2],y0*[1,1]-drel*9.2,linestyle=linestyle(1),th=8,color=fun(color(1))
         xyouts,.8-[.15,.15],1.-[.6,.7],['DEMT','AWSoM'],/normal,color=[fun(color(0)),fun(color(1))] ,charthick=2,charsize=2.,Font=0

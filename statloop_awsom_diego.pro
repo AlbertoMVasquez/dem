@@ -20,6 +20,10 @@
 ;statloop_awsom_diego,file='traceLDEM_CR2208_hollow_demt-data_field-awsom_6alt_radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav',/demt
 ;statloop_awsom_diego,file='traceLDEM_CR2208_awsom-data_field-awsom_6alt_radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav',/ajuste_alto
 
+;doble error 
+
+
+
 pro statloop_awsom_diego,rmin=rmin,rmax=rmax,alturas=alturas,ajuste_alto=ajuste_alto,ajuste_bajo=ajuste_bajo,demt=demt,file=file,ffile_out=ffile_out
 
   longitud = strlen(file)-5-4 ;5 de la long de la palabra trace y 4 del .sav
@@ -53,7 +57,7 @@ pro statloop_awsom_diego,rmin=rmin,rmax=rmax,alturas=alturas,ajuste_alto=ajuste_
 ;    if     keyword_set (alturas) then read_trace_diego,file,alturas
     restore,file
 ;cambiar el read_trace por un restore!
-
+    
 Nloop = n_elements(loopL)
 
 index0 = where(opcls eq 0.)
@@ -280,8 +284,9 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
      stfs_f  = -45.
   endif
   
-  err_ne = 4.e6
-  err_tm = 7.e4
+  err_ne = 4.e6 *3.
+  err_tm = 7.e4 *3.
+
   
   for il=0L,Nloop-1 do begin
 
@@ -416,8 +421,11 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
         endif
      endif
 ;<--------- TESTEO --- FIJA LOS ERRORES
-     error_ne(ileg) = 5.e6
-     error_t(ileg) = 7.e4 ;Me gustaria subir esto a aprox 10.e4
+     error_ne(ileg) = 5.e6 *3.
+     error_t(ileg) = 7.e4 *3.
+
+
+
 no_para_awsom1:
      
    ;Make HS-fit to Ne(r) for each open leg/loop                                                
@@ -451,7 +459,7 @@ no_para_awsom1:
           max_s = max(s_l)
           min_r = rad_l(findel(1.025,rad_l))
           max_r = rad_l(findel(corte_awsom ,rad_l))
-          stop
+
        end
        else: begin
           sfit = s_l
@@ -580,7 +588,7 @@ no_para_awsom1:
        ft (ileg) = fraccion
     endif
     pearson_t(ileg) = correlate(xxfit,wwfit,/double)
-    if keyword_set(demt) and ft(ileg) le 0.1 and hip_chi_pv2_t (ileg) ge 0.95 and lincorr_pvalue_t(ileg) le 0.05 and abs(pearson_t(ileg)) ge 0.5 then stop
+;    if keyword_set(demt) and ft(ileg) le 0.1 and hip_chi_pv2_t (ileg) ge 0.95 and lincorr_pvalue_t(ileg) le 0.05 and abs(pearson_t(ileg)) ge 0.5 then stop
 
     p4 = where(sfit ge min_s and sfit le max_s)
     ssfit = sfit(p4)
@@ -612,7 +620,7 @@ no_para_awsom1:
     iso_erry(ileg)= abs(gradT_erry (ileg)    * long_r(ileg)) / (2 * error_t(ileg))
     iso_s(ileg)   = abs(gradT_s(ileg)        * long_s(ileg)) / (2 * error_t(ileg))
     
-    if hip_chi_pv2_t(ileg) lt 0.1 or ft(ileg) lt 0.4 and abs(lincorr_pearson_t(ileg)) ge 0.5 then stop
+;    if hip_chi_pv2_t(ileg) lt 0.1 or ft(ileg) lt 0.4 and abs(lincorr_pearson_t(ileg)) ge 0.5 then stop
 
     
     skipfitloop_open:
@@ -940,10 +948,10 @@ no_para_awsom1:
 ;<----------------- NUEVO, FIJE ERRORES. -----> ESTO ME SALVA DE LOS
 ;                   ERRORES EN FT, CLARAMENTE HAY UN ERROR AL SETEAR
 ;                   ERRORES EN LAS PIERNAS CERRADAS
-     error_ne(ileg) = 4.e6
-     error_t(ileg) = 7.e4
-     error_ne(ileg+1) = 4.e6
-     error_t(ileg+1) = 7.e4
+     error_ne(ileg) = 4.e6   *3.
+     error_t(ileg) = 7.e4    *3.
+     error_ne(ileg+1) = 4.e6 *3.
+     error_t(ileg+1) = 7.e4  *3.
 
      no_para_awsom:       
         case 1 of
@@ -1415,7 +1423,7 @@ esto_es_viejo:
   save, datos, FILENAME = 'trace_struct_'+ffile_out+'.sav'
   endif
   
-  print, 'vectores guardados en -->' +'trace_vectors_'+ffile_out+'.sav'
+  print, 'vectores guardados en -->' +'trace_struct_'+ffile_out+'.sav'
   stop
   return
 end
