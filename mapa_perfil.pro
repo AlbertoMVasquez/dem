@@ -50,8 +50,8 @@ end
 ;------------------------------------------
 ;fileA='Br_awsom_2082_1.85_extend'
 ;fileA='Br_awsom_2208_1.85_extend'
-;mapa_perfil,fileA,rmax=6,nr=500,win=1,rads=[1.005],dirA='/data1/work/MHD/',filename='Br_2082',ytitle='Br [G]',/cr2082,linestyle=[2],color=[0],minn=-8.,maxx=6.
-;mapa_perfil,fileA,rmax=6,nr=500,win=1,rads=[1.005],dirA='/data1/work/MHD/',filename='Br_2208',ytitle='Br [G]',/cr2208,linestyle=[2],color=[1],minn=-8.,maxx=6.
+;mapa_perfil,fileA,rmax=6,nr=500,win=1,rads=[1.005],dirA='/data1/work/MHD/',filename='Br_2082',ytitle='Br [G]',/cr2082,linestyle=[2],color=[0],minn=-8.,maxx=6.,/mapoc
+;mapa_perfil,fileA,rmax=6,nr=500,win=1,rads=[1.005],dirA='/data1/work/MHD/',filename='Br_2208',ytitle='Br [G]',/cr2208,linestyle=[2],color=[1],minn=-8.,maxx=6.,/mapoc
 ;
 ;
 ;
@@ -154,10 +154,10 @@ jj = 0 ;es un contador para las ventanas
 ;        ok2 = where (map1_ir(lati,*) ne -999. and lon2d(lati,*) ge 60  and lon2d(lati,*) le 120 )
 ;        ok3 = where (map1_ir(lati,*) ne -999. and lon2d(lati,*) ge 140 and lon2d(lati,*) le 340 )
         
-;        ok1 = where (map1_ir(lati,*) ne -999. and lon2d(lati,*) ge 0   and lon2d(lati,*) le 120  )
-;        ok2 = where (map1_ir(lati,*) ne -999. and lon2d(lati,*) ge 150 and lon2d(lati,*) le 170 )
-;        ok3 = where (map1_ir(lati,*) ne -999. and lon2d(lati,*) ge 220 and lon2d(lati,*) le 280 )
-;        ok = [ok1,ok2,ok3]
+        ok1 = where (map1_ir(lati,*) ne -999. and lon2d(lati,*) ge 0   and lon2d(lati,*) le 120  )
+        ok2 = where (map1_ir(lati,*) ne -999. and lon2d(lati,*) ge 150 and lon2d(lati,*) le 170 )
+        ok3 = where (map1_ir(lati,*) ne -999. and lon2d(lati,*) ge 220 and lon2d(lati,*) le 280 )
+        ok = [ok1,ok2,ok3]
         
         
         if  ok(0) eq -1 then v_prom_map1(lati) = 0
