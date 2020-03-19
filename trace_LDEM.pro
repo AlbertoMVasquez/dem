@@ -12,6 +12,10 @@
 ;trace_LDEM,fdips_file='fdips_field_150x180x360_synop_Mr_0.polfil.2082.ubdat',ldem_file='LDEM.v3_CR2082_l.35.2.3_h1_Rmin1.00_Rmax1.30_Nr26_InstRmax1.26_bf4_r3d_B_vfullcadence_chianti.ioneq_sun_coronal_1992_feldman_ext.abund_euvi.B_L171_DECON_gauss1_lin_Norm-median_singlStart',period='2082_hollow_demt-data_pfss',safety=.5,stepmax=3000,/unifgrid_v2,radstart=1.035 + 0.02 *findgen(10)
 
 ;trace_LDEM,pfss_data_file='pfss_data_fdips2082_hollow_demt__radstart-1.035-1.215Rs.sav',awsom_file='awsom_2082_1.85_short',period='2082_awsom-data_pfss_10alturas',safety=.5,stepmax=3000,/unifgrid_v2;,radstart=1.035 + 0.02 *findgen(10)
+
+;trace_LDEM,pfss_data_file=pfss_data_file,ldem_file='LDEM.v3_CR2208_l.50.20.20_h1_Rmin1.00_Rmax1.26_Nr26_InstRmax1.26_bf4_r3d_B_multistart2_chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',period='2208_hollow_demt-data_field-awsom_6alt_multistart',safety=.5,stepmax=3000,/unifgrid_v2,radstart=1.025 + 0.04 *findgen(6)
+;HAY UN TXT CON ESTA DATA!
+
 pro trace_LDEM,fdips_file=fdips_file,$
                ldem_file=ldem_file,$
                period=period,$

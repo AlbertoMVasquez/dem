@@ -25,7 +25,7 @@
 
 ;para la parte energetica
 ;estadistica_diego_new,/paper,/energia,/cr2208
-;estadistica_diego_new,/paper,/up,/cr2082
+;estadistica_diego_new,/paper,/up,/cr2082,/con_ajuste
 ;estadistica_diego_new,/solo_demt,/paper
 ;estadistica_diego_new,treshold=1.4
 ;estadistica_diego_new,/solo_demt,/paper,/con_ajuste,/d_error
@@ -45,7 +45,10 @@ pro estadistica_diego_new,proceeding=proceeding,paper=paper,up=up,cr2082=cr2082,
 
   if keyword_set(d_error) then begin
 ;doble error en demt
-  restore,'trace_struct_LDEM_CR2208_hollow_demt-data_field-awsom_6alt_radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat_doble_error.sav'
+;  restore,'trace_struct_LDEM_CR2208_hollow_demt-data_field-awsom_6alt_radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat_doble_error.sav'
+;corri nuevamente 2208 con doble error usando aia con multistart para
+;mejorar la zona polar
+  restore,'trace_struct_LDEM_CR2208_hollow_demt-data_field-awsom_6alt_multistart2_radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat_doble_error.sav'
   demt2208 = datos
   restore,'trace_struct_LDEM_CR2082_hollow_demt-data_field-awsom_6alt_radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat_doble_error.sav'
   demt2082 = datos
@@ -160,6 +163,7 @@ if keyword_set(paper) then begin ;PAPER
                         and demt2082.hip_chi_pv2_t ge 0.1 and demt2082.lincorr_pvalue_t le 0.05 and demt2082.hip_chi_pv2_n ge 0.1)     
      ok_awsomcg = where(awsom2082.opclstat ne 0. and awsom2082.long_s gt Ll_a_2082 and awsom2082.gradt_erry ne -555. and abs(awsom2082.footlat) gt 40 $
                         and awsom2082.lincorr_pearson_t ge 0.5 and ne_tresh_2082_awsom/1.e8 le tresh_2082_awsom $ 
+
                         and awsom2082.hip_chi_pv2_t ge 0.1 and awsom2082.lincorr_pvalue_t le 0.05 and awsom2082.hip_chi_pv2_n ge 0.1)
      suf='_2082_demt_awsom_bound_up_conajuste_'
   endif
@@ -214,8 +218,12 @@ endif
 ;rpoint_map,ok_demtcc,data2=ok_demtcg,data3=ok_demta,demt2082.rp_medio.lon,demt2082.rp_medio.lat,win=6,vec_color=[1,2,3],title='CR-2082 Physical location of legs',filename='Midpoint_2082_demt_paper'+suf1
 ;rpoint_map,ok_awsomcc,data2=ok_awsomcg,data3=ok_awsoma,awsom2082.rp_medio.lon,awsom2082.rp_medio.lat,win=7,vec_color=[1,2,3],title='CR-2082 Physical location of legs',filename='Midpoint_2082_awsom_paper'+suf1
   
-rpoint_map,ok_demtcc,data2=ok_demtcg,data3=ok_demta,demt2082.rp_alto.lon,demt2082.rp_alto.lat,win=6,vec_color=[1,5,4],title='CR-2082 Physical location of legs',filename='Highpoint_2082_demt_paper'+suf1
-rpoint_map,ok_awsomcc,data2=ok_awsomcg,data3=ok_awsoma,awsom2082.rp_alto.lon,awsom2082.rp_alto.lat,win=7,vec_color=[1,5,4],title='CR-2082 Physical location of legs',filename='Highpoint_2082_awsom_paper'+suf1
+;rpoint_map,ok_demtcc,data2=ok_demtcg,data3=ok_demta,demt2082.rp_alto.lon,demt2082.rp_alto.lat,win=6,vec_color=[1,5,4],title='CR-2082 Physical location of legs',filename='Highpoint_2082_demt_paper'+suf1
+;rpoint_map,ok_awsomcc,data2=ok_awsomcg,data3=ok_awsoma,awsom2082.rp_alto.lon,awsom2082.rp_alto.lat,win=7,vec_color=[1,5,4],title='CR-2082 Physical location of legs',filename='Highpoint_2082_awsom_paper'+suf1
+
+rpoint_map,ok_demtcg,data2=ok_demtcc,data3=ok_demta,demt2082.rp_alto.lon,demt2082.rp_alto.lat     ,win=6,vec_color=[5,1,4],title='CR-2082 Physical location of legs',filename='Highpoint_2082_demt_paper'+suf1
+rpoint_map,ok_awsomcg,data2=ok_awsomcc,data3=ok_awsoma,awsom2082.rp_alto.lon,awsom2082.rp_alto.lat,win=7,vec_color=[5,1,4],title='CR-2082 Physical location of legs',filename='Highpoint_2082_awsom_paper'+suf1
+stop
 
 ;----------> Perfil radial promedio.
   vec_rad=1.025 + 0.02 *findgen(10)
@@ -235,6 +243,7 @@ rpoint_map,ok_awsomcc,data2=ok_awsomcg,data3=ok_awsoma,awsom2082.rp_alto.lon,aws
 
 perfil_paper,ne_demtcc,vec_rad,v1=ne_awsomcc,v2=ne_demtcg,v3=ne_awsomcg,v4=ne_demta,v5=ne_awsoma,win=1,ytit='Ne [10!U8!Ncm!U-3!N]',units=1.e8,tit='CR-2082 - Radial Profile',filename='_ne'+suf1
 perfil_paper,tm_demtcc,vec_rad,v1=tm_awsomcc,v2=tm_demtcg,v3=tm_awsomcg,v4=tm_demta,v5=tm_awsoma,win=2,ytit='Te [MK]',tit='CR-2082 - Radial Profile',units=1.e6,filename='_te'+suf1,yr1=0.5,yr2=2.0
+stop
 
 vec1=demt2082.gradt_erry(ok_demtcc)
 vec2=awsom2082.gradt_erry(ok_awsomcc)
@@ -391,8 +400,14 @@ stop
 ;rpoint_map,ok_demtcc,data2=ok_demtcg,data3=ok_demta,demt2208.rp_medio.lon,demt2208.rp_medio.lat,win=6,vec_color=[1,2,3],title='CR-2208 Physical location of leg',filename='Midpoint_2208_demt_paper'+suf1
 ;rpoint_map,ok_awsomcc,data2=ok_awsomcg,data3=ok_awsoma,awsom2208.rp_medio.lon,awsom2208.rp_medio.lat,win=7,vec_color=[1,2,3],title='CR-2208 Physical location of leg',filename='Midpoint_2208_awsom_paper'+suf1
 
-rpoint_map,ok_demtcc,data2=ok_demtcg,data3=ok_demta,demt2208.rp_alto.lon,demt2208.rp_alto.lat,win=6,vec_color=[1,5,4],title='CR-2208 Physical location of leg',filename='Highpoint_2208_demt_paper'+suf1
-rpoint_map,ok_awsomcc,data2=ok_awsomcg,data3=ok_awsoma,awsom2208.rp_alto.lon,awsom2208.rp_alto.lat,win=7,vec_color=[1,5,4],title='CR-2208 Physical location of leg',filename='Highpoint_2208_awsom_paper'+suf1
+;rpoint_map,ok_demtcc,data2=ok_demtcg,data3=ok_demta,demt2208.rp_alto.lon,demt2208.rp_alto.lat,win=6,vec_color=[1,5,4],title='CR-2208 Physical location of leg',filename='Highpoint_2208_demt_paper'+suf1
+;rpoint_map,ok_awsomcc,data2=ok_awsomcg,data3=ok_awsoma,awsom2208.rp_alto.lon,awsom2208.rp_alto.lat,win=7,vec_color=[1,5,4],title='CR-2208 Physical location of leg',filename='Highpoint_2208_awsom_paper'+suf1
+
+rpoint_map,ok_demtcg,data2=ok_demtcc,data3=ok_demta,demt2208.rp_alto.lon,demt2208.rp_alto.lat     ,win=6,vec_color=[5,1,4],title='CR-2208 Physical location of leg',filename='Highpoint_2208_demt_paper'+suf1
+rpoint_map,ok_awsomcg,data2=ok_awsomcc,data3=ok_awsoma,awsom2208.rp_alto.lon,awsom2208.rp_alto.lat,win=7,vec_color=[5,1,4],title='CR-2208 Physical location of leg',filename='Highpoint_2208_awsom_paper'+suf1
+
+
+stop
 ;--->
   vec_rad=1.025 + 0.02 *findgen(10)
   ne_demtcc  = median(demt2208.ne0(ok_demtcc)) * exp(-1/median(demt2208.lambda_n(ok_demtcc)) * (1. - 1./vec_rad))
@@ -411,6 +426,7 @@ rpoint_map,ok_awsomcc,data2=ok_awsomcg,data3=ok_awsoma,awsom2208.rp_alto.lon,aws
 
 perfil_paper,ne_demtcc,vec_rad,v1=ne_awsomcc,v2=ne_demtcg,v3=ne_awsomcg,v4=ne_demta,v5=ne_awsoma,win=1,ytit='Ne [10!U8!Ncm!U-3!N]',units=1.e8,tit='CR-2208 - Radial Profile',filename='_ne'+suf1
 perfil_paper,tm_demtcc,vec_rad,v1=tm_awsomcc,v2=tm_demtcg,v3=tm_awsomcg,v4=tm_demta,v5=tm_awsoma,win=2,ytit='Te [MK]',tit='CR-2208 - Radial Profile',units=1.e6,filename='_te'+suf1,yr1=0.5,yr2=2.0
+stop
 
 vec1=demt2208.gradt_erry(ok_demtcc)
 vec2=awsom2208.gradt_erry(ok_awsomcc)
@@ -555,8 +571,6 @@ histoplot, demt2082.lambda_n(ok_demta1 ),data2=demt2208.lambda_n(ok_demta2),win=
 histoplot,ne_demt1(ok_demta1)/1.e8,data2=ne_demt2(ok_demta2)/1.e8,win=4,tit='DEMT - Type III',xtit=Ncb ,filename='histo'+suf+'ne_1055',$
           label1='CR2082',label2='CR2208',min=.2,max=1.8,xsize=8,color=[0,1],linestyle=[0,0]
 
-
-
 suf1='_cr2082_full'
 suf2='_cr2208_full'
 if keyword_set(con_ajuste)then begin
@@ -572,11 +586,38 @@ if keyword_set(t_error)then begin
    suf2 = suf2+'_triple_error'
 endif
 stop
-rpoint_map,ok_demtcc1,data2=ok_demtcg1,data3=ok_demta1,data4=ok_demtccd1,demt2082.rp_alto.lon,demt2082.rp_alto.lat,win=6,vec_color=[1,5,4,0],title='CR-2082 Physical location of leg',filename='Highpoint_2082_demt_paper'+suf1
 
-rpoint_map,ok_demtcc2,data2=ok_demtcg2,data3=ok_demta2,data4=ok_demtccd2,demt2208.rp_alto.lon,demt2208.rp_alto.lat,win=6,vec_color=[1,5,4,0],title='CR-2208 Physical location of leg',filename='Highpoint_2208_demt_paper'+suf2
+rpoint_map,ok_demtccd1,data2=ok_demtcg1,data3=ok_demtcc1,data4=ok_demta1,demt2082.rp_alto.lon,demt2082.rp_alto.lat,win=6, $
+           vec_color=[0,5,1,4],title='CR-2082 Physical location of leg',filename='Highpoint_2082_demt_paper'+suf1
+
+rpoint_map,ok_demtccd2,data2=ok_demtcg2,data3=ok_demtcc2,data4=ok_demta2,demt2208.rp_alto.lon,demt2208.rp_alto.lat,win=6, $
+           vec_color=[0,5,1,4],title='CR-2208 Physical location of leg',filename='Highpoint_2208_demt_paper'+suf2
+
 
 stop
+
+;histoplot,demt2208.rp_alto.lon(ok_demtcc1),data2=demt2208.rp_alto.lon(ok_demtcd1),data3=demt2208.rp_alto.lon(ok_demtcg1),data4=demt2208.rp_alto.lon(ok_demtaa1),win=7, $
+;          title='CR-2082
+;          midpoints',filename='histo_Highpoint_2082_demt_paper'+suf1,
+;          color=[]
+
+vec1=demt2082.rp_alto.lat(ok_demtccd1)
+vec2=demt2082.rp_alto.lat(ok_demtcc1)
+vec3=demt2082.rp_alto.lat(ok_demtcg1)
+vec4=demt2082.rp_alto.lat(ok_demta1 )
+histo_gradt_paper2,v1=vec1,v2=vec2,v3=vec3,v4=vec4,win=3,tit='CR-2082',xtit='Latitude [deg]',label1='demt',label2='',min=-90,max=90,filename='histo'+suf1+'highpoints',/normalizado,units=1.
+
+vec1=demt2208.rp_alto.lat(ok_demtccd2)
+vec2=demt2208.rp_alto.lat(ok_demtcc2)
+vec3=demt2208.rp_alto.lat(ok_demtcg2)
+vec4=demt2208.rp_alto.lat(ok_demta2 )
+histo_gradt_paper2,v1=vec1,v2=vec2,v3=vec3,v4=vec4,win=3,tit='CR-2208',xtit='Latitude [deg]',label1='demt',label2='',min=-90,max=90,filename='histo'+suf2+'highpoints',/normalizado,units=1.
+
+
+
+stop
+
+
 
 suf1='_cr2082_full'
 suf2='_cr2208_full'
@@ -593,16 +634,20 @@ vec1=demt2082.gradt_erry(ok_demtccd1)
 vec2=demt2082.gradt_erry(ok_demtcc1)
 vec3=demt2082.gradt_erry(ok_demtcg1)
 vec4=demt2082.gradt_erry(ok_demta1)
-histo_gradt_paper2,v1=vec1,v2=vec2,v3=vec3,v4=vec4,win=3,tit='CR-2082',xtit='Temperature gradient [MK/Rsun]',label1='demt',label2='',min=-10,max=10,filename='histo'+suf1+'triple_gradt',/normalizado
+histo_gradt_paper2,v1=vec1,v2=vec2,v3=vec3,v4=vec4,win=3,tit='CR-2082',xtit='Temperature gradient [MK/Rsun]',label1='demt',label2='',min=-8,max=8,filename='histo'+suf1+'triple_gradt',/normalizado
 
 
 vec1=demt2208.gradt_erry(ok_demtccd2)
 vec2=demt2208.gradt_erry(ok_demtcc2)
 vec3=demt2208.gradt_erry(ok_demtcg2)
 vec4=demt2208.gradt_erry(ok_demta2)
-histo_gradt_paper2,v1=vec1,v2=vec2,v3=vec3,v4=vec4,win=3,tit='CR-2208',xtit='Temperature gradient [MK/Rsun]',label1='demt',label2='',min=-10,max=10,filename='histo'+suf2+'triple_gradt',/normalizado
-stop
+histo_gradt_paper2,v1=vec1,v2=vec2,v3=vec3,v4=vec4,win=3,tit='CR-2208',xtit='Temperature gradient [MK/Rsun]',label1='demt',label2='',min=-8,max=8,filename='histo'+suf2+'triple_gradt',/normalizado
 
+
+
+
+
+stop
 ok_demtccd1  = where(demt2082.opclstat  ne 0. and demt2082.gradt_erry  ne -555. and demt2082.lincorr_pearson_t le -0.5  and ne_tresh1/1.e8 le tresh_demt_2082 $
                     and demt2082.long_s lt Ls_2082 and abs(demt2082.rp_base.lat) lt 50 )
 ok_demtccd2  = where(demt2208.opclstat  ne 0. and demt2208.gradt_erry  ne -555. and demt2208.lincorr_pearson_t le -0.5  and ne_tresh2/1.e8 le tresh_demt_2208 $

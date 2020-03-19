@@ -19,6 +19,20 @@ fileA='Tm_CR2208_DEMT-AIA_H1_L.5.2.2_r3d'
 fileB='Te_awsom_2208_1.85_short' 
 filec='R_CR2208_DEMT-AIA_H1_L.5.2.2_r3d'
 mapa_perfil,fileA,fileB=fileB,fileC=fileC,win=1,unit=1.e6,rads=[1.105],lons=[0,150],filename='Te_demt_awsom_2208',/mapoc,/cr2208,ytitle='Te [MK]',linestyle=[0,2],color=[1,1]
+
+;con multistart
+fileA='Tm_CR2208_DEMT-AIA_H1_L.5.2.2_r3d_multistart2'
+fileB='Te_awsom_2208_1.85_short'
+filec='R_CR2208_DEMT-AIA_H1_L.5.2.2_r3d_multistart2'
+mapa_perfil,fileA,fileB=fileB,fileC=fileC,win=1,unit=1.e6,rads=[1.105],lons=[0,150],filename='Te_demt_awsom_2208',/mapoc,/cr2208,ytitle='Te [MK]',linestyle=[0,2],color=[1,1]
+
+fileA='Ne_CR2208_DEMT-AIA_H1_L.5.2.2_r3d_multistart2'
+fileB='Ne_awsom_2208_1.85_short'
+filec='R_CR2208_DEMT-AIA_H1_L.5.2.2_r3d_multistart2'
+mapa_perfil,fileA,fileB=fileB,fileC=fileC,win=1,unit=1.e8,rads=[1.105],lons=[0,150],filename='Ne_demt_awsom_2208',/mapoc,/cr2208,ytitle='Ne [10!U8!Ncm!U-3!N]',linestyle=[0,2],color=[1,1]
+
+
+
 return
 end
 

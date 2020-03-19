@@ -21,11 +21,15 @@
 ;statloop_awsom_diego,file='traceLDEM_CR2208_awsom-data_field-awsom_6alt_radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav',/ajuste_alto
 
 ;doble error 
+;--> trace_struct_LDEM_CR2208_hollow_demt-data_field-awsom_6alt_radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat_doble_error.sav
 
+;statloop_awsom_diego,file='traceLDEM_CR2208_hollow_demt-data_field-awsom_6alt_multistart2_radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav',/demt
 
 
 pro statloop_awsom_diego,rmin=rmin,rmax=rmax,alturas=alturas,ajuste_alto=ajuste_alto,ajuste_bajo=ajuste_bajo,demt=demt,file=file,ffile_out=ffile_out
-
+;OBS SE ESTA CORRIENDO CON EL DOBLE DE ERRORES DEL PRIMER PAPER AL
+;SEGUNDO
+  
   longitud = strlen(file)-5-4 ;5 de la long de la palabra trace y 4 del .sav
   if not keyword_set(ffile_out) then ffile_out = strmid(file,5,longitud)
 
@@ -284,8 +288,8 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
      stfs_f  = -45.
   endif
   
-  err_ne = 4.e6 *3.
-  err_tm = 7.e4 *3.
+  err_ne = 4.e6 *2.;doble error
+  err_tm = 7.e4 *2.
 
   
   for il=0L,Nloop-1 do begin
@@ -421,8 +425,8 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
         endif
      endif
 ;<--------- TESTEO --- FIJA LOS ERRORES
-     error_ne(ileg) = 5.e6 *3.
-     error_t(ileg) = 7.e4 *3.
+     error_ne(ileg) = 5.e6 *2. ;doble errores
+     error_t(ileg) = 7.e4 *2.
 
 
 
@@ -948,10 +952,10 @@ no_para_awsom1:
 ;<----------------- NUEVO, FIJE ERRORES. -----> ESTO ME SALVA DE LOS
 ;                   ERRORES EN FT, CLARAMENTE HAY UN ERROR AL SETEAR
 ;                   ERRORES EN LAS PIERNAS CERRADAS
-     error_ne(ileg) = 4.e6   *3.
-     error_t(ileg) = 7.e4    *3.
-     error_ne(ileg+1) = 4.e6 *3.
-     error_t(ileg+1) = 7.e4  *3.
+     error_ne(ileg) = 4.e6   *2.
+     error_t(ileg) = 7.e4    *2.
+     error_ne(ileg+1) = 4.e6 *2.
+     error_t(ileg+1) = 7.e4  *2. ;doble errores
 
      no_para_awsom:       
         case 1 of
@@ -1401,7 +1405,8 @@ esto_es_viejo:
            betamean:betamean, betaapex:betaapex, Br0:Br0, B_base:B_base, Nebasal:Nebasal, opclstat:opclstat, indexloop:indexloop,$
            footrad:footrad, footlat:footlat, footlon:footlon, iso:iso, iso_s:iso_s, iso_erry:iso_erry, long_r:long_r, long_s:long_s, scoreR_v:scoreR_v, npts_v:npts_v,$
            pearson_n:pearson_n, lincorr_pearson_n:lincorr_pearson_n, lincorr_pvalue_n:lincorr_pvalue_n, hip_chi_pv_n:hip_chi_pv_n, hip_chi_pv2_n:hip_chi_pv2_n, r2n_erry:r2n_erry,$
-           pearson_t:pearson_t, lincorr_pearson_t:lincorr_pearson_t, lincorr_pvalue_t:lincorr_pvalue_t, hip_chi_pv_t:hip_chi_pv_t, hip_chi_pv2_t:hip_chi_pv2_t, r2t_erry:r2t_erry,lincorr_tstatistic_t:lincorr_tstatistic_t,$
+           pearson_t:pearson_t, lincorr_pearson_t:lincorr_pearson_t, lincorr_pvalue_t:lincorr_pvalue_t, hip_chi_pv_t:hip_chi_pv_t, hip_chi_pv2_t:hip_chi_pv2_t, r2t_erry:r2t_erry,$
+           lincorr_tstatistic_t:lincorr_tstatistic_t,$
            sigma_n:sigma_n, sigma_t:sigma_t, Ne0_erry:Ne0_erry, lambda_N_erry:lambda_N_erry, Tm0_erry:Tm0_erry, gradT_erry:gradT_erry,prob_t:prob_t,$
            Rp_base:Rp_base, Rp_medio:Rp_medio, Rp_alto:Rp_alto, er0_s:er0_s, lambda_er_s:lambda_er_s, r2er_s:r2er_s, pearson_ers:pearson_ers, s_base:s_base, fc_l:fc_l,fcb:fcb,phi_r_total:phi_r_total,$
            phi_c_total:phi_c_total,Tmmean_alto:Tmmean_alto,phi_r:phi_r}

@@ -1,5 +1,5 @@
 pro histoplot,data1,data2=data2,mini=mini,maxi=maxi,label1=label1,label2=label2,label3=label3,nbins=nbins,xtit=xtit,ytit=ytit,tit=tit,filename=filename,win=win,data3=data3,xsize=xsize,$
-              linestyle=linestyle,color=color
+              linestyle=linestyle,color=color,data4=data4
 ;Histograma convencional, se le da vectores de entrada en data1 y/o data2
   if not keyword_set(nbins) then nbins = 50
   if not keyword_set(ytit)  then ytit = 'Freq. Histogram' 
@@ -45,6 +45,13 @@ pro histoplot,data1,data2=data2,mini=mini,maxi=maxi,label1=label1,label2=label2,
         med3        = median(data3,/even)
      endif
 
+     if keyword_set(data4) then begin
+        f4 = histogram(data4,min=mini,max=maxi,nbins=nbins,locations=vbin4) & f4 = float(f4) / float(total(f4))
+        med4        = median(data4,/even)
+     endif
+
+
+     
 aspect_ratio=0.75
 ysize=xsize*aspect_ratio
   
@@ -91,7 +98,10 @@ device,/inches,xsize=xsize, ysize=ysize, /helvetica,SCALE_FACTOR=1
      if keyword_set(data3) then begin
         oplot,vbin3,f3,thick=8,color=fun(color(2)),psym=10,linestyle=linestyle(2)
      endif
-   
+     if keyword_set(data4) then begin
+        oplot,vbin4,f4,thick=8,color=fun(3),psym=10,linestyle=linestyle(2)
+     endif
+     
 ;outputs
 
   if not keyword_set(data2) then begin

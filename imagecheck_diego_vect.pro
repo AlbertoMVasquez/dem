@@ -58,34 +58,38 @@ end
 pro destripar ;TERMINAR
 ;desarma una lista de datos strings en varias listas.
 ;para datos de aia 
-band = '193'
+band = '211'
   dir='/media/Data1/tomography/DATA/aia/CR2219/'+band+'/'
-infile='list.'+band
-outfiles=['list1.'+band,$
-          'list2.'+band,$
-          'list3.'+band,$
-          'list4.'+band,$
-          'list5.'+band,$
-          'list6.'+band,$
-          'list7.'+band,$
-          'list8.'+band,$
-          'list9.'+band,$
-          'list10.'+band]
+infile='list.'+band+'.processed'
+outfiles=['list1.'+band+'.processed',$
+          'list2.'+band+'.processed',$
+          'list3.'+band+'.processed',$
+          'list4.'+band+'.processed']
+;          'list5.'+band,$
+;          'list6.'+band,$
+;          'list7.'+band,$
+;          'list8.'+band,$
+;          'list9.'+band,$
+;          'list10.'+band]
 
 n=0
 imag=''
      openr,1,dir+infile
      readf,1,n ;escalar
     
-   cant_imag =  floor(n*1./n_elements(outfiles))
-
-   for j=0,n_elements(outfiles)-1 do begin
+     cant_imag          =  floor(n*1./n_elements(outfiles))
+     cant_imag_original =  n*1./n_elements(outfiles)
+     cant_final = cant_imag+(n-cant_imag*n_elements(outfiles))
+     for j=0,n_elements(outfiles)-1 do begin
       openw,2,dir+outfiles(j)
+      if j lt n_elements(outfiles)-1 then printf,2,cant_imag
+      if j eq n_elements(outfiles)-1 then printf,2,cant_final
       for i =0, cant_imag-1  do begin
          readf,1,imag     
          printf,2, imag
       endfor
-      if j eq n_elements(outfiles)-1 and  cant_imag ge n*1./n_elements(outfiles) then begin
+      if j eq n_elements(outfiles)-1 and  cant_imag_original gt cant_imag then begin
+         
          for i =0, (n-cant_imag*n_elements(outfiles))-1  do begin
             readf,1,imag
             printf,2, imag
@@ -100,10 +104,20 @@ close,1
    return
 end
 
+
+pro nueva_inspeccion_2219
+ imagecheckwrapper,'/media/Data1/tomography/DATA/aia/CR2219/211/','list1.211.processed','aia',0.,1,'x',211,/select,/para_movie
+ imagecheckwrapper,'/media/Data1/tomography/DATA/aia/CR2219/211/','list2.211.processed','aia',0.,1,'x',211,/select,/para_movie
+ imagecheckwrapper,'/media/Data1/tomography/DATA/aia/CR2219/211/','list3.211.processed','aia',0.,1,'x',211,/select,/para_movie
+ imagecheckwrapper,'/media/Data1/tomography/DATA/aia/CR2219/211/','list4.211.processed','aia',0.,1,'x',211,/select,/para_movie
+
+  return
+end
+
 pro inspeccion_2219_aia
-common contar,conteo
-goto,banda211
- imagecheckwrapper,'/media/Data1/tomography/DATA/aia/CR2219/171/','list1.171','aia',0.,1,'x',171,/select
+  common contar,conteo
+  goto,banda211
+  imagecheckwrapper,'/media/Data1/tomography/DATA/aia/CR2219/171/','list1.171','aia',0.,1,'x',171,/select
  imagecheckwrapper,'/media/Data1/tomography/DATA/aia/CR2219/171/','list2.171','aia',0.,1,'x',171,/select
  imagecheckwrapper,'/media/Data1/tomography/DATA/aia/CR2219/171/','list3.171','aia',0.,1,'x',171,/select
  imagecheckwrapper,'/media/Data1/tomography/DATA/aia/CR2219/171/','list4.171','aia',0.,1,'x',171,/select
@@ -139,7 +153,6 @@ stop
  imagecheckwrapper,'/media/Data1/tomography/DATA/aia/CR2219/211/','list8.211','aia',0.,1,'x',211,/select,/para_movie
  imagecheckwrapper,'/media/Data1/tomography/DATA/aia/CR2219/211/','list9.211','aia',0.,1,'x',211,/select,/para_movie
  imagecheckwrapper,'/media/Data1/tomography/DATA/aia/CR2219/211/','list10.211','aia',0.,1,'x',211,/select,/para_movie
- 
   return
 end
 
@@ -333,7 +346,7 @@ if     keyword_set(zbuff) then dev=     'Z'
 
 team=teamname
 bining=2
-if instrument eq 'aia' then bining = 4;xq las imageens vienen en 4096x4096
+if instrument eq 'aia' then bining = 4;xq las imageens vienen en 4096x4096 ;si ya estan procesadas entonces vienen en 1024x1024!
 
 if NOT keyword_set(select) and NOT keyword_set(pointing) then $
 imagecheck,listfile,datadir,instrument,bining,band
@@ -341,7 +354,7 @@ if keyword_set(select)  and keyword_set(para_movie) then imagecheck,listfile,dat
 if keyword_set(select)  and not keyword_set(para_movie) then imagecheck,listfile,datadir,instrument,bining,band,/select
 if keyword_set(pointing) then imagecheck,listfile,datadir,instrument,bining,band,/pointing
 
-show,instrument,'',wn,1050,Rmin,band,bining,datadir,listfile,dev
+;show,instrument,'',wn,1050,Rmin,band,bining,datadir,listfile,dev
 
 if keyword_set(zbuff) then SET_PLOT,'X'
 
@@ -371,9 +384,10 @@ common contar,conteo
 ;"ws"      : The allowed output window maximum linear size (in pixels)
 
 ; set graph stuff
+dev = 'X'
 if dev eq 'Z' then begin
-Device, Decomposed=0, Set_Pixel_Depth=24, Set_Resolution=[1024,1024]
-;Device, Decomposed=0, Set_Pixel_Depth=24, Set_Resolution=[512,512]
+;Device, Decomposed=0, Set_Pixel_Depth=24, Set_Resolution=[1024,1024]
+Device, Decomposed=0, Set_Resolution=[512,512]
 endif
 
 if not keyword_set(conteo) then conteo =0
@@ -429,7 +443,7 @@ flag_empty = 0                  ;siempre debe valer cero
 
 mreadfits,datadir+filenames(0),hdr,ima
 np=(size(ima))(1)
-;bining=2
+bining=2;seteado si ya las imagenes estan rebineadas.
 np=np/bining
 
 ;if keyword_set(select) then openw,2,file2
@@ -728,7 +742,7 @@ endif
 if dev eq 'Z' then begin
    SET_PLOT,'Z'
    dev=     'Z'
-   Device, Decomposed=0, Set_Pixel_Depth=24, Set_Resolution=[1024,1024]
+   Device, Decomposed=0, Set_Pixel_Depth=24, Set_Resolution=[512,512];[1024,1024]
 endif
 
 minval2=0.05
@@ -761,7 +775,7 @@ for i= i0,iend do begin
    ima=ima>minval2<maxval  
    tvscl,alog10(ima)
    xyouts,[0.1],[0.05],[filenames(i)],color=255,/normal,charsize=1.5,charthick=2
-   record_gif,datadir,filenames(i)+'.gif',dev
+;   record_gif,datadir,filenames(i)+'.gif',dev
    if keyword_set(para_movie) then   WRITE_JPEG, datadir+'video/'+inames(i+conteo), TVRD(/TRUE), /TRUE
 endfor
 

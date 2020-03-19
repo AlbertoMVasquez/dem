@@ -947,7 +947,7 @@ if keyword_set(ldem) then begin
   Dilon=1
   ;--------------------------
   ;for testing-purposes only:
-;goto,skiptesting
+goto,skiptesting
   irad1 = 7                     ;ir=7 > 1.075 Rsun
   irad2 = irad1
   Dir   = 1
@@ -1114,7 +1114,7 @@ endif
 ;-
 
 
-
+retry_multiple:
   retry:
  ;print,'flag: ',multiple_flag
 
@@ -1235,6 +1235,7 @@ skipsocotroco:
         Tm  = TOTAL(  T_X        * demc*dX*FDEM(X,out) ) / Ne2
         WT2 = TOTAL( (T_X-Tm)^2  * demc*dX*FDEM(X,out) ) / Ne2
         WT  = Sqrt(WT2)
+        R=total(abs(1-SynthFBE(out)/FBE))/nband               ; score R
         if keyword_set(ldem) then density_product = Sqrt(Ne2) ; Local density
         if keyword_set( dem) then density_product =      Ne2  ; Total LOS EM
         Er  = 0. 
@@ -1247,26 +1248,46 @@ skipsocotroco:
                   PHI_A =[-999.]
                PHIfinal = -999.
                    ftol = -999.
-   endelse
+                   R    = -999.
+                endelse
+
+;================================================================================                              
+; For Lloveras et al (2020), We want minimization with multiple start-point if                                 
+; the LDEM have R > 0.01 and Tm ~ 0.5  MK. Es decir si encuentra un minimo                       
+; local muy cerca del borde de la grilla de temperatura. Sirve para AIA                                                  
+;goto,skip_multiple2                                                         
+   if keyword_set(gauss1) and demc ne -999. then begin
+      if multiple_flag eq 0 and R ge 1.e-3 and Tm le 0.7e6 then begin
+         multiple_flag=1
+         normalize,FBE,Qkl,nband
+         goto,retry_multiple
+      endif
+      if multiple_flag eq 1 then begin
+         if Tm le 0.7e6  and (abs(1-SynthFBE(out)/FBE))(2) le 0.2 then begin
+;            stop
+               print,'out =',out
+               print,'phi =',PHI_A
+            endif
+         multiple_flag=0
+      endif
+   endif
+   skip_multiple2:
+;=================================================================================                  
 ;-----Agregado 3/08/2015
-
-   SIGMA = out(2)*Tmin          ; K  ; LAMBDA(2)*Tmin (en el read)            
+   SIGMA = out(2)*Tmin          ; K  ; LAMBDA(2)*Tmin (en el read)                                
    DELTAT= (Tmax-Tmin)/L
-
    if                   SIGMA/DELTAT le 2./3 and demc ne -999. then begin
-   ;print,density_product,Tm,WT,Er      
+   ;print,density_product,Tm,WT,Er                                                                                      
    Ne2=int_tabulated(X,demc*FDEM(X,out))
    Tm=int_tabulated(X,T_X*demc*FDEM(X,out))/Ne2
    WT2=int_tabulated(X,(T_X-Tm)^2*demc*FDEM(X,out))/Ne2
    WT= Sqrt(WT2)
-   if keyword_set(ldem) then density_product = Sqrt(Ne2)        ; Local density                                                
-   if keyword_set( dem) then density_product =      Ne2         ; Total LOS EM                          
-      Er  = int_tabulated(X, Loss_X      * demc*dX*FDEM(X,out) )  ; erg cm-3 sec-1 
-    ; print,density_product,Tm,WT,Er                                         
+   if keyword_set(ldem) then density_product = Sqrt(Ne2)        ; Local density                                         
+   if keyword_set( dem) then density_product =      Ne2         ; Total LOS EM                         
+      Er  = int_tabulated(X, Loss_X      * demc*dX*FDEM(X,out) )  ; erg cm-3 sec-1                                 
+    ; print,density_product,Tm,WT,Er                                                                
 endif
-;------
-
- ; Store all results in single output array
+; Store all results in single output array
  
  if keyword_set(gauss1 )    then results = [FBE,SynthFBE(out),DEMc,Tc,        out,PHIfinal,ftol,density_product,Tm,WT,Er]
  if keyword_set(lorentz)    then results = [FBE,SynthFBE(out),DEMc,Tc,        out,PHIfinal,ftol,density_product,Tm,WT,Er]
@@ -1300,7 +1321,7 @@ if keyword_set(dem) then begin
 endif
 
 ;CELDA
-;goto,skipcelda
+goto,skipcelda
 window,1
  plot,x,qkl(1,*)/max(qkl),/nodata,ystyle=1,xstyle=1,xtitle='X',yr=[0,max([fdem(x,out),1.])]
 for ib=0,nband-1 do oplot,x,qkl(ib,*)/max(qkl);,psym=1
@@ -1701,7 +1722,7 @@ return
 end
 
 ;----------------------------------------------------------------------
-pro read_loss,filename,temp,loss<
+pro read_loss,filename,temp,loss
 ; para generar el archivo.out con la loss function utilizar el archivo loss_rate.pro
 x=''
 N_temp=0
@@ -2435,7 +2456,7 @@ pro start_point,new_guess,Xc,nn,new_guess_a,npar,multiple=multiple
 common parameters,FBE,Qkl,X,dX,nTbins,DEMc,Tc,nDetect,nband,Tmin,tiny
 common parametrizacion,parametrization
 
-if new_guess(0) ne -666. AND keyword_set(multiple) then goto,skip_min3D
+;if new_guess(0) ne -666. AND keyword_set(multiple) then goto,skip_min3D
 
 ; Changed new guess!
  new_guess=[1.,Xc ,2. ]
@@ -2469,14 +2490,14 @@ l2A = dblarr(n1,n2,n3)
 l3A = dblarr(n1,n2,n3)
 
 for i1=0,n1-1 do begin
-for i2=0,n2-1 do begin
-for i3=0,n3-1 do begin
-phiA(i1,i2,i3)=PHI([l1(i1),l2(i2),l3(i3)])
- l1A(i1,i2,i3)=l1(i1)
- l2A(i1,i2,i3)=l2(i2)
- l3A(i1,i2,i3)=l3(i3)
-endfor
-endfor
+   for i2=0,n2-1 do begin
+      for i3=0,n3-1 do begin
+         phiA(i1,i2,i3)=PHI([l1(i1),l2(i2),l3(i3)])
+         l1A(i1,i2,i3)=l1(i1)
+         l2A(i1,i2,i3)=l2(i2)
+         l3A(i1,i2,i3)=l3(i3)
+      endfor
+   endfor
 endfor
 
 ii= median( where(phiA eq min(phiA)) )
@@ -3706,7 +3727,7 @@ end
 function dbrent,ax,bx,cx,tol,xmin
 common iteracionesdbrent,iter
 ;
-ITMAX=1000
+ITMAX=1000 ;probar con 10000, originalmente decua 1000
 ZEPS=1.d-10
 ;
 a=min([ax,cx])

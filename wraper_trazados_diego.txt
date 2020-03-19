@@ -14,6 +14,11 @@ trace_LDEM,pfss_data_file=pfss_data_file,ldem_file='LDEM.v3_CR2208_l.50.20.20_h1
 
 trace_LDEM,pfss_data_file=pfss_data_file,awsom_file='awsom_2208_1.85_short',period='2208_awsom-data_field-awsom_6alt',safety=.5,stepmax=3000,/unifgrid_v2,radstart=1.025 + 0.04 *findgen(6)
 
+-> arreglamos bastante la region open de aia con el multistart, entonces recorremos el trace,
+trace_LDEM,pfss_data_file=pfss_data_file,ldem_file='LDEM.v3_CR2208_l.50.20.20_h1_Rmin1.00_Rmax1.26_Nr26_InstRmax1.26_bf4_r3d_B_multistart2_chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',period='2208_hollow_demt-data_field-awsom_6alt_multistart2',safety=.5,stepmax=3000,/unifgrid_v2,radstart=1.025 + 0.04 *findgen(6)
+
+
+
 
 ;.............................................................................
 trazando hasta 6Rsun

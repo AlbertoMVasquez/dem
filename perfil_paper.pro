@@ -53,6 +53,12 @@ pro perfil_paper,v0,rad,v1=v1,v2=v2,v3=v3,v4=v4,v5=v5,v6=v6,mi=mi,ma=ma,label1=l
   v55a = v55(where(rad ge 1.055))
   rad_corto = rad(where(rad ge 1.055))
   plot,rad_aux,vaux,psym=10,xtitle=xtit,ytitle=ytit,title=tit,xstyle=1,xthick=thick,ythick=thick,font=0,/nodata,yr=[yr1,yr2],ystyle=1
+  xyouts,0.6*[1,1],.9-[0.15,0.22],['Solid: DEMT','Dashed: AWSoM'],/normal,color=[negro,negro],charthick=2.5,font=0
+    loadct,33
+  azul = 50
+  rojo = 190 ;ahora es naranja                       
+  fucsia = 220                  ;ahora es rojo
+  cyan = 90
 
   ;cerrados chicos
   oplot,rad,v00,thick=th,color=rojo,linestyle=0
@@ -63,7 +69,7 @@ pro perfil_paper,v0,rad,v1=v1,v2=v2,v3=v3,v4=v4,v5=v5,v6=v6,mi=mi,ma=ma,label1=l
   ;abiertos
   oplot,rad,v44,thick=th,color=cyan,linestyle=0
   oplot,rad_corto,v55a,thick=th,color=cyan,linestyle=2
-  xyouts,0.6*[1,1],.9-[0.15,0.22],['Solid: DEMT','Dashed: AWSoM'],/normal,color=[negro,negro],charthick=2.5,font=0
+
 ;  xyouts,0.9*[1,1],1.-[0.15,0.2],['----','----'],/normal,color=[negro,negro],charthick=3,font=0
   if keyword_set(filename) then ps2
 

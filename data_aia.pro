@@ -4,8 +4,8 @@
 ; process_data_aia_lev10,'CR2099/hicad/',/letitbe
 
 ;  process_data_aia_lev10,'CR2198/',ib1=0,ib2=3,/rbn
-
-pro process_data_aia_lev10,rotationdir,suffix=suffix,ib1=ib1,ib2=ib2,rbn=rbn
+;process_data_aia_lev10,'CR2219/',ib1=0,ib2=3,/rbn
+pro process_data_aia_lev10,rotationdir,suffix=suffix,ib1=ib1,ib2=ib2,rbn=rbn,basedir=basedir
 
 common calibration_parameters,Omega_p,PHI0_v,aiacorr
 
@@ -14,10 +14,10 @@ common calibration_parameters,Omega_p,PHI0_v,aiacorr
     ; get time-dpendent correction factors
      aiacorr = aia_bp_get_corrections()
 
-     if NOT keyword_set(ib1)    then ib1=0
-     if NOT keyword_set(ib2)    then ib2=3
-     if NOT keyword_set(suffix) then suffix=''
-     basedir='/data1/'
+     if NOT keyword_set(ib1)     then ib1=0
+     if NOT keyword_set(ib2)     then ib2=3
+     if NOT keyword_set(suffix)  then suffix=''
+     if not keyword_set(basedir) then basedir='/media/Data1/';basedir='/data1/'
      dir=basedir+'tomography/DATA/aia/'+rotationdir
 ; subdir=['094/','131/','171/','193/','211/','335/','304/']
   subdir=['171/','193/','211/','335/','131/','094/','304/'] ; A more reasonable order to process.
@@ -26,65 +26,67 @@ common calibration_parameters,Omega_p,PHI0_v,aiacorr
 filename=''
        n=0
 
-for ib=ib1,ib2 do begin
-  openr,1,dir+subdir[ib]+list[ib]
-  readf,1,n
-  openw,2,dir+subdir[ib]+listp[ib]
- printf,2,n
- for i=0,n-1 do begin
- readf,1,filename
- aia_prep,dir+subdir[ib]+filename,[0],header15,image15
- ssw_file_delete,'/tmp/AIA*fits'
+       for ib=ib1,ib2 do begin
+          openr,1,dir+subdir[ib]+list[ib]
+          readf,1,n
+          openw,2,dir+subdir[ib]+listp[ib]
+          printf,2,n
+          print,'andando'
+          for i=0,n-1 do begin
+             readf,1,filename
+             aia_prep,dir+subdir[ib]+filename,[0],header15,image15
+             print, i
+;             ssw_file_delete,'/tmp/AIA*fits'
 
- newfilename=strmid(header15.DATE_OBS, 0,4)+strmid(header15.DATE_OBS, 5,2)+$
-             strmid(header15.DATE_OBS, 8,2)+'.'+$
-             strmid(header15.DATE_OBS,11,2)+strmid(header15.DATE_OBS,14,2)+'.'+$
-             strmid(subdir[ib],0,3)+'.lev1p5'
-
-goto,skip_table
- print,newfilename
- ix=3000
- iy=lindgen(7)*500+500
-int,strmid(subdir[ib],0,3),reform(image15(ix,iy))
- close,/all
- stop
+             newfilename=strmid(header15.DATE_OBS, 0,4)+strmid(header15.DATE_OBS, 5,2)+$
+                         strmid(header15.DATE_OBS, 8,2)+'.'+$
+                         strmid(header15.DATE_OBS,11,2)+strmid(header15.DATE_OBS,14,2)+'.'+$
+                         strmid(subdir[ib],0,3)+'.lev1p5'
+             
+             goto,skip_table
+             print,newfilename
+             ix=3000
+             iy=lindgen(7)*500+500
+             int,strmid(subdir[ib],0,3),reform(image15(ix,iy))
+             close,/all
+             stop
 skip_table:
-
+             
 ; goto,test
 ; Normalize by exposure time
-  image15 = image15 / header15.EXPTIME
-  newfilename=newfilename+'.ETN'
+             image15 = image15 / header15.EXPTIME
+             newfilename=newfilename+'.ETN'
 
 ; Divide by Ck0
-  divide_by_ck0,image15,header15,newimage15
-  image15=newimage15
-  newfilename=newfilename+'.Norm-Ck0'
+             divide_by_ck0,image15,header15,newimage15
+             image15=newimage15
+             newfilename=newfilename+'.Norm-Ck0'
 
 ; Rebin to 1024^2
-if keyword_set(rbn) then begin
-  rbn,image15,header15,4
-  newfilename=newfilename+'.1024'
-endif
+             if keyword_set(rbn) then begin
+                rbn,image15,header15,4
+                newfilename=newfilename+'.1024'
+             endif
 
 ; Make -999 all negative pixels
-goto,skip_make_999
-  p=where(image15 lt 0.)
-  if p(0) ne -1 then image15(p)=-999.
+             goto,skip_make_999
+             p=where(image15 lt 0.)
+             if p(0) ne -1 then image15(p)=-999.
 skip_make_999:
-
+             
 test:
 
 ; Finish making newfilename, write new image, and print newlist
- newfilename=newfilename+suffix+'.fts'
-  mwritefits,header15,image15,outfile=dir+subdir[ib]+newfilename   
-  printf,2,newfilename
+             newfilename=newfilename+suffix+'.fts'
+             mwritefits,header15,image15,outfile=dir+subdir[ib]+newfilename   
+             printf,2,newfilename
+             
+          endfor
+          close,1
+          close,2
+       endfor
 
-endfor
-close,1
-close,2
-endfor
-
-return
+       return
 end
 
 pro rbn,image,hdr,binfactor

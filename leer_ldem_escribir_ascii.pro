@@ -102,9 +102,14 @@
 ;leer_ldem_escribir_ascii,'LDEM.CR2208.AIA2A.G1.out',/tm_out,i_out='test_fede_2a'
 ;temp fea,rbueno
 
+;========================= con multistart para AIA ==========================
 ;leer_ldem_escribir_ascii,'LDEM.v2_cr2208_chianti.ioneq_sun_coronal_1992_feldman_ext.abund_AIA3_1.065Rsun_171_gauss1_lin_Norm-median_multiStart',/tm_out,/R_parcial,i_out='fede_multistart_'
+;leer_ldem_escribir_ascii,'LDEM.v3_CR2208_l.50.20.20_h1_Rmin1.00_Rmax1.26_Nr26_InstRmax1.26_bf4_r3d_B_multistart_chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',/tm_out,/R_parcial,/ne_out,/aia,i_out='_CR2208_DEMT-AIA_H1_L.5.2.2_r3d_multistart'
 
-pro leer_ldem_escribir_ascii,file,ne_out=ne_out,tm_out=tm_out,R_out=R_out,Er_out=Er_out,i_out=i_out,tabla=tabla,aevs=aevs,r_crit=r_crit,R_parcial=R_parcial,dir=dir
+;multistart con itmax 10000
+;leer_ldem_escribir_ascii,'LDEM.v3_CR2208_l.50.20.20_h1_Rmin1.00_Rmax1.26_Nr26_InstRmax1.26_bf4_r3d_B_multistart2_chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',/tm_out,/R_parcial,/ne_out,/aia,/r_out,i_out='_CR2208_DEMT-AIA_H1_L.5.2.2_r3d_multistart2'
+
+pro leer_ldem_escribir_ascii,file,ne_out=ne_out,tm_out=tm_out,R_out=R_out,Er_out=Er_out,i_out=i_out,tabla=tabla,aevs=aevs,r_crit=r_crit,R_parcial=R_parcial,dir=dir,aia=aia
   common results_images,ima,sima,ra,pa,ya,za,em,npx
   common comunes,tm,wt,nband,demc,PHI,parametrizacion,Tmin,Tmax,nr,nth,np,rad,lat,lon,lambda,WTc
   common results_tomo,tfbe,sfbe,N_e
@@ -129,8 +134,13 @@ pro leer_ldem_escribir_ascii,file,ne_out=ne_out,tm_out=tm_out,R_out=R_out,Er_out
 
 
   R171=abs(1.-(sfbe(*,*,*,0)/tfbe(*,*,*,0)) )
-  R195=abs(1.-(sfbe(*,*,*,1)/tfbe(*,*,*,1)) )
-;  R284=abs(1.-(sfbe(*,*,*,2)/tfbe(*,*,*,2)) )
+  if not keyword_set(aia) then begin
+     R195=abs(1.-(sfbe(*,*,*,1)/tfbe(*,*,*,1)) )
+     R284=abs(1.-(sfbe(*,*,*,2)/tfbe(*,*,*,2)) )
+  endif else begin
+     R193=abs(1.-(sfbe(*,*,*,1)/tfbe(*,*,*,1)) )
+     R211=abs(1.-(sfbe(*,*,*,2)/tfbe(*,*,*,2)) )
+  endelse
   
   if not keyword_set(aevs) then begin
      AEV = where(demc ne -999. AND (R      gt r_crit  ))
@@ -143,16 +153,27 @@ pro leer_ldem_escribir_ascii,file,ne_out=ne_out,tm_out=tm_out,R_out=R_out,Er_out
   R171 (ZDA)   = -999.
 ;  sint171(ZDA)=-999.
 ;  tomo171(ZDA) =-999.
-  R195 (ZDA)   = -999.
-;  R284 (ZDA)   = -999.
+  if not keyword_set(aia) then begin
+     R195 (ZDA)   = -999.
+     R284 (ZDA)   = -999.
+
+     R171=float(R171)
+     R195=float(R195)
+     R284=float(R284)
+  endif else begin
+     R193 (ZDA)   = -999.
+     R211 (ZDA)   = -999.
+
+     R171=float(R171)
+     R193=float(R193)
+     R211=float(R211)
+  endelse
   
   N_e=float(N_e)
   tm=float(tm)
   R =float(R)
   Er=float(Er)
-  R171=float(R171)
-  R195=float(R195)
-;  R284=float(R284)
+
   if not keyword_set(aevs) then begin
      hdr1='r          lat       long     Te      Ne'
      hdr2='[Rsun]     [deg]     [deg]    [K]   [cm-3]'
@@ -225,13 +246,23 @@ stop
      writeu,4,R171
      close,4
 
-     openw,5,'R195'+i_out
-     writeu,5,R195
-     close,5
-stop     
-     openw,6,'R284'+i_out
-     writeu,6,R284
-     close,6
+     if not keyword_set(aia) then begin
+        openw,5,'R195'+i_out
+        writeu,5,R195
+        close,5
+
+        openw,6,'R284'+i_out
+        writeu,6,R284
+        close,6
+     endif else begin
+        openw,5,'R193'+i_out
+        writeu,5,R193
+        close,5
+
+        openw,6,'R211'+i_out
+        writeu,6,R211
+        close,6
+     endelse
      print, 'Archivo  generado: ' +'R???'+i_out
   endif
   return

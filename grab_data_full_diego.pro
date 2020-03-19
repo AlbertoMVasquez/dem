@@ -142,87 +142,87 @@ maxval = 5000L
 ;mejor vso_search. Ademas el vso_get de aia lleva 2 parametros mas que
 ;son /rice,site=server ver que carajo hacen y si se pueden unificar
 if inst eq 'EIT' then begin
- print,'Records for'+wave(0)+':'
- icad=0
- research171_1:
- cadence=cadences[icad]
-eit171 = vso_search(date1,date2, inst=inst,wave=wave(0),sample=cadence)
- if n_elements(eit171.time) gt 999L then begin
-    icad=icad+1
-    goto,research171_1
- endif
-
- print,'Records for'+wave(1)+':'
- icad=0
- research195_1:
- cadence=cadences[icad]
- eit195 = vso_search(date1,date2, inst=inst,wave=wave(1),sample=cadence) 
- if n_elements(eit195.time) gt 999L then begin
-    icad=icad+1
-    goto,research195_1
- endif
-
- print,'Records for'+wave(2)+':'
- icad=0
- research284_1:
- cadence=cadences[icad]
- eit284 = vso_search(date1,date2, inst=inst,wave=wave(2),sample=cadence)
- if n_elements(eit284.time) gt 999L then begin
-    icad=icad+1
-    goto,research284_1
- endif
-
- print,'Records for'+wave(3)+':'
- icad=0
- research304_1:
- cadence=cadences[icad]
- eit304 = vso_search(date1,date2, inst=inst,wave=wave(3),sample=cadence)
- if n_elements(eit304.time) gt 999L then begin
-    icad=icad+1
-    goto,research304_1
- endif
+   print,'Records for'+wave(0)+':'
+   icad=0
+   research171_1:
+   cadence=cadences[icad]
+   eit171 = vso_search(date1,date2, inst=inst,wave=wave(0),sample=cadence)
+   if n_elements(eit171.time) gt 999L then begin
+      icad=icad+1
+      goto,research171_1
+   endif
+   
+   print,'Records for'+wave(1)+':'
+   icad=0
+   research195_1:
+   cadence=cadences[icad]
+   eit195 = vso_search(date1,date2, inst=inst,wave=wave(1),sample=cadence) 
+   if n_elements(eit195.time) gt 999L then begin
+      icad=icad+1
+      goto,research195_1
+   endif
+   
+   print,'Records for'+wave(2)+':'
+   icad=0
+   research284_1:
+   cadence=cadences[icad]
+   eit284 = vso_search(date1,date2, inst=inst,wave=wave(2),sample=cadence)
+   if n_elements(eit284.time) gt 999L then begin
+      icad=icad+1
+      goto,research284_1
+   endif
+   
+   print,'Records for'+wave(3)+':'
+   icad=0
+   research304_1:
+   cadence=cadences[icad]
+   eit304 = vso_search(date1,date2, inst=inst,wave=wave(3),sample=cadence)
+   if n_elements(eit304.time) gt 999L then begin
+      icad=icad+1
+      goto,research304_1
+   endif
 endif
 
 if inst eq 'EUVI_A' or inst eq 'EUVI_B' then begin
-print,'Records for'+wave(0)+':'
- icad=0
- research171_2:
- cadence=cadences2[icad] 
-euvi171 = vso_search(date1,date2, inst=instru,wave=wave(0),sample=cadence,source=source)
- if n_elements(euvi171.time) gt maxval then begin
-    icad=icad+1
-    goto,research171_2
- endif
+   print,'Records for'+wave(0)+':'
+   icad=0
+   research171_2:
+   cadence=cadences2[icad] 
+   euvi171 = vso_search(date1,date2, inst=instru,wave=wave(0),sample=cadence,source=source)
+   if n_elements(euvi171.time) gt maxval then begin
+      icad=icad+1
+      goto,research171_2
+   endif
+   
+   print,'Records for'+wave(1)+':'
+   icad=0
+   research195_2:
+   cadence=cadences2[icad]
+   euvi195 = vso_search(date1,date2, inst=instru,wave=wave(1),sample=cadence,source=source)
+   if n_elements(euvi195.time) gt maxval then begin
+      icad=icad+1
+      goto,research195_2
+   endif
 
- print,'Records for'+wave(1)+':'
- icad=0
- research195_2:
- cadence=cadences2[icad]
- euvi195 = vso_search(date1,date2, inst=instru,wave=wave(1),sample=cadence,source=source)
- if n_elements(euvi195.time) gt maxval then begin
-    icad=icad+1
-    goto,research195_2
- endif
+   print,'Records for'+wave(2)+':'
+   icad=0
+   research284_2:
+   cadence=cadences2[icad]
+   euvi284 = vso_search(date1,date2, inst=instru,wave=wave(2),sample=cadence,source=source)
+   if n_elements(euvi284.time) gt maxval then begin
+      icad=icad+1
+      goto,research284_2
+   endif
+   print,'Records for'+wave(3)+':'
 
- print,'Records for'+wave(2)+':'
- icad=0
- research284_2:
- cadence=cadences2[icad]
- euvi284 = vso_search(date1,date2, inst=instru,wave=wave(2),sample=cadence,source=source)
- if n_elements(euvi284.time) gt maxval then begin
-    icad=icad+1
-    goto,research284_2
- endif
- print,'Records for'+wave(3)+':'
-
- icad=0
- research304_2:
- cadence=cadences2[icad]
- euvi304 = vso_search(date1,date2, inst=instru,wave=wave(3),sample=cadence,source=source)
- if n_elements(euvi304.time) gt maxval then begin
-    icad=icad+1
-    goto,research304_2
- endif
+   icad=0
+   research304_2:
+   cadence=cadences2[icad]
+   euvi304 = vso_search(date1,date2, inst=instru,wave=wave(3),sample=cadence,source=source)
+   if n_elements(euvi304.time) gt maxval then begin
+      icad=icad+1
+      goto,research304_2
+   endif
 endif
 
 
@@ -319,36 +319,36 @@ endif
 ; DOWNLOAD THE DATA:
 if not keyword_set(graf) then begin
 
-if inst eq 'EIT' then begin
- eit171 = vso_get(eit171,/force,out_dir=dir171)
- eit195 = vso_get(eit195,/force,out_dir=dir195)
- eit284 = vso_get(eit284,/force,out_dir=dir284)
- eit304 = vso_get(eit304,/force,out_dir=dir304)
-endif
-
-if inst eq 'EUVI_B' then begin
- euvi171 = vso_get(euvi171,/force,out_dir=dirb171)
- euvi195 = vso_get(euvi195,/force,out_dir=dirb195)
- euvi284 = vso_get(euvi284,/force,out_dir=dirb284)
+   if inst eq 'EIT' then begin
+      eit171 = vso_get(eit171,/force,out_dir=dir171)
+      eit195 = vso_get(eit195,/force,out_dir=dir195)
+      eit284 = vso_get(eit284,/force,out_dir=dir284)
+      eit304 = vso_get(eit304,/force,out_dir=dir304)
+   endif
+   
+   if inst eq 'EUVI_B' then begin
+      euvi171 = vso_get(euvi171,/force,out_dir=dirb171)
+      euvi195 = vso_get(euvi195,/force,out_dir=dirb195)
+      euvi284 = vso_get(euvi284,/force,out_dir=dirb284)
 ; euvi304 = vso_get(euvi304,/force,out_dir=dirb304)
-endif
+   endif
 
-if inst eq 'EUVI_A' then begin
- euvi171 = vso_get(euvi171,/force,out_dir=dira171)
- euvi195 = vso_get(euvi195,/force,out_dir=dira195)
- euvi284 = vso_get(euvi284,/force,out_dir=dira284)
+   if inst eq 'EUVI_A' then begin
+      euvi171 = vso_get(euvi171,/force,out_dir=dira171)
+      euvi195 = vso_get(euvi195,/force,out_dir=dira195)
+      euvi284 = vso_get(euvi284,/force,out_dir=dira284)
 ; euvi304 = vso_get(euvi304,/force,out_dir=dira304)
-endif
+   endif
 
-if inst eq 'AIA' then begin
- aia171 = vso_get(aia171,/force,out_dir=dir171)
- aia193 = vso_get(aia193,/force,out_dir=dir193)
- aia211 = vso_get(aia211,/force,out_dir=dir211)
- aia335 = vso_get(aia335,/force,out_dir=dir335)
+   if inst eq 'AIA' then begin
+;      aia171 = vso_get(aia171,/force,out_dir=dir171)
+;      aia193 = vso_get(aia193,/force,out_dir=dir193)
+;      aia211 = vso_get(aia211,/force,out_dir=dir211)
+      aia335 = vso_get(aia335,/force,out_dir=dir335)
 ;aia304 = vso_get(aia304,/force,out_dir=dir304)
 ;aia094 = vso_get(aia094,/force,out_dir=dir094)
 ;aia131 = vso_get(aia131,/force,out_dir=dir131)
-endif
+   endif
 
 endif
 
