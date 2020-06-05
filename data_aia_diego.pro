@@ -9,9 +9,18 @@
 ;la idea es que lea y/o escriba desde /data1/ o /data2/
 
 ; process_data_aia_lev10,'CR2208/',ib1=0,ib2=0,/rbn,basedir='/data1/',dirout='/data2/'
-pro process_data_aia_lev10,rotationdir,suffix=suffix,ib1=ib1,ib2=ib2,rbn=rbn,dirout=dirout,basedir=basedir
+; process_data_aia_lev10,'CR2219/',ib1=0,ib2=0,/rbn,basedir='/media/Data1/data1/'
+; process_data_aia_lev10,'CR2223/',ib1=3,ib2=3,/rbn,basedir='/media/Data1/data1/',/zbuff
 
+pro process_data_aia_lev10,rotationdir,suffix=suffix,ib1=ib1,ib2=ib2,rbn=rbn,dirout=dirout,basedir=basedir,decon=decon,zbuff=zbuff
 common calibration_parameters,Omega_p,PHI0_v,aiacorr
+
+   t_start = systime(/seconds)
+if keyword_set(zbuff) then begin
+   SET_PLOT,'Z'
+   dev=     'Z'
+   Device, Decomposed=0, Set_Pixel_Depth=24, Set_Resolution=[512,512]
+endif
 
     ; Compute Phik0
      Phik0
@@ -33,30 +42,46 @@ common calibration_parameters,Omega_p,PHI0_v,aiacorr
      filename=''
      n=0
 
+
+     bandas=['171','193','211','335']
+
      for ib=ib1,ib2 do begin
         openr,1,dir+subdir[ib]+list[ib]
         readf,1,n
         openw,2,dir2+subdir[ib]+listp[ib]
         printf,2,n
+        sufijo=''
+        if keyword_set(decon) then psf_aia = aia_calc_psf(bandas(ib), /use_preflightcore)
         for i=0,n-1 do begin
            readf,1,filename
-           aia_prep,dir+subdir[ib]+filename,[0],header15,image15
+           if keyword_set(decon) then begin
+              mreadfits,dir+subdir[ib]+filename,header1,image1
+              image1decon = aia_deconvolve_richardsonlucy(float(image1),psf_aia,niter=25)
+               mwritefits,header1,image1decon,outfile=dir+subdir[ib]+filename+'decon'
+              sufijo='decon'
+           endif
+           aia_prep,dir+subdir[ib]+filename+sufijo,[0],header15,image15
+           if header15.quality ne 0 then goto,skiptodo
            ssw_file_delete,'/tmp/AIA*fits'
            
            newfilename=strmid(header15.DATE_OBS, 0,4)+strmid(header15.DATE_OBS, 5,2)+$
                        strmid(header15.DATE_OBS, 8,2)+'.'+$
                        strmid(header15.DATE_OBS,11,2)+strmid(header15.DATE_OBS,14,2)+'.'+$
-                       strmid(subdir[ib],0,3)+'.lev1p5'
-           
-           goto,skip_table
+                       strmid(subdir[ib],0,3);+'.lev1p5'
+
+           if not keyword_set(decon) then  newfilename=newfilename+'.lev1p5'
+           if keyword_set(decon) then begin
+              newfilename=newfilename+'.lev1p6.decon'
+           endif
+              goto,skip_table
            print,newfilename
            ix=3000
            iy=lindgen(7)*500+500
            int,strmid(subdir[ib],0,3),reform(image15(ix,iy))
            close,/all
-           stop
 skip_table:
-           
+
+                 
 ; goto,test
 ; Normalize by exposure time
            image15 = image15 / header15.EXPTIME
@@ -85,11 +110,15 @@ test:
            newfilename=newfilename+suffix+'.fts'
            mwritefits,header15,image15,outfile=dir2+subdir[ib]+newfilename   
            printf,2,newfilename
-           
+
+skiptodo:
         endfor
         close,1
         close,2
      endfor
+   t_final = systime(/seconds)
+   t_total =t_final -t_start
+   print,'Time elapsed : ', t_total
 
      return
   end
@@ -130,11 +159,9 @@ common calibration_parameters,Omega_p,PHI0_v,aiacorr
   index_day   = where(aiacorr_day eq image_day)
   if n_elements(index_day) eq -1 then begin
     print,'There are no EA corrections tabulated for the date of the data you want to process.'
-    stop
  endif
   if n_elements(index_day) gt 1 then begin
     print,'There are many EA corrections tabulated for the date of the data you want to process. Select one.'
-    stop
   endif     
   if n_elements(index_day) eq 1 then $
   factors = aiacorr.ea_over_ea0(index_day,*) * aiacorr.ea_aia_over_eve
@@ -149,7 +176,7 @@ common calibration_parameters,Omega_p,PHI0_v,aiacorr
   if header.wavelnth eq 335 then PHI0 = PHI0_v(6) * Omega_p * factors(6)
   Ck0=PHI0*1.e12
   newimage=image/Ck0
-
+  print,'Ck0 = ',Ck0
 return
 end
 
@@ -185,6 +212,19 @@ end
 
 
 pro timebin_cycle
+  timebinning,'','/media/Data1/data1/tomography/DATA/aia/CR2219/171/','list.171.processed2.selected',4
+  timebinning,'','/media/Data1/data1/tomography/DATA/aia/CR2219/193/','list.193.processed.selected',4
+  timebinning,'','/media/Data1/data1/tomography/DATA/aia/CR2219/211/','list.211.processed.selected',4
+  timebinning,'','/media/Data1/data1/tomography/DATA/aia/CR2219/335/','list.335.processed.selected',4
+
+  timebinning,'','/media/Data1/data1/tomography/DATA/aia/CR2223/171/','list.171.processed.selected',4
+  timebinning,'','/media/Data1/data1/tomography/DATA/aia/CR2223/193/','list.193.processed.selected',4
+  timebinning,'','/media/Data1/data1/tomography/DATA/aia/CR2223/211/','list.211.processed.selected',4
+;  timebinning,'','/media/Data1/data1/tomography/DATA/aia/CR2223/335/','list.335.processed.selected',4
+  
+  timebinning,'','/media/Data/data1/tomography_NALAI/DATA/aia/CR2099/335/test/','list.335',4
+  timebinning,'','/media/Data1/data1/tomography/DATA/aia/CR2219/335/','list.335.processed',4
+  timebinning,'','/media/Data1/data1/tomography/DATA/aia/CR2208/335/','list.335.processed',4
 ;17/08/2017
   timebinning,'','/data1/tomography/DATA/aia/CR2192/171/','list.171.processed.selected',4
   timebinning,'','/data1/tomography/DATA/aia/CR2192/193/','list.193.processed.selected',4
