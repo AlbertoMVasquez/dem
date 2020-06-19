@@ -1,6 +1,12 @@
 ;Hecho por Fede Nuevo 2019.
 
 pro hacer_make_mapoc
+  file_input='traceLDEM_CR2223_ldem__radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
+  alturas=1.025+ 0.04 *findgen(6)
+  file_suffix='CR2223_90X180_fdips'
+  MAKE_MAPOC,file_input,file_suffix,alturas,/gng
+
+stop
   file_input='traceLDEM_CR2082_hollow_demt-data_field-awsom_6alt_radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
   alturas=1.025+ 0.04 *findgen(6)
   file_suffix='CR2082_90X180blines_r_'
@@ -18,7 +24,7 @@ end
 
 pro MAKE_MAPOC,file_input,file_suffix,alturas,mdi=mdi,gng=gng,mhd=mhd,dir_input=dir_input,dir_output=dir_output
 
-  if not keyword_set(dir_input) then dir_input='/data1/work/dem/github_dem/dem/'
+  if not keyword_set(dir_input) then dir_input='/data1/work/dem/'
   if not keyword_set(dir_output) then dir_output='/data1/work/MHD/'
 
   print,'calcula mapa open-close en:',alturas

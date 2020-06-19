@@ -136,10 +136,10 @@ if keyword_set(awsom_file) then file_flag = 1
 
 ; Set parameters for Marc's line-tracing routines:
   if NOT keyword_set(radstart ) then radstart  = 1.5
-  if NOT keyword_set(safety   ) then safety    = 0.2
+  if NOT keyword_set(safety   ) then safety    = 0.5;0.2
   if NOT keyword_set(stepmax  ) then stepmax   = 30000
   if NOT keyword_set(fieldtype) then fieldtype = 5.0
-  if NOT keyword_set(spacing)   then spacing   = 2.0
+  if NOT keyword_set(spacing)   then spacing   = 10.;2.0
 
   print,'-------------------------------------------'
   print,'     Period: ',period
@@ -160,8 +160,8 @@ if keyword_set(awsom_file) then file_flag = 1
 ; PFSSM_model='/data1/DATA/PFSSM/'+fdips_file
 if keyword_set(fdips_file) then PFSSM_model= fdips_file
 ; Read the FDIPS model and create a structure to serve as input to Marc's routines:
-  if keyword_set(fdips_file)                                 then create_structure    ,    PFSSM_model
-  if     keyword_set(mhd)                                    then create_structure_MHD,    '/data1/DATA/MHD_SWMF/'+fdips_file
+  if keyword_set(fdips_file)                                 then create_structure    ,    PFSSM_model ;esto genera el struct sph_data
+  if     keyword_set(mhd)                                    then create_structure_MHD,    '/data1/DATA/MHD_SWMF/'+fdips_file ;esto quedo obsoleto?
 ;  if     keyword_set(field_awsom)                            then create_structure_MHD_new,'/data1/DATA/MHD_SWMF/'+fdips_file
   if     keyword_set(field_awsom)                            then read_structure_MHD,'/data1/work/MHD/'+field_awsom,sph_data ;esto e sun simple restore!!!!
 
@@ -190,6 +190,11 @@ if not keyword_set (pfss_data_file) and keyword_set(field_awsom) then  save,pfss
 if not keyword_set (pfss_data_file) and keyword_set(fdips_file ) then  save,pfss_data,linekind,linelengths,FILENAME = 'pfss_data_fdips'+period+'.sav'
 salto_creacion_pfss:
 if keyword_set (pfss_data_file) then restore,pfss_data_file
+;bola de pelos
+;se puede definir una longitud en particular y una altura que debe
+;coincidir con uno de los puntos de arranque del starting point.
+;visual3D_diego,'testeo_diego',long0=90,altura=1.155,/zbuff
+if keyword_set(bola_pelos) then visual3D_diego,'testeo_diego',/zbuff
 
 ; Change the coding for linekind:
   linekind=linekind-2           ; so that 0=open and 1=closed
