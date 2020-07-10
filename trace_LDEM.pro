@@ -16,6 +16,9 @@
 ;trace_LDEM,pfss_data_file=pfss_data_file,ldem_file='LDEM.v3_CR2208_l.50.20.20_h1_Rmin1.00_Rmax1.26_Nr26_InstRmax1.26_bf4_r3d_B_multistart2_chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',period='2208_hollow_demt-data_field-awsom_6alt_multistart',safety=.5,stepmax=3000,/unifgrid_v2,radstart=1.025 + 0.04 *findgen(6)
 ;HAY UN TXT CON ESTA DATA!
 
+;probando trazar a mucha altura con awsom
+;trace_LDEM,field_awsom='sph_data_awsom_2208_1.85.sav',period='2208_awsom_test_mucha_altura_',safety=.5,stepmax=10000,/unifgrid_v2,radstart=4.505,dlat=4.,dlon=4.,awsom_file='awsom_2208_1.85_extend'
+;trace_LDEM,pfss_data_file='pfss_data_awsom_2208_1.85_extend2208_awsom_test_mucha_altura__radstart-4.505Rs.sav',period='2208_awsom_test_mucha_altura_',/unifgrid_v2,awsom_file='awsom_2208_1.85_extend'
 pro trace_LDEM,fdips_file=fdips_file,$
                ldem_file=ldem_file,$
                period=period,$
@@ -46,7 +49,7 @@ pro trace_LDEM,fdips_file=fdips_file,$
   common fixed_parameter_equalizer,xmax,sigma_v,demv
   common pfssm,rB,thB,phB,Br,Bth,Bph,B,nrB,nphB,nthB,Bint
   common structure,sph_data
-
+;  common structure2,pfss_data
 ;los commons pertenecen al read_ldem y al create_structure
 
 ;test
@@ -135,11 +138,11 @@ if keyword_set(awsom_file) then file_flag = 1
   output_file='traceLDEM_CR'+period+suffix+'.heating.sampled.v2.DIEGO.dat'
 
 ; Set parameters for Marc's line-tracing routines:
-  if NOT keyword_set(radstart ) then radstart  = 1.5
-  if NOT keyword_set(safety   ) then safety    = 0.2
+  if NOT keyword_set(radstart ) then radstart  = 1.105;1.5
+  if NOT keyword_set(safety   ) then safety    = 0.5;0.2
   if NOT keyword_set(stepmax  ) then stepmax   = 30000
   if NOT keyword_set(fieldtype) then fieldtype = 5.0
-  if NOT keyword_set(spacing)   then spacing   = 2.0
+  if NOT keyword_set(spacing)   then spacing   = 10.;2.0
 
   print,'-------------------------------------------'
   print,'     Period: ',period
@@ -160,14 +163,14 @@ if keyword_set(awsom_file) then file_flag = 1
 ; PFSSM_model='/data1/DATA/PFSSM/'+fdips_file
 if keyword_set(fdips_file) then PFSSM_model= fdips_file
 ; Read the FDIPS model and create a structure to serve as input to Marc's routines:
-  if keyword_set(fdips_file)                                 then create_structure    ,    PFSSM_model
-  if     keyword_set(mhd)                                    then create_structure_MHD,    '/data1/DATA/MHD_SWMF/'+fdips_file
+  if keyword_set(fdips_file)                                 then create_structure    ,    PFSSM_model ;esto genera el struct sph_data
+  if     keyword_set(mhd)                                    then create_structure_MHD,    '/data1/DATA/MHD_SWMF/'+fdips_file ;esto quedo obsoleto?
 ;  if     keyword_set(field_awsom)                            then create_structure_MHD_new,'/data1/DATA/MHD_SWMF/'+fdips_file
   if     keyword_set(field_awsom)                            then read_structure_MHD,'/data1/work/MHD/'+field_awsom,sph_data ;esto e sun simple restore!!!!
 
 ; change the name of the created structure to a new name:
   pfss_data = sph_data
-  undefine,sph_data             ;liberando espacio 300Mb  
+  
 ; Set the uniform grid size, in case /unifgrid is used for the starting points. 
 ; Default size is 90x180.
   if NOT keyword_set(dlat) then dlat = 2. + fltarr(n_elements(radstart))  
@@ -190,6 +193,14 @@ if not keyword_set (pfss_data_file) and keyword_set(field_awsom) then  save,pfss
 if not keyword_set (pfss_data_file) and keyword_set(fdips_file ) then  save,pfss_data,linekind,linelengths,FILENAME = 'pfss_data_fdips'+period+'.sav'
 salto_creacion_pfss:
 if keyword_set (pfss_data_file) then restore,pfss_data_file
+;bola de pelos
+;se puede definir una longitud en particular y una altura que debe
+;coincidir con uno de los puntos de arranque del starting point.
+;visual3D_diego,'testeo_diego',long0=90,altura=1.155,/zbuff
+stop
+if keyword_set(bola_pelos) then visual3D_diego,'testeo_diego',/zbuff,pfss_data=pfss_data
+stop
+undefine,sph_data               ;liberando espacio   
 
 ; Change the coding for linekind:
   linekind=linekind-2           ; so that 0=open and 1=closed
@@ -222,15 +233,25 @@ if keyword_set (pfss_data_file) then restore,pfss_data_file
 ;  if     keyword_set(awsom)then      read_awsom,awsom_file
 
   if     keyword_set(awsom_file) then  begin
-    read_awsom_matrix,suff_file=awsom_file,nr=26,nt=90,np=180,/te_out,te,/ne_out,n_e,/qrad_out,qrad ;,/nelasco_out,ne_lasco,/qheat_out,qheat,/qebyq_out,qebyq
+     stop
+;----------NUEVA IDEA
+;LLAMAR DE A UNO POR VEZ!     
+
+;     read_awsom_matrix,suff_file=awsom_file,nr=26,nt=90,np=180,/te_out,te,/ne_out,n_e,/qrad_out,qrad ;,/nelasco_out,ne_lasco,/qheat_out,qheat,/qebyq_out,qebyq
 ;OBS: las salidas te,n_e,qrad etc tienen que estar en el mismo orden
 ;que figuran en el read_awsom_matrix sino aca cambian de nombre y s
 ;epudre el rancho, viejo
-;     Nrad=500
-;     nr=500
-;las matrices fueron previamente interpoladas
-     Nrad=26
-     nr=26
+
+     nr=500
+     read_awsom_matrix,suff_file=awsom_file,nr=nr,nt=90,np=180,/te_out,te ;,/nelasco_out,ne_lasco,/qheat_out,qheat,/qebyq_out,qebyq
+     read_awsom_matrix,suff_file=awsom_file,nr=nr,nt=90,np=180,/ne_out,n_e 
+;     read_awsom_matrix,suff_file=awsom_file,nr=nr,nt=90,np=180,/qrad_out,qrad 
+     read_awsom_matrix,suff_file=awsom_file,nr=nr,nt=90,np=180,/vr_out,vr
+     Nrad=500
+;las matrices fueron previamente interpoladas --> creo que quise decir
+;que estan en 90x180
+;     Nrad=26
+;     nr=26
      Nlat=90
      nth=90
      Nlon=180
@@ -264,6 +285,10 @@ stop
   endif
   Nptmax_v = 150                ; ESTO NO ES ROBUSTO, 
   if keyword_set(awsom_file)  then Nptmax_v = 150
+
+;alta altura---- TEST-----
+Nptmax_v = 1500
+  
 ;  sin embargo, por la experiencia de haber realizado varios trazados
 ;  creo que va funcionar. 
 ;  Ningun sampleo supera este valor de puntos por linea

@@ -97,7 +97,8 @@ pro read_PFSSM,inputfile
      nrB=0
      nthB=0
      nphB=0
-     openr,1,'/data1/DATA/PFSSM/'+inputfile
+     ;openr,1,'/data1/DATA/PFSSM/'+inputfile
+     openr,1,inputfile
      for i=1,2 do readf,1,x
      readf,1,nrB,nphB,nthB
      for i=1,2 do readf,1,x
