@@ -15,9 +15,18 @@
 ;-----
 ;read_awsom,'CR2082_grid1X1_1.85_AWSOM_LASCO_3d.dat','awsom_2082_1.85_extended',/sph_data
 ;read_awsom,'CR2082_grid1X1_1.85_AWSOM_LASCO_3d.dat','awsom_2082_1.85_extended',/B_out
+;------ para trazado a mucha alturas (4.5Rsun)
+;read_awsom,'CR2208_grid1X1_ADAPT_GONG_AWSOM.dat','awsom_2208_1.85_extended',/te_out,/ne_out,/qrad,/qheat_out,/v_out,/interpol,N1=25
+
 pro read_awsom,inputfile,file_out,dir_out=dir_out,grilla_demt=grilla_demt,te_out=te_out,ne_out=ne_out,qrad_out=qrad_out,qheat_out=qheat_out,qebyq_out=qebyq_out,ne_lasco_out=ne_lasco_out,B_out=B_out,interpol=interpol,N1=N1,sph_data=sph_data,v_out=v_out
 ;  common grilla_chip,r_grilla,theta_grilla,phi_grilla,ne_awsom,te_awsom,rho_awsom,er_awsom,ti_awsom,ne_lasco
 
+;LA IDEA ES DARLE DE ENTRADA LA SALIDA AWSOM
+;Y SEGUN QUE QUERRAMOS, GUARDA MATRICES EN .SAV
+;LUEGO ESAS MATRICES SE LEEN CON read_awsom_matrix
+;Y SE USAN PARA XDISPLAY, O TRAZADO.
+
+  
 ;file out es un string, nombre de archivo
 
 ;grilla_demt es input  para recortar las matrices entre 2 radios
@@ -27,9 +36,12 @@ pro read_awsom,inputfile,file_out,dir_out=dir_out,grilla_demt=grilla_demt,te_out
 ;sin modificar th y ph (90 y 180)
 
 ;te_out y ne_out keywords que se usan para guardar las matrices.
-
+;sph_data output (struct) que se utiliza en statloop.
 ;N1 es un entero, cantida de lineas del header del file.
-if not keyword_set(dir_out) then dir_out='/data1/work/MHD/'
+;flag B_out correpsonde a 3 vectores del campo B
+;flag v_out correpsonde a 3 vectores del campo V
+;/interpol la ides es interpolar, ahora esta comentado.
+  if not keyword_set(dir_out) then dir_out='/data1/work/MHD/'
   x = 0.
   y = 0.
   z = 0.
@@ -101,8 +113,7 @@ if not keyword_set(dir_out) then dir_out='/data1/work/MHD/'
      for ith=0,Ntheta-1 do begin
         for ir =0, Nr-1 do begin
 ;           readf,1, x,y,z,vx,vy,vz,tp,te,bx,by,bz,i01,i02,qrad,qheat,qebyq,qparbyq,n_e,ne_lasco
-;           readf,1,
-;           x,y,z,rho,vx,vy,vz,te,tp,bx,by,bz,i01,i02,qrad,qheat,qebyq,n_e,ne_lasco                 ;PARA 2082
+;           readf,1, x,y,z,rho,vx,vy,vz,te,tp,bx,by,bz,i01,i02,qrad,qheat,qebyq,n_e,ne_lasco                 ;PARA 2082
            readf,1, x,y,z,rho,vx,vy,vz,te,tp,bx,by,bz,i01,i02,qrad,qheat,qebyq,n_e                  ;PARA 2208
            V=[x,y,z]
            cart_to_sphcoord,V,sphcoord
@@ -168,13 +179,13 @@ stop
      if not keyword_set(grilla_demt) then nrads = Nr
      nlat2 = 90
      nlon2 = 180
-goto,ahorano
+;goto,ahorano
      ne_awsom_interp       = fltarr(nrads,nlat2,nlon2)
      te_awsom_interp       = fltarr(nrads,nlat2,nlon2)
-     rho_awsom_interp      = fltarr(nrads,nlat2,nlon2)
+;     rho_awsom_interp      = fltarr(nrads,nlat2,nlon2)
      qrad_awsom_interp     = fltarr(nrads,nlat2,nlon2)
      qheat_awsom_interp    = fltarr(nrads,nlat2,nlon2)
-     qebyq_awsom_interp    = fltarr(nrads,nlat2,nlon2)
+;     qebyq_awsom_interp    = fltarr(nrads,nlat2,nlon2)
      ne_lasco_awsom_interp = fltarr(nrads,nlat2,nlon2)
 ahorano:
      if keyword_set (B_out) then begin
@@ -189,27 +200,27 @@ ahorano:
      endif
 
      for ir=0,nrads-1 do begin
-goto,no1
+;goto,no1
         A1 = reform(ne_awsom(ir,*,*))
         B1 = reform(te_awsom(ir,*,*))
-        C1 = reform(rho_awsom(ir,*,*))
+;        C1 = reform(rho_awsom(ir,*,*))
         D1 = reform(qrad_awsom(ir,*,*))
         E1 = reform(qheat_awsom(ir,*,*))
-        F1 = reform(qebyq_awsom(ir,*,*))
+;        F1 = reform(qebyq_awsom(ir,*,*))
         G1 = reform(ne_lasco_awsom(ir,*,*))
         inter,A1=A1,A2=A2,Nlat1=180,Nlon1=360,Nlat2=90,Nlon2=180
         inter,A1=B1,A2=B2,Nlat1=180,Nlon1=360,Nlat2=90,Nlon2=180
-        inter,A1=C1,A2=C2,Nlat1=180,Nlon1=360,Nlat2=90,Nlon2=180
+;        inter,A1=C1,A2=C2,Nlat1=180,Nlon1=360,Nlat2=90,Nlon2=180
         inter,A1=D1,A2=D2,Nlat1=180,Nlon1=360,Nlat2=90,Nlon2=180
         inter,A1=E1,A2=E2,Nlat1=180,Nlon1=360,Nlat2=90,Nlon2=180
-        inter,A1=F1,A2=F2,Nlat1=180,Nlon1=360,Nlat2=90,Nlon2=180
+;        inter,A1=F1,A2=F2,Nlat1=180,Nlon1=360,Nlat2=90,Nlon2=180
         inter,A1=G1,A2=G2,Nlat1=180,Nlon1=360,Nlat2=90,Nlon2=180
         ne_awsom_interp[ir,*,*]       = A2
         te_awsom_interp[ir,*,*]       = B2
-        rho_awsom_interp[ir,*,*]      = C2     
+;        rho_awsom_interp[ir,*,*]      = C2     
         qrad_awsom_interp[ir,*,*]     = D2      
         qheat_awsom_interp[ir,*,*]    = E2   
-        qebyq_awsom_interp[ir,*,*]    = F2   
+;        qebyq_awsom_interp[ir,*,*]    = F2   
         ne_lasco_awsom_interp[ir,*,*] = G2
 no1:
         if keyword_set (B_out) then begin
