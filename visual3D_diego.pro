@@ -2,8 +2,7 @@
 ;hacer_visualizacion,/create
 pro visual3D_diego,output_gif,$
                    lat0=lat0,lon0=lon0,image_max=image_max,$
-                   npx=npx,altura=altura,zbuff=zbuff
-  common structure,sph_data
+                   npx=npx,altura=altura,zbuff=zbuff,pfss_data=pfss_data
 
 
 if     keyword_set(zbuff) then SET_PLOT,'Z'
@@ -12,8 +11,8 @@ if     keyword_set(zbuff) then dev=     'Z'
 if not keyword_set(npx) then npx = 1024 ; numero de pixels de la ventana del gráfico
 npy=npx
 Device, Decomposed=0, Set_Pixel_Depth=24, Set_Resolution=[npx,npy]
-;  stop
-pfss_data=sph_data
+  stop
+;pfss_data=sph_data
 
 ;-----------------------------------------------------------
 ; Seleccionar un INDICE de altura (0 es 1 Rsun)
@@ -44,7 +43,7 @@ pfss_data=sph_data
 ;Este codigo va a dibujar todas las lineas, entonces vamos a recortar
 ;seleccionando las lineas que salen de starting point a una sola altura
   
-  if not keyword_set(altura) then altura=1.105
+  if not keyword_set(altura) then altura=1.025
   new_pfss_data=pfss_data
   ind = where(*pfss_data.str eq altura);elijo todo lo que sale de esta altura de starting point
   *new_pfss_data.str  = (*pfss_data.str)(ind)
