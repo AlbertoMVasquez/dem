@@ -18,7 +18,7 @@
 
 ;probando trazar a mucha altura con awsom
 ;trace_LDEM,field_awsom='sph_data_awsom_2208_1.85.sav',period='2208_awsom_test_mucha_altura_',safety=.5,stepmax=10000,/unifgrid_v2,radstart=4.505,dlat=4.,dlon=4.,awsom_file='awsom_2208_1.85_extend'
-;trace_LDEM,pfss_data_file='pfss_data_awsom_2208_1.85_extend2208_awsom_test_mucha_altura__radstart-4.505Rs.sav',period='2208_awsom_test_mucha_altura_',/unifgrid_v2,awsom_file='awsom_2208_1.85_extend'
+;trace_LDEM,pfss_data_file='pfss_data_awsom_2208_1.85_extend2208_awsom_test_mucha_altura__radstart-4.505Rs.sav',period='2208_awsom_test_mucha_altura_vr',/unifgrid_v2,awsom_file='awsom_2208_1.85_extended'
 pro trace_LDEM,fdips_file=fdips_file,$
                ldem_file=ldem_file,$
                period=period,$
@@ -245,7 +245,7 @@ undefine,sph_data               ;liberando espacio
      nr=500
      read_awsom_matrix,suff_file=awsom_file,nr=nr,nt=90,np=180,/te_out,te ;,/nelasco_out,ne_lasco,/qheat_out,qheat,/qebyq_out,qebyq
      read_awsom_matrix,suff_file=awsom_file,nr=nr,nt=90,np=180,/ne_out,n_e 
-;     read_awsom_matrix,suff_file=awsom_file,nr=nr,nt=90,np=180,/qrad_out,qrad 
+     read_awsom_matrix,suff_file=awsom_file,nr=nr,nt=90,np=180,/qrad_out,qrad 
      read_awsom_matrix,suff_file=awsom_file,nr=nr,nt=90,np=180,/vr_out,vr
      Nrad=500
 ;las matrices fueron previamente interpoladas --> creo que quise decir
@@ -287,7 +287,7 @@ stop
   if keyword_set(awsom_file)  then Nptmax_v = 150
 
 ;alta altura---- TEST-----
-Nptmax_v = 1500
+Nptmax_v = 1200
   
 ;  sin embargo, por la experiencia de haber realizado varios trazados
 ;  creo que va funcionar. 
@@ -297,6 +297,7 @@ Nptmax_v = 1500
 ; one data point per tomographic voxel crossed by line.
       Ne_v = fltarr(Nptmax_v,Nlin)
       Tm_v = fltarr(Nptmax_v,Nlin)
+      Vr_v = fltarr(Nptmax_v,Nlin)
       Er_v = fltarr(Nptmax_v,Nlin)
       if keyword_set(awsom_file)  then begin
 ;         qheat_v = fltarr(Nptmax_v,Nlin)
@@ -337,7 +338,8 @@ xxx=0
 ; Build more arrays:   
            s_l = fltarr(Np_l)      -666. 
           Ne_l = fltarr(Np_l)      -666. 
-          Tm_l = fltarr(Np_l)      -666. 
+          Tm_l = fltarr(Np_l)      -666.
+          Vr_l = fltarr(Np_l)      -666. 
           Er_l = fltarr(Np_l)      -666. 
           if keyword_set(ldem_file) then begin
              WT_l = fltarr(Np_l)      -666. 
@@ -408,6 +410,7 @@ xxx=0L
         if  rad_l(ir) le Rmax_tom+dr_tom/2 then begin ;<--
            Ne_l(ir)   = N_e(irad,ilat,ilon)
            Tm_l(ir)   = Tm (irad,ilat,ilon)
+           Vr_l(ir)   = Vr (irad,ilat,ilon)
            Er_l(ir)   = Er (irad,ilat,ilon)
            if keyword_set(awsom_file) then begin
   ;            Ne_lasco_l(ir) = ne_lasco (irad,ilat,ilon)
@@ -457,6 +460,7 @@ xxx=0L
            ind = (median(index))(0)
                 Ne_v(ivox,il) =     Ne_l(ind)
                 Tm_v(ivox,il) =     Tm_l(ind)
+                Vr_v(ivox,il) =     Vr_l(ind)
                 Er_v(ivox,il) =     Er_l(ind)
                 if keyword_set(awsom_file) then begin
    ;                Ne_lasco_v(ivox,il) = ne_lasco_l (ind)
@@ -539,7 +543,8 @@ endfor                          ; closes lines loop
   print, 'IMPORTANTE: puntos maximos de todas las lineas --> Npts_max'+Npts_max
   
     Ne_v  = reform(     Ne_v(0:Npts_max-1,*) ) 
-    Tm_v  = reform(     Tm_v(0:Npts_max-1,*) ) 
+    Tm_v  = reform(     Tm_v(0:Npts_max-1,*) )
+    Vr_v  = reform(     Vr_v(0:Npts_max-1,*) ) 
     Er_v  = reform(     Er_v(0:Npts_max-1,*) )
     if keyword_set(awsom_file) then begin
     ;   Ne_lasco_v = reform( ne_lasco_v (0:Npts_max-1,*) )
