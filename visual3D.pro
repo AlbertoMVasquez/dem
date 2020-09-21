@@ -1,8 +1,4 @@
-
 ;hacer_visualizacion,/create
-
-
-
 pro hacer_visualizacion,create=create
 common structure,sph_data
 common flags,flag_fan,flag_spine,flag_onebyone,flag_create,flag_extra,flag_vnormal,flag_cube,flag_interpol
@@ -14,14 +10,20 @@ flag_interpol=0
 ; AWSOM vs PFSSS: CR-2082,  08/05/2019
 
 ;visual3D,'fdips_field_150x180x360_synop_Mr_0.polfil.2082.ubdat','CR2082_PFSS.gif',/marcgrid,radstart=1.5,spacing=10,lon0=80
-visual3D,'sph_data_awsom_2082_1.85_extended.sav','CR2082_awsom.jpg',/marcgrid,radstart=1.065,spacing=5,/field_awsom,lon0=80
+;visual3D,'sph_data_awsom_2082_1.85_extended.sav','CR2082_awsom.jpg',/marcgrid,radstart=1.065,spacing=5,/field_awsom,lon0=80
+
+;visual3D,'fdips_field_150x180x360_GONG_CR2219_mrnqs190713t0141c2219_rmax18.out','CR2223_PFSS_GONG_mrnqs_18.gif',/marcgrid,radstart=1.025,spacing=5,lon0=1,dir='/data1/DATA/PFSSM/'
+;visual3D,'fdips_field_150x180x360_GONG_CR2219_GONG_mrnqs190713t0141c2219.out','CR2219_PFSS_GONG_mrnqs_25.gif',/marcgrid,radstart=1.025,spacing=5,lon0=1,dir='/data1/DATA/PFSSM/'
+;visual3D,'fdips_field_150x180x360_GONG_CR2219_mrnqs190713t0141c2219_rmax215.out','CR2223_PFSS_GONG_mrnqs_215.gif',/marcgrid,radstart=1.025,spacing=5,lon0=1,dir='/data1/DATA/PFSSM/'
+;visual3D,'fdips_field_150x180x360_GONG_CR2219_mrnqs190713t0141c2219_rmax275.out','CR2223_PFSS_GONG_mrnqs_275.gif',/marcgrid,radstart=1.025,spacing=5,lon0=1,dir='/data1/DATA/PFSSM/'
+visual3D,'fdips_field_150x180x360_GONG_CR2219_shifted_mrzqs190716t2204c2219_069.out','CR2219_PFSS_GONG_mrzqs_25_shifted.gif',/marcgrid,radstart=1.025,spacing=5,lon0=1,dir='/data1/DATA/PFSSM/'
 return
 end
 
 pro visual3D,input_dat,output_gif,$
              lat0=lat0,lon0=lon0,image_max=image_max,win=win,spacing=spacing,radstart=radstart,$
              npx=npx,box=box,create=create,dlat=dlat,dlon=dlon,unifgrid=unifgrid,marcgrid=marcgrid,$
-             interpol=interpol,sinlabel=sinlabel,field_awsom=field_awsom
+             interpol=interpol,sinlabel=sinlabel,field_awsom=field_awsom,dir=dir
   common structure,sph_data
   common flags,flag_fan,flag_spine,flag_onebyone,flag_create,flag_extra,flag_vnormal,flag_cube,flag_interpol
 ;+ 
@@ -42,11 +44,12 @@ pro visual3D,input_dat,output_gif,$
 ; /marcgrid = use Marc's tools starting points routine.
 ;
 ;-
+  if not keyword_set(dir) then dir=''
   
   if flag_create eq 1 then begin
      if not keyword_set(field_awsom) then begin
         PFSSM_model=input_dat
-        create_structure,PFSSM_model
+        create_structure,dir+PFSSM_model
    ;create_structure_v2,PFSSM_model
      endif else begin
         ;CAMBIAR =========================
@@ -129,10 +132,10 @@ pro visual3D,input_dat,output_gif,$
 ;  record_gif,'~/Downloads/',output_gif
   nname=strlen(output_gif)
   record_jpg,'/data1/work/dem/github_dem/dem/newfigs/',strmid(output_gif,0,nname-4)+'.jpg'
-
+stop
 ; using the spherical_trackball_widget.pro from solar soft
   spherical_trackball_widget,pfss_data,im_data=image_data,imsc=image_max
-  
+  stop
 ; using the spherical_trackball_widget.pro in /data1/work/dem/
 ; you need to compilate before
 ; spherical_trackball_widget,pfss_data,im_data=image_data,imsc=image_max,/for_ps

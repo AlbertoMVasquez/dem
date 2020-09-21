@@ -47,6 +47,7 @@ pro inter,A1=A1,A2=A2,Nlat1=Nlat1,Nlon1=Nlon1,Nlat2=Nlat2,Nlon2=Nlon2,Lat1=Lat1,
  JY = iY2
 
 ; Bilinear interpolarion of A1 onto Grid2:
+
  A2  = bilinear(A1,IX,JY)
 
   return

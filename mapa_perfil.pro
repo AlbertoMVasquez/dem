@@ -30,8 +30,16 @@ fileA='Ne_CR2208_DEMT-AIA_H1_L.5.2.2_r3d_multistart2'
 fileB='Ne_awsom_2208_1.85_short'
 filec='R_CR2208_DEMT-AIA_H1_L.5.2.2_r3d_multistart2'
 mapa_perfil,fileA,fileB=fileB,fileC=fileC,win=1,unit=1.e8,rads=[1.105],lons=[0,150],filename='Ne_demt_awsom_2208',/mapoc,/cr2208,ytitle='Ne [10!U8!Ncm!U-3!N]',linestyle=[0,2],color=[1,1]
+;----------------------------------- WHPI--------------------------
+fileA='Ne_CR2223_DEMT-AIA_H_L.5.2.2_r3d_multistart'
+fileB='Ne_CR2219_DEMT-AIA_H_L.5.2.2_r3d_multistart'
+;fileB='Ne_CR2208_DEMT-AIA_H1_L.5.2.2_r3d_multistart2'
+mapa_perfil,fileA,fileB=fileB,win=1,unit=1.e8,rads=[1.105],lons=[0,260],filename='Ne_demt_2219_2223',ytitle='Ne [10!U8!Ncm!U-3!N]',linestyle=[0,2],color=[1,0],dirB= '/data1/work/dem/',nrad=30,rmax=1.3,label1='CR2223',label2='CR2219'
 
 
+fileA='Tm_CR2219_DEMT-AIA_H_L.5.2.2_r3d_multistart'
+fileB='Tm_CR2223_DEMT-AIA_H_L.5.2.2_r3d_multistart'
+mapa_perfil,fileA,fileB=fileB,win=1,unit=1.e6,rads=[1.105],lons=[0,360],filename='Tm_demt_2219_2223',ytitle='Tm [MK]',linestyle=[0,2],color=[1,0],dirB= '/data1/work/dem/',nrad=30,rmax=1.3,label1='CR2223',label2='CR2219'
 
 return
 end
@@ -61,7 +69,7 @@ end
 ;en el caso de querer overplot, usar las 3 entradas con A y B demt y
 ;la otra awsom.
 pro mapa_perfil,fileA,fileB=fileB,fileC=fileC,filename=filename,tit=tit,lats=lats,lons=lons,rads=rads,nrad=nrad,rmin=rmin,rmax=rmax,win=win,unit=unit,ytit=ytit,dirA=dirA,dirB=dirB,$
-                cr2082=cr2082,cr2208=cr2208,mapoc=mapoc,ytitle=ytitle,linestyle=linestyle,color=color,maxx=maxx,minn=minn
+                cr2082=cr2082,cr2208=cr2208,mapoc=mapoc,ytitle=ytitle,linestyle=linestyle,color=color,maxx=maxx,minn=minn,label1=label1,label2=label2
   if not keyword_set(dirB)        then dirB         = '/data1/work/MHD/'
   if not keyword_set(dirA)        then dirA         = '/data1/work/dem/';'/data1/DATA/ldem_files/'
   if not keyword_set(lats)        then lats         =[-90,90]
@@ -76,7 +84,9 @@ pro mapa_perfil,fileA,fileB=fileB,fileC=fileC,filename=filename,tit=tit,lats=lat
   if not keyword_set(nrad)        then nrad         = 26
   if not keyword_set(rmin)        then rmin         = 1.
   if not keyword_set(rmax)        then rmax         = 1.26
-  if not keyword_set(ytitle)        then ytitle         = ''
+  if not keyword_set(ytitle)      then ytitle       = ''
+  if not keyword_set(label1)      then label1       = 'DEMT'
+  if not keyword_set(label2)      then label2       = 'AWSoM'
   if keyword_set (fileB) and not keyword_set(linestyle) then begin
      linestyle =[0,0]
      color = [0,1]
@@ -107,10 +117,10 @@ pro mapa_perfil,fileA,fileB=fileB,fileC=fileC,filename=filename,tit=tit,lats=lat
   lat3D = fltarr(Nr,Nlat,Nlon)
   rad3d = fltarr(Nr,Nlat,Nlon)
   lon3d = fltarr(Nr,Nlat,Nlon)
-  
-  xread,dir=dirA,file=fileA,nr=nr,nt=nlat,np=nlon,map=map1
-  if keyword_set(fileB) then xread,dir=dirB,file=fileB,nr=26,nt=90,np=180,map=map2
-  if keyword_set(fileC) then xread,dir=dirA,file=fileC,nr=26,nt=90,np=180,map=mapC
+    xread,dir=dirA,file=fileA,nr=nr,nt=nlat,np=nlon,map=map1
+
+  if keyword_set(fileB) then xread,dir=dirB,file=fileB,nr=nr,nt=90,np=180,map=map2
+  if keyword_set(fileC) then xread,dir=dirA,file=fileC,nr=nr,nt=90,np=180,map=mapC
 
   for irad=0,Nrad-1 do begin
      rad3d(irad,*,*) = rad(irad)
@@ -154,10 +164,10 @@ jj = 0 ;es un contador para las ventanas
 ;        ok2 = where (map1_ir(lati,*) ne -999. and lon2d(lati,*) ge 60  and lon2d(lati,*) le 120 )
 ;        ok3 = where (map1_ir(lati,*) ne -999. and lon2d(lati,*) ge 140 and lon2d(lati,*) le 340 )
         
-        ok1 = where (map1_ir(lati,*) ne -999. and lon2d(lati,*) ge 0   and lon2d(lati,*) le 120  )
-        ok2 = where (map1_ir(lati,*) ne -999. and lon2d(lati,*) ge 150 and lon2d(lati,*) le 170 )
-        ok3 = where (map1_ir(lati,*) ne -999. and lon2d(lati,*) ge 220 and lon2d(lati,*) le 280 )
-        ok = [ok1,ok2,ok3]
+;        ok1 = where (map1_ir(lati,*) ne -999. and lon2d(lati,*) ge 0   and lon2d(lati,*) le 120  )
+;        ok2 = where (map1_ir(lati,*) ne -999. and lon2d(lati,*) ge 150 and lon2d(lati,*) le 170 )
+;        ok3 = where (map1_ir(lati,*) ne -999. and lon2d(lati,*) ge 220 and lon2d(lati,*) le 280 )
+;        ok = [ok1,ok2,ok3]
         
         
         if  ok(0) eq -1 then v_prom_map1(lati) = 0
@@ -222,7 +232,7 @@ jj = 0 ;es un contador para las ventanas
         drel=((maxx - minn)/unit )/10.
         oplot,[t1,t2],y0*[1,1]-drel*7.5,linestyle=linestyle(0),th=8,color=fun(color(0))
         oplot,[t1,t2],y0*[1,1]-drel*9.2,linestyle=linestyle(1),th=8,color=fun(color(1))
-        xyouts,.8-[.15,.15],1.-[.6,.7],['DEMT','AWSoM'],/normal,color=[fun(color(0)),fun(color(1))] ,charthick=2,charsize=2.,Font=0
+        xyouts,.8-[.15,.15],1.-[.6,.7],[label1,label2],/normal,color=[fun(color(0)),fun(color(1))] ,charthick=2,charsize=2.,Font=0
      endif
      
 ;     mapoc  = 1

@@ -1,6 +1,16 @@
 ;Hecho por Fede Nuevo 2019.
 
 pro hacer_make_mapoc
+  file_input='github_dem/dem/traceLDEM_CR2223_ldem_adapt-gong_realization_0_radstart-1.105Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
+  alturas=1.105
+  file_suffix='CR2223_90X180_fdips_realization_0'
+  MAKE_MAPOC,file_input,file_suffix,alturas,/gng
+  
+  file_input='github_dem/dem/traceLDEM_CR2223_ldem_adapt-gong_realization_1_radstart-1.105Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
+  alturas=1.105
+  file_suffix='CR2223_90X180_fdips_realization_1'
+  MAKE_MAPOC,file_input,file_suffix,alturas,/gng
+  
   file_input='traceLDEM_CR2223_ldem__radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
   alturas=1.025+ 0.04 *findgen(6)
   file_suffix='CR2223_90X180_fdips'
@@ -17,6 +27,23 @@ stop
   file_suffix='CR2208_90X180blines_r_'
   MAKE_MAPOC,file_input,file_suffix,alturas,/mhd
   stop
+
+  file_input='github_dem/dem/traceLDEM_CR2223_ldem_adapt-gong_realization_0_3alturas_radstart-1.025-1.105Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
+  alturas=[1.025,1.065,1.105]
+  file_suffix='CR2223_90X180_fdips_realization_0_3alturas'
+  MAKE_MAPOC,file_input,file_suffix,alturas,/gng
+
+  file_input='github_dem/dem/traceLDEM_CR2223_ldem_adapt-gong_realization_1_3alturas_radstart-1.025-1.105Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
+  alturas=[1.025,1.065,1.105]
+  file_suffix='CR2223_90X180_fdips_realization_1_3alturas'
+  MAKE_MAPOC,file_input,file_suffix,alturas,/gng
+
+  file_input='github_dem/dem/traceLDEM_CR2223_ldem_gong_3alturas_radstart-1.025-1.105Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
+  alturas=[1.025,1.065,1.105]
+  file_suffix='CR2223_90X180_fdips__3alturas'
+  MAKE_MAPOC,file_input,file_suffix,alturas,/gng
+
+
   return
 end
 
