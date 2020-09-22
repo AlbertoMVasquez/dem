@@ -108,7 +108,17 @@
 
 ;multistart con itmax 10000
 ;leer_ldem_escribir_ascii,'LDEM.v3_CR2208_l.50.20.20_h1_Rmin1.00_Rmax1.26_Nr26_InstRmax1.26_bf4_r3d_B_multistart2_chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',/tm_out,/R_parcial,/ne_out,/aia,/r_out,i_out='_CR2208_DEMT-AIA_H1_L.5.2.2_r3d_multistart2'
+
 ;=========================================================================
+
+
+;leer_ldem_escribir_ascii,'LDEM.v3_CR2219_l.8.3.4_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',/tm_out,/R_parcial,/ne_out,/aia,/r_out,i_out='_CR2219_DEMT-AIA_H1_L.8.3.4_r3d_multistart',dir='/data1/work/dem/github_dem/dem/'
+
+;leer_ldem_escribir_ascii,'LDEM.v3_CR2223_l.7.3.3_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',/tm_out,/R_parcial,/ne_out,/aia,/r_out,i_out='_CR2223_DEMT-AIA_H1_L.7.3.3_r3d_multistart',dir='/data1/work/dem/github_dem/dem/'
+
+
+
+
 pro leer_ldem_escribir_ascii,file,ne_out=ne_out,tm_out=tm_out,R_out=R_out,Er_out=Er_out,i_out=i_out,tabla=tabla,aevs=aevs,r_crit=r_crit,R_parcial=R_parcial,dir=dir,aia=aia
   common results_images,ima,sima,ra,pa,ya,za,em,npx
   common comunes,tm,wt,nband,demc,PHI,parametrizacion,Tmin,Tmax,nr,nth,np,rad,lat,lon,lambda,WTc

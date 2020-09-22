@@ -24,11 +24,12 @@
 ;--> trace_struct_LDEM_CR2208_hollow_demt-data_field-awsom_6alt_radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat_doble_error.sav
 
 ;statloop_awsom_diego,file='traceLDEM_CR2208_hollow_demt-data_field-awsom_6alt_multistart2_radstart-1.025-1.225Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav',/demt
+;statloop_awsom_diego,file='traceLDEM_CR2219_demt_campo_awsom_radstart-5.995Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav',/demt,ffile_out='cr2219_demt_awsomfield_startp6rsun'
+;statloop_awsom_diego,file='traceLDEM_CR2219_awsom_campo_awsom_radstart-5.995Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav',/awsom,ffile_out='cr2219_awsom_awsomfield_startp6rsun'
 
-
-pro statloop_awsom_diego,rmin=rmin,rmax=rmax,alturas=alturas,ajuste_alto=ajuste_alto,ajuste_bajo=ajuste_bajo,demt=demt,file=file,ffile_out=ffile_out
+pro statloop_awsom_diego,rmin=rmin,rmax=rmax,alturas=alturas,ajuste_alto=ajuste_alto,ajuste_bajo=ajuste_bajo,demt=demt,awsom=awsom,lasco=lasco,file=file,ffile_out=ffile_out
 ;OBS SE ESTA CORRIENDO CON EL DOBLE DE ERRORES DEL PRIMER PAPER AL
-;SEGUNDO
+;SEGUNDO, esto afecta a awsom tambien
   
   longitud = strlen(file)-5-4 ;5 de la long de la palabra trace y 4 del .sav
   if not keyword_set(ffile_out) then ffile_out = strmid(file,5,longitud)
@@ -43,7 +44,7 @@ pro statloop_awsom_diego,rmin=rmin,rmax=rmax,alturas=alturas,ajuste_alto=ajuste_
 ; Physical constants needed for the HS fits:             
   rsun = 6.955e10               ; cm                                             
   gsun = 2.74e4      ; cm/sec²                                
-    kB = 1.38e-16    ; erg/K                                           
+   kB = 1.38e-16    ; erg/K                                           
     mH = 1.6726e-24  ; gr                                    
      a = 0.08        ; N_He / N_H                       
     mu = (1.+4.*a)/(1.+2.*a)
@@ -226,6 +227,24 @@ Rp_base  = {lat:fltarr(Nlegs)-555.,lon:fltarr(Nlegs)-555.}
 Rp_medio = {lat:fltarr(Nlegs)-555.,lon:fltarr(Nlegs)-555.}
 Rp_alto  = {lat:fltarr(Nlegs)-555.,lon:fltarr(Nlegs)-555.}
 
+;----> Nuevo, definicion de matrices
+;matrices y alturas fijas
+alturas = [1.0,1.025,1.065,1.1,1.15,1.25,1.5,2.,2.5,3.,3.5,4.,4.5,5,5.5,6]
+  extra = 1
+  mat_r   = fltarr(n_elements(alturas)+extra,nloop) ;a es de abierto
+  mat_br  = fltarr(n_elements(alturas)+extra,nloop)
+  mat_btot= fltarr(n_elements(alturas)+extra,nloop)
+  mat_ne  = fltarr(n_elements(alturas)+extra,nloop)
+  mat_te  = fltarr(n_elements(alturas)+extra,nloop)
+  mat_vr  = fltarr(n_elements(alturas)+extra,nloop)
+  mat_vth = fltarr(n_elements(alturas)+extra,nloop)
+  mat_vph = fltarr(n_elements(alturas)+extra,nloop)
+  mat_lat = fltarr(n_elements(alturas)+extra,nloop)
+  mat_lon = fltarr(n_elements(alturas)+extra,nloop)
+
+
+
+
 ; This array will code the "STATUS of LEG" so that:
 ; leg_status=1 if leg contains the starting point used for the loop,     
 ; leg_status=2 if not.  
@@ -297,19 +316,81 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
 ; Analysis for OPEN loops:                     
      if opcls(il) eq 0. then begin
 
-        Ne_l = reform ( Ne_v(0:Npts_v(il)-1,il))
-        Tm_l = reform ( Tm_v(0:Npts_v(il)-1,il))
         rad_l = reform (rad_v(0:Npts_v(il)-1,il))
         lat_l = reform (lat_v(0:Npts_v(il)-1,il))
         lon_l = reform (lon_v(0:Npts_v(il)-1,il))
         s_l = reform (  s_v(0:Npts_v(il)-1,il))
         B_l = reform (  B_v(0:Npts_v(il)-1,il))
         Br_l = reform ( Br_v(0:Npts_v(il)-1,il))
-        Er_l = reform ( Er_v(0:Npts_v(il)-1,il))
+        if keyword_set(awsom) then begin
+           Ne_l  = reform ( Ne_v(0:Npts_v(il)-1,il))
+           Tm_l  = reform ( Tm_v(0:Npts_v(il)-1,il))
+           Er_l  = reform ( Er_v(0:Npts_v(il)-1,il))
+           Vr_l  = reform ( Vr_v(0:Npts_v(il)-1,il))
+           Vth_l = reform ( Vth_v(0:Npts_v(il)-1,il))
+           Vph_l = reform ( Vph_v(0:Npts_v(il)-1,il))
+        endif
         if keyword_set(demt) then begin
+           Ne_l = reform ( Ne_demt_v(0:Npts_v(il)-1,il))
+           Tm_l = reform ( Tm_demt_v(0:Npts_v(il)-1,il))
+           Er_l = reform ( Er_demt_v(0:Npts_v(il)-1,il))
            WT_l = reform ( WT_v(0:Npts_v(il)-1,il))
            scoreR_l = reform ( scoreR_v(0:Npts_v(il)-1,il))
         endif
+
+;--------->  NUEVO
+        ;matrices
+        for i=0,n_elements(alturas)-1 do begin 
+           min_rad = where( abs(rad_l - alturas(i)) eq min(abs(rad_l-alturas(i))))
+           r_pos = min_rad(0)
+
+           if keyword_set(awsom) then begin
+              mat_ne(i,il)  = Ne_l(r_pos)
+              mat_te(i,il)  = Tm_l(r_pos)
+              mat_vr(i,il)  = Vr_l(r_pos)
+              mat_vth(i,il) = Vth_l(r_pos)
+              mat_vph(i,il) = Vph_l(r_pos)
+           endif
+           mat_btot(i,il)= B_l(r_pos)
+           mat_br(i,il)  = Br_l(r_pos)
+           mat_r(i,il)   = rad_l(r_pos)
+           mat_lat(i,il) = lat_l(r_pos)
+           mat_lon(i,il) = lon_l(r_pos)
+           if keyword_set(demt) then begin
+              mat_ne(i,il) = Ne_l(r_pos)
+              mat_te(i,il) = Tm_l(r_pos)
+           endif
+        endfor
+;celda final de la pierna
+        
+        if keyword_set(awsom) then begin
+           if (where(Ne_l eq -666))(0) eq -1 then sobrante =0.
+           if (where(Ne_l eq -666))(0) ne -1 then sobrante =n_elements(where(ne_l eq -666))
+        endif
+        if keyword_set(demt) then begin
+           if (where(Ne_l eq -666))(0) eq -1 then sobrante =0.
+           if (where(Ne_l eq -666))(0) ne -1 then sobrante =n_elements(where(ne_l eq -666))
+        endif
+
+           if keyword_set(awsom) then begin
+              mat_ne(n_elements(alturas+extra),il)  = Ne_l(n_elements(ne_l) - sobrante)
+              mat_te(n_elements(alturas+extra),il)  = Tm_l(n_elements(ne_l) - sobrante)
+              mat_br(n_elements(alturas+extra),il)  = Br_l(n_elements(ne_l) - sobrante)
+              mat_vr(n_elements(alturas+extra),il)  = Vr_l(n_elements(ne_l) - sobrante)
+              mat_vth(n_elements(alturas+extra),il) = Vth_l(n_elements(ne_l) - sobrante)
+              mat_vph(n_elements(alturas+extra),il) = Vph_l(n_elements(ne_l) - sobrante)
+           endif
+           mat_r(n_elements(alturas+extra),il)   = rad_l(n_elements(ne_l) - sobrante)
+           mat_lat(n_elements(alturas+extra),il) = lat_l(n_elements(ne_l) - sobrante)
+           mat_lon(n_elements(alturas+extra),il) = lon_l(n_elements(ne_l) - sobrante)
+           if keyword_set(demt) then begin
+              mat_ne(n_elements(alturas+extra),il) = Ne_l(n_elements(ne_l) - sobrante)
+              mat_te(n_elements(alturas+extra),il) = Tm_l(n_elements(ne_l) - sobrante)
+           endif
+
+
+
+;---------> finaliza agregado NUEVO
         
         rad_ini(ileg) = rad_l(0)
         lat_ini(ileg) = lat_l(0)
@@ -424,7 +505,7 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
            error_t(ileg)  = ch_la_t
         endif
      endif
-;<--------- TESTEO --- FIJA LOS ERRORES
+;<---------  --- FIJA LOS ERRORES
      error_ne(ileg) = 5.e6 *2. ;doble errores
      error_t(ileg) = 7.e4 *2.
 
@@ -651,22 +732,30 @@ no_para_awsom1:
        if opcls(il) eq 1 then begin
           ifirs_1 = 0
           ilast_1 = midcell_v(il)-1
-          while Ne_v(ilast_1,il) eq -666. do ilast_1=ilast_1-1
+          if keyword_set(demt)  then while Ne_demt_v (ilast_1,il) eq -666. do ilast_1=ilast_1-1
+          if keyword_set(awsom) then while Ne_v(ilast_1,il) eq -666. do ilast_1=ilast_1-1
           ifirs_2 = midcell_v(il)
           ilast_2 = Npts_v(il)-1
        endif
-       
-       Ne_l1 = reform ( Ne_v(ifirs_1:ilast_1,il))
-       Ne_l2 = reform ( Ne_v(ifirs_2:ilast_2,il))
-       Tm_l1 = reform ( Tm_v(ifirs_1:ilast_1,il))
-       Tm_l2 = reform ( Tm_v(ifirs_2:ilast_2,il))
-       Er_l1 = reform ( Er_v(ifirs_1:ilast_1,il))
-       Er_l2 = reform ( Er_v(ifirs_2:ilast_2,il))
+       if keyword_set(awsom) then begin
+          Ne_l1 = reform ( Ne_v(ifirs_1:ilast_1,il))
+          Ne_l2 = reform ( Ne_v(ifirs_2:ilast_2,il))
+          Tm_l1 = reform ( Tm_v(ifirs_1:ilast_1,il))
+          Tm_l2 = reform ( Tm_v(ifirs_2:ilast_2,il))
+          Er_l1 = reform ( Er_v(ifirs_1:ilast_1,il))
+          Er_l2 = reform ( Er_v(ifirs_2:ilast_2,il))
+       endif
        if keyword_set(demt) then begin
           WT_l1 = reform ( WT_v(ifirs_1:ilast_1,il))
           WT_l2 = reform ( WT_v(ifirs_2:ilast_2,il))
           scoreR_l1 = reform ( scoreR_v(ifirs_1:ilast_1,il))
           scoreR_l2 = reform ( scoreR_v(ifirs_2:ilast_2,il))
+          Ne_l1 = reform ( Ne_demt_v(ifirs_1:ilast_1,il))
+          Ne_l2 = reform ( Ne_demt_v(ifirs_2:ilast_2,il))
+          Tm_l1 = reform ( Tm_demt_v(ifirs_1:ilast_1,il))
+          Tm_l2 = reform ( Tm_demt_v(ifirs_2:ilast_2,il))
+          Er_l1 = reform ( Er_demt_v(ifirs_1:ilast_1,il))
+          Er_l2 = reform ( Er_demt_v(ifirs_2:ilast_2,il))
        endif
        rad_l1 = reform( rad_v(ifirs_1:ilast_1,il))
        rad_l2 = reform( rad_v(ifirs_2:ilast_2,il))
@@ -1383,6 +1472,12 @@ skipfitloop:
 endelse
 endfor
   Rp_full  = {base:Rp_base,medio:Rp_medio,alto:Rp_alto}
+
+  if keyword_set(awsom) then  matriz_a_awsom={mat_ne:mat_ne,mat_te:mat_te,mat_br:mat_br,mat_btot:mat_btot,mat_r:mat_r,mat_lat:mat_lat,mat_lon:mat_lon,$
+                                              alturas:alturas}
+  if keyword_set(demt)  then  matriz_a_demt ={mat_ne:mat_ne,mat_te:mat_te,mat_br:mat_br,mat_btot:mat_btot,mat_vr:mat_vr,mat_vth:mat_vth,mat_vph:mat_vph,$
+                                               mat_r:mat_r,mat_lat:mat_lat,mat_lon:mat_lon,alturas:alturas}
+
   stop
 ;ACA VA UN SAVE!!!  
   if not keyword_set(ffile_out) then stop
@@ -1398,37 +1493,46 @@ goto,esto_es_viejo
        Rp_base,Rp_medio,Rp_alto,FILENAME = 'trace_vectors_'+ffile_out+'.sav'
 esto_es_viejo:
   if keyword_set(demt) then begin
-  datos = {Nemean:Nemean, Tmmean:Tmmean, Nestddev:Nestddev, Tmstddev:Tmstddev, WTmean:WTmean, WTstddev:WTstddev,$
-           Pmean:Pmean, Ne2mean:Ne2mean, Ermean:Ermean ,Bmean:Bmean ,$
-           Ne0:Ne0 ,lambda_N:lambda_N, r2N:r2N ,Ne0_s:Ne0_s, lambda_N_s:lambda_N_s, r2N_s:r2N_s, P0:P0, lambda_P:lambda_P, r2P:r2P, gradT:gradT, Tm0:Tm0, r2T:r2T, gradT_s:gradT_s, Tm0_s:Tm0_s, r2t_s:r2t_s,$
-           ft:ft, ft_s:ft_s, fne:fne ,fne_s:fne_s, Tefit:Tefit, Tefit_ts:Tefit_ts, Te_base:Te_base, pearson_ns:pearson_ns, pearson_ts:pearson_ts,$
-           betamean:betamean, betaapex:betaapex, Br0:Br0, B_base:B_base, Nebasal:Nebasal, opclstat:opclstat, indexloop:indexloop,$
-           footrad:footrad, footlat:footlat, footlon:footlon, iso:iso, iso_s:iso_s, iso_erry:iso_erry, long_r:long_r, long_s:long_s, scoreR_v:scoreR_v, npts_v:npts_v,$
-           pearson_n:pearson_n, lincorr_pearson_n:lincorr_pearson_n, lincorr_pvalue_n:lincorr_pvalue_n, hip_chi_pv_n:hip_chi_pv_n, hip_chi_pv2_n:hip_chi_pv2_n, r2n_erry:r2n_erry,$
-           pearson_t:pearson_t, lincorr_pearson_t:lincorr_pearson_t, lincorr_pvalue_t:lincorr_pvalue_t, hip_chi_pv_t:hip_chi_pv_t, hip_chi_pv2_t:hip_chi_pv2_t, r2t_erry:r2t_erry,$
-           lincorr_tstatistic_t:lincorr_tstatistic_t,$
-           sigma_n:sigma_n, sigma_t:sigma_t, Ne0_erry:Ne0_erry, lambda_N_erry:lambda_N_erry, Tm0_erry:Tm0_erry, gradT_erry:gradT_erry,prob_t:prob_t,$
-           Rp_base:Rp_base, Rp_medio:Rp_medio, Rp_alto:Rp_alto, er0_s:er0_s, lambda_er_s:lambda_er_s, r2er_s:r2er_s, pearson_ers:pearson_ers, s_base:s_base, fc_l:fc_l,fcb:fcb,phi_r_total:phi_r_total,$
-           phi_c_total:phi_c_total,Tmmean_alto:Tmmean_alto,phi_r:phi_r}
-  save, datos, FILENAME = 'trace_struct_'+ffile_out+'.sav'
+     datos = {Nemean:Nemean, Tmmean:Tmmean, Nestddev:Nestddev, Tmstddev:Tmstddev, WTmean:WTmean, WTstddev:WTstddev,$
+              Pmean:Pmean, Ne2mean:Ne2mean, Ermean:Ermean ,Bmean:Bmean ,$
+              Ne0:Ne0 ,lambda_N:lambda_N, r2N:r2N ,Ne0_s:Ne0_s, lambda_N_s:lambda_N_s, r2N_s:r2N_s, P0:P0, lambda_P:lambda_P, r2P:r2P, gradT:gradT, Tm0:Tm0, r2T:r2T,$
+              gradT_s:gradT_s, Tm0_s:Tm0_s, r2t_s:r2t_s,$
+              ft:ft, ft_s:ft_s, fne:fne ,fne_s:fne_s, Tefit:Tefit, Tefit_ts:Tefit_ts, Te_base:Te_base, pearson_ns:pearson_ns, pearson_ts:pearson_ts,$
+              betamean:betamean, betaapex:betaapex, Br0:Br0, B_base:B_base, Nebasal:Nebasal, opclstat:opclstat, indexloop:indexloop,$
+              footrad:footrad, footlat:footlat, footlon:footlon, iso:iso, iso_s:iso_s, iso_erry:iso_erry, long_r:long_r, long_s:long_s, scoreR_v:scoreR_v, npts_v:npts_v,$
+              pearson_n:pearson_n, lincorr_pearson_n:lincorr_pearson_n, lincorr_pvalue_n:lincorr_pvalue_n, hip_chi_pv_n:hip_chi_pv_n, hip_chi_pv2_n:hip_chi_pv2_n, r2n_erry:r2n_erry,$
+              pearson_t:pearson_t, lincorr_pearson_t:lincorr_pearson_t, lincorr_pvalue_t:lincorr_pvalue_t, hip_chi_pv_t:hip_chi_pv_t, hip_chi_pv2_t:hip_chi_pv2_t, r2t_erry:r2t_erry,$
+              lincorr_tstatistic_t:lincorr_tstatistic_t,$
+              sigma_n:sigma_n, sigma_t:sigma_t, Ne0_erry:Ne0_erry, lambda_N_erry:lambda_N_erry, Tm0_erry:Tm0_erry, gradT_erry:gradT_erry,prob_t:prob_t,$
+              Rp_base:Rp_base, Rp_medio:Rp_medio, Rp_alto:Rp_alto, er0_s:er0_s, lambda_er_s:lambda_er_s, r2er_s:r2er_s, pearson_ers:pearson_ers, s_base:s_base,$
+              fc_l:fc_l,fcb:fcb,phi_r_total:phi_r_total,$
+              phi_c_total:phi_c_total,Tmmean_alto:Tmmean_alto,phi_r:phi_r,$
+              matriz_a_demt:matriz_a_demt}
+     save, datos, FILENAME = 'trace_struct_'+ffile_out+'.sav'
   endif
 
-  if keyword_set(ajuste_alto) then begin
-  datos = {Nemean:Nemean, Tmmean:Tmmean, Nestddev:Nestddev, Tmstddev:Tmstddev, WTmean:WTmean, WTstddev:WTstddev,$
-           Pmean:Pmean, Ne2mean:Ne2mean, Ermean:Ermean ,Bmean:Bmean ,$
-           Ne0:Ne0 ,lambda_N:lambda_N, r2N:r2N ,Ne0_s:Ne0_s, lambda_N_s:lambda_N_s, r2N_s:r2N_s, P0:P0, lambda_P:lambda_P, r2P:r2P, gradT:gradT, Tm0:Tm0, r2T:r2T, gradT_s:gradT_s, Tm0_s:Tm0_s, r2t_s:r2t_s,$
-           ft:ft, ft_s:ft_s, fne:fne ,fne_s:fne_s, Tefit:Tefit, Tefit_ts:Tefit_ts, Te_base:Te_base, pearson_ns:pearson_ns, pearson_ts:pearson_ts,$
-           betamean:betamean, betaapex:betaapex, Br0:Br0, B_base:B_base, Nebasal:Nebasal, opclstat:opclstat, indexloop:indexloop,$
-           footrad:footrad, footlat:footlat, footlon:footlon, iso:iso, iso_s:iso_s, iso_erry:iso_erry, long_r:long_r, long_s:long_s,$
-           pearson_n:pearson_n, lincorr_pearson_n:lincorr_pearson_n, lincorr_pvalue_n:lincorr_pvalue_n, hip_chi_pv_n:hip_chi_pv_n, hip_chi_pv2_n:hip_chi_pv2_n, r2n_erry:r2n_erry,$
-           pearson_t:pearson_t, lincorr_pearson_t:lincorr_pearson_t, lincorr_pvalue_t:lincorr_pvalue_t, hip_chi_pv_t:hip_chi_pv_t, hip_chi_pv2_t:hip_chi_pv2_t, r2t_erry:r2t_erry,lincorr_tstatistic_t:lincorr_tstatistic_t,$
-           sigma_n:sigma_n, sigma_t:sigma_t, Ne0_erry:Ne0_erry, lambda_N_erry:lambda_N_erry, Tm0_erry:Tm0_erry, gradT_erry:gradT_erry,prob_t:prob_t,$
-           Rp_base:Rp_base, Rp_medio:Rp_medio, Rp_alto:Rp_alto, er0_s:er0_s, lambda_er_s:lambda_er_s, r2er_s:r2er_s, pearson_ers:pearson_ers, s_base:s_base, fc_l:fc_l,fcb:fcb,phi_r_total:phi_r_total,$
-           phi_c_total:phi_c_total,phi_r:phi_r}
-  save, datos, FILENAME = 'trace_struct_'+ffile_out+'.sav'
+  if keyword_set(awsom) then begin
+     datos = {Nemean:Nemean, Tmmean:Tmmean, Nestddev:Nestddev, Tmstddev:Tmstddev, WTmean:WTmean, WTstddev:WTstddev,$
+              Pmean:Pmean, Ne2mean:Ne2mean, Ermean:Ermean ,Bmean:Bmean ,$
+              Ne0:Ne0 ,lambda_N:lambda_N, r2N:r2N ,Ne0_s:Ne0_s, lambda_N_s:lambda_N_s, r2N_s:r2N_s, P0:P0, lambda_P:lambda_P, r2P:r2P, gradT:gradT, $
+              Tm0:Tm0, r2T:r2T, gradT_s:gradT_s, Tm0_s:Tm0_s, r2t_s:r2t_s,$
+              ft:ft, ft_s:ft_s, fne:fne ,fne_s:fne_s, Tefit:Tefit, Tefit_ts:Tefit_ts, Te_base:Te_base, pearson_ns:pearson_ns, pearson_ts:pearson_ts,$
+              betamean:betamean, betaapex:betaapex, Br0:Br0, B_base:B_base, Nebasal:Nebasal, opclstat:opclstat, indexloop:indexloop,$
+              footrad:footrad, footlat:footlat, footlon:footlon, iso:iso, iso_s:iso_s, iso_erry:iso_erry, long_r:long_r, long_s:long_s,$
+              pearson_n:pearson_n, lincorr_pearson_n:lincorr_pearson_n, lincorr_pvalue_n:lincorr_pvalue_n, hip_chi_pv_n:hip_chi_pv_n, hip_chi_pv2_n:hip_chi_pv2_n, r2n_erry:r2n_erry,$
+              pearson_t:pearson_t, lincorr_pearson_t:lincorr_pearson_t, lincorr_pvalue_t:lincorr_pvalue_t, hip_chi_pv_t:hip_chi_pv_t, hip_chi_pv2_t:hip_chi_pv2_t, r2t_erry:r2t_erry,$
+              lincorr_tstatistic_t:lincorr_tstatistic_t,$
+              sigma_n:sigma_n, sigma_t:sigma_t, Ne0_erry:Ne0_erry, lambda_N_erry:lambda_N_erry, Tm0_erry:Tm0_erry, gradT_erry:gradT_erry,prob_t:prob_t,$
+              Rp_base:Rp_base, Rp_medio:Rp_medio, Rp_alto:Rp_alto, er0_s:er0_s, lambda_er_s:lambda_er_s, r2er_s:r2er_s, pearson_ers:pearson_ers, s_base:s_base,$
+              fc_l:fc_l,fcb:fcb,phi_r_total:phi_r_total,$
+              phi_c_total:phi_c_total,phi_r:phi_r,$
+              matriz_a_awsom:matriz_a_awsom}
+     save, datos, FILENAME = 'trace_struct_'+ffile_out+'.sav'
   endif
   
   print, 'vectores guardados en -->' +'trace_struct_'+ffile_out+'.sav'
   stop
   return
 end
+   
+   
