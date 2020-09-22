@@ -39,7 +39,9 @@ pro trace_LDEM,fdips_file=fdips_file,$
                unifgrid_v2=unifgrid_v2,$
                field_awsom=field_awsom,$
                awsom_file=awsom_file,$
-               pfss_data_file=pfss_data_file
+               pfss_data_file=pfss_data_file,$
+               multi_trace=multi_trace
+  
   
   common comunes,tm,wt,nband,demc,PHI,parametrizacion,Tmin,Tmax,nr,nth,np,rad,lat,lon,lambda,WTc
   common results_tomo,tfbe,sfbe,N_e
@@ -105,7 +107,13 @@ pro trace_LDEM,fdips_file=fdips_file,$
 ;  - Incorporacion de campo magnetico dado por SWMF y trazado a
 ;    travez de èl.  
 ;
-!EXCEPT=2
+; 16/06/2020
+;Modified by D.Ll.
+;  -La flag multi_trace permite hacer y guardar trazados utilizando
+;   DEMT, AWSoM and LASCO, pretty cool.
+;
+;
+  !EXCEPT=2
 
 if keyword_set(ldem_file)  then file_flag = 0
 if keyword_set(awsom_file) then file_flag = 1
@@ -236,12 +244,6 @@ undefine,sph_data               ;liberando espacio
      stop
 ;----------NUEVA IDEA
 ;LLAMAR DE A UNO POR VEZ!     
-
-;     read_awsom_matrix,suff_file=awsom_file,nr=26,nt=90,np=180,/te_out,te,/ne_out,n_e,/qrad_out,qrad ;,/nelasco_out,ne_lasco,/qheat_out,qheat,/qebyq_out,qebyq
-;OBS: las salidas te,n_e,qrad etc tienen que estar en el mismo orden
-;que figuran en el read_awsom_matrix sino aca cambian de nombre y s
-;epudre el rancho, viejo
-
      nr=500
      read_awsom_matrix,suff_file=awsom_file,nr=nr,nt=90,np=180,/te_out,te ;,/nelasco_out,ne_lasco,/qheat_out,qheat,/qebyq_out,qebyq
      read_awsom_matrix,suff_file=awsom_file,nr=nr,nt=90,np=180,/ne_out,n_e 
@@ -283,11 +285,11 @@ stop
  ;scoreR=total(    (1.-ratio)^2 , 4 ) / float(nband)
      scoreR=total( abs(1.-ratio)   , 4 ) / float(nband)
   endif
-  Nptmax_v = 150                ; ESTO NO ES ROBUSTO, 
+  Nptmax_v = 150                ; ESTO NO ES ROBUSTO, pero funciona bien 
   if keyword_set(awsom_file)  then Nptmax_v = 150
 
 ;alta altura---- TEST-----
-Nptmax_v = 1200
+Nptmax_v = 1200 
   
 ;  sin embargo, por la experiencia de haber realizado varios trazados
 ;  creo que va funcionar. 
@@ -575,6 +577,14 @@ stop
                                         s_v,npts_v,midcell_v,loopL,opcls,Ne_v,Tm_v,str_v,stth_v,stph_v,$
                                         B_v,Br_v,Bth_v,Bph_v,enrad_v,enlat_v,enlon_v,Tmin,Tmax,Er_v,FILENAME = output_file+'.sav'
 
+;esta involucra Velocidades
+   if keyword_set(awsom_file) then save,fieldtype,spacing,radstart,Rmax_tom,dr_tom,Nlin,Npts_max,rad_v,lat_v,lon_v,$
+                                        s_v,npts_v,midcell_v,loopL,opcls,Ne_v,Tm_v,str_v,stth_v,stph_v,$
+                                        B_v,Br_v,Bth_v,Bph_v,enrad_v,enlat_v,enlon_v,Tmin,Tmax,Er_v,$
+                                        Vr_v,FILENAME = output_file+'.sav'
+
+
+   
    stop
    goto,final
    openw,1,output_file

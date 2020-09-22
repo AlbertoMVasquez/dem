@@ -17,6 +17,208 @@ stop
   file_suffix='CR2208_90X180blines_r_'
   MAKE_MAPOC,file_input,file_suffix,alturas,/mhd
   stop
+
+  file_input='traceLDEM_CR2219_demt_pfss_gong_radstart-1.065Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
+  alturas=1.065
+  file_suffix='CR2219_90X180blines_r_'
+  MAKE_MAPOC,file_input,file_suffix,alturas,/gng
+
+;testeo mapocs CR2219
+  file_input='traceLDEM_CR2219_demt_pfss_gong_mrmqs_0713_radstart-1.065Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
+  alturas=1.065
+  file_suffix='CR2219_90X180blines_r_'
+  MAKE_MAPOC,file_input,file_suffix,alturas,/gng
+
+  file_input='traceLDEM_CR2219_demt_campo_awsom_radstart-1.065Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
+  alturas=1.065
+  file_suffix='CR2219_90X180blines_r_'
+  MAKE_MAPOC,file_input,file_suffix,alturas,/gng
+
+  file_input='traceLDEM_CR2219_demt_pfss_hmi_radstart-1.065Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
+  alturas=1.065
+  file_suffix='CR2219_90X180blines_r_'
+  MAKE_MAPOC,file_input,file_suffix,alturas,/gng
+
+  file_input='traceLDEM_CR2219_demt_pfss_gong_0702_radstart-1.065Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
+  alturas=1.065
+  file_suffix='CR2219_90X180blines_r_'
+  MAKE_MAPOC,file_input,file_suffix,alturas,/gng
+
+  file_input='traceLDEM_CR2219_demt_pfss_0709_R0_radstart-1.065Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
+  alturas=1.065
+  file_suffix='CR2219_90X180blines_r_'
+  MAKE_MAPOC,file_input,file_suffix,alturas,/gng
+  
+  file_input='traceLDEM_CR2219_demt_pfss_gong_0709_radstart-1.065Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
+  alturas=1.065
+  file_suffix='CR2219_90X180blines_r_'
+  MAKE_MAPOC,file_input,file_suffix,alturas,/gng
+
+  file_input='traceLDEM_CR2219_demt_pfss_0709_R1_radstart-1.065Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
+  alturas=1.065
+  file_suffix='CR2219_90X180blines_r_'
+  MAKE_MAPOC,file_input,file_suffix,alturas,/gng
+;mapocs CR2223
+
+  file_input='traceLDEM_CR2223_demt_pfss_gong_mrmqs_1030_radstart-1.065Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
+  alturas=1.065
+  file_suffix='CR2223_90X180blines_r_'
+  MAKE_MAPOC,file_input,file_suffix,alturas,/gng
+
+  file_input='traceLDEM_CR2223_demt_pfss_hmi_radstart-1.065Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
+  alturas=1.065
+  file_suffix='CR2223_90X180blines_r_'
+  MAKE_MAPOC,file_input,file_suffix,alturas,/gng
+
+  file_input='traceLDEM_CR2223_demt_pfss_1112_R1_radstart-1.065Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
+  alturas=1.065
+  file_suffix='CR2223_90X180blines_r_'
+  MAKE_MAPOC,file_input,file_suffix,alturas,/gng
+
+  file_input='traceLDEM_CR2223_demt_pfss_1023_R10_radstart-1.065Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
+  alturas=1.065
+  file_suffix='CR2223_90X180blines_r_'
+  MAKE_MAPOC,file_input,file_suffix,alturas,/gng
+
+  file_input='traceLDEM_CR2219_demt_pfss_0702_R0_radstart-1.065Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
+  alturas=1.065
+  file_suffix='CR2223_90X180blines_r_'
+  MAKE_MAPOC,file_input,file_suffix,alturas,/gng
+
+  file_input='traceLDEM_CR2223_awsom__radstart-1.065Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
+  alturas=1.065
+  file_suffix='CR2223_90X180blines_r_'
+  MAKE_MAPOC,file_input,file_suffix,alturas,/gng
+
+
+;OBS:este es gong mrnqs con zero point corrected
+  file_input='traceLDEM_CR2219_demt_pfss_gong_mrnqs_0713_radstart-1.065Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
+  alturas=1.065
+  file_suffix='CR2219_90X180blines_r_'
+  MAKE_MAPOC,file_input,file_suffix,alturas,/gng
+
+  ;cambiando rssmax a 2.15 en lugar de 2.5
+  file_input='traceLDEM_CR2219_demt_pfss_gong_mrnqs_0713_rmax215_radstart-1.065Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
+  alturas=1.065
+  file_suffix='CR2219_90X180blines_r_'
+  MAKE_MAPOC,file_input,file_suffix,alturas,/gng
+
+  ;daily shifteado zpc
+  file_input='traceLDEM_CR2219_demt_pfss_gong_mrzqs_shifted_0716_rmax25_radstart-1.065Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
+  alturas=1.065
+  file_suffix='CR2219_90X180blines_r_'
+  MAKE_MAPOC,file_input,file_suffix,alturas,/gng
+
+
+;magnetograma diario, shifteado, zpc gong,a distintas alturas para
+;rssmax en el fdips
+  file_input='traceLDEM_CR2219_demt_pfss_gong_mrzqs_shifted_0716_rmax225_radstart-1.065Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
+  alturas=1.065
+  file_suffix='CR2219_90X180blines_r_'
+  MAKE_MAPOC,file_input,file_suffix,alturas,/gng
+
+  file_input='traceLDEM_CR2219_demt_pfss_gong_mrzqs_shifted_0716_rmax25_radstart-1.065Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
+  alturas=1.065
+  file_suffix='CR2219_90X180blines_r_'
+  MAKE_MAPOC,file_input,file_suffix,alturas,/gng
+
+
+  file_input='traceLDEM_CR2219_demt_pfss_gong_mrzqs_shifted_0716_22hs__rmax25_radstart-1.065Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
+  alturas=1.065
+  file_suffix='CR2219_90X180blines_r_'
+  MAKE_MAPOC,file_input,file_suffix,alturas,/gng ;file_output='CR2219_90X180blines_r_1.065_open-close-map_mrzqs_0716_22hs_shifted_rmax25.dat'
+  
+  file_input='traceLDEM_CR2219_demt_pfss_adaptgong_R1_0716_16hs_rmax25_radstart-1.065Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
+  alturas=1.065
+  file_suffix='CR2219_90X180blines_r_'
+  MAKE_MAPOC,file_input,file_suffix,alturas,/gng 
+
+  file_input='traceLDEM_CR2219_demt_pfss_adaptgong_R1_0716_16hs_rmax275_radstart-1.065Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
+  alturas=1.065
+  file_suffix='CR2219_90X180blines_r_'
+  MAKE_MAPOC,file_input,file_suffix,alturas,/gng
+
+  file_input='traceLDEM_CR2219_demt_pfss_gong_mrzqs_shifted_0716_rmax275_radstart-1.065Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
+  alturas=1.065
+  file_suffix='CR2219_90X180blines_r_'
+  MAKE_MAPOC,file_input,file_suffix,alturas,/gng
+
+  file_input='traceLDEM_CR2219_demt_pfss_gong_mrzqs_shifted_0716_22hs_rmax275_radstart-1.065Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
+  alturas=1.065
+  file_suffix='CR2219_90X180blines_r_'
+  MAKE_MAPOC,file_input,file_suffix,alturas,/gng
+  
+  file_input='traceLDEM_CR2219_demt_pfss_hmi_0716_rmax25_radstart-1.065Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
+  alturas=1.065
+  file_suffix='CR2219_90X180blines_r_'
+  MAKE_MAPOC,file_input,file_suffix,alturas,/gng
+  
+  file_input='traceLDEM_CR2219_demt_pfss_hmi_0716_rmax275_radstart-1.065Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
+  alturas=1.065
+  file_suffix='CR2219_90X180blines_r_'
+  MAKE_MAPOC,file_input,file_suffix,alturas,/gng
+
+  file_input='traceLDEM_CR2219_demt_pfss_adaptgong_R1_0716_22hs_rmax25_radstart-1.065Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
+  alturas=1.065
+  file_suffix='CR2219_90X180blines_r_'
+  MAKE_MAPOC,file_input,file_suffix,alturas,/gng
+
+  file_input='traceLDEM_CR2219_demt_pfss_adaptgong_R1_0716_22hs_rmax275_radstart-1.065Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
+  alturas=1.065
+  file_suffix='CR2219_90X180blines_r_'
+  MAKE_MAPOC,file_input,file_suffix,alturas,/gng
+
+
+
+  
+
+  
+  file_input='traceLDEM_CR2223_demt_pfss_gong_mrzqs_shifted_0511_rmax225_radstart-1.065Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
+  alturas=1.065
+  file_suffix='CR2219_90X180blines_r_'
+  MAKE_MAPOC,file_input,file_suffix,alturas,/gng
+
+
+  file_input='traceLDEM_CR2223_demt_pfss_gong_mrzqs_shifted_0511_rmax25_radstart-1.065Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
+  alturas=1.065
+  file_suffix='CR2219_90X180blines_r_'
+  MAKE_MAPOC,file_input,file_suffix,alturas,/gng
+
+
+  file_input='traceLDEM_CR2223_demt_pfss_gong_mrzqs_shifted_0511_rmax275_radstart-1.065Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
+  alturas=1.065
+  file_suffix='CR2219_90X180blines_r_'
+  MAKE_MAPOC,file_input,file_suffix,alturas,/gng
+
+
+  file_input='traceLDEM_CR2223_demt_pfss_adapt-gong_0511_16hs_rmax25_radstart-1.065Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
+  alturas=1.065
+  file_suffix='CR2219_90X180blines_r_'
+  MAKE_MAPOC,file_input,file_suffix,alturas,/gng
+  
+  file_input='traceLDEM_CR2223_demt_pfss_adapt-gong_0511_16hs_rmax275_radstart-1.065Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
+  alturas=1.065
+  file_suffix='CR2219_90X180blines_r_'
+  MAKE_MAPOC,file_input,file_suffix,alturas,/gng
+
+  file_input='traceLDEM_CR2223_demt_pfss_hmi_shifted_0511_12hs_rmax25_radstart-1.065Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
+  alturas=1.065
+  file_suffix='CR2223_90X180blines_r_'
+  MAKE_MAPOC,file_input,file_suffix,alturas,/gng
+
+  file_input='traceLDEM_CR2223_demt_pfss_hmi_shifted_0511_12hs_rmax275_radstart-1.065Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
+  alturas=1.065
+  file_suffix='CR2223_90X180blines_r_'
+  MAKE_MAPOC,file_input,file_suffix,alturas,/gng
+  
+
+  
+  file_input='traceLDEM_CR2223_demt_pfss_gong_mrnqs_1030_radstart-1.065Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav'
+  alturas=1.065
+  file_suffix='CR2223_90X180blines_r_'
+  MAKE_MAPOC,file_input,file_suffix,alturas,/gng
+
+  
   return
 end
 

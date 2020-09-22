@@ -344,7 +344,7 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
 
         if not keyword_set(demt) then  p = where ( rad_l ge rmin and rad_l le rmax and Ne_l ne -999.)
         if     keyword_set(demt) then  p = where ( rad_l ge rmin and rad_l le rmax and Ne_l ne -999. and scoreR_l lt 0.25);0.10) ;<---- nuevo cambio
-;se relajó a 0.25??
+;se relajó a 0.25!!
 ;hacer estadistica de scoreR_l  !!!
         
         if p(0) eq -1 then goto,skipnextloop_open

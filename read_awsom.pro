@@ -17,8 +17,13 @@
 ;read_awsom,'CR2082_grid1X1_1.85_AWSOM_LASCO_3d.dat','awsom_2082_1.85_extended',/B_out
 ;------ para trazado a mucha alturas (4.5Rsun)
 ;read_awsom,'CR2208_grid1X1_ADAPT_GONG_AWSOM.dat','awsom_2208_1.85_extended',/te_out,/ne_out,/qrad,/qheat_out,/v_out,/interpol,N1=25
+;=======================CR2219 CR2223, hasta 6Rsun
+;read_awsom,'3d_CR2219_AMap1_1-6Rs_1X1grid.dat','awsom_2219_realization1_extended',dir_open='/media/Data1/data1/DATA/MHD_SWMF/',/te_out,/ne_out,/qrad,/qheat_out,/v_out,/interpol,/sph_data,/B_out,N1=28
+;read_awsom,'3d_CR2223_AMap10_1-6Rs_1X1grid.dat','awsom_2223_realization10_extended',dir_open='/media/Data1/data1/DATA/MHD_SWMF/',/te_out,/ne_out,/qrad,/qheat_out,/v_out,/interpol,/sph_data,/B_out,N1=28
+;read_awsom,'3d_CR2223_Amap10_1-6Rs-1X1grid.dat','awsom_2223_realization10_extended_new',dir_open='/data1/work/MHD/',/te_out,/ne_out,/qrad,/qheat_out,/v_out,/interpol,/sph_data,/B_out,N1=28
+;read_awsom,'3d_CR2223_Amap10_1-6Rs_1X1grid.dat','awsom_2223_realization10_extended_new',dir_open='/data1/work/MHD/',/te_out,/ne_out,/qrad,/qheat_out,/v_out,/interpol,/sph_data,/B_out,N1=28
 
-pro read_awsom,inputfile,file_out,dir_out=dir_out,grilla_demt=grilla_demt,te_out=te_out,ne_out=ne_out,qrad_out=qrad_out,qheat_out=qheat_out,qebyq_out=qebyq_out,ne_lasco_out=ne_lasco_out,B_out=B_out,interpol=interpol,N1=N1,sph_data=sph_data,v_out=v_out
+pro read_awsom,inputfile,file_out,dir_open=dir_open,dir_out=dir_out,grilla_demt=grilla_demt,te_out=te_out,ne_out=ne_out,qrad_out=qrad_out,qheat_out=qheat_out,qebyq_out=qebyq_out,ne_lasco_out=ne_lasco_out,B_out=B_out,interpol=interpol,N1=N1,sph_data=sph_data,v_out=v_out
 ;  common grilla_chip,r_grilla,theta_grilla,phi_grilla,ne_awsom,te_awsom,rho_awsom,er_awsom,ti_awsom,ne_lasco
 
 ;LA IDEA ES DARLE DE ENTRADA LA SALIDA AWSOM
@@ -62,7 +67,9 @@ pro read_awsom,inputfile,file_out,dir_out=dir_out,grilla_demt=grilla_demt,te_out
   qparbyq = 0.
   n_e = 0.
   ne_lasco = 0.
-  
+  lon = 0.
+  lat = 0.
+  r = 0.
   Nphi=360.
   nph=360.
   Ntheta=180
@@ -102,8 +109,8 @@ pro read_awsom,inputfile,file_out,dir_out=dir_out,grilla_demt=grilla_demt,te_out
      Vph = fltarr(nr,nth,nph)
   endif
 
-
-  openr,1,'/data1/work/MHD/'+inputfile
+  if not keyword_set(dir_open) then dir_open='/data1/work/MHD/'
+  openr,1,dir_open+inputfile
   
   for i=1L,N1-1 do begin
      readf,1,xx
@@ -114,7 +121,9 @@ pro read_awsom,inputfile,file_out,dir_out=dir_out,grilla_demt=grilla_demt,te_out
         for ir =0, Nr-1 do begin
 ;           readf,1, x,y,z,vx,vy,vz,tp,te,bx,by,bz,i01,i02,qrad,qheat,qebyq,qparbyq,n_e,ne_lasco
 ;           readf,1, x,y,z,rho,vx,vy,vz,te,tp,bx,by,bz,i01,i02,qrad,qheat,qebyq,n_e,ne_lasco                 ;PARA 2082
-           readf,1, x,y,z,rho,vx,vy,vz,te,tp,bx,by,bz,i01,i02,qrad,qheat,qebyq,n_e                  ;PARA 2208
+;           readf,1, x,y,z,rho,vx,vy,vz,te,tp,bx,by,bz,i01,i02,qrad,qheat,qebyq,n_e ;PARA 2208
+           readf,1, x,y,z,r,lon,lat,rho,vx,vy,vz,te,tp,bx,by,bz,i01,i02,qrad,qheat,qebyq,n_e ;PARA 2219
+;OBS: A veces cambian las unidades de qheat.
            V=[x,y,z]
            cart_to_sphcoord,V,sphcoord
 
@@ -125,11 +134,11 @@ pro read_awsom,inputfile,file_out,dir_out=dir_out,grilla_demt=grilla_demt,te_out
            ne_awsom(ir,ith,iph)          = n_e
            te_awsom(ir,ith,iph)          = te
            rho_awsom(ir,ith,iph)         = rho
-           qrad_awsom(ir,ith,iph)        = qrad *(-10.) ;esto implica un cambio de signo y un cambio de unidades de J/m3 -> 10*Erg/cm3
+           qrad_awsom(ir,ith,iph)        = qrad *(-1);*(-10.) ;esto implica un cambio de signo y un cambio de unidades de J/m3 -> 10*Erg/cm3
            qheat_awsom(ir,ith,iph)       = qheat
            qebyq_awsom(ir,ith,iph)       = qebyq
            tp_awsom(ir,ith,iph)          = tp
-           ne_lasco_awsom(ir,ith,iph)    = ne_lasco
+;           ne_lasco_awsom(ir,ith,iph)    = ne_lasco
 
            Bxx(ir,ith,iph) = bx
            Byy(ir,ith,iph) = by
@@ -186,7 +195,7 @@ stop
      qrad_awsom_interp     = fltarr(nrads,nlat2,nlon2)
      qheat_awsom_interp    = fltarr(nrads,nlat2,nlon2)
 ;     qebyq_awsom_interp    = fltarr(nrads,nlat2,nlon2)
-     ne_lasco_awsom_interp = fltarr(nrads,nlat2,nlon2)
+;     ne_lasco_awsom_interp = fltarr(nrads,nlat2,nlon2)
 ahorano:
      if keyword_set (B_out) then begin
         Br_interp     = fltarr(nrads,nlat2,nlon2)
@@ -207,21 +216,21 @@ ahorano:
         D1 = reform(qrad_awsom(ir,*,*))
         E1 = reform(qheat_awsom(ir,*,*))
 ;        F1 = reform(qebyq_awsom(ir,*,*))
-        G1 = reform(ne_lasco_awsom(ir,*,*))
+;        G1 = reform(ne_lasco_awsom(ir,*,*))
         inter,A1=A1,A2=A2,Nlat1=180,Nlon1=360,Nlat2=90,Nlon2=180
         inter,A1=B1,A2=B2,Nlat1=180,Nlon1=360,Nlat2=90,Nlon2=180
 ;        inter,A1=C1,A2=C2,Nlat1=180,Nlon1=360,Nlat2=90,Nlon2=180
         inter,A1=D1,A2=D2,Nlat1=180,Nlon1=360,Nlat2=90,Nlon2=180
         inter,A1=E1,A2=E2,Nlat1=180,Nlon1=360,Nlat2=90,Nlon2=180
 ;        inter,A1=F1,A2=F2,Nlat1=180,Nlon1=360,Nlat2=90,Nlon2=180
-        inter,A1=G1,A2=G2,Nlat1=180,Nlon1=360,Nlat2=90,Nlon2=180
+;        inter,A1=G1,A2=G2,Nlat1=180,Nlon1=360,Nlat2=90,Nlon2=180
         ne_awsom_interp[ir,*,*]       = A2
         te_awsom_interp[ir,*,*]       = B2
 ;        rho_awsom_interp[ir,*,*]      = C2     
         qrad_awsom_interp[ir,*,*]     = D2      
         qheat_awsom_interp[ir,*,*]    = E2   
 ;        qebyq_awsom_interp[ir,*,*]    = F2   
-        ne_lasco_awsom_interp[ir,*,*] = G2
+;        ne_lasco_awsom_interp[ir,*,*] = G2
 no1:
         if keyword_set (B_out) then begin
            H1 = reform(Br (ir,*,*))
@@ -341,7 +350,7 @@ stop
   endif
 
 
-
+stop
   return
 end
 

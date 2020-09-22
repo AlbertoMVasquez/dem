@@ -26,3 +26,243 @@ period='2082_TEST_TRAZADOS_BIEN_ALTO_'
 radstart = 5.995
 trace_LDEM,field_awsom='/data1/work/MHD/sph_data_awsom_2082_1.85_extended.sav',awsom_file='awsom_2082_1.85',period=period,safety=.5,stepmax=10000,/unifgrid_v2,radstart=radstart,dlon=4.,dlat=4.
 
+;-----------07/agosto/2020
+
+;--1era corrida
+trace_AWSOM_LDEM,field_awsom='sph_data_awsom_2219_realization1_extended.sav',period='2219_demt',/unifgrid_v2,$
+                 ldem_file='LDEM.v3_CR2219_l.8.3.4_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',$
+                 safety=.5,stepmax=10000,radstart=5.995,dlat=1.,dlon=1.
+;--2da corrida
+trace_AWSOM_LDEM,period='2219_awsom_',/unifgrid_v2,awsom_file='awsom_2219_realization1_extended',$
+                 pfss_data_file='pfss_data_awsom_2219_realization1_extended_radstart-5.995Rs_1x1grad.sav',safety=.5,stepmax=10000,radstart=5.995,dlat=1.,dlon=1.
+
+;---testeo con magnetogramas
+;este estaba descentrado
+trace_AWSOM_LDEM,fdips_file='fdips_field_150x180x360_GONG_CR2219.out',period='2219_demt_pfss_gong',/unifgrid_v2,$
+                 ldem_file='LDEM.v3_CR2219_l.8.3.4_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',$
+                 safety=.5,stepmax=10000,radstart=1.065,dlat=2.,dlon=2.
+
+
+;comienza el testeo para mapocs y la creacion de bola de pelos
+
+trace_AWSOM_LDEM,fdips_file='fdips_field_150x180x360_GONG_CR2219_mrbqs190702t2014c2219_255.out',period='2219_demt_pfss_gong_0702',/unifgrid_v2,$
+                 ldem_file='LDEM.v3_CR2219_l.8.3.4_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',$
+                 safety=.5,stepmax=10000,radstart=1.065,dlat=2.,dlon=2.
+
+trace_AWSOM_LDEM,fdips_file='fdips_field_150x180x360_GONG_CR2219_hmi_Synoptic_Mr_small_2219.out',period='2219_demt_pfss_hmi',/unifgrid_v2,$
+                 ldem_file='LDEM.v3_CR2219_l.8.3.4_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',$
+                 safety=.5,stepmax=10000,radstart=1.065,dlat=2.,dlon=2.
+
+;este fue corrido con cos(theta) en el fdips, ESTA MAL --> adapt-gong es uniforme en COLATITUD
+trace_AWSOM_LDEM,fdips_file='fdips_field_150x180x360_GONG_CR2219_adapt40311_03i012_201907090000_R0.out',period='2219_demt_pfss_0709_R0',/unifgrid_v2,$
+                 ldem_file='LDEM.v3_CR2219_l.8.3.4_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',$
+                 safety=.5,stepmax=10000,radstart=1.065,dlat=2.,dlon=2.
+
+trace_AWSOM_LDEM,fdips_file='fdips_field_150x180x360_GONG_CR2219_adapt40311_03i012_201907090000_R1.out',period='2219_demt_pfss_0709_R1',/unifgrid_v2,$
+                 ldem_file='LDEM.v3_CR2219_l.8.3.4_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',$
+                 safety=.5,stepmax=10000,radstart=1.065,dlat=2.,dlon=2.
+
+trace_AWSOM_LDEM,fdips_file='fdips_field_150x180x360_GONG_CR2219_mrbqs190709t0904c2219.out',period='2219_demt_pfss_gong_0709',/unifgrid_v2,$
+                 ldem_file='LDEM.v3_CR2219_l.8.3.4_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',$
+                 safety=.5,stepmax=10000,radstart=1.065,dlat=2.,dlon=2.
+
+trace_AWSOM_LDEM,fdips_file='fdips_field_150x180x360_GONG_CR2219_mrmqs190713t0141c2219.out',period='2219_demt_pfss_gong_mrmqs_0713',/unifgrid_v2,$
+                 ldem_file='LDEM.v3_CR2219_l.8.3.4_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',$
+                 safety=.5,stepmax=10000,radstart=1.065,dlat=2.,dlon=2.
+
+trace_AWSOM_LDEM,fdips_file='fdips_field_150x180x360_GONG_CR2219_adapt40311_03i012_201907020200.out',period='2219_demt_pfss_0702_R0',/unifgrid_v2,$
+                 ldem_file='LDEM.v3_CR2219_l.8.3.4_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',$
+                 safety=.5,stepmax=10000,radstart=1.065,dlat=2.,dlon=2.
+
+trace_AWSOM_LDEM,field_awsom='sph_data_awsom_2219_realization1_extended.sav',period='2219_demt_campo_awsom',/unifgrid_v2,$
+                 ldem_file='LDEM.v3_CR2219_l.8.3.4_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',$
+                 safety=.5,stepmax=10000,radstart=1.065,dlat=2.,dlon=2.
+
+;notar que este es gong pero mrnqs, es integral pero zero point corrected 
+trace_AWSOM_LDEM,fdips_file='fdips_field_150x180x360_GONG_CR2219_GONG_mrnqs190713t0141c2219.out',period='2219_demt_pfss_gong_mrnqs_0713',/unifgrid_v2,$
+                 ldem_file='LDEM.v3_CR2219_l.8.3.4_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',$
+                 safety=.5,stepmax=10000,radstart=1.065,dlat=2.,dlon=2.
+
+
+trace_AWSOM_LDEM,fdips_file='fdips_field_150x180x360_GONG_CR2219_mrnqs190713t0141c2219_rmax215.out',period='2219_demt_pfss_gong_mrnqs_0713_rmax215',/unifgrid_v2,$
+                 ldem_file='LDEM.v3_CR2219_l.8.3.4_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',$
+                 safety=.5,stepmax=10000,radstart=1.065,dlat=2.,dlon=2.
+
+
+:fidps con GONG zpc shifteados
+trace_AWSOM_LDEM,fdips_file='fdips_field_150x180x360_GONG_CR2219_shifted_mrzqs190716t2204c2219_069.out',period='2219_demt_pfss_gong_mrzqs_shifted_0716_22hs__rmax25',/unifgrid_v2,$
+                 ldem_file='LDEM.v3_CR2219_l.8.3.4_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',$
+                 safety=.5,stepmax=10000,radstart=1.065,dlat=2.,dlon=2.
+		 
+trace_AWSOM_LDEM,fdips_file='fdips_field_150x180x360_GONG_CR2219_shift2zerolong_mrzqs190716t2204c2219_275.out',period='2219_demt_pfss_gong_mrzqs_shifted_0716_22hs_rmax275',/unifgrid_v2,$
+                 ldem_file='LDEM.v3_CR2219_l.8.3.4_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',$
+                 safety=.5,stepmax=10000,radstart=1.065,dlat=2.,dlon=2.
+
+
+;esta es la fecha correcta GONG zpc shifteados, con rss: 2.25, 2.5, 2.75 -> TODO esto es para hacer mapocs
+trace_AWSOM_LDEM,fdips_file='fdips_field_150x180x360_GONG_CR2219_shift2zerolong_mrzqs190716t1604c2219_rss225.out',period='2219_demt_pfss_gong_mrzqs_shifted_0716_rmax225',/unifgrid_v2,$
+                 ldem_file='LDEM.v3_CR2219_l.8.3.4_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',$
+                 safety=.5,stepmax=10000,radstart=1.065,dlat=2.,dlon=2.
+
+trace_AWSOM_LDEM,fdips_file='fdips_field_150x180x360_GONG_CR2219_shift2zerolong_mrzqs190716t1604c2219_rss25.out',period='2219_demt_pfss_gong_mrzqs_shifted_0716_rmax25',/unifgrid_v2,$
+                 ldem_file='LDEM.v3_CR2219_l.8.3.4_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',$
+                 safety=.5,stepmax=10000,radstart=1.065,dlat=2.,dlon=2.
+
+trace_AWSOM_LDEM,fdips_file='fdips_field_150x180x360_GONG_CR2219_shift2zerolong_mrzqs190716t1604c2219_rss275.out',period='2219_demt_pfss_gong_mrzqs_shifted_0716_rmax275',/unifgrid_v2,$
+                 ldem_file='LDEM.v3_CR2219_l.8.3.4_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',$
+                 safety=.5,stepmax=10000,radstart=1.065,dlat=2.,dlon=2.
+
+;a-gong R1 misma fecha que los de gong correctos (16hs) a dos alturas rss 2.5 y 2.75
+trace_AWSOM_LDEM,fdips_file='fdips_field_150x180x360_GONG_CR2219_adapt40311_03i012_201907161600_R1_rss25.out',period='2219_demt_pfss_adaptgong_R1_0716_16hs_rmax25',/unifgrid_v2,$
+                 ldem_file='LDEM.v3_CR2219_l.8.3.4_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',$
+                 safety=.5,stepmax=10000,radstart=1.065,dlat=2.,dlon=2.
+
+trace_AWSOM_LDEM,fdips_file='fdips_field_150x180x360_GONG_CR2219_adapt40311_03i012_201907161600_R1_rss275.out',period='2219_demt_pfss_adaptgong_R1_0716_16hs_rmax275',/unifgrid_v2,$
+                 ldem_file='LDEM.v3_CR2219_l.8.3.4_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',$
+                 safety=.5,stepmax=10000,radstart=1.065,dlat=2.,dlon=2.
+
+;estos son con la hora 22hs, que lucen mejor, a dos alturas
+trace_AWSOM_LDEM,fdips_file='fdips_field_150x180x360_GONG_CR2219_adapt40311_03i012_201907162200_R1_rss25.out',period='2219_demt_pfss_adaptgong_R1_0716_22hs_rmax25',/unifgrid_v2,$
+                 ldem_file='LDEM.v3_CR2219_l.8.3.4_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',$
+                 safety=.5,stepmax=10000,radstart=1.065,dlat=2.,dlon=2.
+
+trace_AWSOM_LDEM,fdips_file='fdips_field_150x180x360_GONG_CR2219_adapt40311_03i012_201907162200_R1_rss275.out',period='2219_demt_pfss_adaptgong_R1_0716_22hs_rmax275',/unifgrid_v2,$
+                 ldem_file='LDEM.v3_CR2219_l.8.3.4_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',$
+                 safety=.5,stepmax=10000,radstart=1.065,dlat=2.,dlon=2.
+
+:hmi shifteados de la fecha mas cercana posible.
+trace_AWSOM_LDEM,fdips_file='fdips_field_150x180x360_GONG_CR2219_shift2zerolong_hmi.mrdailysynframe_720s.20190716_12_25.out',period='2219_demt_pfss_hmi_0716_rmax25',$
+		ldem_file='LDEM.v3_CR2219_l.8.3.4_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',$
+                 safety=.5,stepmax=10000,radstart=1.065,dlat=2.,dlon=2.,/unifgrid_v2
+		 
+trace_AWSOM_LDEM,fdips_file='fdips_field_150x180x360_GONG_CR2219_shift2zerolong_hmi.mrdailysynframe_720s.20190716_12_275.out',period='2219_demt_pfss_hmi_0716_rmax275',$
+                 ldem_file='LDEM.v3_CR2219_l.8.3.4_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',$
+                 safety=.5,stepmax=10000,radstart=1.065,dlat=2.,dlon=2.,/unifgrid_v2
+		 
+
+
+
+
+;................................
+;solo para ver bola de pelos, polo sur -NO VOY a GUARDAR NADA, excepto las bolas de pelos
+trace_AWSOM_LDEM,fdips_file='fdips_field_150x180x360_GONG_CR2219_mrmqs190713t0141c2219.out',period='2219_demt_pfss_gong_mrmqs_0713',/unifgrid_v2,$
+                 ldem_file='LDEM.v3_CR2219_l.8.3.4_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',$
+                 safety=.5,stepmax=10000,radstart=1.25,dlat=4.,dlon=4.
+
+trace_AWSOM_LDEM,fdips_file='fdips_field_150x180x360_GONG_CR2219_hmi_Synoptic_Mr_small_2219.out',period='2219_demt_pfss_hmi',/unifgrid_v2,$
+                 ldem_file='LDEM.v3_CR2219_l.8.3.4_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',$
+                 safety=.5,stepmax=10000,radstart=1.25,dlat=4.,dlon=4.
+
+trace_AWSOM_LDEM,fdips_file='fdips_field_150x180x360_GONG_CR2219_adapt40311_03i012_201907090000_R1.out',period='2219_demt_pfss_0709_R1',/unifgrid_v2,$
+                 ldem_file='LDEM.v3_CR2219_l.8.3.4_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',$
+                 safety=.5,stepmax=10000,radstart=1.25,dlat=4.,dlon=4.
+;................................
+
+;IMPORTANTE: --> estos son los que debo usar en el statloop
+trace_AWSOM_LDEM,period='2219_demt_campo_awsom',/unifgrid_v2,$
+		 pfss_data_file='pfss_data_awsom_2219_realization1_extended_radstart-5.995Rs_1x1grad.sav',$
+                 ldem_file='LDEM.v3_CR2219_l.8.3.4_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',$
+                 safety=.5,stepmax=10000,radstart=5.995,dlat=1.,dlon=1.
+		 ;field_awsom='sph_data_awsom_2219_realization1_extended.sav'
+		 
+trace_AWSOM_LDEM,period='2219_awsom_campo_awsom',/unifgrid_v2,awsom_file='awsom_2219_realization1_extended',$
+                 pfss_data_file='pfss_data_awsom_2219_realization1_extended_radstart-5.995Rs_1x1grad.sav',$
+		 safety=.5,stepmax=10000,radstart=5.995,dlat=1.,dlon=1.
+
+
+;::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+;CR2223
+trace_AWSOM_LDEM,fdips_file='fdips_field_150x180x360_GONG_CR2223_mrmqs191030t0210c2223_000.out',period='2223_demt_pfss_gong_mrmqs_1030',/unifgrid_v2,$
+                 ldem_file='LDEM.v3_CR2219_l.8.3.4_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',$
+                 safety=.5,stepmax=10000,radstart=1.065,dlat=2.,dlon=2.
+
+trace_AWSOM_LDEM,fdips_file='fdips_field_150x180x360_GONG_CR2223_hmi_Synoptic_Mr_small_2223.out',period='2223_demt_pfss_hmi',/unifgrid_v2,$
+                 ldem_file='LDEM.v3_CR2219_l.8.3.4_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',$
+                 safety=.5,stepmax=10000,radstart=1.065,dlat=2.,dlon=2.
+
+trace_AWSOM_LDEM,fdips_file='fdips_field_150x180x360_GONG_CR2223_adapt40311_03k012_201911120000.out',period='2223_demt_pfss_1112_R1',/unifgrid_v2,$
+                 ldem_file='LDEM.v3_CR2219_l.8.3.4_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',$
+                 safety=.5,stepmax=10000,radstart=1.065,dlat=2.,dlon=2.
+
+trace_AWSOM_LDEM,fdips_file='fdips_field_150x180x360_GONG_CR2223_adapt40311_03i012_201910231200.out',period='2223_demt_pfss_1023_R10',/unifgrid_v2,$
+                 ldem_file='LDEM.v3_CR2223_l.7.3.3_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',$
+                 safety=.5,stepmax=10000,radstart=1.065,dlat=2.,dlon=2.
+
+
+
+
+;notar que este es gong pero mrnqs, es integral pero zero point corrected
+trace_AWSOM_LDEM,fdips_file='fdips_field_150x180x360_GONG_CR2223_GONG_mrnqs191030t0210c2223.out',period='2223_demt_pfss_gong_mrnqs_1030',/unifgrid_v2,$
+                 ldem_file='LDEM.v3_CR2219_l.8.3.4_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',$
+                 safety=.5,stepmax=10000,radstart=1.065,dlat=2.,dlon=2.
+
+trace_AWSOM_LDEM,awsom_file='awsom_2223_realization10_extended',field_awsom='sph_data_awsom_2223_realization10_extended.sav',period='2223_awsom_',/unifgrid_v2,$
+		 safety=.5,stepmax=10000,radstart=1.065,dlat=2.,dlon=2.
+
+trace_AWSOM_LDEM,awsom_file='awsom_2223_realization10_extended',field_awsom='sph_data_awsom_2223_realization10_extended.sav',period='2223_awsom_',/unifgrid_v2,$
+                 safety=.5,stepmax=10000,radstart=5.995,dlat=2.,dlon=2.
+
+;....................................
+;solo para ver bola de pelos, polo sur -NO VOY a GUARDAR NADA, excepto las bolas de pelos
+trace_AWSOM_LDEM,fdips_file='fdips_field_150x180x360_GONG_CR2223_mrmqs191030t0210c2223_000.out',period='2223_demt_pfss_gong_mrmqs_1030',/unifgrid_v2,$
+                 ldem_file='LDEM.v3_CR2219_l.8.3.4_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',$
+                 safety=.5,stepmax=10000,radstart=1.25,dlat=4.,dlon=4.
+
+trace_AWSOM_LDEM,fdips_file='fdips_field_150x180x360_GONG_CR2223_hmi_Synoptic_Mr_small_2223.out',period='2223_demt_pfss_hmi',/unifgrid_v2,$
+                 ldem_file='LDEM.v3_CR2219_l.8.3.4_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',$
+                 safety=.5,stepmax=10000,radstart=1.25,dlat=4.,dlon=4.
+
+trace_AWSOM_LDEM,fdips_file='fdips_field_150x180x360_GONG_CR2223_adapt40311_03i012_201910231200.out',period='2223_demt_pfss_1023_R10',/unifgrid_v2,$
+                 ldem_file='LDEM.v3_CR2223_l.7.3.3_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',$
+                 safety=.5,stepmax=10000,radstart=1.25,dlat=4.,dlon=4.
+
+;....................................
+;trazados con magnetogramas fdips GONG zpc shifteados fechas precisas para rss 2.15 2.5 y 2.75 -> para hacer mapocs
+trace_AWSOM_LDEM,fdips_file='fdips_field_150x180x360_GONG_CR2223_shift2zerolong_mrzqs191105t1604c2223_rss225.out',period='2223_demt_pfss_gong_mrzqs_shifted_0511_rmax225',/unifgrid_v2,$
+                 ldem_file='LDEM.v3_CR2223_l.7.3.3_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',$
+                 safety=.5,stepmax=10000,radstart=1.065,dlat=2.,dlon=2.
+
+trace_AWSOM_LDEM,fdips_file='fdips_field_150x180x360_GONG_CR2223_shift2zerolong_mrzqs191105t1604c2223_rss25.out',period='2223_demt_pfss_gong_mrzqs_shifted_0511_rmax25',/unifgrid_v2,$
+                 ldem_file='LDEM.v3_CR2223_l.7.3.3_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',$
+                 safety=.5,stepmax=10000,radstart=1.065,dlat=2.,dlon=2.
+
+trace_AWSOM_LDEM,fdips_file='fdips_field_150x180x360_GONG_CR2223_shift2zerolong_mrzqs191105t1604c2223_rss275.out',period='2223_demt_pfss_gong_mrzqs_shifted_0511_rmax275',/unifgrid_v2,$
+                 ldem_file='LDEM.v3_CR2223_l.7.3.3_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',$
+                 safety=.5,stepmax=10000,radstart=1.065,dlat=2.,dlon=2.
+
+
+trace_AWSOM_LDEM,fdips_file='fdips_field_150x180x360_GONG_CR2223_adapt40311_03i012_201905111600_R1_rss25.out',period='2223_demt_pfss_adapt-gong_0511_16hs_rmax25',/unifgrid_v2,$
+                 ldem_file='LDEM.v3_CR2223_l.7.3.3_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',$
+                 safety=.5,stepmax=10000,radstart=1.065,dlat=2.,dlon=2.
+
+trace_AWSOM_LDEM,fdips_file='fdips_field_150x180x360_GONG_CR2223_adapt40311_03i012_201905111600_R1_rss275.out',period='2223_demt_pfss_adapt-gong_0511_16hs_rmax275',/unifgrid_v2,$
+                 ldem_file='LDEM.v3_CR2223_l.7.3.3_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',$
+                 safety=.5,stepmax=10000,radstart=1.065,dlat=2.,dlon=2.
+
+trace_AWSOM_LDEM,fdips_file='fdips_field_150x180x360_GONG_CR2223_hmi.mrdailysynframe_720s.20191105_rss25.out',period='2223_demt_pfss_hmi_shifted_0511_12hs_rmax25',/unifgrid_v2,$
+                 ldem_file='LDEM.v3_CR2223_l.7.3.3_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',$
+                 safety=.5,stepmax=10000,radstart=1.065,dlat=2.,dlon=2.
+
+trace_AWSOM_LDEM,fdips_file='fdips_field_150x180x360_GONG_CR2223_hmi.mrdailysynframe_720s.20191105_rss275.out',period='2223_demt_pfss_hmi_shifted_0511_12hs_rmax275',/unifgrid_v2,$
+                 ldem_file='LDEM.v3_CR2223_l.7.3.3_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',$
+                 safety=.5,stepmax=10000,radstart=1.065,dlat=2.,dlon=2.
+
+;:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+Corridas a analizar con statloop
+
+CR2223 con campo awsom
+
+;--1era corrida
+trace_AWSOM_LDEM,field_awsom='sph_data_awsom_2223_realization10_extended_new.sav',period='2223_demt',/unifgrid_v2,$
+                 ldem_file='LDEM.v3_CR2223_l.7.3.3_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',$
+                 safety=.5,stepmax=10000,radstart=5.995,dlat=1.,dlon=1.
+;--1era corrida
+trace_AWSOM_LDEM,field_awsom='sph_data_awsom_2223_realization10_extended_new.sav',period='2223_awsom_',/unifgrid_v2,$
+		 awsom_file='awsom_2223_realization10_extended_new',$
+                 safety=.5,stepmax=10000,radstart=5.995,dlat=1.,dlon=1.
+
+
+
+
+
+

@@ -11,7 +11,7 @@ if     keyword_set(zbuff) then dev=     'Z'
 if not keyword_set(npx) then npx = 1024 ; numero de pixels de la ventana del gráfico
 npy=npx
 Device, Decomposed=0, Set_Pixel_Depth=24, Set_Resolution=[npx,npy]
-  stop
+
 ;pfss_data=sph_data
 
 ;-----------------------------------------------------------
@@ -62,7 +62,7 @@ Device, Decomposed=0, Set_Pixel_Depth=24, Set_Resolution=[npx,npy]
   if not keyword_set(sinlabel) then xyouts,0.02,0.02,'Lat='+strcompress(lat0)+'  Long='+strcompress(lon0),charsize=2,charthick=2.5,color=0 ;,/norm
 ;  record_gif,'~/Downloads/',output_gif
   nname=strlen(output_gif)
-  stop
+
   record_gif,'/data1/work/dem/',strmid(output_gif,0,nname-0)+'.gif','Z'
   print,'Bola de pelos -> '+strmid(output_gif,0,nname-0)+'.gif'+' generado en -> /data1/work/dem/'
 

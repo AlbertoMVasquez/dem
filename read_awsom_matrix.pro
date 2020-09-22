@@ -52,7 +52,6 @@ pro read_awsom_matrix,dir=dir,suff_file=suff_file,nr=nr,nt=nt,np=np,ne_out=ne_ou
      readu,1,Vr
      close,1
      output=Vr
-     stop
   endif
 
   if keyword_set(Vth_out) then begin
