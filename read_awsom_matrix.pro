@@ -40,7 +40,9 @@ pro read_awsom_matrix,dir=dir,suff_file=suff_file,nr=nr,nt=nt,np=np,ne_out=ne_ou
   endif
   if keyword_set(nelasco_out) then begin
      ne_lasco=fltarr(nr,nt,np)
-     openr,1,dir+'ne_lasco_'+suff_file
+     ;openr,1,dir+'ne_lasco_'+suff_file
+     openr,1,dir+suff_file
+     stop
      readu,1,ne_lasco
      close,1
      output=ne_lasco

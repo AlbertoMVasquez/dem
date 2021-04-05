@@ -1,3 +1,4 @@
+pro wraper
 ;read_awsom,'3dAWSoM_DEMT_LASCO_1.85.dat',grilla_demt=1.26,te_out='Te_awsom_2208_1.85',ne_out='Ne_awsom_2208_1.85'
 ;read_awsom,'CR2082_r=1-6_1deg_AWSoM.dat',grilla_demt=1.26,te_out='Te_awsom_2208_1.85',ne_out='Ne_awsom_2208_1.85',/interpol
 ;read_awsom,'CR2082_grid1X1_1.85_AWSOM_LASCO_3d.dat',grilla_demt=1.26,te_out='Te_awsom_2082_1.85',ne_out='Ne_awsom_2082_1.85',/interpol
@@ -22,6 +23,18 @@
 ;read_awsom,'3d_CR2223_AMap10_1-6Rs_1X1grid.dat','awsom_2223_realization10_extended',dir_open='/media/Data1/data1/DATA/MHD_SWMF/',/te_out,/ne_out,/qrad,/qheat_out,/v_out,/interpol,/sph_data,/B_out,N1=28
 ;read_awsom,'3d_CR2223_Amap10_1-6Rs-1X1grid.dat','awsom_2223_realization10_extended_new',dir_open='/data1/work/MHD/',/te_out,/ne_out,/qrad,/qheat_out,/v_out,/interpol,/sph_data,/B_out,N1=28
 ;read_awsom,'3d_CR2223_Amap10_1-6Rs_1X1grid.dat','awsom_2223_realization10_extended_new',dir_open='/data1/work/MHD/',/te_out,/ne_out,/qrad,/qheat_out,/v_out,/interpol,/sph_data,/B_out,N1=28
+
+;nuevas corridas de awsom con magnetograma co-centrado (ADAPT-GONG) a las imag EUV
+;read_awsom,'3d_CR2219_Amap02_1-6Rs_1X1grid.dat','awsom_2219_cocent_extended',dir_open='/media/Data1/data1/DATA/MHD_SWMF/',/te_out,/ne_out,/qrad,/qheat_out,$
+;           /v_out,/interpol,/sph_data,/B_out,N1=28;poner stop en 26
+;read_awsom,'3d_CR2223_amap11_1-6Rs_1X1grid.dat','awsom_2223_cocent_extended',dir_open='/media/Data1/data1/DATA/MHD_SWMF/',/te_out,/ne_out,/qrad,/qheat_out,$
+;           /v_out,/interpol,/sph_data,/B_out,N1=28
+
+read_awsom,'3d_CR2219_GONG_185_1-6Rs_1X1grid.dat','awsom_2219_cocent_GONG_extended',dir_open='/media/Data1/data1/DATA/MHD_SWMF/',/te_out,/ne_out,/qrad,/qheat_out,$  
+           /v_out,/interpol,/sph_data,/B_out,N1=25
+read_awsom,'3d_CR2223_GONG_185_1-6Rs_1X1grid.dat','awsom_2223_cocent_GONG_extended',dir_open='/media/Data1/data1/DATA/MHD_SWMF/',/te_out,/ne_out,/qrad,/qheat_out,$ 
+           /v_out,/interpol,/sph_data,/B_out,N1=25
+end
 
 pro read_awsom,inputfile,file_out,dir_open=dir_open,dir_out=dir_out,grilla_demt=grilla_demt,te_out=te_out,ne_out=ne_out,qrad_out=qrad_out,qheat_out=qheat_out,qebyq_out=qebyq_out,ne_lasco_out=ne_lasco_out,B_out=B_out,interpol=interpol,N1=N1,sph_data=sph_data,v_out=v_out
 ;  common grilla_chip,r_grilla,theta_grilla,phi_grilla,ne_awsom,te_awsom,rho_awsom,er_awsom,ti_awsom,ne_lasco
@@ -111,18 +124,19 @@ pro read_awsom,inputfile,file_out,dir_open=dir_open,dir_out=dir_out,grilla_demt=
 
   if not keyword_set(dir_open) then dir_open='/data1/work/MHD/'
   openr,1,dir_open+inputfile
-  
+
   for i=1L,N1-1 do begin
      readf,1,xx
   endfor
-
+stop
   for iph=0,Nphi-1 do begin
      for ith=0,Ntheta-1 do begin
         for ir =0, Nr-1 do begin
 ;           readf,1, x,y,z,vx,vy,vz,tp,te,bx,by,bz,i01,i02,qrad,qheat,qebyq,qparbyq,n_e,ne_lasco
 ;           readf,1, x,y,z,rho,vx,vy,vz,te,tp,bx,by,bz,i01,i02,qrad,qheat,qebyq,n_e,ne_lasco                 ;PARA 2082
 ;           readf,1, x,y,z,rho,vx,vy,vz,te,tp,bx,by,bz,i01,i02,qrad,qheat,qebyq,n_e ;PARA 2208
-           readf,1, x,y,z,r,lon,lat,rho,vx,vy,vz,te,tp,bx,by,bz,i01,i02,qrad,qheat,qebyq,n_e ;PARA 2219
+;           readf,1, x,y,z,r,lon,lat,rho,vx,vy,vz,te,tp,bx,by,bz,i01,i02,qrad,qheat,qebyq,n_e ;PARA 2219--->usualmente va ese para adapt-gong
+           readf,1, x,y,z,rho,vx,vy,vz,te,tp,bx,by,bz,i01,i02,qrad,qheat,qebyq,n_e ;los cocentrados de GONG tienen menos cols...
 ;OBS: A veces cambian las unidades de qheat.
            V=[x,y,z]
            cart_to_sphcoord,V,sphcoord
@@ -289,7 +303,9 @@ stop
      close,3
   endif
   if keyword_set(ne_lasco_out) then begin
-     openw,3,dir_out+'ne_lasco_'+file_out
+     ;openw,3,dir_out+'ne_lasco_'+file_out
+     stop
+     openw,3,dir_out+file_out
      writeu,3,ne_lasco_awsom_interp
      close,3
   endif

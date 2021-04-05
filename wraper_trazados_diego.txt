@@ -1,6 +1,4 @@
 
-Te_awsom_2082_1.85_short
-Ne_awsom_2082_1.85_short
 
 pfss_data_file='pfss_data_cr2082_trazado5alturas.sav'
 trace_LDEM,pfss_data_file=pfss_data_file,ldem_file='LDEM.v3_CR2082_l.35.2.3_h1_Rmin1.00_Rmax1.30_Nr26_InstRmax1.26_bf4_r3d_B_vfullcadence_chianti.ioneq_sun_coronal_1992_feldman_ext.abund_euvi.B_L171_DECON_gauss1_lin_Norm-median_singlStart',period='2082_hollow_demt-data_field-awsom_6alt',safety=.5,stepmax=3000,/unifgrid_v2,radstart=1.025 + 0.04 *findgen(6)
@@ -262,7 +260,124 @@ trace_AWSOM_LDEM,field_awsom='sph_data_awsom_2223_realization10_extended_new.sav
                  safety=.5,stepmax=10000,radstart=5.995,dlat=1.,dlon=1.
 
 
+;solo para mapoc charla
+trace_AWSOM_LDEM,field_awsom='sph_data_awsom_2223_realization10_extended_new.sav',period='2223_demt',/unifgrid_v2,$
+                 ldem_file='LDEM.v3_CR2223_l.7.3.3_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',$
+                 safety=.5,stepmax=10000,radstart=1.025,dlat=2.,dlon=2.
+
+trace_AWSOM_LDEM,field_awsom='sph_data_awsom_2223_realization10_extended_new.sav',period='2223_demt',/unifgrid_v2,$
+                 ldem_file='LDEM.v3_CR2223_l.7.3.3_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',$
+                 safety=.5,stepmax=10000,radstart=1.105,dlat=2.,dlon=2.
+
+trace_AWSOM_LDEM,field_awsom='sph_data_awsom_2223_realization10_extended_new.sav',period='2223_awsom_',/unifgrid_v2,$
+                 awsom_file='awsom_2223_realization10_extended_new',$
+                 safety=.5,stepmax=10000,radstart=5.995,dlat=2.,dlon=2.
+
+;NUEVAS CORRIDAS AWSOM con magnetogramas co-centrados
+trace_AWSOM_LDEM,field_awsom='sph_data_awsom_2219_cocent_extended.sav',period='2219_awsom_cocen',/unifgrid_v2,$
+                 awsom_file='awsom_2219_cocent_extended',$
+                 safety=.5,stepmax=10000,radstart=5.985,dlat=1.,dlon=1.
+
+trace_AWSOM_LDEM,field_awsom='sph_data_awsom_2223_cocent_extended.sav',period='2223_awsom_cocen',/unifgrid_v2,$
+                 awsom_file='awsom_2223_cocent_extended',$
+                 safety=.5,stepmax=10000,radstart=5.985,dlat=1.,dlon=1.
+
+
+;NUEVAS CORRIDAS DEMT con campo B dado por AWSoM usando magnetogramas cocentrados
+trace_AWSOM_LDEM,field_awsom='sph_data_awsom_2219_cocent_extended.sav',period='2219_demt_cocen',/unifgrid_v2,$
+                 ldem_file='LDEM.v3_CR2219_l.8.3.4_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',$
+                 safety=.5,stepmax=10000,radstart=5.985,dlat=1.,dlon=1.
+
+trace_AWSOM_LDEM,field_awsom='sph_data_awsom_2223_cocent_extended.sav',period='2223_demt_cocen',/unifgrid_v2,$
+                 ldem_file='LDEM.v3_CR2223_l.7.3.3_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',$
+                 safety=.5,stepmax=10000,radstart=5.985,dlat=1.,dlon=1.
+
+;NUEVAS CORRIDAS LASCO con campo B dado por AWSoM usando magnetogramas cocentrados
+
+trace_AWSOM_LDEM,field_awsom='sph_data_awsom_2219_cocent_extended.sav',period='2219_lasco_cocen',/unifgrid_v2,$
+                 lasco_file='x_LASCOC2pB_CR2219_24hr-Cadence_Rmin2.25_Rmax8.25_IRmin2.5_IRmax6.0_60x60x120_BF4_r3D_l1.e-4',$
+		 safety=.5,stepmax=10000,radstart=5.985,dlat=2.,dlon=2.
+
+trace_AWSOM_LDEM,field_awsom='sph_data_awsom_2223_cocent_extended.sav',period='2223_lasco_cocen',/unifgrid_v2,$
+                 lasco_file='x_LASCOC2pB_CR2223_24hr-Cadence_Rmin2.25_Rmax8.25_IRmin2.5_IRmax6.0_60x60x120_BF4_r3D_l1.e-4',$
+                 safety=.5,stepmax=10000,radstart=5.985,dlat=1.,dlon=1.
 
 
 
 
+;a 1.065Rsun, para mapocs
+trace_AWSOM_LDEM,field_awsom='sph_data_awsom_2219_cocent_extended.sav',period='2219_awsom_cocen',/unifgrid_v2,$
+                 awsom_file='awsom_2219_cocent_extended',$
+                 safety=.5,stepmax=10000,radstart=1.065,dlat=2.,dlon=2.
+
+trace_AWSOM_LDEM,field_awsom='sph_data_awsom_2223_cocent_extended.sav',period='2223_awsom_cocen',/unifgrid_v2,$
+                 awsom_file='awsom_2223_cocent_extended',$
+                 safety=.5,stepmax=10000,radstart=1.065,dlat=2.,dlon=2.
+;para AGU
+trace_AWSOM_LDEM,field_awsom='sph_data_awsom_2219_cocent_extended.sav',period='2219_awsom_cocen',/unifgrid_v2,$
+                 awsom_file='awsom_2219_cocent_extended',$
+                 safety=.5,stepmax=10000,radstart=1.025,dlat=2.,dlon=2.
+
+trace_AWSOM_LDEM,field_awsom='sph_data_awsom_2219_cocent_extended.sav',period='2219_awsom_cocen',/unifgrid_v2,$
+                 awsom_file='awsom_2219_cocent_extended',$
+                 safety=.5,stepmax=10000,radstart=1.105,dlat=2.,dlon=2.
+
+
+;trazados para mapocs CR2219 y CR2223 con GONG zpc co-centrado
+trace_AWSOM_LDEM,field_awsom='sph_data_awsom_2219_cocent_GONG_extended.sav',period='2219_awsom_cocen_GONG',/unifgrid_v2,$
+                 awsom_file='awsom_2219_cocent_GONG_extended',$
+                 safety=.5,stepmax=10000,radstart=1.025,dlat=2.,dlon=2.
+
+trace_AWSOM_LDEM,field_awsom='sph_data_awsom_2219_cocent_GONG_extended.sav',period='2219_awsom_cocen_GONG',/unifgrid_v2,$
+                 awsom_file='awsom_2219_cocent_GONG_extended',$
+                 safety=.5,stepmax=10000,radstart=1.065,dlat=2.,dlon=2.
+
+trace_AWSOM_LDEM,field_awsom='sph_data_awsom_2219_cocent_GONG_extended.sav',period='2219_awsom_cocen_GONG',/unifgrid_v2,$
+                 awsom_file='awsom_2219_cocent_GONG_extended',$
+                 safety=.5,stepmax=10000,radstart=1.105,dlat=2.,dlon=2.
+
+trace_AWSOM_LDEM,field_awsom='sph_data_awsom_2223_cocent_GONG_extended.sav',period='2223_awsom_cocen_GONG',/unifgrid_v2,$
+                 awsom_file='awsom_2223_cocent_GONG_extended',$
+                 safety=.5,stepmax=10000,radstart=1.025,dlat=2.,dlon=2.
+
+trace_AWSOM_LDEM,field_awsom='sph_data_awsom_2223_cocent_GONG_extended.sav',period='2223_awsom_cocen_GONG',/unifgrid_v2,$
+                 awsom_file='awsom_2223_cocent_GONG_extended',$
+                 safety=.5,stepmax=10000,radstart=1.065,dlat=2.,dlon=2.
+
+trace_AWSOM_LDEM,field_awsom='sph_data_awsom_2223_cocent_GONG_extended.sav',period='2223_awsom_cocen_GONG',/unifgrid_v2,$
+                 awsom_file='awsom_2223_cocent_GONG_extended',$
+                 safety=.5,stepmax=10000,radstart=1.105,dlat=2.,dlon=2.
+
+;6Rsun
+trace_AWSOM_LDEM,field_awsom='sph_data_awsom_2223_cocent_extended.sav',period='2223_awsom_cocen',/unifgrid_v2,$
+                 awsom_file='awsom_2223_cocent_extended',$
+                 safety=.5,stepmax=10000,radstart=5.985,dlat=1.,dlon=1.
+
+trace_AWSOM_LDEM,field_awsom='sph_data_awsom_2219_cocent_extended.sav',period='2219_awsom_cocen',/unifgrid_v2,$
+                 awsom_file='awsom_2219_cocent_extended',$
+                 safety=.5,stepmax=10000,radstart=5.985,dlat=1.,dlon=1.
+
+trace_AWSOM_LDEM,field_awsom='sph_data_awsom_2219_cocent_extended.sav',period='2219_demt_cocen',/unifgrid_v2,$
+                 ldem_file='LDEM.v3_CR2219_l.8.3.4_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',$
+                 safety=.5,stepmax=10000,radstart=5.985,dlat=1.,dlon=1.
+
+trace_AWSOM_LDEM,field_awsom='sph_data_awsom_2223_cocent_extended.sav',period='2223_demt_cocen',/unifgrid_v2,$
+                 ldem_file='LDEM.v3_CR2223_l.7.3.3_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',$
+                 safety=.5,stepmax=10000,radstart=5.985,dlat=1.,dlon=1.
+
+;trazado para chequeo de nuevas estadisticas energeticas en zona cerrada
+trace_AWSOM_LDEM,field_awsom='sph_data_awsom_2223_cocent_extended.sav',period='2223_demt',/unifgrid_v2,$
+                 ldem_file='LDEM.v3_CR2223_l.7.3.3_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',$
+                 safety=.5,stepmax=10000,radstart=1.065,dlat=2.,dlon=2.
+
+trace_AWSOM_LDEM,field_awsom='sph_data_awsom_2223_cocent_extended.sav',period='2223_awsom_cocen',/unifgrid_v2,$
+                 awsom_file='awsom_2223_cocent_extended',$
+                 safety=.5,stepmax=10000,radstart=1.065,dlat=2.,dlon=2.
+
+trace_AWSOM_LDEM,field_awsom='sph_data_awsom_2219_cocent_extended.sav',period='2219_demt_cocen',/unifgrid_v2,$
+                 ldem_file='LDEM.v3_CR2219_l.8.3.4_h_Rmin1.00_Rmax1.30_Nr30_InstRmax1.26_b__chianti.ioneq_sun_coronal_1992_feldman_ext.abundaia3_171_gauss1_lin_Norm-median_singlStart',$
+                 safety=.5,stepmax=10000,radstart=1.065,dlat=2.,dlon=2.
+
+trace_AWSOM_LDEM,field_awsom='sph_data_awsom_2219_cocent_extended.sav',period='2219_awsom_cocen',/unifgrid_v2,$
+                 awsom_file='awsom_2219_cocent_extended',$
+                 safety=.5,stepmax=10000,radstart=1.065,dlat=2.,dlon=2.

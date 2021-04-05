@@ -27,6 +27,20 @@
 ;statloop_awsom_diego,file='traceLDEM_CR2219_demt_campo_awsom_radstart-5.995Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav',/demt,ffile_out='cr2219_demt_awsomfield_startp6rsun'
 ;statloop_awsom_diego,file='traceLDEM_CR2219_awsom_campo_awsom_radstart-5.995Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav',/awsom,ffile_out='cr2219_awsom_awsomfield_startp6rsun'
 
+;REALIZADO CON MAGNETOGRAMAS COCENTRADOS AWSOM
+;statloop_awsom_diego,file='traceLDEM_CR2223_awsom_cocen_radstart-5.985Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav',/awsom,ffile_out='cr2223_awsom_awsomfield_cocen_startp6rsun'
+;statloop_awsom_diego,file='traceLDEM_CR2219_awsom_cocen_radstart-5.985Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav',/awsom,ffile_out='cr2219_awsom_awsomfield_cocen_startp6rsun'
+;statloop_awsom_diego,file='traceLDEM_CR2223_demt_cocen_radstart-5.985Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav',/demt,ffile_out='cr2223_demt_awsomfield_cocen_startp6rsun'
+;statloop_awsom_diego,file='traceLDEM_CR2219_demt_cocen_radstart-5.985Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav',/demt,ffile_out='cr2219_demt_awsomfield_cocen_startp6rsun'
+;sumando energia en lineas abiertas
+;statloop_awsom_diego,file='traceLDEM_CR2223_demt_cocen_radstart-5.985Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav',/demt,ffile_out='cr2223_demt_awsomfield_cocen_startp6rsun_ajuste_alto',/ajuste_alto
+
+;statloop de trazados a 1.065 que incluyen nuevo enfoque energetico ,
+;utilizado/graficado en estadistica_diego_2020.pro
+;statloop_awsom_diego,file='traceLDEM_CR2223_demt_radstart-1.065Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav',/demt,ffile_out='cr2223_demt_awsomfield_cocen_startp1065rsun_ajuste_normal_v2'
+;statloop_awsom_diego,file='traceLDEM_CR2223_awsom_cocen_radstart-1.065Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav',/awsom,ffile_out='cr2223_awsom_awsomfield_cocen_startp1065rsun_ajuste_alto_v2',/ajuste_alto
+;statloop_awsom_diego,file='traceLDEM_CR2219_demt_cocen_radstart-1.065Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav',/demt,ffile_out='cr2219_demt_awsomfield_cocen_startp1065rsun_ajuste_normal_v2'
+;statloop_awsom_diego,file='traceLDEM_CR2219_awsom_cocen_radstart-1.065Rs_unifgrid_v2.heating.sampled.v2.DIEGO.dat.sav',/awsom,ffile_out='cr2219_awsom_awsomfield_cocen_startp1065rsun_ajuste_alto_v2',/ajuste_alto
 pro statloop_awsom_diego,rmin=rmin,rmax=rmax,alturas=alturas,ajuste_alto=ajuste_alto,ajuste_bajo=ajuste_bajo,demt=demt,awsom=awsom,lasco=lasco,file=file,ffile_out=ffile_out
 ;OBS SE ESTA CORRIENDO CON EL DOBLE DE ERRORES DEL PRIMER PAPER AL
 ;SEGUNDO, esto afecta a awsom tambien
@@ -36,7 +50,8 @@ pro statloop_awsom_diego,rmin=rmin,rmax=rmax,alturas=alturas,ajuste_alto=ajuste_
 
 ;si se usa un antiguo read_trace, es necesario usar commons, si se usa
 ;un restore, no es necesario.  
-  !except=2
+;  !except=2
+  !except=0 ;No errors detected 
   device, retain     = 2
   device, true_color = 24
   device, decomposed = 0
@@ -173,7 +188,20 @@ Tmmean_alto = fltarr(Nlegs)-555. ;corresponde a demt y debe EL comparado con tmm
       phi_r_total = fltarr(Nlegs)-555.
       phi_c_total = fltarr(Nlegs)-555.
 ;----------------------------
-      
+;Agregados energeticos por Diego 2021
+      B_int   = fltarr(Nlegs)-555.
+      Ec_prom = fltarr(Nlegs)-555.
+      Er_prom = fltarr(Nlegs)-555.
+      Fc_l_0  = fltarr(Nlegs)-555.
+      Fc_l_L  = fltarr(Nlegs)-555.
+      B_l_L   = fltarr(Nlegs)-555.
+      B_l_0   = fltarr(Nlegs)-555
+      long_tot= fltarr(Nlegs)-555
+      factor_f= fltarr(Nlegs)-555
+      Er_prom_tot = fltarr(Nlegs)-555.
+      Ec_prom_tot = fltarr(Nlegs)-555.
+
+;-----------------      
  deltaEh = fltarr(Nlegs)-555. ;??
 betamean = fltarr(Nlegs)-555.
 betaapex = fltarr(Nlegs)-555.
@@ -218,6 +246,8 @@ error_t  = fltarr(Nlegs)-555.
 Rp0_rad = fltarr(Nlegs)-555.
 Rp0_lat = fltarr(Nlegs)-555.
 Rp0_lon = fltarr(Nlegs)-555.
+
+
 
 Rp_rad = fltarr(Nlegs)-555.
 Rp_lat = fltarr(Nlegs)-555.
@@ -446,6 +476,9 @@ cr2081 = 1 ;seteo las latitudes del paper con 2081
         beta_l = p_l/(B_l^2/(8*!pi));valor crudo
 
         if keyword_set(ajuste_alto) then begin
+;IMPORTANTE Puede pasar que para algunas lineas haya solo puntos abajo
+;del corte awsom entonces aca rebienta
+           if (where(rad_l ge corte_awsom))(0) eq -1 then goto,skipnextloop_open
            Nemean(ileg) =   mean(Ne_l(where(rad_l ge corte_awsom)))
            betamean(ileg) =   mean(beta_l(where(rad_l ge corte_awsom)))
            Bmean(ileg) =   mean(B_l(where(rad_l ge corte_awsom)))
@@ -525,6 +558,7 @@ no_para_awsom1:
           zfit =  p_l  (where(rad_l ge corte_awsom))
           wfit =  Tm_l (where(rad_l ge corte_awsom))
           rfit =  Er_l (where(rad_l ge corte_awsom))
+          Bfit =  B_l  (where(rad_l ge rad_l(findel(corte_awsom,rad_l))))
 ;          min_s = s_l(findel(corte_awsom,rad_l))
 ;          max_s = s_l(findel(1.2 ,rad_l))
 ;Usar definiciones como las de arriba pueden ocasionar errores cuando
@@ -533,6 +567,10 @@ no_para_awsom1:
           max_s = max(s_l)
           min_r = rad_l(findel(corte_awsom,rad_l))
           max_r = rad_l(findel(1.2 ,rad_l))
+;IMPORTANTE
+;Al imponer corte_awsom, puede que lleguemos a tener menos de 5 puntos
+;por linea, y los ajusten vuelven a dar mal o incluso rebienta algun ajuste          
+        if n_elements(xfit) lt Ndata then goto,skipfitloop_open
        end
        keyword_set(ajuste_bajo) eq 1: begin
           sfit =  s_l  (where(rad_l le rad_l(findel(corte_awsom,rad_l))))
@@ -546,7 +584,7 @@ no_para_awsom1:
           max_r = rad_l(findel(corte_awsom ,rad_l))
 
        end
-       else: begin
+       else: begin;esta parte de abajo esta bien? o todo deberia moverse arriba de 1.025??
           sfit = s_l
           xfit = rad_l
           yfit = Ne_l
@@ -557,7 +595,7 @@ no_para_awsom1:
           max_s = max(s_l)
           min_r = rad_l(findel(1.025,rad_l))
           max_r = rad_l(findel(1.2 ,rad_l))
-
+          Bfit  = B_l
        end
     endcase
 
@@ -605,7 +643,7 @@ no_para_awsom1:
     Nebasal(ileg) = Ne0(ileg) * exp(-1/lambda_n(ileg)* (1. - 1./1.025))
     ;Estas 2 NO son necesarias, podria armarse luego.
     if keyword_set(demt) then begin
-       franja_lineal,alog(yyfit),salidafit,error_ne(ileg),fraccion
+       franja_lineal,alog(yyfit),salidafit,err_ne,fraccion
        fne (ileg) = fraccion
     endif
 
@@ -620,12 +658,12 @@ no_para_awsom1:
     r2N_s(ileg) = r2
     pearson_ns(ileg) = correlate(ssfit,alog(yyfit),/double)
     if keyword_set(demt) then begin
-       franja_lineal,alog(yyfit),salidafit,error_ne(ileg),fraccion
+       franja_lineal,alog(yyfit),salidafit,err_ne,fraccion
        fne_s (ileg) = fraccion
        ;ver aca tmb si esto se calcula como debe
     endif
 
-    rrfit = rfit(p2)
+    rrfit = rfit(p2);es Er
     linear_fit,ssfit,alog(rrfit),A,r2,salidafit,/theilsen
     Er0_s(ileg) = exp(A[0])
     lambda_er_s(ileg) = 1./A[1]
@@ -669,7 +707,7 @@ no_para_awsom1:
     hip_chi_ch2_t (ileg) = sta3(1)
 ;nuevo
     if keyword_set(demt) then begin
-       franja_lineal,wwfit,salidafit2,error_t(ileg),fraccion
+       franja_lineal,wwfit,salidafit2,err_tm,fraccion
        ft (ileg) = fraccion
     endif
     pearson_t(ileg) = correlate(xxfit,wwfit,/double)
@@ -684,7 +722,7 @@ no_para_awsom1:
     gradT_s(ileg) = A[1]
     r2t_s (ileg)  = r2
     if keyword_set(demt) then begin
-       franja_lineal,wwfit,salidafit,error_t(ileg),fraccion
+       franja_lineal,wwfit,salidafit,err_tm,fraccion
        ft_s (ileg) = fraccion
     endif
     pearson_ts(ileg) = correlate(ssfit,wwfit,/double)
@@ -701,13 +739,37 @@ no_para_awsom1:
                                 ;hasta el max del apice aunque no
                                 ;tenga datos tomos y aca los que
                                 ;excedan 1.225 debera extrapolarlos
-    iso  (ileg)   = abs(gradT (ileg)         * long_r(ileg)) / (2 * error_t(ileg))
-    iso_erry(ileg)= abs(gradT_erry (ileg)    * long_r(ileg)) / (2 * error_t(ileg))
-    iso_s(ileg)   = abs(gradT_s(ileg)        * long_s(ileg)) / (2 * error_t(ileg))
+    iso  (ileg)   = abs(gradT (ileg)         * long_r(ileg)) / (2 * err_tm)
+    iso_erry(ileg)= abs(gradT_erry (ileg)    * long_r(ileg)) / (2 * err_tm)
+    iso_s(ileg)   = abs(gradT_s(ileg)        * long_s(ileg)) / (2 * err_tm)
     
 ;    if hip_chi_pv2_t(ileg) lt 0.1 or ft(ileg) lt 0.4 and abs(lincorr_pearson_t(ileg)) ge 0.5 then stop
 
-    
+;AGREGADO ENERGIA
+;stop    
+;max_s(ileg) =max_s
+;s_base es el equivalente a 1.025
+Fc_l_0(ileg ) = -1*kappa*(tm0_s(ileg  )+gradt_s(ileg  )*min(ssfit))^(5./2)*(gradt_s(ileg)/rsun)
+Fc_l_L(ileg ) = -1*kappa*(tm0_s(ileg  )+gradt_s(ileg  )*max(ssfit))^(5./2)*(gradt_s(ileg)/rsun)
+B_l_0 (ileg)  = B_l(where(ssfit eq min(ssfit)))
+B_l_L (ileg)  = B_l(where(ssfit eq max(ssfit))) 
+
+ok = where(sfit ge min_s and sfit le max_s)
+xtmp =  sfit(ok)
+B_int(ileg)   = int_tabulated(xtmp*rsun,1/Bfit(ok),/sort)
+Ec_prom (ileg) = (Fc_l_L(ileg)/B_l_L(ileg) - Fc_l_0(ileg)/B_l_0(ileg))/B_int(ileg) 
+
+ytemp = Er0_s(ileg)*exp((1./lambda_er_s(ileg))*xtmp)  / Bfit(ok)
+Er_prom (ileg) = int_tabulated(xtmp*rsun,ytemp  ,/sort) / B_int(ileg)    
+
+
+
+factor_f (ileg)      = B_l_0 (ileg)   /  mean(Bfit(where(sfit ge min_s and sfit le max_s)))
+
+
+
+
+;stop
     skipfitloop_open:
     opclstat(ileg) = opcls(il)
     loop_length(ileg) = loopL(il)
@@ -718,7 +780,7 @@ no_para_awsom1:
     indexloop(ileg) = il
     ileg = ileg+1
    
- endif else begin
+ endif else begin;comienzan loops cerrados
     
 
        if max(rad_v(0:Npts_v(il)-1,il)) lt rminloop then goto,skipnextloop
@@ -879,6 +941,9 @@ no_para_awsom1:
 
 
   if keyword_set(ajuste_alto) then begin
+;importante: Si una de las piernas no tiene puntos abajo de
+;corte_awsom debemos saltar
+     if  (where(rad_l1 ge corte_awsom))(0) eq -1 || (where(rad_l2 ge corte_awsom))(0) eq -1 then goto,skipnextloop
      Tmmean(ileg)   =  mean(Tm_l1(where(rad_l1 ge corte_awsom)))
      Tmmean(ileg+1) =  mean(Tm_l2(where(rad_l2 ge corte_awsom)))
      Nemean(ileg)   = mean(Ne_l1(where(rad_l1 ge corte_awsom)))
@@ -1069,6 +1134,8 @@ no_para_awsom1:
               max_s2 = max(s_l2)
               min_r2 = rad_l2(findel(corte_awsom,rad_l2))
               max_r2 = rad_l2(findel(1.2 ,rad_l2))
+              Bfit1 =  B_l1  (where(rad_l1 ge rad_l1(findel(corte_awsom,rad_l1))))
+              Bfit2 =  B_l2  (where(rad_l2 ge rad_l2(findel(corte_awsom,rad_l2))))
            end
            keyword_set(ajuste_bajo) eq 1: begin
               sfit1 =  s_l1  (where(rad_l1 le rad_l1(findel(corte_awsom,rad_l1))))
@@ -1111,6 +1178,8 @@ no_para_awsom1:
               max_s2 = max(s_l2)
               min_r2 = rad_l2(findel(1.025,rad_l2))
               max_r2 = rad_l2(findel(1.2 ,rad_l2))
+              Bfit1  = B_l1
+              Bfit2  = B_l2
            end
         endcase
 
@@ -1158,7 +1227,7 @@ no_para_awsom1:
         Tefit_ts(ileg) = bb* mu * mH * gsun * (lambda_N(ileg)*rsun) / kB
         Nebasal(ileg) = Ne0(ileg) * exp(-1/lambda_n(ileg)* (1. - 1./1.025))
         if keyword_set(demt) then begin
-           franja_lineal,alog(yyfit1),salidafit,error_ne(ileg),fraccion
+           franja_lineal,alog(yyfit1),salidafit,err_ne,fraccion
            fne (ileg) = fraccion
         endif
 ;s
@@ -1173,7 +1242,7 @@ no_para_awsom1:
         pearson_ns(ileg) = correlate(ssfit1,alog(yyfit1))
     if keyword_set(demt) then begin
        if n_elements(yyfit1) ne n_elements(salidafit) then stop
-       franja_lineal,alog(yyfit1),salidafit,error_ne(ileg),fraccion
+       franja_lineal,alog(yyfit1),salidafit,err_ne,fraccion
        fne_s (ileg) = fraccion
     endif
 
@@ -1229,7 +1298,7 @@ no_para_awsom1:
     Tefit_ts(ileg+1) = bb* mu * mH * gsun * (lambda_N(ileg+1)*rsun) / kB
     Nebasal(ileg+1) = Ne0(ileg+1) * exp(-1/lambda_n(ileg+1)* (1. - 1./1.025))
     if keyword_set(demt) then begin
-       franja_lineal,alog(yyfit2),salidafit,error_ne(ileg+1),fraccion
+       franja_lineal,alog(yyfit2),salidafit,err_ne,fraccion
        fne (ileg+1) = fraccion
     endif
 ;s
@@ -1245,7 +1314,7 @@ no_para_awsom1:
     pearson_ns(ileg+1) = correlate(ssfit2,alog(yyfit2))
     if keyword_set(demt) then begin
        if n_elements(yyfit2) ne n_elements(salidafit) then stop
-       franja_lineal,alog(yyfit2),salidafit,error_ne(ileg+1),fraccion
+       franja_lineal,alog(yyfit2),salidafit,err_ne,fraccion
        fne_s (ileg+1) = fraccion
     endif
 
@@ -1296,7 +1365,7 @@ no_para_awsom1:
 
     pearson_t(ileg) = correlate(xxfit1,wwfit1)
     if keyword_set(demt) then begin
-       franja_lineal,wwfit1,salidafit,error_t(ileg),fraccion
+       franja_lineal,wwfit1,salidafit,err_tm,fraccion
        ft (ileg) = fraccion
     endif
 ;s
@@ -1310,7 +1379,7 @@ no_para_awsom1:
     r2t_s (ileg)  = r2
 
     if keyword_set(demt) then begin
-       franja_lineal,wwfit1,salidafit,error_t(ileg),fraccion
+       franja_lineal,wwfit1,salidafit,err_tm,fraccion
        ft_s  (ileg)  = fraccion
     endif
     pearson_ts(ileg) = correlate(ssfit1,wwfit1)
@@ -1356,7 +1425,7 @@ no_para_awsom1:
     
     pearson_t(ileg+1) = correlate(xxfit2,wwfit2)
     if keyword_set(demt) then begin
-       franja_lineal,wwfit2,salidafit,error_t(ileg+1),fraccion
+       franja_lineal,wwfit2,salidafit,err_tm,fraccion
        ft (ileg+1) = fraccion
     endif
 
@@ -1375,7 +1444,7 @@ no_para_awsom1:
     r2t_s (ileg+1)  = r2
 
     if keyword_set(demt) then begin
-       franja_lineal,wwfit2,salidafit,error_t(ileg+1),fraccion
+       franja_lineal,wwfit2,salidafit,err_tm,fraccion
        ft_s  (ileg+1)  = fraccion
     endif
    pearson_ts(ileg+1) = correlate(sfit2,wfit2)
@@ -1385,17 +1454,28 @@ no_para_awsom1:
     Te_base(ileg+1) = gradT_erry(ileg+1) * 1.025 + Tm0_erry(ileg+1)
     betabase(ileg+1) = (kb/bb * nebasal(ileg+1) * te_base(ileg+1)) /(B_base(ileg+1)^2/(8*!pi))
 
-    long_r (ileg)   = abs(max_r1 - min_r1)
-    long_s (ileg)   = abs(max_s1 - min_s1)
-    long_r (ileg+1) = abs(max_r2 - min_r2)
-    long_s (ileg+1) = abs(max_s2 - min_s2)
+    long_r (ileg)    = abs(max_r1 - min_r1)
+    long_s (ileg)    = abs(max_s1 - min_s1)
+    long_r (ileg+1)  = abs(max_r2 - min_r2)
+    long_s (ileg+1)  = abs(max_s2 - min_s2)
+    long_tot(ileg)   = long_s(ileg) + long_s(ileg+1)
+    long_tot(ileg+1) = long_s(ileg) + long_s(ileg+1)
+    if keyword_set(ajuste_alto) then begin
+;Lo de abajo esta comentado xq quiero que la longuitud de los loops
+;sea la total, eso me sirve para hacer filtros que sirvan en awsom
+;tanto como en demt (con ajuste total)       
+;       long_s (ileg)    = abs(max(sfit1) - min(sfit1))
+;       long_s (ileg+1)  = abs(max(sfit2) - min(sfit2))
+       long_tot(ileg)   = abs(max(sfit1) - min(sfit1)) + abs(max(sfit2) - min(sfit2))
+       long_tot(ileg+1) = abs(max(sfit1) - min(sfit1)) + abs(max(sfit2) - min(sfit2))
+    endif
     
-    iso  (ileg)      = abs(gradT (ileg)        * long_r(ileg)) / (2 * error_t(ileg))
-    iso_erry(ileg)   = abs(gradT_erry (ileg)   * long_r(ileg)) / (2 * error_t(ileg))
-    iso_s(ileg)      = abs(gradT_s(ileg)       * long_s(ileg)) / (2 * error_t(ileg))
-    iso  (ileg+1)    = abs(gradT (ileg+1)      * long_r(ileg+1)) / (2 * error_t(ileg+1))
-    iso_erry(ileg+1) = abs(gradT_erry (ileg+1) * long_r(ileg+1)) / (2 * error_t(ileg+1))
-    iso_s(ileg+1)    = abs(gradT_s(ileg+1)     * long_s(ileg+1)) / (2 * error_t(ileg+1))
+    iso  (ileg)      = abs(gradT (ileg)        * long_r(ileg)) / (2 * err_tm)
+    iso_erry(ileg)   = abs(gradT_erry (ileg)   * long_r(ileg)) / (2 * err_tm)
+    iso_s(ileg)      = abs(gradT_s(ileg)       * long_s(ileg)) / (2 * err_tm)
+    iso  (ileg+1)    = abs(gradT (ileg+1)      * long_r(ileg+1)) / (2 * err_tm)
+    iso_erry(ileg+1) = abs(gradT_erry (ileg+1) * long_r(ileg+1)) / (2 * err_tm)
+    iso_s(ileg+1)    = abs(gradT_s(ileg+1)     * long_s(ileg+1)) / (2 * err_tm)
 
 
 goto,preguntar_a_ceci
@@ -1426,7 +1506,7 @@ preguntar_a_ceci:
   Fcb(ileg  ) = Fc_l(ileg  ) * B_base(ileg+1)/(B_base(ileg)+B_base(ileg+1)) ;b_l_0 depende y no es necesariamente en r=1.025
   Fcb(ileg+1) = Fc_l(ileg+1) * B_base(ileg  )/(B_base(ileg)+B_base(ileg+1))
 ;OBS: ESTO DE ABAJO VA SIN EL MENOS, PERO LO DEJO HASTA QUE TERMINE EL
-;PAPER ASI NO HAY CONFUCION!!!!
+;2do PAPER ASI NO HAY CONFUSION!!!!
   phi_c_total(ileg  ) = - (Fcb(ileg  ) + Fcb(ileg+1) )
   phi_c_total(ileg+1) = - (Fcb(ileg  ) + Fcb(ileg+1) );los guardo repetidos
 
@@ -1449,6 +1529,60 @@ preguntar_a_ceci:
      phi_r_total(ileg+1) = phi_r (ileg) + phi_r (ileg+1)
      
      if phi_r (ileg) lt 0. or phi_r (ileg+1) lt 0. then stop
+
+;NUEVAS ENERGIAS por unidad de volumen
+;l1
+     Fc_l_0(ileg ) = -1*kappa*(tm0_s(ileg  )+gradt_s(ileg  )*min(ssfit))^(5./2)*(gradt_s(ileg)/rsun)
+     Fc_l_L(ileg ) = -1*kappa*(tm0_s(ileg  )+gradt_s(ileg  )*max(ssfit))^(5./2)*(gradt_s(ileg)/rsun)
+     B_l_0 (ileg)  = B_l1(where(ssfit1 eq min(ssfit1)))
+     B_l_L (ileg)  = B_l1(where(ssfit1 eq max(ssfit1)))
+     
+     ok = where(sfit1 ge min_s1 and sfit1 le max_s1)
+     xtmp =  sfit1(ok)
+     B_int(ileg)   = int_tabulated(xtmp*rsun,1/Bfit1(ok),/sort)
+     Ec_prom (ileg) = (Fc_l_L(ileg)/B_l_L(ileg) - Fc_l_0(ileg)/B_l_0(ileg))/B_int(ileg)
+
+     ytemp = Er0_s(ileg)*exp((1./lambda_er_s(ileg))*xtmp)  / Bfit1(ok)
+     Er_prom (ileg) = int_tabulated(xtmp*rsun,ytemp  ,/sort) / B_int(ileg)
+
+;l2
+;IMPORTANTE: Como la pierna dos es tratada con s desde la base hasta
+;elapice, entonces el subindice 0 debe corresponder al apice y el
+;subindice L debe corresponder a la base, mientras que el gradt_s debe
+;usar el signo opuesto. Todo esto afecta el calculo de Fc_l para ileg+1
+;     Fc_l_0(ileg+1) = -1*kappa*(tm0_s(ileg+1)+gradt_s(ileg+1)*min(ssfit))^(5./2)*(gradt_s(ileg+1)/rsun)
+;     Fc_l_L(ileg+1) = -1*kappa*(tm0_s(ileg+1)+gradt_s(ileg+1)*max(ssfit))^(5./2)*(gradt_s(ileg+1)/rsun)
+
+     Fc_l_L(ileg+1) =  1*kappa*(tm0_s(ileg+1)+gradt_s(ileg+1)*min(ssfit))^(5./2)*(gradt_s(ileg+1)/rsun)
+     Fc_l_0(ileg+1) =  1*kappa*(tm0_s(ileg+1)+gradt_s(ileg+1)*max(ssfit))^(5./2)*(gradt_s(ileg+1)/rsun)
+
+
+;IMPORTANTE notar que aca tmb tuve que dar vuelta L por 0. L es B en min(s)
+     B_l_L (ileg+1) = B_l2(where(ssfit2 eq min(ssfit2)))
+     B_l_0 (ileg+1) = B_l2(where(ssfit2 eq max(ssfit2)))
+     
+     ok = where(sfit2 ge min_s2 and sfit2 le max_s2)
+     xtmp =  sfit2(ok)
+     B_int(ileg+1)   = int_tabulated(xtmp*rsun,1/Bfit2(ok),/sort)
+;Ec_prom no cambia, solo la tuve que adaptar la forma en la que se
+;calculaban sus componentes al considerar s como una 2da pierna que
+;empieza en la base y termine en el apice
+     Ec_prom (ileg+1) = (Fc_l_L(ileg+1)/B_l_L(ileg+1) - Fc_l_0(ileg+1)/B_l_0(ileg+1))/B_int(ileg+1)
+     
+     ytemp = Er0_s(ileg+1)*exp((1./lambda_er_s(ileg+1))*xtmp)  / Bfit2(ok)
+     Er_prom (ileg+1) = int_tabulated(xtmp*rsun,ytemp  ,/sort) / B_int(ileg+1)
+;para corroborar con el enfoque viejo phi_i, debo considerar el loop entero    
+     Ec_prom_tot (ileg)   = (Fc_l_L(ileg+1)/B_l_L(ileg+1) - Fc_l_0(ileg)/B_l_0(ileg) )/(B_int(ileg) +B_int(ileg+1)) 
+     Ec_prom_tot (ileg+1) = (Fc_l_L(ileg+1)/B_l_L(ileg+1) - Fc_l_0(ileg)/B_l_0(ileg) )/(B_int(ileg) +B_int(ileg+1)) 
+;CUIDADO -> puede pasar que una pierna sea up y la otra down! hay que
+;usar un for en statloop y arreglar esto
+     Er_prom_tot (ileg)   = Er_prom (ileg) + Er_prom (ileg+1)
+     Er_prom_tot (ileg+1) = Er_prom (ileg) + Er_prom (ileg+1)
+     factor_f (ileg)      = B_l_0 (ileg)   /  mean(Bfit1(where(sfit1 ge min_s1 and sfit1 le max_s1)))
+     factor_f (ileg+1)    = B_l_L (ileg+1) /  mean(Bfit2(where(sfit2 ge min_s2 and sfit2 le max_s2)))
+
+;stop
+
 skipfitloop:
      opclstat(ileg)   =      opcls(il)
      opclstat(ileg+1) =      opcls(il)
@@ -1473,9 +1607,9 @@ endelse
 endfor
   Rp_full  = {base:Rp_base,medio:Rp_medio,alto:Rp_alto}
 
-  if keyword_set(awsom) then  matriz_a_awsom={mat_ne:mat_ne,mat_te:mat_te,mat_br:mat_br,mat_btot:mat_btot,mat_r:mat_r,mat_lat:mat_lat,mat_lon:mat_lon,$
+  if keyword_set(demt)   then  matriz_a_demt={mat_ne:mat_ne,mat_te:mat_te,mat_br:mat_br,mat_btot:mat_btot,mat_r:mat_r,mat_lat:mat_lat,mat_lon:mat_lon,$
                                               alturas:alturas}
-  if keyword_set(demt)  then  matriz_a_demt ={mat_ne:mat_ne,mat_te:mat_te,mat_br:mat_br,mat_btot:mat_btot,mat_vr:mat_vr,mat_vth:mat_vth,mat_vph:mat_vph,$
+  if keyword_set(awsom)  then  matriz_a_awsom ={mat_ne:mat_ne,mat_te:mat_te,mat_br:mat_br,mat_btot:mat_btot,mat_vr:mat_vr,mat_vth:mat_vth,mat_vph:mat_vph,$
                                                mat_r:mat_r,mat_lat:mat_lat,mat_lon:mat_lon,alturas:alturas}
 
   stop
@@ -1507,7 +1641,9 @@ esto_es_viejo:
               Rp_base:Rp_base, Rp_medio:Rp_medio, Rp_alto:Rp_alto, er0_s:er0_s, lambda_er_s:lambda_er_s, r2er_s:r2er_s, pearson_ers:pearson_ers, s_base:s_base,$
               fc_l:fc_l,fcb:fcb,phi_r_total:phi_r_total,$
               phi_c_total:phi_c_total,Tmmean_alto:Tmmean_alto,phi_r:phi_r,$
-              matriz_a_demt:matriz_a_demt}
+              matriz_a_demt:matriz_a_demt,$
+              B_int:B_int,Ec_prom:Ec_prom,Er_prom:Er_prom,Fc_l_0:Fc_l_0,Fc_l_L:Fc_l_L,B_l_L:B_l_L,B_l_0:B_l_0,rsun:rsun,$
+              long_tot:long_tot,factor_f:factor_f,Ec_prom_tot:Ec_prom_tot,Er_prom_tot:Er_prom_tot}
      save, datos, FILENAME = 'trace_struct_'+ffile_out+'.sav'
   endif
 
@@ -1526,7 +1662,9 @@ esto_es_viejo:
               Rp_base:Rp_base, Rp_medio:Rp_medio, Rp_alto:Rp_alto, er0_s:er0_s, lambda_er_s:lambda_er_s, r2er_s:r2er_s, pearson_ers:pearson_ers, s_base:s_base,$
               fc_l:fc_l,fcb:fcb,phi_r_total:phi_r_total,$
               phi_c_total:phi_c_total,phi_r:phi_r,$
-              matriz_a_awsom:matriz_a_awsom}
+              matriz_a_awsom:matriz_a_awsom,$
+              B_int:B_int,Ec_prom:Ec_prom,Er_prom:Er_prom,Fc_l_0:Fc_l_0,Fc_l_L:Fc_l_L,B_l_L:B_l_L,B_l_0:B_l_0,rsun:rsun,$
+              long_tot:long_tot,factor_f:factor_f,Ec_prom_tot:Ec_prom_tot,Er_prom_tot:Er_prom_tot}
      save, datos, FILENAME = 'trace_struct_'+ffile_out+'.sav'
   endif
   
@@ -1534,5 +1672,4 @@ esto_es_viejo:
   stop
   return
 end
-   
    
